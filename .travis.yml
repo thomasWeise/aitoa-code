@@ -1,0 +1,22 @@
+##
+## Build with Travis.CI
+##
+#
+language: java
+
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - openjdk8
+  
+# needed to get openjdk8 to work
+dist: trusty
+    
+env:
+# do a few less tests to not hit timeouts (see TestTools.java in tests package)
+  -FASTTESTS=true
+    
+# Cache Maven dependencies to speed up builds.
+cache:
+  directories:
+  - $HOME/.m2
