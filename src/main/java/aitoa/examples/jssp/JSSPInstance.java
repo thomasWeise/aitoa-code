@@ -9,19 +9,21 @@ import java.io.InputStreamReader;
 
 /**
  * <p>
- * An instance of the Job Shop Scheduling Problem (JSSP). This class
- * provides the instances taken from
- * http://people.brunel.ac.uk/~mastjjb/jeb/orlib/jobshopinfo.html plus one
- * small "demo" instance.
+ * An instance of the Job Shop Scheduling Problem (JSSP). This
+ * class provides the instances taken from
+ * http://people.brunel.ac.uk/~mastjjb/jeb/orlib/jobshopinfo.html
+ * plus one small "demo" instance.
  * </p>
  * <p>
- * The problem instance holds all the data that describes one concrete
- * JSSP. A JSSP consists of {@link #m m} machines and {@link #n n} that
- * need to be executed on the machines. Each job consists of also exactly
- * {@code m} sub-jobs: it will utilize each machine. The order in which the
- * sub-jobs must be executed is defined, as well as the time they need. The
- * goal is to assign jobs to machines such in a way that the makespan,
- * i.e., the total time needed to complete all jobs, is minimized.
+ * The problem instance holds all the data that describes one
+ * concrete JSSP. A JSSP consists of {@link #m m} machines and
+ * {@link #n n} that need to be executed on the machines. Each
+ * job consists of also exactly {@code m} sub-jobs: it will
+ * utilize each machine. The order in which the sub-jobs must be
+ * executed is defined, as well as the time they need. The goal
+ * is to assign jobs to machines such in a way that the makespan,
+ * i.e., the total time needed to complete all jobs, is
+ * minimized.
  * </p>
  */
 // start relevant
@@ -57,10 +59,11 @@ public class JSSPInstance {
     // load the complete orlib.txt file until we find the target
     // instance this is inefficient, but well
     try (
-        final InputStream is = JSSPInstance.class.getResourceAsStream(//
-            (instance.equalsIgnoreCase("demo") ? //$NON-NLS-1$
-                "demo.txt" : //$NON-NLS-1$
-                "orlib.txt")); //$NON-NLS-1$
+        final InputStream is = JSSPInstance.class
+            .getResourceAsStream(//
+                (instance.equalsIgnoreCase("demo") ? //$NON-NLS-1$
+                    "demo.txt" : //$NON-NLS-1$
+                    "orlib.txt")); //$NON-NLS-1$
         final InputStreamReader isr = new InputStreamReader(is);
         final BufferedReader br = new BufferedReader(isr)) {
 
@@ -83,7 +86,8 @@ public class JSSPInstance {
           }
 
           case 3: {
-            // found line with the instance size, split at white space
+            // found line with the instance size, split at white
+            // space
             final String[] s = line.split("\\s+"); //$NON-NLS-1$
             njobs = Integer.parseInt(s[0]);
             nmachines = Integer.parseInt(s[1]);
@@ -110,7 +114,8 @@ public class JSSPInstance {
                       (dataIndex + 1));
             }
             for (int i = s.length; (--i) >= 0;) {
-              if ((data[dataIndex][i] = Integer.parseInt(s[i])) < 0) {
+              if ((data[dataIndex][i] = Integer
+                  .parseInt(s[i])) < 0) {
                 throw new IllegalArgumentException(
                     "Illegal machine index/machine time in job line "//$NON-NLS-1$
                         + (dataIndex + 1));

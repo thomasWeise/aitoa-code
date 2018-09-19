@@ -16,13 +16,14 @@ public interface ISpace<Z> {
   public abstract Z create();
 
   /**
-   * Copy the data structure {@code from} to the data structure {@code to}.
+   * Copy the data structure {@code from} to the data structure
+   * {@code to}.
    *
    * @param from
    *          the source data structure to be copied
    * @param to
-   *          the destination data structure which will be overwritten with
-   *          the contents of {@code from}.
+   *          the destination data structure which will be
+   *          overwritten with the contents of {@code from}.
    */
   public abstract void copy(final Z from, final Z to);
 }

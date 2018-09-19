@@ -9,8 +9,8 @@ package aitoa.structure;
 public interface IObjectiveFunction<X> {
 
   /**
-   * Evaluate the candidate solution {@code x} and return the corresponding
-   * objective value.
+   * Evaluate the candidate solution {@code x} and return the
+   * corresponding objective value.
    *
    * @param x
    *          the candidate solution
