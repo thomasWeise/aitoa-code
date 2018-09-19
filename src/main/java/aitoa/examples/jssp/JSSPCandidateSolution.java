@@ -1,3 +1,4 @@
+// start relevant
 package aitoa.examples.jssp;
 
 /**
@@ -6,11 +7,11 @@ package aitoa.examples.jssp;
 public final class JSSPCandidateSolution {
 
   /**
-   * the schedule: for each machine, the sequence of jobs. for
-   * each job at a machine, three numbers: the job id, the start
-   * time, end the end time
+   * the schedule: for each machine, the sequence of jobs. for each job at
+   * a machine, three numbers: the job id, the start time, end the end time
    */
   public final int[][] schedule;
+  // end relevant
 
   /**
    * create a blank candidate solution
@@ -28,4 +29,6 @@ public final class JSSPCandidateSolution {
     // machine
     this.schedule = new int[m][3 * n];
   }
+  // start relevant
 }
+// end relevant
