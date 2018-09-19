@@ -37,7 +37,7 @@ public class JSSPInstance {
 
   /** for each job, the sequence of machines and times */
   public final int[][] jobs;
-  // end relevant
+// end relevant
   /** the instance name */
   public final String id;
 
@@ -56,8 +56,8 @@ public class JSSPInstance {
     int[][] data = null;
     int dataIndex = 0;
 
-    // load the complete orlib.txt file until we find the target
-    // instance this is inefficient, but well
+// load the complete orlib.txt file until we find the target
+// instance this is inefficient, but well
     try (
         final InputStream is = JSSPInstance.class
             .getResourceAsStream(//
@@ -67,7 +67,7 @@ public class JSSPInstance {
         final InputStreamReader isr = new InputStreamReader(is);
         final BufferedReader br = new BufferedReader(isr)) {
 
-      // this string indicates that we have the instance
+// this string indicates that we have the instance
       final String seek = "instance " + instance;//$NON-NLS-1$
       int found = 0;
       String line = null;
@@ -86,8 +86,7 @@ public class JSSPInstance {
           }
 
           case 3: {
-            // found line with the instance size, split at white
-            // space
+// found line with the instance size, split at white space
             final String[] s = line.split("\\s+"); //$NON-NLS-1$
             njobs = Integer.parseInt(s[0]);
             nmachines = Integer.parseInt(s[1]);
@@ -138,7 +137,7 @@ public class JSSPInstance {
       throw new IllegalStateException(error);
     }
 
-    // did we find the instance?
+// did we find the instance?
     if ((njobs <= 0) || (nmachines <= 0) || (data == null)
         || (dataIndex != data.length)) {
       throw new IllegalArgumentException(//
@@ -146,12 +145,12 @@ public class JSSPInstance {
               "' not found."); //$NON-NLS-1$
     }
 
-    // store instance data
+// store instance data
     this.n = njobs;
     this.m = nmachines;
     this.jobs = data;
     this.id = instance;
   }
-  // start relevant
+// start relevant
 }
 // end relevant
