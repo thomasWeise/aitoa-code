@@ -1,3 +1,4 @@
+// start relevant
 package aitoa.examples.jssp;
 
 import aitoa.structure.IObjectiveFunction;
@@ -9,11 +10,13 @@ import aitoa.structure.IObjectiveFunction;
 public final class JSSPMakespanObjectiveFunction
     implements IObjectiveFunction<JSSPCandidateSolution> {
 
+// end relevant
   /** create */
   public JSSPMakespanObjectiveFunction() {
     super();
   }
 
+// start relevant
   /**
    * Compute the makespan of a Gantt chart
    *
@@ -36,3 +39,4 @@ public final class JSSPMakespanObjectiveFunction
   }
 
 }
+// end relevant
