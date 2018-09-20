@@ -6,6 +6,7 @@ package aitoa.structure;
  * @param <Y>
  *          the solution space data structure
  */
+@FunctionalInterface
 public interface IObjectiveFunction<Y> {
 
   /**
