@@ -59,8 +59,8 @@ public class JSSPInstance {
 // load the complete orlib.txt file until we find the target
 // instance this is inefficient, but well
     try (
-        final InputStream is = JSSPInstance.class
-            .getResourceAsStream(//
+        final InputStream is =
+            JSSPInstance.class.getResourceAsStream(//
                 (instance.equalsIgnoreCase("demo") ? //$NON-NLS-1$
                     "demo.txt" : //$NON-NLS-1$
                     "orlib.txt")); //$NON-NLS-1$
@@ -113,8 +113,8 @@ public class JSSPInstance {
                       (dataIndex + 1));
             }
             for (int i = s.length; (--i) >= 0;) {
-              if ((data[dataIndex][i] = Integer
-                  .parseInt(s[i])) < 0) {
+              if ((data[dataIndex][i] =
+                  Integer.parseInt(s[i])) < 0) {
                 throw new IllegalArgumentException(
                     "Illegal machine index/machine time in job line "//$NON-NLS-1$
                         + (dataIndex + 1));

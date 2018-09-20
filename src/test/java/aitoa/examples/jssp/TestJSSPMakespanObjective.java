@@ -10,7 +10,8 @@ public class TestJSSPMakespanObjective {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void test_objective() {
-    final JSSPMakespanObjectiveFunction f = new JSSPMakespanObjectiveFunction();
+    final JSSPMakespanObjectiveFunction f =
+        new JSSPMakespanObjectiveFunction();
     JSSPCandidateSolution x;
 
     x = new JSSPCandidateSolution(0, 0);
