@@ -3,18 +3,18 @@ package aitoa.structure;
 /**
  * An interface for an objective function.
  *
- * @param <X>
+ * @param <Y>
  *          the solution space data structure
  */
-public interface IObjectiveFunction<X> {
+public interface IObjectiveFunction<Y> {
 
   /**
-   * Evaluate the candidate solution {@code x} and return the
+   * Evaluate the candidate solution {@code y} and return the
    * corresponding objective value.
    *
-   * @param x
+   * @param y
    *          the candidate solution
    * @return the objective value
    */
-  public abstract double evaluate(final X x);
+  public abstract double evaluate(final Y y);
 }
