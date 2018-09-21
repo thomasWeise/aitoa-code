@@ -26,4 +26,18 @@ public interface ISpace<Z> {
    *          overwritten with the contents of {@code from}.
    */
   public abstract void copy(final Z from, final Z to);
+
+  /**
+   * Print the data structure {@code z} to the
+   * {@link java.lang.Appendable} {@code out}.
+   *
+   * @param z
+   *          the data structure
+   * @param out
+   *          the output destination
+   * @throws RuntimeException
+   *           if I/O fails, wrapping the
+   *           {@link java.io.IOException}
+   */
+  public abstract void print(final Z z, final Appendable out);
 }

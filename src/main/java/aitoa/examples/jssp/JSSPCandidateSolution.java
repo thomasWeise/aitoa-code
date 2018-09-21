@@ -1,7 +1,7 @@
 // start relevant
 package aitoa.examples.jssp;
 
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A candidate solution for the JSSP is a complete Gantt diagram
@@ -33,63 +33,14 @@ public final class JSSPCandidateSolution {
   }
 
   /**
-   * Print a solution as raw data for a Gantt chart. The
-   * generated code will create a R code for invoking the plotteR
-   * package for drawing a Gantt chart.
+   * create a candidate solution initialized from an array
    *
-   * @param dest
-   *          the destination
+   * @param _schedule
+   *          the array
    */
-  public void printGanttData(final Appendable dest) {
-    try {
-      dest.append("if(!(require(\"plotteR\"))){");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("if(!(require(\"devtools\"))){");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("install.packages(\"devtools\");");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("library(\"devtools\");");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("};");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append(
-          "devtools::install_github(\"thomasWeise/plotteR\");");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("library(\"plotteR\");");//$NON-NLS-1$
-      dest.append('\n');
-      dest.append("};");//$NON-NLS-1$
-      dest.append('\n');
-
-      dest.append("plot.gantt(list("); //$NON-NLS-1$
-      dest.append('\n');
-
-      char next1 = ' ';
-      for (final int[] sched : this.schedule) {
-        dest.append(next1);
-        next1 = ',';
-        dest.append("list(");//$NON-NLS-1$
-        char next2 = ' ';
-        for (int i = 0; i < sched.length;) {
-          dest.append(next2);
-          next2 = ',';
-          dest.append("list(job=");//$NON-NLS-1$
-          dest.append(Integer.toString(sched[i++]));
-          dest.append("L,start=");//$NON-NLS-1$
-          dest.append(Integer.toString(sched[i++]));
-          dest.append("L,end=");//$NON-NLS-1$
-          dest.append(Integer.toString(sched[i++]));
-          dest.append("L)");//$NON-NLS-1$
-          dest.append('\n');
-        }
-
-        dest.append(')');
-        dest.append('\n');
-      }
-
-      dest.append("), prefix.job=\"\");"); //$NON-NLS-1$
-    } catch (final IOException ioe) {
-      throw new IllegalStateException(ioe);
-    }
+  public JSSPCandidateSolution(final int[][] _schedule) {
+    super();
+    this.schedule = Objects.requireNonNull(_schedule);
   }
 
 // start relevant

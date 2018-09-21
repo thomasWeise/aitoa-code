@@ -16,6 +16,11 @@ public class JSSPRepresentationMappingExample {
       new JSSPRepresentationMapping(
           JSSPRepresentationMappingExample.INSTANCE);
 
+  /** create the solution space */
+  public static final JSSPSolutionSpace SOLUTION_SPACE =
+      new JSSPSolutionSpace(
+          JSSPRepresentationMappingExample.INSTANCE);
+
   /** the resulting solution */
   public static final JSSPCandidateSolution SOLUTION;
 
@@ -39,8 +44,8 @@ public class JSSPRepresentationMappingExample {
    *          ignore
    */
   public static final void main(final String[] args) {
-    JSSPRepresentationMappingExample.SOLUTION
-        .printGanttData(System.out);
+    JSSPRepresentationMappingExample.SOLUTION_SPACE.print(
+        JSSPRepresentationMappingExample.SOLUTION, System.out);
     System.out.println();
     System.out.print("# makespan: "); //$NON-NLS-1$
     System.out.println(

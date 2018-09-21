@@ -37,6 +37,7 @@ public final class JSSPRepresentationMapping implements
     this.m_temp = ThreadLocal.withInitial(
         () -> new __TemporaryVariables(instance.m, instance.n));
   }
+
 // start relevant
   /**
    * Map a point {@code x} from the search space to a candidate
@@ -49,7 +50,9 @@ public final class JSSPRepresentationMapping implements
    */
   @Override
   public void map(final int[] x, final JSSPCandidateSolution y) {
-// setup of temporary variables to all 0 omitted for brevity
+// setup of temporary variables machineState and machineTime with
+// length m and of jobState and jobTime with lengh n to all 0
+// [not printed for brevity]
 // end relevant
     final __TemporaryVariables temp = this.m_temp.get();
     final int[] machineState = temp.m_machineState;
@@ -64,7 +67,7 @@ public final class JSSPRepresentationMapping implements
 // iterate over the jobs in the solution
     for (final int nextJob : x) {
 // get the definition of the steps that we need to take for
-// nextJob
+// nextJob from the instance data stored in this.m_jobs
       final int[] jobSteps = this.m_jobs[nextJob];
 // jobState tells us the index in this list for the next step to
 // do, but since the list contains machine/time pairs, we
@@ -75,7 +78,7 @@ public final class JSSPRepresentationMapping implements
       final int machine = jobSteps[jobStep]; // get machine
 
 // start time is maximum of the next time when the machine
-// becomes idle and the time we have already spent on the job 
+// becomes idle and the time we have already spent on the job
       final int start =
           Math.max(machineTime[machine], jobTime[nextJob]);
 // the end time is simply the start time plus the time the job
