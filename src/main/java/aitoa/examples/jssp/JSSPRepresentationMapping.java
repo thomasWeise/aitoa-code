@@ -12,11 +12,15 @@ import aitoa.structure.IRepresentationMapping;
 public final class JSSPRepresentationMapping implements
     IRepresentationMapping<int[], JSSPCandidateSolution> {
 // end relevant
-  /**
-   * a thread local with temporary variables: allow the use of
-   * the objective function in multiple threads
-   */
-  private final ThreadLocal<__TemporaryVariables> m_temp;
+
+  /** the current time at a given machine */
+  final int[] m_machineTime;
+  /** the current step index at a given machine */
+  final int[] m_machineState;
+  /** the step index of the current job */
+  final int[] m_jobState;
+  /** the time of the current job */
+  final int[] m_jobTime;
 
   /**
    * the instance data: for each job, the sequence of machines
@@ -33,9 +37,10 @@ public final class JSSPRepresentationMapping implements
   public JSSPRepresentationMapping(final JSSPInstance instance) {
     super();
     this.m_jobs = instance.jobs;
-// thread-safe local variables (exact definition omitted in book)
-    this.m_temp = ThreadLocal.withInitial(
-        () -> new __TemporaryVariables(instance.m, instance.n));
+    this.m_jobState = new int[instance.n];
+    this.m_jobTime = new int[instance.n];
+    this.m_machineTime = new int[instance.m];
+    this.m_machineState = new int[instance.m];
   }
 
 // start relevant
@@ -50,15 +55,13 @@ public final class JSSPRepresentationMapping implements
    */
   @Override
   public void map(final int[] x, final JSSPCandidateSolution y) {
-// setup of temporary variables machineState and machineTime with
-// length m and of jobState and jobTime with lengh n to all 0
-// [not printed for brevity]
+// create variables machineState, machineTime of length m and
+// jobState, jobTime of length n, filled with 0 [omitted brevity]
 // end relevant
-    final __TemporaryVariables temp = this.m_temp.get();
-    final int[] machineState = temp.m_machineState;
-    final int[] machineTime = temp.m_machineTime;
-    final int[] jobState = temp.m_jobState;
-    final int[] jobTime = temp.m_jobTime;
+    final int[] machineState = this.m_machineState;
+    final int[] machineTime = this.m_machineTime;
+    final int[] jobState = this.m_jobState;
+    final int[] jobTime = this.m_jobTime;
     Arrays.fill(machineState, 0);
     Arrays.fill(jobState, 0);
     Arrays.fill(machineTime, 0);
@@ -95,37 +98,5 @@ public final class JSSPRepresentationMapping implements
       schedule[machineState[machine]++] = end;
     }
   }
-// end relevant
-
-  /** an internal class for temporary variables */
-  private static final class __TemporaryVariables {
-    /**
-     * the current time at a given machine
-     */
-    final int[] m_machineTime;
-    /** the current step index at a given machine */
-    final int[] m_machineState;
-    /** the step index of the current job */
-    final int[] m_jobState;
-    /** the time of the current job */
-    final int[] m_jobTime;
-
-    /**
-     * create an instance of the temporary variables
-     *
-     * @param m
-     *          the number of machines
-     * @param n
-     *          the number of jobs
-     */
-    __TemporaryVariables(final int m, final int n) {
-      super();
-      this.m_jobState = new int[n];
-      this.m_jobTime = new int[n];
-      this.m_machineTime = new int[m];
-      this.m_machineState = new int[m];
-    }
-  }
-// start relevant
 }
 // end relevant
