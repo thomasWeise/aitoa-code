@@ -1,6 +1,8 @@
 package aitoa.examples.jssp;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 import aitoa.structure.ISpace;
 
@@ -11,10 +13,8 @@ import aitoa.structure.ISpace;
 public final class JSSPSolutionSpace
     implements ISpace<JSSPCandidateSolution> {
 
-  /** the number of machines */
-  private final int m_m;
-  /** the number of jobs */
-  private final int m_n;
+  /** the problem instance */
+  private final JSSPInstance m_inst;
 
   /**
    * create
@@ -24,8 +24,7 @@ public final class JSSPSolutionSpace
    */
   public JSSPSolutionSpace(final JSSPInstance inst) {
     super();
-    this.m_m = inst.m;
-    this.m_n = inst.n;
+    this.m_inst = Objects.requireNonNull(inst);
   }
 
   /**
@@ -35,16 +34,18 @@ public final class JSSPSolutionSpace
    */
   @Override
   public final JSSPCandidateSolution create() {
-    return new JSSPCandidateSolution(this.m_m, this.m_n);
+    return new JSSPCandidateSolution(this.m_inst.m,
+        this.m_inst.n);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void copy(final JSSPCandidateSolution from,
       final JSSPCandidateSolution to) {
-    for (int i = this.m_m; (--i) >= 0;) {
-      System.arraycopy(from.schedule[i], 0, to.schedule[i], 0,
-          this.m_n);
+    final int n = this.m_inst.n;
+    int i = 0;
+    for (final int[] s : from.schedule) {
+      System.arraycopy(s, 0, to.schedule[i++], 0, n);
     }
   }
 
@@ -157,5 +158,93 @@ public final class JSSPSolutionSpace
       out.append('}');
     }
     out.append("})");//$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void check(final JSSPCandidateSolution z) {
+    if (z.schedule.length != this.m_inst.m) {
+      throw new IllegalArgumentException(//
+          "Schedule for " + //$NON-NLS-1$
+              z.schedule.length + //
+              " machines, but there are " + //$NON-NLS-1$
+              this.m_inst.m);
+    }
+
+    final int goalLen = this.m_inst.n * 3;
+    final int[] jobs = new int[this.m_inst.n];
+    final boolean[] jobsOnMachine = new boolean[this.m_inst.n];
+    int machine = -1;
+
+    // check schedule
+    for (final int[] schedule : z.schedule) {
+      if (schedule.length != goalLen) {
+        throw new IllegalArgumentException(//
+            "Invalid array length " + //$NON-NLS-1$
+                schedule.length + //
+                ", should be " + //$NON-NLS-1$
+                goalLen);
+      }
+      ++machine;
+      Arrays.fill(jobsOnMachine, false);
+      int prevEnd = 0;
+      for (int i = 0; i < goalLen;) {
+        final int job = schedule[i++];
+        final int start = schedule[i++];
+        final int end = schedule[i++];
+
+        jobs[job]++;
+
+        if (start < prevEnd) {
+          throw new IllegalArgumentException(//
+              "Overlapping jobs, previous end is " + //$NON-NLS-1$
+                  prevEnd + //
+                  ", but current start is " + //$NON-NLS-1$
+                  start);
+        }
+        if (jobsOnMachine[job]) {
+          throw new IllegalArgumentException(//
+              "jobs " + //$NON-NLS-1$
+                  job + //
+                  " occurs twice on machine " + //$NON-NLS-1$
+                  machine);
+        }
+        jobsOnMachine[job] = true;
+
+        final int[] sel = this.m_inst.jobs[job];
+        checker: {
+          for (int v = 0; v < sel.length; v += 2) {
+            if (sel[v] == machine) {
+              if ((end - start) != sel[++v]) {
+                throw new IllegalArgumentException(//
+                    "wrong duration of " + //$NON-NLS-1$
+                        job + //
+                        " on machine " + //$NON-NLS-1$
+                        machine + " should be " + //$NON-NLS-1$
+                        sel[v] + " but is " + //$NON-NLS-1$
+                        (end - start));
+              }
+              break checker;
+            }
+          }
+          throw new IllegalArgumentException(//
+              "job " + //$NON-NLS-1$
+                  job + //
+                  " cannot be on machine " + //$NON-NLS-1$
+                  machine);
+        }
+        prevEnd = end;
+      }
+    }
+
+// check if each job occured m times
+    for (final int i : jobs) {
+      if (i != this.m_inst.m) {
+        throw new IllegalArgumentException(//
+            "Some jobs do not occur " + //$NON-NLS-1$
+                this.m_inst.m + //
+                " times."); //$NON-NLS-1$
+      }
+    }
   }
 }

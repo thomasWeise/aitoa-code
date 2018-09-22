@@ -40,4 +40,20 @@ public interface ISpace<Z> {
    *           {@link java.io.IOException}
    */
   public abstract void print(final Z z, final Appendable out);
+
+  /**
+   * Check whether an element {@code z} is valid, throw an
+   * exception if not. Normally, this method throws an
+   * {@link java.lang.IllegalArgumentException} if {@code z} is
+   * invalid. However, it may throw all sorts of exceptions, say
+   * a {@link java.lang.NullPointerException} or a
+   * {@link java.lang.ArrayIndexOutOfBoundsException} in special
+   * cases of invalidity.
+   *
+   * @param z
+   *          the element
+   * @throws IllegalArgumentException
+   *           if {@code z} is invalid
+   */
+  public abstract void check(final Z z);
 }

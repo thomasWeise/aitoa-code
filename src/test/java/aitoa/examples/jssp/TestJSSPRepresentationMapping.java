@@ -36,5 +36,11 @@ public class TestJSSPRepresentationMapping {
         90, 130, 0, 130, 170 }, solution.schedule[3]);
     Assert.assertArrayEquals(new int[] { 3, 0, 50, 2, 60, 72, 1,
         110, 140, 0, 170, 180 }, solution.schedule[4]);
+
+    JSSPRepresentationMappingExample.SOLUTION_SPACE
+        .check(JSSPRepresentationMappingExample.SOLUTION);
+    new JSSPSearchSpace(
+        JSSPRepresentationMappingExample.INSTANCE)
+            .check(JSSPRepresentationMappingExample.POINT);
   }
 }
