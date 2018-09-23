@@ -1,4 +1,6 @@
+// start relevant
 package aitoa.structure;
+// end relevant
 
 import java.io.Closeable;
 import java.nio.file.Path;
@@ -19,6 +21,7 @@ import java.util.Objects;
  * @param <Y>
  *          the solution space
  */
+// start relevant
 public interface IBlackBoxProblem<X, Y> extends
     IObjectiveFunction<X>, ITerminationCriterion, Closeable {
 
@@ -103,6 +106,7 @@ public interface IBlackBoxProblem<X, Y> extends
   @Override
   public abstract void close();
 
+// end relevant
   /**
    * Create a black box problem
    *
@@ -176,4 +180,45 @@ public interface IBlackBoxProblem<X, Y> extends
         mapping, f, maxFEs, maxTime, goalF, logFile,
         expectedLogLength);
   }
+
+  /**
+   * Create a black box problem where search and solution space
+   * are the same.
+   *
+   * @param searchAndSolutionSpace
+   *          the search- and solution space
+   * @param f
+   *          the objective function
+   * @param maxFEs
+   *          the maximum permitted FEs, use
+   *          {@link Long#MAX_VALUE} for unlimited
+   * @param maxTime
+   *          the maximum permitted runtime in milliseconds, use
+   *          {@link Long#MAX_VALUE} for unlimited
+   * @param goalF
+   *          the goal objective value: the run will be
+   *          terminated when we reach a better or equally good
+   *          solution
+   * @param logFile
+   *          the log file. after the black box problem is
+   *          "closed", log information will be written to the
+   *          file. until then, it is kept in memory
+   * @param expectedLogLength
+   *          the expected maximum number of points to enter the
+   *          log, set to {@code 0} if unknown
+   * @return the black-box problem
+   * @param <XX>
+   *          the search and solution space
+   */
+  public static <XX> IBlackBoxProblem<XX, XX> create(
+      final ISpace<XX> searchAndSolutionSpace,
+      final IObjectiveFunction<XX> f, final long maxFEs,
+      final long maxTime, final double goalF, final Path logFile,
+      final int expectedLogLength) {
+    return (IBlackBoxProblem.create(searchAndSolutionSpace,
+        searchAndSolutionSpace, null, f, maxFEs, maxTime, goalF,
+        logFile, expectedLogLength));
+  }
+// start relevant
 }
+// end relevant
