@@ -9,7 +9,7 @@ In this repository, we provide examples for the book "An Introduction to Optimiz
 ## License
 
 The copyright holder of this package is Prof. Dr. Thomas Weise (see Contact).
-The package is licensed under the  GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007.
+The package is licensed under the MIT License.
 
 ## Contact
 

@@ -20,3 +20,6 @@ env:
 cache:
   directories:
   - $HOME/.m2
+  
+# trigger the build of aitoa book after success
+after_success: sh trigger-travis.sh thomasWeise aitoa $TRAVIS_ACCESS_TOKEN
