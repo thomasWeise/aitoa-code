@@ -1,3 +1,4 @@
+// start relevant
 package aitoa.examples.jssp;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public final class JSSPSolutionSpace
     }
   }
 
+// end relevant
   /** {@inheritDoc} */
   @Override
   public final void print(final JSSPCandidateSolution z,
@@ -255,4 +257,7 @@ public final class JSSPSolutionSpace
         + this.instance.toString()) + ':')
         + this.getClass().getCanonicalName());
   }
+
+// start relevant
 }
+// end relevant

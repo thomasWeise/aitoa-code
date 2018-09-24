@@ -1,3 +1,4 @@
+// start relevant
 package aitoa.structure;
 
 /**
@@ -27,6 +28,7 @@ public interface ISpace<Z> {
    */
   public abstract void copy(final Z from, final Z to);
 
+// end relevant
   /**
    * Print the data structure {@code z} to the
    * {@link java.lang.Appendable} {@code out}.
@@ -56,4 +58,6 @@ public interface ISpace<Z> {
    *           if {@code z} is invalid
    */
   public abstract void check(final Z z);
+// start relevant
 }
+// end relevant

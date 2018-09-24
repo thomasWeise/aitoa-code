@@ -1,3 +1,4 @@
+// start relevant
 package aitoa.examples.jssp;
 
 import java.util.Arrays;
@@ -10,7 +11,6 @@ import aitoa.structure.ISpace;
  * of our JSSP
  */
 public final class JSSPSearchSpace implements ISpace<int[]> {
-
   /** the problem instance */
   public final JSSPInstance instance;
   /** the length */
@@ -44,6 +44,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
     System.arraycopy(from, 0, to, 0, this.m_length);
   }
 
+// end relevant
   /** {@inheritDoc} */
   @Override
   public final void print(final int[] z, final Appendable out) {
@@ -91,4 +92,6 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
         + this.instance.toString()) + ':'
         + this.getClass().getCanonicalName());
   }
+// start relevant
 }
+// end relevant
