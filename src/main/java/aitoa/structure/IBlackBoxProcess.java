@@ -3,8 +3,6 @@ package aitoa.structure;
 // end relevant
 
 import java.io.Closeable;
-import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -35,6 +33,47 @@ public interface IBlackBoxProcess<X, Y> extends
   public abstract Random getRandom();
 
   /**
+   * Get the search space
+   *
+   * @return the search space
+   */
+  public abstract ISpace<X> getSearchSpace();
+
+  /**
+   * Get the nullary search operator
+   *
+   * @return the nullary search operator
+   */
+  public abstract INullarySearchOperator<X>
+      getNullarySearchOperator();
+
+  /**
+   * Get the unary search operator
+   *
+   * @return the unary search operator
+   */
+  public abstract IUnarySearchOperator<X>
+      getUnarySearchOperator();
+
+  /**
+   * Get the binary search operator
+   *
+   * @return the binary search operator
+   */
+  public abstract IBinarySearchOperator<X>
+      getBinarySearchOperator();
+
+  // end relevant
+  /**
+   * Get the ternary search operator
+   *
+   * @return the ternary search operator
+   */
+  public abstract ITernarySearchOperator<X>
+      getTernarySearchOperator();
+
+  // start relevant
+  /**
    * Get the best objective value encountered so far
    *
    * @return the best objective value encountered so far, or
@@ -42,6 +81,16 @@ public interface IBlackBoxProcess<X, Y> extends
    *         {@link #evaluate(Object)} was not invoked yet
    */
   public abstract double getBestF();
+
+  /**
+   * Get the goal objective value,
+   * {@link Double#NEGATIVE_INFINITY} if no goal is specified
+   *
+   * @return the goal objective value,
+   *         {@link Double#NEGATIVE_INFINITY} if no goal is
+   *         specified
+   */
+  public abstract double getGoalF();
 
   /**
    * Get the best point in the search space encountered so far.
@@ -86,6 +135,15 @@ public interface IBlackBoxProcess<X, Y> extends
   public abstract long getLastImprovementFE();
 
   /**
+   * Get the maximum allowed FEs, {@link Long#MAX_VALUE} for
+   * unlimited
+   *
+   * @return the maximum allowed FEs, {@link Long#MAX_VALUE} for
+   *         unlimited
+   */
+  public abstract long getMaxFEs();
+
+  /**
    * Get the time in milliseconds that has elapsed since the
    * creation of this object.
    *
@@ -108,134 +166,20 @@ public interface IBlackBoxProcess<X, Y> extends
   public abstract long getLastImprovementTime();
 
   /**
+   * Get the maximum allowed runtime in milliseconds,
+   * {@link Long#MAX_VALUE} for unlimited
+   *
+   * @return the maximum allowed runtime in milliseconds,
+   *         {@link Long#MAX_VALUE} for unlimited
+   */
+  public abstract long getMaxTime();
+
+  /**
    * Free all resources allocated to this object. After a call to
    * this method, calls to all other methods of the object are no
    * longer allowed and have undefined behavior.
    */
   @Override
   public abstract void close();
-
-// end relevant
-  /**
-   * Create a black box problem
-   *
-   * @param searchSpace
-   *          the search space
-   * @param solutionSpace
-   *          the solution space: if and only if
-   *          {@code mapping==null}, the solution space must be
-   *          {@code null} or equal to {@code searchSpace}
-   * @param mapping
-   *          the representation mapping, or {@code null} if the
-   *          search and solution space are the same
-   * @param f
-   *          the objective function
-   * @param maxFEs
-   *          the maximum permitted FEs, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param maxTime
-   *          the maximum permitted runtime in milliseconds, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param goalF
-   *          the goal objective value: the run will be
-   *          terminated when we reach a better or equally good
-   *          solution
-   * @param randSeed
-   *          the seed for the random number generator
-   * @param logFile
-   *          the log file. after the black box problem is
-   *          "closed", log information will be written to the
-   *          file. until then, it is kept in memory
-   * @param expectedLogLength
-   *          the expected maximum number of points to enter the
-   *          log, set to {@code 0} if unknown
-   * @return the black-box problem
-   * @param <XX>
-   *          the search space
-   * @param <YY>
-   *          the solution space
-   */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static <XX, YY> IBlackBoxProcess<XX, YY> create(
-      final ISpace<XX> searchSpace,
-      final ISpace<YY> solutionSpace,
-      final IRepresentationMapping<XX, YY> mapping,
-      final IObjectiveFunction<YY> f, final long maxFEs,
-      final long maxTime, final double goalF,
-      final long randSeed, final Path logFile,
-      final int expectedLogLength) {
-
-    if (mapping == null) {
-      if (Objects.equals(searchSpace, solutionSpace)
-          || (solutionSpace == null)) {
-        if (logFile == null) {
-          // no logging and search and solution space are the
-          // same
-          return new _BlackBoxProcess1NoLog(searchSpace, f,
-              maxFEs, maxTime, goalF, randSeed);
-        }
-        // logging and search and solution space are the same
-        return new _BlackBoxProcess1Log(searchSpace, f, maxFEs,
-            maxTime, goalF, randSeed, logFile,
-            expectedLogLength);
-      }
-      throw new IllegalArgumentException(
-          "If no representation mapping is provided for different spaces!"); //$NON-NLS-1$
-    }
-
-    if (logFile == null) {
-      // no logging and search and solution space are different
-      return new _BlackBoxProcess2NoLog(searchSpace,
-          solutionSpace, mapping, f, maxFEs, maxTime, goalF,
-          randSeed);
-    }
-    // logging and search and solution space are different
-    return new _BlackBoxProcess2Log(searchSpace, solutionSpace,
-        mapping, f, maxFEs, maxTime, goalF, randSeed, logFile,
-        expectedLogLength);
-  }
-
-  /**
-   * Create a black box problem where search and solution space
-   * are the same.
-   *
-   * @param searchAndSolutionSpace
-   *          the search- and solution space
-   * @param f
-   *          the objective function
-   * @param maxFEs
-   *          the maximum permitted FEs, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param maxTime
-   *          the maximum permitted runtime in milliseconds, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param goalF
-   *          the goal objective value: the run will be
-   *          terminated when we reach a better or equally good
-   *          solution
-   * @param randSeed
-   *          the seed for the random number generator
-   * @param logFile
-   *          the log file. after the black box problem is
-   *          "closed", log information will be written to the
-   *          file. until then, it is kept in memory
-   * @param expectedLogLength
-   *          the expected maximum number of points to enter the
-   *          log, set to {@code 0} if unknown
-   * @return the black-box problem
-   * @param <XX>
-   *          the search and solution space
-   */
-  public static <XX> IBlackBoxProcess<XX, XX> create(
-      final ISpace<XX> searchAndSolutionSpace,
-      final IObjectiveFunction<XX> f, final long maxFEs,
-      final long maxTime, final double goalF,
-      final long randSeed, final Path logFile,
-      final int expectedLogLength) {
-    return (IBlackBoxProcess.create(searchAndSolutionSpace,
-        searchAndSolutionSpace, null, f, maxFEs, maxTime, goalF,
-        randSeed, logFile, expectedLogLength));
-  }
-// start relevant
 }
 // end relevant

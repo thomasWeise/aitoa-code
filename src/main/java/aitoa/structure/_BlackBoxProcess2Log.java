@@ -2,8 +2,6 @@ package aitoa.structure;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * the black-box problem class for black box problems where the
@@ -16,8 +14,11 @@ import java.nio.file.Path;
  *          the solution space
  */
 final class _BlackBoxProcess2Log<X, Y>
-    extends _BlackBoxProcess2<X, Y> {
-
+    extends _BlackBoxProcessBase<X, Y> {
+  /** the current candidate solution */
+  final Y m_current;
+  /** the best-so-far candidate solution */
+  final Y m_bestY;
   /** the log file */
   private final BufferedWriter m_logWriter;
   /** the log */
@@ -26,63 +27,23 @@ final class _BlackBoxProcess2Log<X, Y>
   private int m_logSize;
 
   /**
-   * Instantiate the black box problem
+   * Instantiate the black box problem of the black box problem
    *
-   * @param searchSpace
-   *          the search space
-   * @param solutionSpace
-   *          the solution space
-   * @param mapping
-   *          the representation mapping
-   * @param f
-   *          the objective function
-   * @param maxFEs
-   *          the maximum permitted FEs, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param maxTime
-   *          the maximum permitted runtime in milliseconds, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param goalF
-   *          the goal objective value
-   * @param randSeed
-   *          the random generator's random seed
-   * @param logFile
-   *          the log file
-   * @param expectedLogLength
-   *          the expected maximum number of points to enter the
-   *          log
+   * @param builder
+   *          the builder to copy the data from
    */
-  _BlackBoxProcess2Log(final ISpace<X> searchSpace,
-      final ISpace<Y> solutionSpace,
-      final IRepresentationMapping<X, Y> mapping,
-      final IObjectiveFunction<Y> f, final long maxFEs,
-      final long maxTime, final double goalF,
-      final long randSeed, final Path logFile,
-      final int expectedLogLength) {
-    super(searchSpace, solutionSpace, mapping, f, maxFEs,
-        maxTime, goalF, randSeed);
+  _BlackBoxProcess2Log(
+      final BlackBoxProcessBuilder<X, Y> builder) {
+    super(builder);
+    this.m_bestY = this.m_solutionSpace.create();
+    this.m_current = this.m_solutionSpace.create();
 
-    // create log writer now, to a) spot potential errors and b)
-    // make sure the file exists, so other threads may skip over
-    // the problem
-    try {
-      this.m_logWriter = Files.newBufferedWriter(logFile);
-      _BlackBoxProcess1._beginLog(searchSpace, solutionSpace,
-          mapping, f, maxFEs, maxTime, goalF, randSeed,
-          this.m_logWriter);
-      this.m_logWriter.flush();
-    } catch (final IOException ioe) {
-      throw new IllegalArgumentException(
-          "File '" //$NON-NLS-1$
-              + logFile + "' cannot be created.", //$NON-NLS-1$
-          ioe);
-    }
-
-    this.m_log = _BlackBoxProcess1._createLog(expectedLogLength);
+    this.m_logWriter = builder._createLogWriter();
+    this.m_log = builder._createLog();
 
     // enqueue into terminator thread if needed only after
     // initialization is complete
-    if (maxTime < Long.MAX_VALUE) {
+    if (this.m_maxTime < Long.MAX_VALUE) {
       _TerminationThread._enqueue(this);
     }
   }
@@ -95,25 +56,18 @@ final class _BlackBoxProcess2Log<X, Y>
 
     // write the log information and then close log
     try (final BufferedWriter out = this.m_logWriter) {
-      _BlackBoxProcess1._writeLog(this.m_log, this.m_logSize,
+      _BlackBoxProcessBase._writeLog(this.m_log, this.m_logSize,
           this.m_startTime, out);
       this.m_log = null;
-
-      out.newLine();
-      out.write("# BEST_X"); //$NON-NLS-1$
-      out.newLine();
-      this.m_searchSpace.print(this.m_bestX, out);
-      out.newLine();
-      out.write("# END_BEST_X"); //$NON-NLS-1$
-      out.newLine();
-
-      out.newLine();
-      out.write("# BEST_Y"); //$NON-NLS-1$
-      out.newLine();
-      this.m_solutionSpace.print(this.m_bestY, out);
-      out.newLine();
-      out.write("# END_BEST_Y"); //$NON-NLS-1$
-      out.newLine();
+      out.write('\n');
+      this._printInfos(out);
+      if (this.m_consumedFEs > 0L) {
+        out.write("\n# BEST_X\n"); //$NON-NLS-1$
+        this.m_searchSpace.print(this.m_bestX, out);
+        out.write("\n# END_BEST_X\n# BEST_Y\n"); //$NON-NLS-1$
+        this.m_solutionSpace.print(this.m_bestY, out);
+        out.write("\n# END_BEST_Y"); //$NON-NLS-1$
+      }
     } catch (final IOException ioe) {
       throw new RuntimeException(//
           "Error when writing log.", //$NON-NLS-1$
@@ -157,7 +111,7 @@ final class _BlackBoxProcess2Log<X, Y>
       final int size = this.m_logSize;
       final int newSize = Math.addExact(size, 3);
       if (size > this.m_log.length) { // grow log
-        this.m_log = _BlackBoxProcess1._growLog(this.m_log);
+        this.m_log = _BlackBoxProcessBase._growLog(this.m_log);
       }
       // store log point
       this.m_log[size] = Double.doubleToLongBits(result);
@@ -172,5 +126,16 @@ final class _BlackBoxProcess2Log<X, Y>
     }
     // return result
     return result;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void getBestY(final Y dest) {
+    if (this.m_consumedFEs > 0L) {
+      this.m_solutionSpace.copy(this.m_bestY, dest);
+    } else {
+      throw new IllegalStateException(//
+          "No FE consumed yet."); //$NON-NLS-1$
+    }
   }
 }

@@ -11,41 +11,26 @@ package aitoa.structure;
  *          the solution space
  */
 final class _BlackBoxProcess2NoLog<X, Y>
-    extends _BlackBoxProcess2<X, Y> {
+    extends _BlackBoxProcessBase<X, Y> {
+  /** the current candidate solution */
+  final Y m_current;
+  /** the best-so-far candidate solution */
+  final Y m_bestY;
 
   /**
-   * Instantiate the black box problem
+   * Instantiate the black box problem of the black box problem
    *
-   * @param searchSpace
-   *          the search space
-   * @param solutionSpace
-   *          the solution space
-   * @param mapping
-   *          the representation mapping
-   * @param f
-   *          the objective function
-   * @param maxFEs
-   *          the maximum permitted FEs, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param maxTime
-   *          the maximum permitted runtime in milliseconds, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param goalF
-   *          the goal objective value
-   * @param randSeed
-   *          the random generator's random seed
+   * @param builder
+   *          the builder to copy the data from
    */
-  _BlackBoxProcess2NoLog(final ISpace<X> searchSpace,
-      final ISpace<Y> solutionSpace,
-      final IRepresentationMapping<X, Y> mapping,
-      final IObjectiveFunction<Y> f, final long maxFEs,
-      final long maxTime, final double goalF,
-      final long randSeed) {
-    super(searchSpace, solutionSpace, mapping, f, maxFEs,
-        maxTime, goalF, randSeed);
+  _BlackBoxProcess2NoLog(
+      final BlackBoxProcessBuilder<X, Y> builder) {
+    super(builder);
+    this.m_bestY = this.m_solutionSpace.create();
+    this.m_current = this.m_solutionSpace.create();
     // enqueue into terminator thread if needed only after
     // initialization is complete
-    if (maxTime < Long.MAX_VALUE) {
+    if (this.m_maxTime < Long.MAX_VALUE) {
       _TerminationThread._enqueue(this);
     }
   }
@@ -95,5 +80,16 @@ final class _BlackBoxProcess2NoLog<X, Y>
     }
     // return result
     return result;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void getBestY(final Y dest) {
+    if (this.m_consumedFEs > 0L) {
+      this.m_solutionSpace.copy(this.m_bestY, dest);
+    } else {
+      throw new IllegalStateException(//
+          "No FE consumed yet."); //$NON-NLS-1$
+    }
   }
 }

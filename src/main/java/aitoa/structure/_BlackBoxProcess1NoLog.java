@@ -9,34 +9,20 @@ package aitoa.structure;
  *          the search and solution space
  */
 final class _BlackBoxProcess1NoLog<X>
-    extends _BlackBoxProcess1<X, X> {
+    extends _BlackBoxProcessBase<X, X> {
 
   /**
    * Instantiate the black box problem
    *
-   * @param searchSpace
-   *          the search space
-   * @param f
-   *          the objective function
-   * @param maxFEs
-   *          the maximum permitted FEs, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param maxTime
-   *          the maximum permitted runtime in milliseconds, use
-   *          {@link Long#MAX_VALUE} for unlimited
-   * @param goalF
-   *          the goal objective value
-   * @param randSeed
-   *          the random generator's random seed
+   * @param builder
+   *          the builder to copy the data from
    */
-  _BlackBoxProcess1NoLog(final ISpace<X> searchSpace,
-      final IObjectiveFunction<X> f, final long maxFEs,
-      final long maxTime, final double goalF,
-      final long randSeed) {
-    super(searchSpace, f, maxFEs, maxTime, goalF, randSeed);
+  _BlackBoxProcess1NoLog(
+      final BlackBoxProcessBuilder<X, X> builder) {
+    super(builder);
     // enqueue into terminator thread if needed only after
     // initialization is complete
-    if (maxTime < Long.MAX_VALUE) {
+    if (this.m_maxTime < Long.MAX_VALUE) {
       _TerminationThread._enqueue(this);
     }
   }
@@ -84,5 +70,16 @@ final class _BlackBoxProcess1NoLog<X>
     }
     // return result
     return result;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void getBestY(final X dest) {
+    if (this.m_consumedFEs > 0L) {
+      this.m_searchSpace.copy(this.m_bestX, dest);
+    } else {
+      throw new IllegalStateException(//
+          "No FE consumed yet."); //$NON-NLS-1$
+    }
   }
 }
