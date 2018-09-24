@@ -151,6 +151,15 @@ public class JSSPInstance {
     this.jobs = data;
     this.id = instance;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return (((((("jssp:" + this.id) + //$NON-NLS-1$
+        "(m=") + //$NON-NLS-1$
+        this.m) + ", n=") + //$NON-NLS-1$
+        this.n) + ')');
+  }
 // start relevant
 }
 // end relevant

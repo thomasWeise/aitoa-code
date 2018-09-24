@@ -5,6 +5,7 @@ package aitoa.structure;
 import java.io.Closeable;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * A black-box single-objective optimization problem encapsulates
@@ -22,8 +23,16 @@ import java.util.Objects;
  *          the solution space
  */
 // start relevant
-public interface IBlackBoxProblem<X, Y> extends
+public interface IBlackBoxProcess<X, Y> extends
     IObjectiveFunction<X>, ITerminationCriterion, Closeable {
+
+  /**
+   * Get the random number generator to be used by this process.
+   *
+   * @return the random number generator to be used by this
+   *         process
+   */
+  public abstract Random getRandom();
 
   /**
    * Get the best objective value encountered so far
@@ -131,6 +140,8 @@ public interface IBlackBoxProblem<X, Y> extends
    *          the goal objective value: the run will be
    *          terminated when we reach a better or equally good
    *          solution
+   * @param randSeed
+   *          the seed for the random number generator
    * @param logFile
    *          the log file. after the black box problem is
    *          "closed", log information will be written to the
@@ -145,12 +156,13 @@ public interface IBlackBoxProblem<X, Y> extends
    *          the solution space
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static <XX, YY> IBlackBoxProblem<XX, YY> create(
+  public static <XX, YY> IBlackBoxProcess<XX, YY> create(
       final ISpace<XX> searchSpace,
       final ISpace<YY> solutionSpace,
       final IRepresentationMapping<XX, YY> mapping,
       final IObjectiveFunction<YY> f, final long maxFEs,
-      final long maxTime, final double goalF, final Path logFile,
+      final long maxTime, final double goalF,
+      final long randSeed, final Path logFile,
       final int expectedLogLength) {
 
     if (mapping == null) {
@@ -159,12 +171,13 @@ public interface IBlackBoxProblem<X, Y> extends
         if (logFile == null) {
           // no logging and search and solution space are the
           // same
-          return new _BlackBoxProblem1NoLog(searchSpace, f,
-              maxFEs, maxTime, goalF);
+          return new _BlackBoxProcess1NoLog(searchSpace, f,
+              maxFEs, maxTime, goalF, randSeed);
         }
         // logging and search and solution space are the same
-        return new _BlackBoxProblem1Log(searchSpace, f, maxFEs,
-            maxTime, goalF, logFile, expectedLogLength);
+        return new _BlackBoxProcess1Log(searchSpace, f, maxFEs,
+            maxTime, goalF, randSeed, logFile,
+            expectedLogLength);
       }
       throw new IllegalArgumentException(
           "If no representation mapping is provided for different spaces!"); //$NON-NLS-1$
@@ -172,12 +185,13 @@ public interface IBlackBoxProblem<X, Y> extends
 
     if (logFile == null) {
       // no logging and search and solution space are different
-      return new _BlackBoxProblem2NoLog(searchSpace,
-          solutionSpace, mapping, f, maxFEs, maxTime, goalF);
+      return new _BlackBoxProcess2NoLog(searchSpace,
+          solutionSpace, mapping, f, maxFEs, maxTime, goalF,
+          randSeed);
     }
     // logging and search and solution space are different
-    return new _BlackBoxProblem2Log(searchSpace, solutionSpace,
-        mapping, f, maxFEs, maxTime, goalF, logFile,
+    return new _BlackBoxProcess2Log(searchSpace, solutionSpace,
+        mapping, f, maxFEs, maxTime, goalF, randSeed, logFile,
         expectedLogLength);
   }
 
@@ -199,6 +213,8 @@ public interface IBlackBoxProblem<X, Y> extends
    *          the goal objective value: the run will be
    *          terminated when we reach a better or equally good
    *          solution
+   * @param randSeed
+   *          the seed for the random number generator
    * @param logFile
    *          the log file. after the black box problem is
    *          "closed", log information will be written to the
@@ -210,14 +226,15 @@ public interface IBlackBoxProblem<X, Y> extends
    * @param <XX>
    *          the search and solution space
    */
-  public static <XX> IBlackBoxProblem<XX, XX> create(
+  public static <XX> IBlackBoxProcess<XX, XX> create(
       final ISpace<XX> searchAndSolutionSpace,
       final IObjectiveFunction<XX> f, final long maxFEs,
-      final long maxTime, final double goalF, final Path logFile,
+      final long maxTime, final double goalF,
+      final long randSeed, final Path logFile,
       final int expectedLogLength) {
-    return (IBlackBoxProblem.create(searchAndSolutionSpace,
+    return (IBlackBoxProcess.create(searchAndSolutionSpace,
         searchAndSolutionSpace, null, f, maxFEs, maxTime, goalF,
-        logFile, expectedLogLength));
+        randSeed, logFile, expectedLogLength));
   }
 // start relevant
 }

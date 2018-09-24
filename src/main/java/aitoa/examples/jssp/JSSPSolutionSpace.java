@@ -14,17 +14,17 @@ public final class JSSPSolutionSpace
     implements ISpace<JSSPCandidateSolution> {
 
   /** the problem instance */
-  private final JSSPInstance m_inst;
+  public final JSSPInstance instance;
 
   /**
    * create
    *
-   * @param inst
+   * @param _instance
    *          the problem instance
    */
-  public JSSPSolutionSpace(final JSSPInstance inst) {
+  public JSSPSolutionSpace(final JSSPInstance _instance) {
     super();
-    this.m_inst = Objects.requireNonNull(inst);
+    this.instance = Objects.requireNonNull(_instance);
   }
 
   /**
@@ -34,15 +34,15 @@ public final class JSSPSolutionSpace
    */
   @Override
   public final JSSPCandidateSolution create() {
-    return new JSSPCandidateSolution(this.m_inst.m,
-        this.m_inst.n);
+    return new JSSPCandidateSolution(this.instance.m,
+        this.instance.n);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void copy(final JSSPCandidateSolution from,
       final JSSPCandidateSolution to) {
-    final int n = this.m_inst.n;
+    final int n = this.instance.n;
     int i = 0;
     for (final int[] s : from.schedule) {
       System.arraycopy(s, 0, to.schedule[i++], 0, n);
@@ -163,17 +163,17 @@ public final class JSSPSolutionSpace
   /** {@inheritDoc} */
   @Override
   public final void check(final JSSPCandidateSolution z) {
-    if (z.schedule.length != this.m_inst.m) {
+    if (z.schedule.length != this.instance.m) {
       throw new IllegalArgumentException(//
           "Schedule for " + //$NON-NLS-1$
               z.schedule.length + //
               " machines, but there are " + //$NON-NLS-1$
-              this.m_inst.m);
+              this.instance.m);
     }
 
-    final int goalLen = this.m_inst.n * 3;
-    final int[] jobs = new int[this.m_inst.n];
-    final boolean[] jobsOnMachine = new boolean[this.m_inst.n];
+    final int goalLen = this.instance.n * 3;
+    final int[] jobs = new int[this.instance.n];
+    final boolean[] jobsOnMachine = new boolean[this.instance.n];
     int machine = -1;
 
     // check schedule
@@ -211,7 +211,7 @@ public final class JSSPSolutionSpace
         }
         jobsOnMachine[job] = true;
 
-        final int[] sel = this.m_inst.jobs[job];
+        final int[] sel = this.instance.jobs[job];
         checker: {
           for (int v = 0; v < sel.length; v += 2) {
             if (sel[v] == machine) {
@@ -239,12 +239,20 @@ public final class JSSPSolutionSpace
 
 // check if each job occured m times
     for (final int i : jobs) {
-      if (i != this.m_inst.m) {
+      if (i != this.instance.m) {
         throw new IllegalArgumentException(//
             "Some jobs do not occur " + //$NON-NLS-1$
-                this.m_inst.m + //
+                this.instance.m + //
                 " times."); //$NON-NLS-1$
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return ((("jssp:gantt:" //$NON-NLS-1$
+        + this.instance.toString()) + ':')
+        + this.getClass().getCanonicalName());
   }
 }

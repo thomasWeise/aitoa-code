@@ -11,8 +11,8 @@ import java.util.Objects;
  * @param <Y>
  *          the solution space
  */
-abstract class _BlackBoxProblem2<X, Y>
-    extends _BlackBoxProblem1<X, Y> {
+abstract class _BlackBoxProcess2<X, Y>
+    extends _BlackBoxProcess1<X, Y> {
   /** the solution space */
   final ISpace<Y> m_solutionSpace;
   /** the representation mapping */
@@ -41,13 +41,16 @@ abstract class _BlackBoxProblem2<X, Y>
    *          {@link Long#MAX_VALUE} for unlimited
    * @param goalF
    *          the goal objective value
+   * @param randSeed
+   *          the random generator's random seed
    */
-  _BlackBoxProblem2(final ISpace<X> searchSpace,
+  _BlackBoxProcess2(final ISpace<X> searchSpace,
       final ISpace<Y> solutionSpace,
       final IRepresentationMapping<X, Y> mapping,
       final IObjectiveFunction<Y> f, final long maxFEs,
-      final long maxTime, final double goalF) {
-    super(searchSpace, f, maxFEs, maxTime, goalF);
+      final long maxTime, final double goalF,
+      final long randSeed) {
+    super(searchSpace, f, maxFEs, maxTime, goalF, randSeed);
     this.m_solutionSpace = Objects.requireNonNull(solutionSpace);
     this.m_mapping = Objects.requireNonNull(mapping);
     this.m_bestY = this.m_solutionSpace.create();

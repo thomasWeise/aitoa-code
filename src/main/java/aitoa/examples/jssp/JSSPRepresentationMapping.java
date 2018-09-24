@@ -43,6 +43,13 @@ public final class JSSPRepresentationMapping implements
     this.m_machineState = new int[instance.m];
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return ("jssp:int[]-to-Gantt:" + //$NON-NLS-1$
+        this.getClass().getCanonicalName());
+  }
+
 // start relevant
   /**
    * Map a point {@code x} from the search space to a candidate

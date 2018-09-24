@@ -8,8 +8,8 @@ package aitoa.structure;
  * @param <X>
  *          the search and solution space
  */
-final class _BlackBoxProblem1NoLog<X>
-    extends _BlackBoxProblem1<X, X> {
+final class _BlackBoxProcess1NoLog<X>
+    extends _BlackBoxProcess1<X, X> {
 
   /**
    * Instantiate the black box problem
@@ -26,11 +26,14 @@ final class _BlackBoxProblem1NoLog<X>
    *          {@link Long#MAX_VALUE} for unlimited
    * @param goalF
    *          the goal objective value
+   * @param randSeed
+   *          the random generator's random seed
    */
-  _BlackBoxProblem1NoLog(final ISpace<X> searchSpace,
+  _BlackBoxProcess1NoLog(final ISpace<X> searchSpace,
       final IObjectiveFunction<X> f, final long maxFEs,
-      final long maxTime, final double goalF) {
-    super(searchSpace, f, maxFEs, maxTime, goalF);
+      final long maxTime, final double goalF,
+      final long randSeed) {
+    super(searchSpace, f, maxFEs, maxTime, goalF, randSeed);
     // enqueue into terminator thread if needed only after
     // initialization is complete
     if (maxTime < Long.MAX_VALUE) {

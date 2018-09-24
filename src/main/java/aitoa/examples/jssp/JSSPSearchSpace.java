@@ -1,6 +1,7 @@
 package aitoa.examples.jssp;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import aitoa.structure.ISpace;
 
@@ -10,24 +11,21 @@ import aitoa.structure.ISpace;
  */
 public final class JSSPSearchSpace implements ISpace<int[]> {
 
-  /** the number of machines */
-  private final int m_m;
-  /** the number of jobs */
-  private final int m_n;
+  /** the problem instance */
+  public final JSSPInstance instance;
   /** the length */
   private final int m_length;
 
   /**
    * create
    *
-   * @param inst
+   * @param _instance
    *          the problem instance
    */
-  public JSSPSearchSpace(final JSSPInstance inst) {
+  public JSSPSearchSpace(final JSSPInstance _instance) {
     super();
-    this.m_m = inst.m;
-    this.m_n = inst.n;
-    this.m_length = (this.m_m * this.m_n);
+    this.instance = Objects.requireNonNull(_instance);
+    this.m_length = (_instance.m * _instance.n);
   }
 
   /**
@@ -69,19 +67,28 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   /** {@inheritDoc} */
   @Override
   public final void check(final int[] z) {
-    final int[] times = new int[this.m_n];
+    final int[] times = new int[this.instance.n];
     for (final int i : z) {
       times[i]++;
     }
     for (final int i : times) {
-      if (i != this.m_m) {
+      if (i != this.instance.m) {
         throw new IllegalArgumentException(//
             "Some elements in " + //$NON-NLS-1$
                 Arrays.toString(z) + //
                 " do not occur " + //$NON-NLS-1$
-                this.m_m + //
+                this.instance.m + //
                 " times."); //$NON-NLS-1$
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return (("jssp:int[" + //$NON-NLS-1$
+        this.m_length + "]:" //$NON-NLS-1$
+        + this.instance.toString()) + ':'
+        + this.getClass().getCanonicalName());
   }
 }

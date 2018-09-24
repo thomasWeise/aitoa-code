@@ -13,9 +13,9 @@ package aitoa.structure;
  * Thus, instead, we have this thread which
  * {@link java.lang.Object#wait(long) sleeps} until the time
  * limit of an objective function is reached and then updates its
- * {@link _BlackBoxProblem1#shouldTerminate() termination
+ * {@link _BlackBoxProcess1#shouldTerminate() termination
  * criterion}. As one thread is shared for all instances of
- * {@link _BlackBoxProblem1}, this method is very
+ * {@link _BlackBoxProcess1}, this method is very
  * resource-friendly and saves runtime.
  * </p>
  * <p>
@@ -32,7 +32,7 @@ final class _TerminationThread extends Thread {
   private static final Object SYNC = new Object();
 
   /** the queue */
-  private static volatile _BlackBoxProblem1<?, ?> s_queue = null;
+  private static volatile _BlackBoxProcess1<?, ?> s_queue = null;
   /** the instance */
   private static volatile _TerminationThread s_instance = null;
 
@@ -48,9 +48,9 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static final void _enqueue(final _BlackBoxProblem1<?, ?> f) {
+  static final void _enqueue(final _BlackBoxProcess1<?, ?> f) {
     final long t;
-    _BlackBoxProblem1<?, ?> prev, next;
+    _BlackBoxProcess1<?, ?> prev, next;
 
     t = f.m_endTime; // throw NullPointerException if null
     if ((t >= Long.MAX_VALUE) || (t <= 0L)) {
@@ -104,8 +104,8 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static final void _dequeue(final _BlackBoxProblem1<?, ?> f) {
-    _BlackBoxProblem1<?, ?> cur, next;
+  static final void _dequeue(final _BlackBoxProcess1<?, ?> f) {
+    _BlackBoxProcess1<?, ?> cur, next;
 
     if (f == null) {
       throw new NullPointerException(//

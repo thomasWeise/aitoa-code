@@ -16,6 +16,13 @@ public final class JSSPMakespanObjectiveFunction
     super();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return ("jssp:makespan:" + //$NON-NLS-1$
+        this.getClass().getCanonicalName());
+  }
+
   // start relevant
   /**
    * Compute the makespan of a Gantt chart
