@@ -29,7 +29,7 @@ public final class BlackBoxProcessBuilder<X, Y>
   /** Create the base class of the black box problem */
   public BlackBoxProcessBuilder() {
     super();
-    this.m_randSeed = ThreadLocalRandom.current().nextLong();
+    this.setRandomRandSeed();
     this.m_expectedLogLength = 1024;
   }
 
@@ -111,6 +111,16 @@ public final class BlackBoxProcessBuilder<X, Y>
       setRandSeed(final long seed) {
     this.m_randSeed = seed;
     return this;
+  }
+
+  /**
+   * Set a randomly chosen random seed
+   *
+   * @return this
+   */
+  public final BlackBoxProcessBuilder<X, Y> setRandomRandSeed() {
+    return this.setRandSeed(//
+        ThreadLocalRandom.current().nextLong());
   }
 
   /**
