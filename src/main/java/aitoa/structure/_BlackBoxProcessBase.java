@@ -76,7 +76,7 @@ abstract class _BlackBoxProcessBase<X, Y>
     final boolean term = this.m_terminated;
     this.m_terminated = true;
     if (!term) {
-      if (this.m_endTime < Long.MAX_VALUE) {
+      if (this.m_maxTime < Long.MAX_VALUE) {
         _TerminationThread._dequeue(this);
       }
     }
