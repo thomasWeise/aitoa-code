@@ -1,6 +1,9 @@
 // start relevant
 package aitoa.examples.jssp;
 
+// end relevant
+import java.io.IOException;
+// start relevant
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -43,8 +46,8 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   public final void copy(final int[] from, final int[] to) {
     System.arraycopy(from, 0, to, 0, this.m_length);
   }
-
 // end relevant
+
   /** {@inheritDoc} */
   @Override
   public final void print(final int[] z, final Appendable out) {
@@ -58,7 +61,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
         out.append(Integer.toString(i));
       }
       out.append('}');
-    } catch (final Throwable error) {
+    } catch (final IOException error) {
       throw new RuntimeException(//
           "Error when writing int array.", //$NON-NLS-1$
           error);

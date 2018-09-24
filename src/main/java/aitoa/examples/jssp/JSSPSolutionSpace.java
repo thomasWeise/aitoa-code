@@ -1,7 +1,9 @@
 // start relevant
 package aitoa.examples.jssp;
 
+// end relevant
 import java.io.IOException;
+// start relevant
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -49,8 +51,8 @@ public final class JSSPSolutionSpace
       System.arraycopy(s, 0, to.schedule[i++], 0, n);
     }
   }
-
 // end relevant
+
   /** {@inheritDoc} */
   @Override
   public final void print(final JSSPCandidateSolution z,
