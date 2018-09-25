@@ -3,6 +3,8 @@ package aitoa.structure;
 import java.io.IOException;
 import java.util.Objects;
 
+import aitoa.utils.RandomUtils;
+
 /**
  * the base class for black box problems
  *
@@ -176,8 +178,8 @@ abstract class _BlackBoxProcessData<X, Y> {
     out.append(Long.toString(this.m_maxTime));
     out.append("\n# GOAL_F: ");//$NON-NLS-1$
     out.append(Double.toString(this.m_goalF));
-    out.append("\n# RANDOM_SEED: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_randSeed));
+    out.append("\n# RANDOM_SEED: 0x");//$NON-NLS-1$
+    out.append(RandomUtils.randSeedToString(this.m_randSeed));
     out.append(
         "\n# END_SETUP\n# BEGIN_SYSTEM\n# JAVA_VERSION: ");//$NON-NLS-1$
     out.append(System.getProperty("java.version"));//$NON-NLS-1$

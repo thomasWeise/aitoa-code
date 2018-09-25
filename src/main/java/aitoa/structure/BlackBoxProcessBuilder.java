@@ -232,7 +232,7 @@ public final class BlackBoxProcessBuilder<X, Y>
    * @return this
    */
   public final BlackBoxProcessBuilder<X, Y>
-      getMaxTime(final long max) {
+      setMaxTime(final long max) {
     this.m_maxTime = _BlackBoxProcessData._checkMaxTime(max);
     return this;
   }

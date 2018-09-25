@@ -45,7 +45,7 @@ public final class JSSPSolutionSpace
   @Override
   public final void copy(final JSSPCandidateSolution from,
       final JSSPCandidateSolution to) {
-    final int n = this.instance.n;
+    final int n = this.instance.n * 3;
     int i = 0;
     for (final int[] s : from.schedule) {
       System.arraycopy(s, 0, to.schedule[i++], 0, n);
