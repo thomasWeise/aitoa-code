@@ -153,7 +153,8 @@ abstract class _BlackBoxProcessBase<X, Y>
    * @return the new log array
    */
   static final long[] _growLog(final long[] log) {
-    return Arrays.copyOf(log, Math.multiplyExact(log.length, 2));
+    return Arrays.copyOf(log,
+        Math.addExact(log.length, log.length));
   }
 
   /**

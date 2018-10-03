@@ -57,7 +57,7 @@ public class JSSPExperiment {
         JSSPCandidateSolution> builder =
             new BlackBoxProcessBuilder<>();
 // set the maximum runtime
-    builder.setMaxTime(4 * 60 * 1000);
+    builder.setMaxTime(3L * 60L * 1000L);
 
     try {
       // create the algorithm directory
@@ -102,6 +102,7 @@ public class JSSPExperiment {
                 + file + "'."); //$NON-NLS-1$
 
             builder.setRandSeed(seed);
+            builder.setLogPath(file);
             try (final IBlackBoxProcess<int[],
                 JSSPCandidateSolution> process = builder.get()) {
               algorithm.solve(process);

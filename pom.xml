@@ -43,6 +43,7 @@
 		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<junit.version>4.12</junit.version>
+		<project.mainClass>aitoa.examples.jssp.JSSPExperiment</project.mainClass>
 	</properties>
 
 	<licenses>
@@ -190,31 +191,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<!-- The setup for the assembly plugin which can generate a fat jar for 
-					us. -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<archive>
-								<manifest>
-									<mainClass>${project.mainClass}</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

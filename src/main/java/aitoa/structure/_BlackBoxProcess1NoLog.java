@@ -51,6 +51,7 @@ final class _BlackBoxProcess1NoLog<X>
     // did we improve
     if (result < this.m_bestF) {// yes, we did
       // so remember a copy of this best solution
+      this.m_bestF = result;
       this.m_searchSpace.copy(y, this.m_bestX);
       this.m_lastImprovementFE = fes; // and the current FE
       // and the time when the improvement was made

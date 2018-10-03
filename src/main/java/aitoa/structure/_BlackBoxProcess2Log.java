@@ -94,6 +94,7 @@ final class _BlackBoxProcess2Log<X, Y>
     // did we improve
     if (result < this.m_bestF) {// yes, we did
       // so remember a copy of this best solution
+      this.m_bestF = result;
       this.m_searchSpace.copy(y, this.m_bestX);
       this.m_solutionSpace.copy(this.m_current, this.m_bestY);
       this.m_lastImprovementFE = fes; // and the current FE
@@ -110,7 +111,7 @@ final class _BlackBoxProcess2Log<X, Y>
       // store the log information
       final int size = this.m_logSize;
       final int newSize = Math.addExact(size, 3);
-      if (size > this.m_log.length) { // grow log
+      if (newSize > this.m_log.length) { // grow log
         this.m_log = _BlackBoxProcessBase._growLog(this.m_log);
       }
       // store log point
