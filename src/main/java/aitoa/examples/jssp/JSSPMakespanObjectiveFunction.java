@@ -62,7 +62,10 @@ public final class JSSPMakespanObjectiveFunction
 // end relevant
 
   /**
-   * Compute the lower bound of the objective value.
+   * Compute the lower bound of the objective value. See E. D.
+   * Taillard. Benchmarks for basic scheduling problems. European
+   * Journal of Operational Research, 64.2: 278-285, 1993. doi:
+   * 10.1016/0377-2217(93)90182-M
    *
    * @return the lower bound
    */
