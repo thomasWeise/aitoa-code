@@ -2,8 +2,10 @@
 package aitoa.structure;
 // end relevant
 
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.util.Random;
+import java.util.function.Consumer;
 
 /**
  * A black-box single-objective optimization problem encapsulates
@@ -181,5 +183,20 @@ public interface IBlackBoxProcess<X, Y> extends
    */
   @Override
   public abstract void close();
+
+// end relevant
+  /**
+   * Print a section into the log, if logging is supported
+   *
+   * @param sectionName
+   *          the name of the section
+   * @param printer
+   *          the consumer for the log writer
+   */
+  public default void printLogSection(final String sectionName,
+      final Consumer<BufferedWriter> printer) {
+    // does nothing
+  }
+// start relevant
 }
 // end relevant

@@ -29,6 +29,9 @@ public class TestJSSPInstance {
     Assert.assertArrayEquals(
         new int[] { 4, 50, 3, 30, 2, 15, 0, 20, 1, 15 },
         inst.jobs[3]);
+
+    Assert.assertTrue(new JSSPMakespanObjectiveFunction(inst)
+        .lowerBound() > 0);
   }
 
   /** test the abz5 instance */
@@ -71,6 +74,9 @@ public class TestJSSPInstance {
     Assert.assertEquals(59, inst.jobs[9][17]);
     Assert.assertEquals(2, inst.jobs[9][18]);
     Assert.assertEquals(96, inst.jobs[9][19]);
+
+    Assert.assertTrue(new JSSPMakespanObjectiveFunction(inst)
+        .lowerBound() > 0);
   }
 
   /** test the swv20 instance */
@@ -100,5 +106,8 @@ public class TestJSSPInstance {
     Assert.assertArrayEquals(new int[] { 4, 49, 6, 27, 7, 17, 5,
         64, 2, 30, 8, 56, 0, 42, 3, 97, 9, 82, 1, 34 },
         inst.jobs[49]);
+
+    Assert.assertTrue(new JSSPMakespanObjectiveFunction(inst)
+        .lowerBound() > 0);
   }
 }

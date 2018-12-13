@@ -2,6 +2,7 @@ package aitoa.structure;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * the black-box problem class for black box problems where the
@@ -124,6 +125,24 @@ final class _BlackBoxProcess1Log<X>
     } else {
       throw new IllegalStateException(//
           "No FE consumed yet."); //$NON-NLS-1$
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void printLogSection(final String sectionName,
+      final Consumer<BufferedWriter> printer) {
+    try {
+      this.m_logWriter.write('#');
+      this.m_logWriter.write(' ');
+      this.m_logWriter.write(sectionName);
+      this.m_logWriter.newLine();
+      printer.accept(this.m_logWriter);
+      this.m_logWriter.write("# END_"); //$NON-NLS-1$
+      this.m_logWriter.write(sectionName);
+      this.m_logWriter.newLine();
+    } catch (final IOException ioe) {
+      throw new RuntimeException(ioe);
     }
   }
 }

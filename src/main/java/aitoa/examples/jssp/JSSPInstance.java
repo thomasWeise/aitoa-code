@@ -42,15 +42,58 @@ public class JSSPInstance {
   public final String id;
 
   /**
+   * Create a Job Shop Scheduling Problem instance from raw data
+   * and a name
+   *
+   * @param data
+   *          the data
+   * @param instance
+   *          the instance
+   */
+  public JSSPInstance(final int[][] data,
+      final String instance) {
+    super();
+
+    this.n = data.length;
+    this.m = (data[0].length >>> 1);
+    final int cmp = (this.m << 1);
+    for (final int[] job : data) {
+      if (job.length != cmp) {
+        throw new IllegalArgumentException(//
+            "Job length " + job.length + //$NON-NLS-1$
+                " should be " + cmp); //$NON-NLS-1$
+      }
+    }
+    this.jobs = data;
+
+    this.id = instance.trim();
+    if (instance.length() <= 0) {
+      throw new IllegalArgumentException(//
+          "Instance name cannot be empty.");//$NON-NLS-1$
+    }
+  }
+
+  /**
    * Load the specified instance from a text resource.
    *
    * @param instance
    *          the name of the instance
    */
-  @SuppressWarnings("null")
   public JSSPInstance(final String instance) {
-    super();
+    this(JSSPInstance.__loadDataFromResource(instance),
+        instance);
+  }
 
+  /**
+   * Load the instance data from a resource
+   *
+   * @param instance
+   *          the instance id
+   * @return the data
+   */
+  @SuppressWarnings("null")
+  private static final int[][]
+      __loadDataFromResource(final String instance) {
     int njobs = -1;
     int nmachines = -1;
     int[][] data = null;
@@ -145,11 +188,7 @@ public class JSSPInstance {
               "' not found."); //$NON-NLS-1$
     }
 
-// store instance data
-    this.n = njobs;
-    this.m = nmachines;
-    this.jobs = data;
-    this.id = instance;
+    return data;
   }
 
   /** {@inheritDoc} */
@@ -160,6 +199,7 @@ public class JSSPInstance {
         this.m) + ", n=") + //$NON-NLS-1$
         this.n) + ')');
   }
+
 // start relevant
 }
 // end relevant

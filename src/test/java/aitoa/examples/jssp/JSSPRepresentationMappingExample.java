@@ -35,7 +35,8 @@ public class JSSPRepresentationMappingExample {
 
   /** the objective function */
   public static final JSSPMakespanObjectiveFunction F =
-      new JSSPMakespanObjectiveFunction();
+      new JSSPMakespanObjectiveFunction(
+          JSSPRepresentationMappingExample.INSTANCE);
 
   /**
    * The main routine

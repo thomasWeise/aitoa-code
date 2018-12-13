@@ -1,7 +1,8 @@
 package aitoa.structure;
 
 /**
- * An interface for an objective function.
+ * An interface for an objective function, subject to
+ * minimization.
  *
  * @param <Y>
  *          the solution space data structure
@@ -15,7 +16,7 @@ public interface IObjectiveFunction<Y> {
    *
    * @param y
    *          the candidate solution
-   * @return the objective value
+   * @return the objective value: smaller values are better
    */
   public abstract double evaluate(final Y y);
 }

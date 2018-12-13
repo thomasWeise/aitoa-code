@@ -120,7 +120,23 @@ public final class RandomUtils {
         break findNextUnique;
       }
     }
-    Arrays.sort(seeds);
+
+    // sort the array such that longs whose hexadecimal
+    // representation is smaller come first - this is useful to
+    // make the order in which files are created is identical to
+    // their alphabetical order, as long as the file names
+    // contain the rand seed as hex stringF
+    final Long[] temp = new Long[seeds.length];
+    int i = 0;
+    for (final long l : seeds) {
+      temp[i++] = Long.valueOf(l);
+    }
+
+    Arrays.sort(temp, Long::compareUnsigned);
+    i = 0;
+    for (final Long l : temp) {
+      seeds[i++] = l.longValue();
+    }
     return seeds;
   }
 

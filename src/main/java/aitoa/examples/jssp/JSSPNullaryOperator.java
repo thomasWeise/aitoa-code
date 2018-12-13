@@ -1,4 +1,3 @@
-// start relevant
 package aitoa.examples.jssp;
 
 import java.util.Random;
@@ -31,8 +30,7 @@ public final class JSSPNullaryOperator
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ("jssp:int[]:nullary:" + //$NON-NLS-1$
-        this.getClass().getCanonicalName());
+    return "uniform"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
