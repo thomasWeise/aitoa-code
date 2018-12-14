@@ -241,7 +241,7 @@ public final class JSSPSolutionSpace
       }
     }
 
-// check if each job occured m times
+// check if each job occurred m times
     for (final int i : jobs) {
       if (i != this.instance.m) {
         throw new IllegalArgumentException(//
