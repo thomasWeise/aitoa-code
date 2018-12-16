@@ -17,15 +17,17 @@ public class JSSPLowerBounds {
     printFor.add("demo"); //$NON-NLS-1$
     printFor.addAll(Arrays.asList(JSSPExperiment.INSTANCES));
 
-    System.out.println("name|$m$|$n$|$\\lowerBound$"); //$NON-NLS-1$
+    System.out.println(
+        "|name|$\\jsspJobsn$|$\\jsspMachines$|$\\lowerBound{\\objF}$|"); //$NON-NLS-1$
+    System.out.println("|:--|--:|--:|--:|"); //$NON-NLS-1$
     for (final String s : printFor) {
       final JSSPInstance inst = new JSSPInstance(s);
 
       System.out.print(inst.id);
       System.out.print('|');
-      System.out.print(inst.m);
-      System.out.print('|');
       System.out.print(inst.n);
+      System.out.print('|');
+      System.out.print(inst.m);
       System.out.print('|');
       System.out.print(
           new JSSPMakespanObjectiveFunction(inst).lowerBound());
