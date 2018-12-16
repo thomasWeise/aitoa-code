@@ -77,8 +77,10 @@ public final class JSSPMakespanObjectiveFunction
     final int[] T = new int[inst.m]; // time of machine
     Arrays.fill(a, Integer.MAX_VALUE);
     Arrays.fill(b, Integer.MAX_VALUE);
-
+// start lowerBound
+// a, b: int[m] filled with MAX_VALUE, T: int[m] filled with 0
     int lowerBound = 0; // overall lower bound
+
     for (int n = inst.n; (--n) >= 0;) {
       final int[] job = inst.jobs[n];
 
@@ -87,11 +89,8 @@ public final class JSSPMakespanObjectiveFunction
       for (int m = 1; m < job.length; m += 2) {
         jobTimeTotal += job[m];
       }
-
 // lower bound of the makespan must be >= total job time
-      if (jobTimeTotal > lowerBound) {
-        lowerBound = jobTimeTotal;
-      }
+      lowerBound = Math.max(lowerBound, jobTimeTotal);
 
       // now compute machine values
       int jobTimeSoFar = 0;
@@ -100,21 +99,17 @@ public final class JSSPMakespanObjectiveFunction
 
 // if the sub-job for machine m starts at jobTimeSoFar, the
 // smallest machine start idle time cannot be bigger than that
-        if (jobTimeSoFar < a[machine]) {
-          a[machine] = jobTimeSoFar;
-        }
+        a[machine] = Math.min(a[machine], jobTimeSoFar);
 
         final int time = job[m++];
 // add the sub-job execution time to the machine total time
         T[machine] += time;
 
+        jobTimeSoFar += time;
 // compute the remaining time of the job and check if this is
 // less than the smallest-so-far machine end idle time
-        jobTimeSoFar += time;
-        final int idle = (jobTimeTotal - jobTimeSoFar);
-        if (idle < b[machine]) {
-          b[machine] = idle;
-        }
+        b[machine] =
+            Math.min(b[machine], jobTimeTotal - jobTimeSoFar);
       }
     }
 
@@ -123,12 +118,9 @@ public final class JSSPMakespanObjectiveFunction
 // total execution time. The lower bound of the makespan cannot
 // be less than their sum.
     for (int m = inst.m; (--m) >= 0;) {
-      final int machineLower = a[m] + T[m] + b[m];
-      if (machineLower > lowerBound) {
-        lowerBound = machineLower;
-      }
+      lowerBound = Math.max(lowerBound, a[m] + T[m] + b[m]);
     }
-
+// end lowerBound
     return lowerBound;
   }
 // start relevant
