@@ -71,7 +71,7 @@ public class JSSPSearchSpaceSize {
       final String vv[] = new DecimalFormat("0.000E00")//$NON-NLS-1$
           .format(bd).split("E"); //$NON-NLS-1$
 
-      return ("$\\approx$" + //$NON-NLS-1$
+      return ("$\\approx$ " + //$NON-NLS-1$
           vv[0] + "*10^" + //$NON-NLS-1$
           Integer.parseInt(vv[1]) + "^");//$NON-NLS-1$
     }
