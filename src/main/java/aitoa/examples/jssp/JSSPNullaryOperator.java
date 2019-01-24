@@ -1,5 +1,7 @@
+// start relevant
 package aitoa.examples.jssp;
 
+// end relevant
 import java.util.Random;
 
 import aitoa.structure.INullarySearchOperator;
@@ -9,12 +11,13 @@ import aitoa.utils.RandomUtils;
  * An implementation of the nullary search operator for the JSSP
  * representation.
  */
+// start relevant
 public final class JSSPNullaryOperator
     implements INullarySearchOperator<int[]> {
 // end relevant
 
   /** the number of jobs */
-  private final int m_n;
+  private final int n;
 
   /**
    * create the representation
@@ -24,7 +27,7 @@ public final class JSSPNullaryOperator
    */
   public JSSPNullaryOperator(final JSSPInstance instance) {
     super();
-    this.m_n = instance.n;
+    this.n = instance.n;
   }
 
   /** {@inheritDoc} */
@@ -35,16 +38,19 @@ public final class JSSPNullaryOperator
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public final void apply(final int[] dest,
       final Random random) {
-    // create first sequence of nodes
-    for (int i = this.m_n; (--i) >= 0;) {
+// create first seuence of jobs: n-1, n-2, ..., 0
+    for (int i = this.n; (--i) >= 0;) {
       dest[i] = i;
     }
-    // copy this m-1 times
-    for (int i = dest.length; (i -= this.m_n) > 0;) {
-      System.arraycopy(dest, 0, dest, i, this.m_n);
+// copy this m-1 times: n-1, n-2, ..., 0, n-1, ... 0, n-1, ...
+    for (int i = dest.length; (i -= this.n) > 0;) {
+      System.arraycopy(dest, 0, dest, i, this.n);
     }
+// now randomly shuffle the array: create a random sequence
     RandomUtils.shuffle(random, dest, 0, dest.length);
   }
 }
+// end relevant
