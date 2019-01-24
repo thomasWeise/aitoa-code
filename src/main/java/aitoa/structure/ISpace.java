@@ -27,8 +27,8 @@ public interface ISpace<Z> {
    *          overwritten with the contents of {@code from}.
    */
   public abstract void copy(final Z from, final Z to);
-
 // end relevant
+  
   /**
    * Print the data structure {@code z} to the
    * {@link java.lang.Appendable} {@code out}.

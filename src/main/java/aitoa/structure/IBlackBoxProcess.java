@@ -183,8 +183,8 @@ public interface IBlackBoxProcess<X, Y> extends
    */
   @Override
   public abstract void close();
-
 // end relevant
+
   /**
    * Print a section into the log, if logging is supported
    *
