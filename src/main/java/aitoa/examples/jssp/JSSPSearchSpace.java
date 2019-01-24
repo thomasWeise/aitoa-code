@@ -13,11 +13,13 @@ import aitoa.structure.ISpace;
  * An implementation of the space interface for the search space
  * of our JSSP
  */
+// start relevant
 public final class JSSPSearchSpace implements ISpace<int[]> {
+// end relevant
   /** the problem instance */
   public final JSSPInstance instance;
   /** the length */
-  private final int m_length;
+  private final int length;
 
   /**
    * create
@@ -28,9 +30,10 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   public JSSPSearchSpace(final JSSPInstance _instance) {
     super();
     this.instance = Objects.requireNonNull(_instance);
-    this.m_length = (_instance.m * _instance.n);
+    this.length = (_instance.m * _instance.n);
   }
 
+// start relevant
   /**
    * create an empty instance
    *
@@ -38,13 +41,13 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
    */
   @Override
   public final int[] create() {
-    return new int[this.m_length];
+    return new int[this.length];
   }
 
   /** {@inheritDoc} */
   @Override
   public final void copy(final int[] from, final int[] to) {
-    System.arraycopy(from, 0, to, 0, this.m_length);
+    System.arraycopy(from, 0, to, 0, this.length);
   }
 // end relevant
 
@@ -91,7 +94,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   @Override
   public final String toString() {
     return (("jssp:int[" + //$NON-NLS-1$
-        this.m_length + "]:" //$NON-NLS-1$
+        this.length + "]:" //$NON-NLS-1$
         + this.instance.toString()) + ':'
         + this.getClass().getCanonicalName());
   }

@@ -13,9 +13,10 @@ import aitoa.structure.ISpace;
  * An implementation of the space interface for the solution
  * space of our JSSP
  */
+// start relevant
 public final class JSSPSolutionSpace
     implements ISpace<JSSPCandidateSolution> {
-
+// end relevant
   /** the problem instance */
   public final JSSPInstance instance;
 
@@ -36,6 +37,7 @@ public final class JSSPSolutionSpace
    * @return the empty instance
    */
   @Override
+// start relevant
   public final JSSPCandidateSolution create() {
     return new JSSPCandidateSolution(this.instance.m,
         this.instance.n);
