@@ -3,7 +3,6 @@ package aitoa.examples.jssp;
 
 // end relevant
 import java.io.IOException;
-// start relevant
 import java.util.Arrays;
 import java.util.Objects;
 

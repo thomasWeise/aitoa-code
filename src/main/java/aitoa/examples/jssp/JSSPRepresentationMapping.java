@@ -1,6 +1,7 @@
 // start relevant
 package aitoa.examples.jssp;
 
+// end relevant
 import java.util.Arrays;
 
 import aitoa.structure.IRepresentationMapping;
@@ -9,6 +10,7 @@ import aitoa.structure.IRepresentationMapping;
  * The representation mapping: translate a one-dimensional
  * integer array to a candidate solution for the JSSP.
  */
+// start relevant
 public final class JSSPRepresentationMapping implements
     IRepresentationMapping<int[], JSSPCandidateSolution> {
 // end relevant
