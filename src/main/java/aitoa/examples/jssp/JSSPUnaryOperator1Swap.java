@@ -8,6 +8,7 @@ import aitoa.structure.IUnarySearchOperator;
  * An implementation of the unary search operator for the JSSP
  * representation where two jobs are swapped.
  */
+// start relevant
 public final class JSSPUnaryOperator1Swap
     implements IUnarySearchOperator<int[]> {
 // end relevant
@@ -25,6 +26,7 @@ public final class JSSPUnaryOperator1Swap
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public final void apply(final int[] x, final int[] dest,
       final Random random) {
 // copy the source to the dest
@@ -45,3 +47,4 @@ public final class JSSPUnaryOperator1Swap
     }
   }
 }
+// end relevant

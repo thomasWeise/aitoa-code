@@ -1,7 +1,5 @@
-// start relevant
 package aitoa.examples.jssp;
 
-// end relevant
 import java.util.Arrays;
 import java.util.Objects;
 

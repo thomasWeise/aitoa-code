@@ -1,4 +1,3 @@
-// start relevant
 package aitoa.examples.jssp;
 
 import java.util.Objects;
@@ -6,6 +5,7 @@ import java.util.Objects;
 /**
  * A candidate solution for the JSSP is a complete Gantt diagram
  */
+// start relevant
 public final class JSSPCandidateSolution {
 
   /**

@@ -33,12 +33,10 @@ public final class RandomSampling implements IMetaheuristic {
     final Random random = process.getRandom();// get random gen
 
     do {// repeat until budget exhausted
-      nullary.apply(x, random); // create random solution
-// evaluate the point: process.evaluate automatically applies
-// representation mapping and calls objective function. the
-// objective value is ignored here (not stored anywhere), but
-// "process" will remember the best solution, so whoever called
-// this "solve" function can obtain the result.
+      nullary.apply(x, random); // create random point in X
+// evaluate the point: process.evaluate applies representation
+// mapping and calls objective function. "process" will remember
+// the best solution, so whoever called "solve" can obtain it.
       process.evaluate(x);
     } while (!process.shouldTerminate()); // do until time is up
   }

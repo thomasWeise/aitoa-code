@@ -1,7 +1,5 @@
-// start relevant
 package aitoa.examples.jssp;
 
-// end relevant
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
