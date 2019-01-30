@@ -1,7 +1,5 @@
-// start relevant
 package aitoa.algorithms;
 
-// end relevant
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 
