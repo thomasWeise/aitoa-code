@@ -52,3 +52,4 @@ public final class JSSPUnaryOperator1Swap
   }
 }
 // end relevant
+    
