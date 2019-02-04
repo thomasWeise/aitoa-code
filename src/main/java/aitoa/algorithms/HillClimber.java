@@ -13,8 +13,9 @@ import aitoa.structure.IUnarySearchOperator;
  * by applying a modification to this solution and keeps the
  * modified solution if and only if it is better.
  */
+// start relevant
 public final class HillClimber implements IMetaheuristic {
-
+// end relevant
   /** create */
   public HillClimber() {
     super();
@@ -22,8 +23,11 @@ public final class HillClimber implements IMetaheuristic {
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
+// init local variables x_cur, x_best, nullary, unary, random
+// end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
@@ -31,23 +35,30 @@ public final class HillClimber implements IMetaheuristic {
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator(); // get nullary op
     final Random random = process.getRandom();// get random gen
-
-    nullary.apply(x_best, random); // sample random solution
-    double f_best = process.evaluate(x_best); // evaluate it
+// start relevant
+// create starting point: a random point in the search space
+    nullary.apply(x_best, random);
+    double f_best = process.evaluate(x_best); // map & evaluate
 
     do {// repeat until budget exhausted
-      unary.apply(x_best, x_cur, random); // try to improve best
-      final double f_cur = process.evaluate(x_cur); // evaluate
+// create a slightly modified copy of x_best and store in x_cur
+      unary.apply(x_best, x_cur, random);
+// map x_cur from X to Y and evaluate candidate solution
+      final double f_cur = process.evaluate(x_cur);
       if (f_cur < f_best) { // we found a better solution
-        f_best = f_cur; // remember best quality
-        process.getSearchSpace().copy(x_cur, x_best); // update
-      }
+// remember best objective value and copy x_cur to x_best
+        f_best = f_cur;
+        process.getSearchSpace().copy(x_cur, x_best);
+      } // otherwise, i.e., f_cur >= f_best: just forget x_cur
     } while (!process.shouldTerminate()); // until time is up
-  }
+  } // process will have remembered the best candidate solution
 
+// end relevant
   /** {@inheritDoc} */
   @Override
   public final String toString() {
     return "hc"; //$NON-NLS-1$
   }
+// start relevant
 }
+// end relevant

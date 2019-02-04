@@ -16,14 +16,15 @@ import aitoa.structure.IUnarySearchOperator;
  * by applying a modification to this solution and keeps the
  * modified solution if and only if it is better.
  */
+// start relevant
 public final class HillClimberWithRestarts
     implements IMetaheuristic {
-
+// end relevant
   /** the initial steps before restarts */
-  public final int initialStepsBeforeRestart;
+  public final int initialFailsBeforeRestart;
 
   /** the strategy for the initial steps before restarts */
-  public final String initialStepsBeforeRestartStrategy;
+  public final String initialFailsBeforeRestartStrategy;
 
   /** the increase factor */
   public final double increaseFactor;
@@ -47,11 +48,11 @@ public final class HillClimberWithRestarts
     if ((_initialStepsBeforeRestart < 1)
         || (_initialStepsBeforeRestart > 1_000_000)) {
       throw new IllegalArgumentException(
-          "Invalid initialStepsBeforeRestart: " //$NON-NLS-1$
+          "Invalid initialFailsBeforeRestart: " //$NON-NLS-1$
               + _initialStepsBeforeRestart);
     }
-    this.initialStepsBeforeRestart = _initialStepsBeforeRestart;
-    this.initialStepsBeforeRestartStrategy = Objects
+    this.initialFailsBeforeRestart = _initialStepsBeforeRestart;
+    this.initialFailsBeforeRestartStrategy = Objects
         .requireNonNull(_initialStepsBeforeRestartStrategy);
 
     if ((_increaseFactor < 0d) || (_increaseFactor > 16d)
@@ -73,10 +74,10 @@ public final class HillClimberWithRestarts
     output.newLine();
     output.write("initialStepsBeforeRestart: "); //$NON-NLS-1$
     output.write(//
-        Integer.toString(this.initialStepsBeforeRestart));
+        Integer.toString(this.initialFailsBeforeRestart));
     output.newLine();
     output.write("initialStepsBeforeRestartStrategy: ");//$NON-NLS-1$
-    output.write(this.initialStepsBeforeRestartStrategy);
+    output.write(this.initialFailsBeforeRestartStrategy);
     output.newLine();
     output.write("increaseFactor: ");//$NON-NLS-1$
     output.write(Double.toString(this.increaseFactor));
@@ -88,8 +89,12 @@ public final class HillClimberWithRestarts
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
+// end relevant
+// initialize local variables x_cur, x_best, nullary, unary,
+// random, failsBeforeRestart, and failCounter=0
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
@@ -98,43 +103,43 @@ public final class HillClimberWithRestarts
         process.getUnarySearchOperator(); // get nullary op
     final Random random = process.getRandom();// get random gen
 
-    long stepsBeforeRestart = this.initialStepsBeforeRestart; // restart
-                                                              // after
-                                                              // 256
-                                                              // failures
-    long currentStep = 0L; // initialize counters
-
-    while (!(process.shouldTerminate())) {
+    long failsBeforeRestart = this.initialFailsBeforeRestart;
+    long failCounter = 0L; // initialize counters
+// start relevant
+    while (!(process.shouldTerminate())) { // outer loop: restart
       nullary.apply(x_best, random); // sample random solution
       double f_best = process.evaluate(x_best); // evaluate it
 
-      innerHC: do {// repeat until budget exhausted
+      innerHC: do {// repeat until budget exhausted or got stock
         unary.apply(x_best, x_cur, random); // try to improve
-        ++currentStep;// increase step counter
+        ++failCounter;// increase step counter
         final double f_cur = process.evaluate(x_cur); // evaluate
         if (f_cur < f_best) { // we found a better solution
           f_best = f_cur; // remember best quality
-          process.getSearchSpace().copy(x_cur, x_best); // update
-          currentStep = 0L;
-        } else {
-          if (currentStep >= stepsBeforeRestart) {
+          process.getSearchSpace().copy(x_cur, x_best); // copy
+          failCounter = 0L; // reset number of unsuccessful steps
+        } else { // ok, we did not find an improvement
+          if (failCounter >= failsBeforeRestart) {
             // increase steps before restart
-            stepsBeforeRestart = Math.max(stepsBeforeRestart,
-                Math.round(stepsBeforeRestart
+            failsBeforeRestart = Math.max(failsBeforeRestart,
+                Math.round(failsBeforeRestart
                     * (1d + this.increaseFactor)));
-            currentStep = 0L;
+            failCounter = 0L;
             break innerHC; // jump back to outer loop for restart
           }
         }
       } while (!process.shouldTerminate()); // until time is up
     }
   }
+// end relevant
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
     return ((("hc_rs_" + //$NON-NLS-1$
-        this.initialStepsBeforeRestartStrategy) + '_')
+        this.initialFailsBeforeRestartStrategy) + '_')
         + this.increaseFactor);
   }
+// start relevant
 }
+// end relevant

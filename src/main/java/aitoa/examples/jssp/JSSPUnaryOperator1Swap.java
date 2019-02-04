@@ -6,7 +6,11 @@ import aitoa.structure.IUnarySearchOperator;
 
 /**
  * An implementation of the unary search operator for the JSSP
- * representation where two jobs are swapped.
+ * representation where two jobs are swapped. This operator first
+ * copies the input point in the search space to the destination
+ * {@code dest}. It then tries to find two indices in
+ * {@code dest} which have different corresponding jobs. The jobs
+ * at these indices are then swapped.
  */
 // start relevant
 public final class JSSPUnaryOperator1Swap
@@ -29,19 +33,19 @@ public final class JSSPUnaryOperator1Swap
 // start relevant
   public final void apply(final int[] x, final int[] dest,
       final Random random) {
-// copy the source to the dest
+// copy the source point in search space to the dest
     System.arraycopy(x, 0, dest, 0, x.length);
 
-// choose the first index
+// choose the index of the first sub-job to swap
     final int i = random.nextInt(dest.length);
-    final int ti = dest[i];
+    final int job_i = dest[i]; // remember job id
 
     for (;;) { // try to find a location j with a different job
       final int j = random.nextInt(dest.length);
-      final int tj = dest[j];
-      if (ti != tj) { // we found two locations with two
-        dest[i] = tj; // different values
-        dest[j] = ti; // then we swap the values
+      final int job_j = dest[j];
+      if (job_i != job_j) { // we found two locations with two
+        dest[i] = job_j; // different values
+        dest[j] = job_i; // then we swap the values
         return; // and are done
       }
     }
