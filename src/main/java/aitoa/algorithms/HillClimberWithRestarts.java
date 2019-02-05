@@ -93,8 +93,6 @@ public final class HillClimberWithRestarts
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
-// initialize local variables x_cur, x_best, nullary, unary,
-// random, failsBeforeRestart, and failCounter=0
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
@@ -106,6 +104,8 @@ public final class HillClimberWithRestarts
     long failsBeforeRestart = this.initialFailsBeforeRestart;
     long failCounter = 0L; // initialize counters
 // start relevant
+// initialize local variables x_cur, x_best, nullary, unary,
+// random, failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
       nullary.apply(x_best, random); // sample random solution
       double f_best = process.evaluate(x_best); // evaluate it
