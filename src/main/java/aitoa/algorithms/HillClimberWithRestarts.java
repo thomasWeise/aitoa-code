@@ -104,8 +104,8 @@ public final class HillClimberWithRestarts
     long failsBeforeRestart = this.initialFailsBeforeRestart;
     long failCounter = 0L; // initialize counters
 // start relevant
-// initialize local variables x_cur, x_best, nullary, unary,
-// random, failsBeforeRestart, and failCounter=0
+// omitted: initialize local variables x_cur, x_best, nullary,
+// unary,random, failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
       nullary.apply(x_best, random); // sample random solution
       double f_best = process.evaluate(x_best); // evaluate it

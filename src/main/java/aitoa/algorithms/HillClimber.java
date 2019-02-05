@@ -37,7 +37,7 @@ public final class HillClimber implements IMetaheuristic {
     final Random random = process.getRandom();// get random gen
 // start relevant
 // create starting point: a random point in the search space
-    nullary.apply(x_best, random);
+    nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
 
     do {// repeat until budget exhausted
