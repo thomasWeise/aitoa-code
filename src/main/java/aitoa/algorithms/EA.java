@@ -122,17 +122,17 @@ public class EA implements IMetaheuristic {
     for (;;) { // main loop: one iteration = one generation
 // sort the population: mu best individuals at front are selected
       Arrays.sort(population);
-// end relevant
-// shuffle mating pool to ensure fairness if lambda<mu
+// shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, population, 0, this.mu);
+// end relevant
 // start relevant
       int p1 = -1; // index to iterate over first parent
 
 // override the worse lambda solutions with new offsprings
       for (int index = population.length;
           (--index) >= this.mu;) {
-        if (process.shouldTerminate()) {
-          return; // return best solution
+        if (process.shouldTerminate()) { // we return
+          return; // best solution is stored in process
         }
 
         final Individual<X> dest = population[index];
@@ -140,9 +140,8 @@ public class EA implements IMetaheuristic {
             population[(++p1) % this.mu]; // parent 1
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
-          int p2;
-          do { // find a second parent who is different from
-               // parent 1
+          int p2; // to hold index of second parent 
+          do { // find a second, different parent
             p2 = random.nextInt(this.mu);
           } while (p2 == p1);
 
@@ -151,14 +150,14 @@ public class EA implements IMetaheuristic {
         } else {
 // end withcrossover
 // start relevant
-// create modified copy of first parent
+// create modified copy of parent using unary operator
           unary.apply(parent1.x, dest.x, random);
 // end relevant
 // start withcrossover
         }
 // end withcrossover
 // start relevant
-// map to solution/schedule and evaluate
+// map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
     } // the end of the main loop
