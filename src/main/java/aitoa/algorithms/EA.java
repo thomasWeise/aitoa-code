@@ -124,8 +124,6 @@ public class EA implements IMetaheuristic {
       Arrays.sort(population);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, population, 0, this.mu);
-// end relevant
-// start relevant
       int p1 = -1; // index to iterate over first parent
 
 // override the worse lambda solutions with new offsprings
@@ -138,6 +136,7 @@ public class EA implements IMetaheuristic {
         final Individual<X> dest = population[index];
         final Individual<X> parent1 =
             population[(++p1) % this.mu]; // parent 1
+// end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
           int p2; // to hold index of second parent 
