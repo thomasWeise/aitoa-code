@@ -15,7 +15,9 @@ import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
 /** A evolutionary algorithm */
+// start relevant
 public class EA implements IMetaheuristic {
+// end relevant
 
   /** the crossover rate */
   public final double cr;
@@ -85,9 +87,19 @@ public class EA implements IMetaheuristic {
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
+// start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
-    // create local variables
+// end relevant
+// start withoutcrossover
+// initialize local variables random, searchSpace, nullary, unary
+// and the array population of length mu+lambda
+// end withoutcrossover
+// start withcrossover
+// initialize local variables random, searchSpace, nullary,
+// unary, binary, and the array population of length mu+lambda
+// end withcrossover
+// create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
     final INullarySearchOperator<X> nullary =
@@ -99,8 +111,8 @@ public class EA implements IMetaheuristic {
 
     final Individual<X>[] population =
         new Individual[this.mu + this.lambda];
-
-    // first generation: fill population with random individuals
+// start relevant
+// first generation: fill population with random individuals
     for (int i = population.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       nullary.apply(x, random);
@@ -108,14 +120,15 @@ public class EA implements IMetaheuristic {
     }
 
     for (;;) { // main loop: one iteration = one generation
-      // sort the population: mu best individuals at front are
-      // selected
+// sort the population: mu best individuals at front are selected
       Arrays.sort(population);
-      // shuffle mating pool to ensure fairness if lambda<mu
+// end relevant
+// shuffle mating pool to ensure fairness if lambda<mu
       RandomUtils.shuffle(random, population, 0, this.mu);
+// start relevant
       int p1 = -1; // index to iterate over first parent
 
-      // override the worse lambda solutions with new offsprings
+// override the worse lambda solutions with new offsprings
       for (int index = population.length;
           (--index) >= this.mu;) {
         if (process.shouldTerminate()) {
@@ -125,7 +138,7 @@ public class EA implements IMetaheuristic {
         final Individual<X> dest = population[index];
         final Individual<X> parent1 =
             population[(++p1) % this.mu]; // parent 1
-
+// start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
           int p2;
           do { // find a second parent who is different from
@@ -135,16 +148,22 @@ public class EA implements IMetaheuristic {
 
           binary.apply(parent1.x, population[p2].x, dest.x,
               random); // perform recombination
-        } else { // otherwise create modified copy of first
-                 // parent
+        } else {
+// end withcrossover
+// start relevant
+// create modified copy of first parent
           unary.apply(parent1.x, dest.x, random);
+// end relevant
+// start withcrossover
         }
-
-        // map to solution/schedule and evaluate
+// end withcrossover
+// start relevant
+// map to solution/schedule and evaluate
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
     } // the end of the main loop
   }
+// end relevant
 
   /**
    * the individual record: hold one point in search space and
@@ -186,4 +205,6 @@ public class EA implements IMetaheuristic {
       return Double.compare(this.quality, o.quality);
     }
   }
+// start relevant
 }
+// end relevant
