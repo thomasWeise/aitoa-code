@@ -92,12 +92,12 @@ public class EA implements IMetaheuristic {
       solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
 // start withoutcrossover
-// initialize local variables random, searchSpace, nullary, unary
-// and the array population of length mu+lambda
+// omitted: initialize local variables random, searchSpace,
+// nullary, unary and the array P of length mu+lambda
 // end withoutcrossover
 // start withcrossover
-// initialize local variables random, searchSpace, nullary,
-// unary, binary, and the array population of length mu+lambda
+// omitted: initialize local variables random, searchSpace,
+// nullary, unary, binary, and array P of length mu+lambda
 // end withcrossover
 // create local variables
     final Random random = process.getRandom();
@@ -109,48 +109,45 @@ public class EA implements IMetaheuristic {
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
 
-    final Individual<X>[] population =
+    final Individual<X>[] P =
         new Individual[this.mu + this.lambda];
 // start relevant
 // first generation: fill population with random individuals
-    for (int i = population.length; (--i) >= 0;) {
+    for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       nullary.apply(x, random);
-      population[i] = new Individual<>(x, process.evaluate(x));
+      P[i] = new Individual<>(x, process.evaluate(x));
     }
 
     for (;;) { // main loop: one iteration = one generation
 // sort the population: mu best individuals at front are selected
-      Arrays.sort(population);
+      Arrays.sort(P);
 // shuffle the first mu solutions to ensure fairness
-      RandomUtils.shuffle(random, population, 0, this.mu);
+      RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
 
 // override the worse lambda solutions with new offsprings
-      for (int index = population.length;
-          (--index) >= this.mu;) {
+      for (int index = P.length; (--index) >= this.mu;) {
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
 
-        final Individual<X> dest = population[index];
-        final Individual<X> parent1 =
-            population[(++p1) % this.mu]; // parent 1
+        final Individual<X> dest = P[index];
+        final Individual<X> sel = P[(++p1) % this.mu];
 // end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
-          int p2; // to hold index of second parent 
-          do { // find a second, different parent
+          int p2; // to hold index of second selected record
+          do { // find a second, different record
             p2 = random.nextInt(this.mu);
           } while (p2 == p1);
-
-          binary.apply(parent1.x, population[p2].x, dest.x,
-              random); // perform recombination
+// perform recombination of the two selected individuals
+          binary.apply(sel.x, P[p2].x, dest.x, random);
         } else {
 // end withcrossover
 // start relevant
 // create modified copy of parent using unary operator
-          unary.apply(parent1.x, dest.x, random);
+          unary.apply(sel.x, dest.x, random);
 // end relevant
 // start withcrossover
         }
