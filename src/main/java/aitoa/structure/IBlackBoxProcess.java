@@ -1,6 +1,4 @@
-// start relevant
 package aitoa.structure;
-// end relevant
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -175,6 +173,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *         {@link Long#MAX_VALUE} for unlimited
    */
   public abstract long getMaxTime();
+// end relevant
 
   /**
    * Free all resources allocated to this object. After a call to
@@ -183,7 +182,6 @@ public interface IBlackBoxProcess<X, Y> extends
    */
   @Override
   public abstract void close();
-// end relevant
 
   /**
    * Print a section into the log, if logging is supported

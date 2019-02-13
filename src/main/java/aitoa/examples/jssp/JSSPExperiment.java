@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import aitoa.algorithms.EA;
+import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EAWithRestarts;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimberWithRestarts;
@@ -78,11 +79,17 @@ public class JSSPExperiment {
             new JSSPOperatorBinarySequence(inst);
 // plain EAs
         for (final double cr : new double[] { 0, 0.05, 0.3 }) {
-          for (final int mu : new int[] { 512, 2048, 4096 }) {
+          for (final int mu : new int[] { 512, 2048, 4096,
+              32 }) {
             for (final int lambda : new int[] { mu }) {
               // ea
               JSSPExperiment.run(new EA(cr, mu, lambda), unary,
                   binary, inst, out);
+
+              JSSPExperiment.run(
+                  new EAWithPruning(cr, mu, lambda), unary,
+                  binary, inst, out);
+
               for (final int genRs : new int[] { 16 }) {
                 // ea with restarts
                 JSSPExperiment.run(
