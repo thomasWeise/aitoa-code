@@ -17,6 +17,7 @@ import aitoa.structure.IBinarySearchOperator;
  * child schedule representation has been filled, at which point
  * all sub-jobs from all parents must have been completed.
  */
+// start relevant
 public final class JSSPOperatorBinarySequence
     implements IBinarySearchOperator<int[]> {
 // end relevant
@@ -48,8 +49,13 @@ public final class JSSPOperatorBinarySequence
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public final void apply(final int[] x0, final int[] x1,
       final int[] dest, final Random random) {
+// omitted: initialization of arrays done_x0 and done_x1 (that
+// remember the already-assigned sub-jobs from x0 and x1) of
+// length=m*n to all false; and indices desti, x0i, x10 to 0
+// end relevant
 
     final boolean[] done_x0 = this.m_done_x0;
     Arrays.fill(done_x0, false); // nothing used from x0 yet
@@ -58,33 +64,35 @@ public final class JSSPOperatorBinarySequence
 
     final int length = done_x0.length; // length = m*n
     int desti = 0, x0i = 0, x1i = 0; // array indexes = 0
-
-    for (;;) { // repeat dest has been filled, i.e., desti=length
+// start relevant
+    for (;;) { // repeat until dest is filled, i.e., desti=length
+// randomly chose a source point and pick next sub-job from it
       final int add = random.nextBoolean() ? x0[x0i] : x1[x1i];
       dest[desti++] = add; // we picked a sub-job and added it
-      if (desti >= length) {
-        return;
-      } // done?
+      if (desti >= length) { // if desti==length, we are finished
+        return; // in this case, desti is filled and we can exit
+      }
 
       for (int i = x0i;; i++) { // mark the sub-job as done in x0
-        if ((x0[i] == add) && (!done_x0[i])) {
+        if ((x0[i] == add) && (!done_x0[i])) { // find added job
           done_x0[i] = true;// found it and marked it
           break; // quit sub-job finding loop
         }
       }
-      while (done_x0[x0i]) { // now we need to find the next
-        x0i++; // not-yet completed sub-job in x0
+      while (done_x0[x0i]) { // now we move the index x0i to the
+        x0i++; // next, not-yet completed sub-job in x0
       }
 
       for (int i = x1i;; i++) { // mark the sub-job as done in x1
-        if ((x1[i] == add) && (!done_x1[i])) {
+        if ((x1[i] == add) && (!done_x1[i])) { // find added job
           done_x1[i] = true; // found it and marked it
           break; // quit sub-job finding loop
         }
       }
-      while (done_x1[x1i]) { // now we need to find the next
-        x1i++; // not-yet completed sub-job in x1
+      while (done_x1[x1i]) { // now we move the index x1i to the
+        x1i++; // next, not-yet completed sub-job in x0
       }
-    }
-  }
+    } // loop back to main loop and to add next sub-job
+  } // end of function
 }
+// end relevant
