@@ -117,6 +117,8 @@ public class EAWithPruning implements IMetaheuristic {
     }
 
     for (;;) { // main loop: one iteration = one generation
+// shuffle P, so after sorting the order of unique recs is random
+      RandomUtils.shuffle(random, P, 0, P.length);
 // sort the population: mu best individuals at front are selected
       Arrays.sort(P);
 // we now want to keep only the solutions with unique fitness
