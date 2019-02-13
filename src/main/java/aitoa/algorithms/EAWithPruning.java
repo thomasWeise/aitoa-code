@@ -127,7 +127,8 @@ public class EAWithPruning implements IMetaheuristic {
 // we switch the two arrays here so the rest is the same as EA
       makeUnique: for (Individual<X> ind : P2) {
         ++done;
-        if ((unique <= 0) || (ind.quality > P[unique].quality)) {
+        if ((unique <= 0)
+            || (ind.quality > P[unique - 1].quality)) {
           P[unique] = ind;
           if ((++unique) >= this.mu) { // we are done and can
             System.arraycopy(P2, done, P, unique, // copy the
