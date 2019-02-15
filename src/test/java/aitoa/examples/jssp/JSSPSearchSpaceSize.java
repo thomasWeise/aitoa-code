@@ -42,7 +42,7 @@ public class JSSPSearchSpaceSize {
     printFor.addAll(Arrays.asList(JSSPExperiment.INSTANCES));
 
     System.out.println(
-        "|name|$\\jsspJobs$|$\\jsspMachines$|$\\\\left|\\\\solutionSpace\\\\right|$|$\\left|\\searchSpace\\right|$|"); //$NON-NLS-1$
+        "|name|$\\jsspJobs$|$\\jsspMachines$|$\\left|\\solutionSpace\\right|$|$\\left|\\searchSpace\\right|$|"); //$NON-NLS-1$
     System.out.println("|:--|--:|--:|--:|"); //$NON-NLS-1$
     for (final int n : new int[] { 3, 4, 5 }) {
       for (final int m : new int[] { 2, 3, 4, 5 }) {
