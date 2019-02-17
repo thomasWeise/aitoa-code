@@ -58,7 +58,8 @@ public class JSSPSolutionSpaceSize {
       { 2L, 6L, 108828L }, { 11L, 1L, 1L }, { 1L, 11L, 39916800L },
       { 12L, 1L, 1L }, { 1L, 12L, 479001600L }, { 7L, 2L, 8L },
       { 2L, 7L, 3771792L }, { 5L, 3L, 317L }, { 3L, 5L, 91461L },
-      { 13L, 1L, 1L }, { 1L, 13L, 6227020800L }, };
+      { 13L, 1L, 1L }, { 1L, 13L, 6227020800L }, { 4L, 4L, 7451L },
+      { 2L, 8L, 156073536L }, };
 
   /**
    * compute the search space size as string
