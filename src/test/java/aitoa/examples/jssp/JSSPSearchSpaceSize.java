@@ -43,7 +43,7 @@ public class JSSPSearchSpaceSize {
 
     System.out.println(
         "|name|$\\jsspJobs$|$\\jsspMachines$|$\\left|\\solutionSpace\\right|$|$\\left|\\searchSpace\\right|$|"); //$NON-NLS-1$
-    System.out.println("|:--|--:|--:|--:|"); //$NON-NLS-1$
+    System.out.println("|:--|--:|--:|--:|--:|"); //$NON-NLS-1$
     for (final int n : new int[] { 3, 4, 5 }) {
       for (final int m : new int[] { 2, 3, 4, 5 }) {
         System.out.print('|');
@@ -53,7 +53,7 @@ public class JSSPSearchSpaceSize {
         System.out.print(m);
         System.out.print('|');
         System.out.print(JSSPSolutionSpaceSize
-            .toString(JSSPSolutionSpaceSize.solutionSpaceSize(m, n)));
+            .toString(JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
         System.out.print('|');
         System.out.print(JSSPSolutionSpaceSize
             .toString(JSSPSearchSpaceSize.searchSpaceSize(m, n)));
@@ -70,8 +70,11 @@ public class JSSPSearchSpaceSize {
       System.out.print('|');
       System.out.print(inst.m);
       System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize
-          .toString(JSSPSolutionSpaceSize.solutionSpaceSize(inst.m, inst.n)));
+      System.out.print(JSSPSolutionSpaceSize.toString(
+          JSSPSolutionSpaceSize.solutionSpaceSizeLower(inst.m, inst.n)));
+      System.out.print('|');
+      System.out.print(JSSPSolutionSpaceSize.toString(
+          JSSPSolutionSpaceSize.solutionSpaceSizeUpper(inst.m, inst.n)));
       System.out.print('|');
       System.out.print(JSSPSolutionSpaceSize
           .toString(JSSPSearchSpaceSize.searchSpaceSize(inst.m, inst.n)));
