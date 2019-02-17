@@ -2,6 +2,9 @@ package aitoa.examples.jssp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /** Print the solution space sizes for the JSSP instances */
@@ -244,30 +247,74 @@ public class JSSPSolutionSpaceSizeEnumerate {
   }
 
   /**
-   * compute the number of possible gantt charts
+   * compute the number of possible gantt charts: computes (n!)^m
    * 
    * @param m
    *          the number of machines
    * @param n
    *          the number of jobs
-   * @return the number, or -1 on error
+   * @return the number, or -1 on integer overflow
    */
   static final long numberOf(final int m, final int n) {
     long res = n;
-    for (int i = n; (--i) > 1;) {
+    for (long i = n; (--i) > 1L;) {
+      final long old = res;
       res *= i;
-      if (res <= 0L) {
+      if ((res <= 0L) || ((res / i) != old)) {
         return (-1L);
       }
     }
     long res2 = res;
     for (int i = m; (--i) >= 1;) {
+      final long old = res2;
       res2 *= res;
-      if (res2 <= 0L) {
+      if ((res2 <= 0L) || ((res2 / res) != old)) {
         return (-1L);
       }
     }
     return (res2);
+  }
+
+  /** the computer */
+  private static final class __Compute implements Runnable {
+    /** the m */
+    private final int m_m;
+    /** the n */
+    private final int m_n;
+
+    /**
+     * create
+     * 
+     * @param m
+     *          the m
+     * @param n
+     *          the n
+     */
+    __Compute(final int m, final int n) {
+      super();
+      this.m_m = m;
+      this.m_n = n;
+    }
+
+    public final void run() {
+      final long res = enumerate(this.m_m, this.m_n)[0][0];
+      synchronized (System.out) {
+        System.out.print('{');
+        System.out.print(this.m_m);
+        System.out.print('L');
+        System.out.print(',');
+        System.out.print(' ');
+        System.out.print(this.m_n);
+        System.out.print('L');
+        System.out.print(',');
+        System.out.print(' ');
+        System.out.print(res);
+        System.out.print('L');
+        System.out.print('}');
+        System.out.println(',');
+        System.out.flush();
+      }
+    }
   }
 
   /**
@@ -281,8 +328,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     // try to sort the m*n combinations in order of the steps needed for
     // enumerating all scenarios, only keep those that can be enumerated
-    for (int m = 1; m < 40; m++) {
-      for (int n = 1; n < 40; n++) {
+    for (int m = 2; m < 40; m++) {
+      for (int n = 2; n < 40; n++) {
         final long instances = numberOf(n, m);
         if (instances <= 0L) {
           continue;
@@ -292,17 +339,26 @@ public class JSSPSolutionSpaceSizeEnumerate {
           continue;
         }
         final long steps = (instances * gantt);
-        if ((steps < instances) || (steps < gantt)) {
+        if ((steps < instances) || (steps < gantt)
+            || ((steps / instances) != gantt)
+            || ((steps / gantt) != instances)) {
           continue;
         }
         list.add(new long[] { m, n, steps });
       }
     }
 
-    System.out.println("Found " + list.size()//$NON-NLS-1$
-        + " potentially computable configurations.");//$NON-NLS-1$
-    System.out.println("We will compute them in a fastest-first fashion.");//$NON-NLS-1$
-    System.out.println("The values are given as long arrays of the form {m, n, LB}.");//$NON-NLS-1$
+    synchronized (System.out) {
+      System.out.println("Found " + list.size()//$NON-NLS-1$
+          + " potentially computable configurations.");//$NON-NLS-1$
+      System.out
+          .println("We will compute them in a fastest-first fashion.");//$NON-NLS-1$
+      System.out.println(
+          "The values are given as long arrays of the form {m, n, LB}.");//$NON-NLS-1$
+      System.out.println(
+          "Eventually, you will have to kill this process, as it will probably run on forever.");//$NON-NLS-1$
+      System.out.flush();
+    }
 
     list.sort((a, b) -> {
       for (int i = 3; (--i) >= 0;) {
@@ -314,22 +370,22 @@ public class JSSPSolutionSpaceSizeEnumerate {
       return 0;
     });
 
+    // We will try to compute in parallel to get more results earlier
+    ExecutorService service = Executors.newFixedThreadPool(
+        Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
+
     for (long[] pair : list) {
-      final int m = (int) pair[0];
-      final int n = (int) pair[1];
-      System.out.print('{');
-      System.out.print(m);
-      System.out.print('L');
-      System.out.print(',');
-      System.out.print(' ');
-      System.out.print(n);
-      System.out.print('L');
-      System.out.print(',');
-      System.out.print(' ');
-      System.out.print(enumerate(m, n)[0][0]);
-      System.out.print('L');
-      System.out.print('}');
-      System.out.println(',');
+      final int m = ((int) (pair[0]));
+      final int n = ((int) (pair[1]));
+      service.execute(new __Compute(m, n));
+    }
+    list.clear();
+
+    service.shutdown();
+    try {
+      service.awaitTermination(365, TimeUnit.DAYS);
+    } catch (Throwable error) {
+      error.printStackTrace();
     }
   }
 }
