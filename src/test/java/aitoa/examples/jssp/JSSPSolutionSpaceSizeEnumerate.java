@@ -12,14 +12,15 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
   /**
    * make an {@code n*m} array
-   * 
+   *
    * @param m
    *          the second dimension
    * @param n
    *          n the first dimensions
    * @return the array
    */
-  private static final int[][] makeArray(final int m, final int n) {
+  private static final int[][] makeArray(final int m,
+      final int n) {
     final int[][] a = new int[n][];
     a[0] = new int[m];
 
@@ -35,30 +36,33 @@ public class JSSPSolutionSpaceSizeEnumerate {
   }
 
   /**
-   * enumerate all possible feasible schedules for m machines and n jobs
-   * 
+   * enumerate all possible feasible schedules for m machines and
+   * n jobs
+   *
    * @param m
    *          the number of machines
    * @param n
    *          the number of jobs
    * @return the number
    */
-  private static final long[][] enumerate(final int m, final int n) {
+  static final long[][] enumerate(final int m, final int n) {
     // for each of the n jobs, the order machines
-    final int[][] jobMachines = makeArray(m, n);
+    final int[][] jobMachines =
+        JSSPSolutionSpaceSizeEnumerate.makeArray(m, n);
     // a gantt chart
-    final int[][] gantt = makeArray(n, m);
+    final int[][] gantt =
+        JSSPSolutionSpaceSizeEnumerate.makeArray(n, m);
 
-    final __InstanceProcessor proc = new __InstanceProcessor(gantt,
-        new __ValidGanttCounter(jobMachines));
+    final __InstanceProcessor proc = new __InstanceProcessor(
+        gantt, new __ValidGanttCounter(jobMachines));
 
-    permute(jobMachines, proc);
+    JSSPSolutionSpaceSizeEnumerate.permute(jobMachines, proc);
     return (proc.get());
   }
 
   /**
    * swap the elements indexes i and j
-   * 
+   *
    * @param a
    *          the array
    * @param i
@@ -66,7 +70,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
    * @param j
    *          the second index
    */
-  private static final void swap(int[] a, int i, int j) {
+  private static final void swap(final int[] a, final int i,
+      final int j) {
     final int t = a[i];
     a[i] = a[j];
     a[j] = t;
@@ -74,19 +79,21 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
   /**
    * permute: enumerate all gantt diagrams
-   * 
+   *
    * @param a
    *          the array
    * @param consumer
    *          the consumer
    */
-  private static void permute(int[][] a, Consumer<int[][]> consumer) {
-    permute(a, a[0].length, a.length - 1, consumer);
+  static void permute(final int[][] a,
+      final Consumer<int[][]> consumer) {
+    JSSPSolutionSpaceSizeEnumerate.permute(a, a[0].length,
+        a.length - 1, consumer);
   }
 
   /**
    * permute
-   * 
+   *
    * @param a
    *          the array
    * @param n1
@@ -96,20 +103,22 @@ public class JSSPSolutionSpaceSizeEnumerate {
    * @param consumer
    *          the consumer
    */
-  private static void permute(int[][] a, int n1, int n2,
-      Consumer<int[][]> consumer) {
+  private static void permute(final int[][] a, final int n1,
+      final int n2, final Consumer<int[][]> consumer) {
     if (n1 <= 1) {
       if (n2 <= 0) {
         consumer.accept(a);
         return;
       }
-      permute(a, a[0].length, n2 - 1, consumer);
+      JSSPSolutionSpaceSizeEnumerate.permute(a, a[0].length,
+          n2 - 1, consumer);
       return;
     }
     for (int i = 0; i < n1; i++) {
-      swap(a[n2], i, n1 - 1);
-      permute(a, n1 - 1, n2, consumer);
-      swap(a[n2], i, n1 - 1);
+      JSSPSolutionSpaceSizeEnumerate.swap(a[n2], i, n1 - 1);
+      JSSPSolutionSpaceSizeEnumerate.permute(a, n1 - 1, n2,
+          consumer);
+      JSSPSolutionSpaceSizeEnumerate.swap(a[n2], i, n1 - 1);
     }
   }
 
@@ -135,7 +144,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     /**
      * create
-     * 
+     *
      * @param gantt
      *          the gantt chart
      * @param counter
@@ -156,7 +165,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
       // then test all possible gantt diagrams and count
       // those which are deadlock-free
       this.m_counter.counter = 0L;
-      permute(this.m_gantt, this.m_counter);
+      JSSPSolutionSpaceSizeEnumerate.permute(this.m_gantt,
+          this.m_counter);
 
       final long res = this.m_counter.counter;
       if (res >= this.m_max) {
@@ -175,7 +185,11 @@ public class JSSPSolutionSpaceSizeEnumerate {
       }
     }
 
-    /** get the result */
+    /**
+     * get the result
+     *
+     * @return the min, min-count, max, and max-count
+     */
     final long[][] get() {
       return (new long[][] { { this.m_min, this.m_minCount },
           { this.m_max, this.m_maxCount } });
@@ -196,7 +210,12 @@ public class JSSPSolutionSpaceSizeEnumerate {
     /** the index of the next sub-job of each machine */
     private final int[] m_ganttStage;
 
-    /** the job machines */
+    /**
+     * the job machines
+     *
+     * @param jobMachines
+     *          the assignments of jobs to machines
+     */
     __ValidGanttCounter(final int[][] jobMachines) {
       super();
       this.m_jobMachines = jobMachines;
@@ -220,16 +239,22 @@ public class JSSPSolutionSpaceSizeEnumerate {
       do {
         found = false;
         // check each machine on the gantt diagram
-        for (int machineIndex = machineCount; (--machineIndex) >= 0;) {
-          final int nextStepinGanttForMachine = this.m_ganttStage[machineIndex];
+        for (int machineIndex = machineCount;
+            (--machineIndex) >= 0;) {
+          final int nextStepinGanttForMachine =
+              this.m_ganttStage[machineIndex];
           if (nextStepinGanttForMachine < jobCount) {
-            final int nextJobForMachine = gantt[machineIndex][nextStepinGanttForMachine];
-            final int nextStepForJob = this.m_jobStage[nextJobForMachine];
-            final int nextMachineForJob = this.m_jobMachines[nextJobForMachine][nextStepForJob];
+            final int nextJobForMachine =
+                gantt[machineIndex][nextStepinGanttForMachine];
+            final int nextStepForJob =
+                this.m_jobStage[nextJobForMachine];
+            final int nextMachineForJob =
+                this.m_jobMachines[nextJobForMachine][nextStepForJob];
             if (nextMachineForJob == machineIndex) {
-              this.m_ganttStage[machineIndex] = (nextStepinGanttForMachine
-                  + 1);
-              this.m_jobStage[nextJobForMachine] = (nextStepForJob + 1);
+              this.m_ganttStage[machineIndex] =
+                  (nextStepinGanttForMachine + 1);
+              this.m_jobStage[nextJobForMachine] =
+                  (nextStepForJob + 1);
               found = true;
             }
           }
@@ -248,7 +273,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
   /**
    * compute the number of possible gantt charts: computes (n!)^m
-   * 
+   *
    * @param m
    *          the number of machines
    * @param n
@@ -284,7 +309,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     /**
      * create
-     * 
+     *
      * @param m
      *          the m
      * @param n
@@ -296,8 +321,10 @@ public class JSSPSolutionSpaceSizeEnumerate {
       this.m_n = n;
     }
 
+    @Override
     public final void run() {
-      final long res = enumerate(this.m_m, this.m_n)[0][0];
+      final long res = JSSPSolutionSpaceSizeEnumerate
+          .enumerate(this.m_m, this.m_n)[0][0];
       synchronized (System.out) {
         System.out.print('{');
         System.out.print(this.m_m);
@@ -324,17 +351,21 @@ public class JSSPSolutionSpaceSizeEnumerate {
    *          ignore
    */
   public static final void main(final String[] args) {
-    ArrayList<long[]> list = new ArrayList<long[]>();
+    final ArrayList<long[]> list = new ArrayList<>();
 
-    // try to sort the m*n combinations in order of the steps needed for
-    // enumerating all scenarios, only keep those that can be enumerated
+    // try to sort the m*n combinations in order of the steps
+    // needed for
+    // enumerating all scenarios, only keep those that can be
+    // enumerated
     for (int m = 2; m < 40; m++) {
       for (int n = 2; n < 40; n++) {
-        final long instances = numberOf(n, m);
+        final long instances =
+            JSSPSolutionSpaceSizeEnumerate.numberOf(n, m);
         if (instances <= 0L) {
           continue;
         }
-        final long gantt = numberOf(m, n);
+        final long gantt =
+            JSSPSolutionSpaceSizeEnumerate.numberOf(m, n);
         if (gantt <= 0L) {
           continue;
         }
@@ -351,8 +382,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
     synchronized (System.out) {
       System.out.println("Found " + list.size()//$NON-NLS-1$
           + " potentially computable configurations.");//$NON-NLS-1$
-      System.out
-          .println("We will compute them in a fastest-first fashion.");//$NON-NLS-1$
+      System.out.println(
+          "We will compute them in a fastest-first fashion.");//$NON-NLS-1$
       System.out.println(
           "The values are given as long arrays of the form {m, n, LB}.");//$NON-NLS-1$
       System.out.println(
@@ -362,7 +393,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     list.sort((a, b) -> {
       for (int i = 3; (--i) >= 0;) {
-        int r = Long.compare(a[i], b[i]);
+        final int r = Long.compare(a[i], b[i]);
         if (r != 0) {
           return r;
         }
@@ -370,11 +401,13 @@ public class JSSPSolutionSpaceSizeEnumerate {
       return 0;
     });
 
-    // We will try to compute in parallel to get more results earlier
-    ExecutorService service = Executors.newFixedThreadPool(
-        Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
+    // We will try to compute in parallel to get more results
+    // earlier
+    final ExecutorService service =
+        Executors.newFixedThreadPool(Math.max(1,
+            Runtime.getRuntime().availableProcessors() - 1));
 
-    for (long[] pair : list) {
+    for (final long[] pair : list) {
       final int m = ((int) (pair[0]));
       final int n = ((int) (pair[1]));
       service.execute(new __Compute(m, n));
@@ -384,7 +417,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
     service.shutdown();
     try {
       service.awaitTermination(365, TimeUnit.DAYS);
-    } catch (Throwable error) {
+    } catch (final Throwable error) {
       error.printStackTrace();
     }
   }

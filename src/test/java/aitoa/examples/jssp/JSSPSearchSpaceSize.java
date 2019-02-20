@@ -18,13 +18,15 @@ public class JSSPSearchSpaceSize {
    *          the n
    * @return the size
    */
-  static final BigInteger searchSpaceSize(final int m, final int n) {
+  static final BigInteger searchSpaceSize(final int m,
+      final int n) {
     final BigInteger mm = BigInteger.valueOf(m);
     final BigInteger nn = BigInteger.valueOf(n);
 
-    final BigInteger upper = JSSPSolutionSpaceSize
-        .factorial(mm.multiply(nn));
-    final BigInteger lower = JSSPSolutionSpaceSize.factorial(mm).pow(n);
+    final BigInteger upper =
+        JSSPSolutionSpaceSize.factorial(mm.multiply(nn));
+    final BigInteger lower =
+        JSSPSolutionSpaceSize.factorial(mm).pow(n);
     Assert.assertEquals(upper.mod(lower), BigInteger.ZERO);
     return upper.divide(lower);
   }
@@ -52,11 +54,11 @@ public class JSSPSearchSpaceSize {
         System.out.print('|');
         System.out.print(m);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize
-            .toString(JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
+        System.out.print(JSSPSolutionSpaceSize.toString(
+            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize
-            .toString(JSSPSearchSpaceSize.searchSpaceSize(m, n)));
+        System.out.print(JSSPSolutionSpaceSize.toString(
+            JSSPSearchSpaceSize.searchSpaceSize(m, n)));
         System.out.println();
       }
     }
@@ -70,14 +72,16 @@ public class JSSPSearchSpaceSize {
       System.out.print('|');
       System.out.print(inst.m);
       System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize.toString(
-          JSSPSolutionSpaceSize.solutionSpaceSizeLower(inst.m, inst.n)));
+      System.out.print(
+          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
+              .solutionSpaceSizeLower(inst.m, inst.n)));
+      System.out.print('|');
+      System.out.print(
+          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
+              .solutionSpaceSizeUpper(inst.m, inst.n)));
       System.out.print('|');
       System.out.print(JSSPSolutionSpaceSize.toString(
-          JSSPSolutionSpaceSize.solutionSpaceSizeUpper(inst.m, inst.n)));
-      System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize
-          .toString(JSSPSearchSpaceSize.searchSpaceSize(inst.m, inst.n)));
+          JSSPSearchSpaceSize.searchSpaceSize(inst.m, inst.n)));
       System.out.println();
     }
   }

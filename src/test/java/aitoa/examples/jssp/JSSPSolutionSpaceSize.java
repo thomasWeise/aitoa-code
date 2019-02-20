@@ -39,27 +39,31 @@ public class JSSPSolutionSpaceSize {
    */
   static final BigInteger solutionSpaceSizeUpper(final int m,
       final int n) {
-    return factorial(BigInteger.valueOf(n)).pow(m);
+    return JSSPSolutionSpaceSize.factorial(BigInteger.valueOf(n))
+        .pow(m);
   }
 
   /**
    * the bounds, computed via
    * {@link JSSPSolutionSpaceSizeEnumerate#main(String[])}
    */
-  private static final long[][] BOUNDS = new long[][] { { 1L, 1L, 1L },
-      { 2L, 1L, 1L }, { 1L, 2L, 2L }, { 3L, 1L, 1L }, { 1L, 3L, 6L },
-      { 2L, 2L, 3L }, { 4L, 1L, 1L }, { 1L, 4L, 24L }, { 5L, 1L, 1L },
-      { 1L, 5L, 120L }, { 3L, 2L, 4L }, { 2L, 3L, 22L }, { 6L, 1L, 1L },
-      { 1L, 6L, 720L }, { 7L, 1L, 1L }, { 1L, 7L, 5040L }, { 4L, 2L, 5L },
-      { 2L, 4L, 244L }, { 8L, 1L, 1L }, { 1L, 8L, 40320L },
-      { 3L, 3L, 63L }, { 9L, 1L, 1L }, { 1L, 9L, 362880L }, { 5L, 2L, 6L },
+  private static final long[][] BOUNDS = new long[][] {
+      { 1L, 1L, 1L }, { 2L, 1L, 1L }, { 1L, 2L, 2L },
+      { 3L, 1L, 1L }, { 1L, 3L, 6L }, { 2L, 2L, 3L },
+      { 4L, 1L, 1L }, { 1L, 4L, 24L }, { 5L, 1L, 1L },
+      { 1L, 5L, 120L }, { 3L, 2L, 4L }, { 2L, 3L, 22L },
+      { 6L, 1L, 1L }, { 1L, 6L, 720L }, { 7L, 1L, 1L },
+      { 1L, 7L, 5040L }, { 4L, 2L, 5L }, { 2L, 4L, 244L },
+      { 8L, 1L, 1L }, { 1L, 8L, 40320L }, { 3L, 3L, 63L },
+      { 9L, 1L, 1L }, { 1L, 9L, 362880L }, { 5L, 2L, 6L },
       { 2L, 5L, 4548L }, { 10L, 1L, 1L }, { 1L, 10L, 3628800L },
       { 4L, 3L, 147L }, { 3L, 4L, 1630L }, { 6L, 2L, 7L },
-      { 2L, 6L, 108828L }, { 11L, 1L, 1L }, { 1L, 11L, 39916800L },
-      { 12L, 1L, 1L }, { 1L, 12L, 479001600L }, { 7L, 2L, 8L },
+      { 2L, 6L, 108828L }, { 11L, 1L, 1L },
+      { 1L, 11L, 39916800L }, { 12L, 1L, 1L },
+      { 1L, 12L, 479001600L }, { 7L, 2L, 8L },
       { 2L, 7L, 3771792L }, { 5L, 3L, 317L }, { 3L, 5L, 91461L },
-      { 13L, 1L, 1L }, { 1L, 13L, 6227020800L }, { 4L, 4L, 7451L },
-      { 2L, 8L, 156073536L }, };
+      { 13L, 1L, 1L }, { 1L, 13L, 6227020800L },
+      { 4L, 4L, 7451L }, { 2L, 8L, 156073536L }, };
 
   /**
    * compute the search space size as string
@@ -72,7 +76,7 @@ public class JSSPSolutionSpaceSize {
    */
   static final BigInteger solutionSpaceSizeLower(final int m,
       final int n) {
-    for (long[] bound : BOUNDS) {
+    for (final long[] bound : JSSPSolutionSpaceSize.BOUNDS) {
       if (bound[0] == m) {
         if (bound[1] == n) {
           return (BigInteger.valueOf(bound[2]));
@@ -142,11 +146,11 @@ public class JSSPSolutionSpaceSize {
         System.out.print('|');
         System.out.print(m);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize
-            .toString(JSSPSolutionSpaceSize.solutionSpaceSizeLower(m, n)));
+        System.out.print(JSSPSolutionSpaceSize.toString(
+            JSSPSolutionSpaceSize.solutionSpaceSizeLower(m, n)));
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize
-            .toString(JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
+        System.out.print(JSSPSolutionSpaceSize.toString(
+            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
         System.out.println();
       }
     }
@@ -160,11 +164,13 @@ public class JSSPSolutionSpaceSize {
       System.out.print('|');
       System.out.print(inst.m);
       System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize.toString(
-          JSSPSolutionSpaceSize.solutionSpaceSizeLower(inst.m, inst.n)));
+      System.out.print(
+          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
+              .solutionSpaceSizeLower(inst.m, inst.n)));
       System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize.toString(
-          JSSPSolutionSpaceSize.solutionSpaceSizeUpper(inst.m, inst.n)));
+      System.out.print(
+          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
+              .solutionSpaceSizeUpper(inst.m, inst.n)));
       System.out.println();
     }
   }

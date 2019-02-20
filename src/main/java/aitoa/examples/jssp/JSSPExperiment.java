@@ -79,8 +79,7 @@ public class JSSPExperiment {
             new JSSPOperatorBinarySequence(inst);
 // plain EAs
         for (final double cr : new double[] { 0, 0.05, 0.3 }) {
-          for (final int mu : new int[] { 512, 2048, 4096,
-              32 }) {
+          for (final int mu : new int[] { 512, 2048, 4096 }) {
             for (final int lambda : new int[] { mu }) {
               // ea
               JSSPExperiment.run(new EA(cr, mu, lambda), unary,
