@@ -3,13 +3,13 @@ package aitoa.examples.jssp;
 import java.util.Arrays;
 import java.util.Objects;
 
-// start relevant
 import aitoa.structure.IObjectiveFunction;
 
 /**
  * The makespan as objective function for a candidate solution to
  * the Job Shop Scheduling Problem, subject to minimization
  */
+// start relevant
 public final class JSSPMakespanObjectiveFunction
     implements IObjectiveFunction<JSSPCandidateSolution> {
 
@@ -49,7 +49,8 @@ public final class JSSPMakespanObjectiveFunction
 // look at the schedule for each machine
     for (final int[] machine : y.schedule) {
 // the end time of the last job on the machine is the last number
-// in the array
+// in the array, as array machine consists of "flattened" tuples
+// of the form ((job, start, end), (job, start, end), ...)
       final int end = machine[machine.length - 1];
       if (end > makespan) {
         makespan = end; // remember biggest end time
