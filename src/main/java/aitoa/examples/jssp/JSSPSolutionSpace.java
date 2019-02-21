@@ -8,7 +8,10 @@ import aitoa.structure.ISpace;
 
 /**
  * An implementation of the space interface for the solution
- * space of our JSSP
+ * space of our JSSP. Basically, we here provide functionality to
+ * copy to copy and instantiate, well, instances of
+ * {@link aitoa.examples.jssp.JSSPCandidateSolution}. We also
+ * provide the functionality to print and check them.
  */
 // start relevant
 public final class JSSPSolutionSpace

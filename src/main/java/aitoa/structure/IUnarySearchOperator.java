@@ -1,6 +1,7 @@
 package aitoa.structure;
 
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * This interface encapsulates a unary search operator, which can
@@ -28,5 +29,81 @@ public interface IUnarySearchOperator<X> {
    */
   public abstract void apply(final X x, final X dest,
       final Random random);
+
+// end relevant
+  /**
+   * Exhaustively enumerate the complete neighborhood of the
+   * point {@code x}.
+   * <p>
+   * Each of the neighbor elements, one by one, is written to the
+   * destination {@code dest}, which is then passed to the method
+   * {@link java.util.function.Predicate#test(Object)}. If this
+   * predicate function returns {@code true}, the enumeration is
+   * aborted and this function returns {@code true} as well. If
+   * the predicate {@code visitor} returns {@code false}, the
+   * enumeration is continued. If there are no neighbors of
+   * {@code x} anymore to enumerate, this function stops and
+   * returns {@code false}.
+   * <p>
+   * In other words, you can enumerate a sub-set of the
+   * neighborhood of {@code x} by returning {@code true}
+   * somewhere along the way. For example, if an improving move
+   * was found, we can simply stop. Or if the
+   * {@linkplain aitoa.structure.ITerminationCriterion
+   * termination criterion} returned {@code true}. Otherwise, we
+   * may just continue enumerating the neighbors. If
+   * {@code visitor} returned {@code true} <em>and</em> the
+   * enumeration of the neighborhood of {@code x} has finished at
+   * the same time, {@code true} is returned.
+   * <p>
+   * The {@code visitor} can, for instance, perform the
+   * {@linkplain aitoa.structure.IRepresentationMapping
+   * representation mapping} and evaluate the resulting candidate
+   * solution using the
+   * {@linkplain aitoa.structure.IObjectiveFunction objective
+   * function}.
+   * <p>
+   * Notice that this function may be implemented in a
+   * deterministic way. Actually, most likely we will do this in
+   * a deterministic way. Nevertheless, there is no guarantee
+   * about the order in which the neighboring points of {@code x}
+   * are enumerated.
+   * <p>
+   * Notice that the variable {@code dest} <em>must not be</em>
+   * modified by the predicate receiving it. Otherwise, the
+   * behavior of this function is unspecified.
+   * <p>
+   * This is an optional operation that does not need to be
+   * implemented by a unary search operator. If exhaustive
+   * enumeration is not supported, a
+   * {@link java.lang.UnsupportedOperationException} should be
+   * thrown, as done by this default implementation.
+   * 
+   * @param x
+   *          the point from the search space whose neighborhood
+   *          we want to enumerate
+   * @param dest
+   *          the destination record overwritten with the
+   *          neighbors and passed to the predicate
+   *          {@code visitor}
+   * @param visitor
+   *          the predicate deciding whether to stop (return
+   *          {@code true}) or continue (return {@code false})
+   *          the exhaustive enumeration of the neighborhood of
+   *          {@code x}
+   * @return {@code false} if the neighborhood of {@code x} has
+   *         been enumerated exhaustively/completely,
+   *         {@code true} if {@code visitor} returned
+   *         {@code true}
+   */
+// start enumerate
+  public default boolean enumerate(final X x, final X dest,
+      final Predicate<X> visitor) {
+    throw new UnsupportedOperationException("The operator " + //$NON-NLS-1$
+        this.getClass().getName()
+        + " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
+  }
+// end enumerate
+// start relevant
 }
 // end relevant

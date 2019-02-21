@@ -1,6 +1,7 @@
 package aitoa.examples.jssp;
 
 import java.util.Random;
+import java.util.function.Predicate;
 
 import aitoa.structure.IUnarySearchOperator;
 
@@ -28,7 +29,17 @@ public final class JSSPUnaryOperator1Swap
     return "1swap"; //$NON-NLS-1$
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Sample a point from the neighborhood of {@code x} by
+   * swapping two different job-ids inside of {@code x}.
+   * 
+   * @param x
+   *          {@inheritDoc}
+   * @param dest
+   *          {@inheritDoc}
+   * @param random
+   *          {@inheritDoc}
+   */
   @Override
 // start relevant
   public final void apply(final int[] x, final int[] dest,
@@ -50,5 +61,52 @@ public final class JSSPUnaryOperator1Swap
       }
     }
   }
+
+// end relevant
+  /**
+   * We visit all points in the search space that could possibly
+   * be reached by applying one
+   * {@linkplain #apply(int[], int[], Random) search move} to
+   * {@code x}. We therefore simply need to test all possible
+   * index pairs {@code i} and {@code j}. Different neighbors can
+   * only result if {@code x[i] != x[j]}, for which
+   * {@code i != j} must hold. Also, if we swap the jobs at index
+   * {@code i=2} and {@code j=5}, we would get the same result as
+   * when swapping {@code i=5} and {@code j=2}, so we can skip
+   * unnecessary indices by only looking at pairs with
+   * {@code i>j}.
+   * 
+   * @param x
+   *          {@inheritDoc}
+   * @param dest
+   *          {@inheritDoc}
+   * @param visitor
+   *          {@inheritDoc}
+   */
+  @Override
+// start enumerate
+  public final boolean enumerate(final int[] x, final int[] dest,
+      final Predicate<int[]> visitor) {
+    int i = x.length; // get the length
+    System.arraycopy(x, 0, dest, 0, i); // copy x to dest
+    for (; (--i) > 0;) { // iterate over all indices 1..(n-1)
+      final int job_i = dest[i]; // remember job id at index i
+      for (int j = i; (--j) >= 0;) { // iterate over 0..(i-1)
+        final int job_j = dest[j]; // remember job at index j
+        if (job_i != job_j) { // both jobs are different
+          dest[i] = job_j; // then we swap the values
+          dest[j] = job_i; // and will then call the visitor
+          if (visitor.test(dest)) {
+            return true; // visitor says: stop -> return true
+          } // visitor did not say stop, so we need to
+          dest[i] = job_i; // revert the change
+          dest[j] = job_j; // and continue
+        } // end of creation of different neighbor
+      } // end of iteration via index j
+    } // end of iteration via index i
+    return false; // we have enumerated the complete neighborhood
+  }
+// end enumerate
+// start relevant
 }
 // end relevant
