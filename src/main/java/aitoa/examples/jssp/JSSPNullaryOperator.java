@@ -52,4 +52,3 @@ public final class JSSPNullaryOperator
   }
 }
 // end relevant
-    

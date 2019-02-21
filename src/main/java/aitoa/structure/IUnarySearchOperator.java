@@ -11,6 +11,7 @@ import java.util.Random;
  *          the search space
  */
 @FunctionalInterface
+// start relevant
 public interface IUnarySearchOperator<X> {
 
   /**
@@ -28,3 +29,4 @@ public interface IUnarySearchOperator<X> {
   public abstract void apply(final X x, final X dest,
       final Random random);
 }
+// end relevant
