@@ -14,7 +14,23 @@ import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
-/** A evolutionary algorithm */
+/**
+ * A evolutionary algorithm which prunes the population from
+ * candidate solutions with identical objective values before the
+ * reproduction step. This ensures that all "parents" from which
+ * new points in the search space are derived have a different
+ * solution quality. This, in turn, implies that they are
+ * different candidate solutions. These, in turn, must be the
+ * result of representation mappings applied to different points
+ * in the search space.
+ * <p>
+ * Please notice that the direct, simple comparisons of the
+ * objective values applied here in form of
+ * {@code ind.quality > P[unique - 1].quality} only make sense in
+ * combinatorial problems where these values are integers. In
+ * numerical problems, we could, e.g., base the comparisons on
+ * some similarity thresholds.
+ */
 // start relevant
 public class EAWithPruning implements IMetaheuristic {
 // end relevant

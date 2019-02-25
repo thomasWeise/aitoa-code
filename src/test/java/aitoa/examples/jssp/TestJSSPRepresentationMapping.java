@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import aitoa.bookExamples.jssp.JSSPRepresentationMappingExample;
 import aitoa.structure.ISpace;
 
 /** A Test for the JSSP representation mapping */

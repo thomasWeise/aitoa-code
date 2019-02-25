@@ -1,10 +1,13 @@
-package aitoa.examples.jssp;
+package aitoa.bookExamples.jssp;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the solution space sizes for the JSSP instances */
 public class JSSPSolutionSpaceSize {

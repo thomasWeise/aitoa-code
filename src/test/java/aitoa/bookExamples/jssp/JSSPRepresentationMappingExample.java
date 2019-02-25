@@ -1,4 +1,10 @@
-package aitoa.examples.jssp;
+package aitoa.bookExamples.jssp;
+
+import aitoa.examples.jssp.JSSPCandidateSolution;
+import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPRepresentationMapping;
+import aitoa.examples.jssp.JSSPSolutionSpace;
 
 /** an example for the JSSP representation */
 public class JSSPRepresentationMappingExample {

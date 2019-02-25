@@ -1,4 +1,4 @@
-package aitoa.examples.jssp;
+package aitoa.bookExamples.jssp;
 
 import java.util.ArrayList;
 import java.util.Arrays;

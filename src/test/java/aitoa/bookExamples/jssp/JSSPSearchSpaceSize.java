@@ -1,10 +1,13 @@
-package aitoa.examples.jssp;
+package aitoa.bookExamples.jssp;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Assert;
+
+import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the search space sizes for the JSSP instances */
 public class JSSPSearchSpaceSize {

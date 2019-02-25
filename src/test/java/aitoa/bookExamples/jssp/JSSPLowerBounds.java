@@ -1,7 +1,11 @@
-package aitoa.examples.jssp;
+package aitoa.bookExamples.jssp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 
 /** Print the lower bounds for the JSSP instances */
 public class JSSPLowerBounds {
