@@ -12,6 +12,13 @@ import aitoa.structure.IUnarySearchOperator;
  * solution and tries to improve upon it in each step. It does so
  * by applying a modification to this solution and keeps the
  * modified solution if and only if it is better.
+ * <p>
+ * If is different from the
+ * {@linkplain aitoa.algorithms.HillClimber2 second version} of
+ * the hill climbing algorithm in that it uses single, randomized
+ * applications of the unary search operator to discover
+ * neighboring points while the second version scans the
+ * neighborhood by enumerating it.
  */
 // start relevant
 public final class HillClimber implements IMetaheuristic {

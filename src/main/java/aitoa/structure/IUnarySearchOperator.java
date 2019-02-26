@@ -92,7 +92,8 @@ public interface IUnarySearchOperator<X> {
    *          the exhaustive enumeration of the neighborhood of
    *          {@code x}
    * @return {@code false} if the neighborhood of {@code x} has
-   *         been enumerated exhaustively/completely,
+   *         been enumerated exhaustively/completely, (and
+   *         {@code visitor} never returned {@code true}),
    *         {@code true} if {@code visitor} returned
    *         {@code true}
    */

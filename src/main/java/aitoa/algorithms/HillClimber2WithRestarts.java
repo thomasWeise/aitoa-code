@@ -8,11 +8,14 @@ import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
 
 /**
- * The hill climbing algorithm remembers the current best
- * solution and tries to improve upon it in each step.
+ * The second version of the hill climbing algorithm with
+ * restarts remembers the current best solution and tries to
+ * improve upon it in each step by enumerating its neighborhood.
+ * If no improvement could be found in the whole neighborhood, it
+ * restarts.
  * <p>
- * Different from the {@linkplain aitoa.algorithms.HillClimber
- * stochastic hill climber}, this "deterministic"
+ * Different from the first version of
+ * {@linkplain aitoa.algorithms.HillClimber hill climber}, this
  * first-improvement algorithm does so by enumerating the
  * neighborhood of the current-best solution until it finds an
  * improving move.
@@ -28,12 +31,12 @@ import aitoa.structure.IUnarySearchOperator;
  * Hence, the results of this algorithm are still randomized.
  */
 // start relevant
-public final class DeterministicHillClimberWithRestarts
+public final class HillClimber2WithRestarts
     implements IMetaheuristic {
 
 // end relevant
   /** create */
-  public DeterministicHillClimberWithRestarts() {
+  public HillClimber2WithRestarts() {
     super();
   }
 
@@ -52,7 +55,7 @@ public final class DeterministicHillClimberWithRestarts
         process.getUnarySearchOperator(); // get nullary op
     final Random random = process.getRandom();// get random gen
     boolean improved = false;
-    double[] f_best = new double[1]; // needs to be array
+    final double[] f_best = new double[1]; // needs to be array
 // start relevant
     for (;;) { // in each iteration of the main loop...
 // create starting point: a random point in the search space
@@ -87,7 +90,7 @@ public final class DeterministicHillClimberWithRestarts
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "dhcf_rs"; //$NON-NLS-1$
+    return "hc2f_rs"; //$NON-NLS-1$
   }
 // start relevant
 }

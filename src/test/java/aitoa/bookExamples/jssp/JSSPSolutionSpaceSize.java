@@ -1,11 +1,10 @@
 package aitoa.bookExamples.jssp;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import aitoa.bookExamples.Tools;
 import aitoa.examples.jssp.JSSPExperiment;
 import aitoa.examples.jssp.JSSPInstance;
 
@@ -90,43 +89,6 @@ public class JSSPSolutionSpaceSize {
   }
 
   /**
-   * format a big integer to a string
-   *
-   * @param v
-   *          the big integer
-   * @return the value
-   */
-  static final String toString(final BigInteger v) {
-    if (v == null) {
-      return "";//$NON-NLS-1$
-    }
-    final String s = v.toString();
-    final StringBuilder sb = new StringBuilder();
-
-    final int length = s.length();
-
-    if (length > 15) {
-      final BigDecimal bd = new BigDecimal(v);
-      final String vv[] = new DecimalFormat("0.000E00")//$NON-NLS-1$
-          .format(bd).split("E"); //$NON-NLS-1$
-
-      return ("$\\approx$&nbsp;" + //$NON-NLS-1$
-          vv[0] + "*10^" + //$NON-NLS-1$
-          Integer.parseInt(vv[1]) + "^");//$NON-NLS-1$
-    }
-
-    for (int i = length, j = 0; (--i) >= 0;) {
-      sb.insert(0, s.charAt(i));
-      if (((++j) % 3) == 0) {
-        if (j < length) {
-          sb.insert(0, '\'');
-        }
-      }
-    }
-    return sb.toString();
-  }
-
-  /**
    * The main routine
    *
    * @param args
@@ -149,11 +111,13 @@ public class JSSPSolutionSpaceSize {
         System.out.print('|');
         System.out.print(m);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize.toString(
-            JSSPSolutionSpaceSize.solutionSpaceSizeLower(m, n)));
+        Tools.printLongNumber(
+            JSSPSolutionSpaceSize.solutionSpaceSizeLower(m, n),
+            15);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize.toString(
-            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
+        Tools.printLongNumber(
+            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n),
+            15);
         System.out.println();
       }
     }
@@ -167,13 +131,11 @@ public class JSSPSolutionSpaceSize {
       System.out.print('|');
       System.out.print(inst.m);
       System.out.print('|');
-      System.out.print(
-          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
-              .solutionSpaceSizeLower(inst.m, inst.n)));
+      Tools.printLongNumber(JSSPSolutionSpaceSize
+          .solutionSpaceSizeLower(inst.m, inst.n), 15);
       System.out.print('|');
-      System.out.print(
-          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
-              .solutionSpaceSizeUpper(inst.m, inst.n)));
+      Tools.printLongNumber(JSSPSolutionSpaceSize
+          .solutionSpaceSizeUpper(inst.m, inst.n), 15);
       System.out.println();
     }
   }

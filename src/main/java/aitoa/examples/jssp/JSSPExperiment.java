@@ -9,7 +9,10 @@ import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EAWithRestarts;
 import aitoa.algorithms.HillClimber;
+import aitoa.algorithms.HillClimber2;
+import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SingleRandomSample;
 import aitoa.structure.BlackBoxProcessBuilder;
@@ -59,11 +62,12 @@ public class JSSPExperiment {
       new IUnarySearchOperator[] { new JSSPUnaryOperator1Swap(),
           new JSSPUnaryOperatorNSwap() }) {
 
-// hill climbers
+// plain hill climbers which do not enumerate their neighborhood
         JSSPExperiment.run(new HillClimber(), unary, null, inst,
             out);
 
-// hill climbers with restarts
+// hill climbers which do not enumerate neighborhood with
+// restarts
         for (final double inc : new double[] { 0d, 0.05d }) {
           JSSPExperiment.run(
               new HillClimberWithRestarts(256, "256", inc), //$NON-NLS-1$
@@ -77,29 +81,55 @@ public class JSSPExperiment {
 // create the binary search operator
         final IBinarySearchOperator<int[]> binary =
             new JSSPOperatorBinarySequence(inst);
-// plain EAs
+// evolutionary algorithms
         for (final double cr : new double[] { 0, 0.05, 0.3 }) {
           for (final int mu : new int[] { 512, 2048, 4096 }) {
             for (final int lambda : new int[] { mu }) {
-              // ea
+// the plain EA
               JSSPExperiment.run(new EA(cr, mu, lambda), unary,
                   binary, inst, out);
-
+// the EA with pruning, i.e., which enforces population diversity
               JSSPExperiment.run(
                   new EAWithPruning(cr, mu, lambda), unary,
                   binary, inst, out);
-
+// EAs with restarts won't work here due to small computational
+// budget, let's try them anyway
               for (final int genRs : new int[] { 16 }) {
                 // ea with restarts
                 JSSPExperiment.run(
                     new EAWithRestarts(cr, mu, lambda, genRs),
                     unary, binary, inst, out);
               }
-            }
-          }
-        }
-      }
-    }
+            } // lambda
+          } // mu
+        } // cr
+      } // first batch of unary operators
+
+// we now test algorithms which use neighborhood enumeration
+      for (final IUnarySearchOperator<int[]> unary : //
+      new IUnarySearchOperator[] { new JSSPUnaryOperator1Swap(),
+          new JSSPUnaryOperator12Swap() }) {
+
+// hill climbers with neighborhood enumeration
+        JSSPExperiment.run(new HillClimber2(), unary, null, inst,
+            out);
+        JSSPExperiment.run(new HillClimber2WithRestarts(), unary,
+            null, inst, out);
+
+// create the binary search operator
+        final IBinarySearchOperator<int[]> binary =
+            new JSSPOperatorBinarySequence(inst);
+// memetic algorithms: the unary operator enumerates
+// neighborhoods
+        for (final int mu : new int[] { 32, 512, 2048, 4096 }) {
+          for (final int lambda : new int[] { mu }) {
+            // ma
+            JSSPExperiment.run(new MAWithPruning(mu, lambda),
+                unary, binary, inst, out);
+          } // lambda
+        } // mu
+      } // unary operators
+    } // instances
   }
 
   /**

@@ -15,12 +15,20 @@ import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
 /**
- * A evolutionary algorithm which prunes the population from
- * candidate solutions with identical objective values before the
- * reproduction step. This ensures that all "parents" from which
- * new points in the search space are derived have a different
- * solution quality. This, in turn, implies that they are
- * different candidate solutions. These, in turn, must be the
+ * A memetic algorithm which always applies the binary operator
+ * to find new points in the search space and then refines them
+ * with a best-first local search based on a unary operator. It
+ * also prunes the population from candidate solutions with
+ * identical objective values before the reproduction step.
+ * <p>
+ * <p>
+ * All candidate solutions represented in the population will
+ * always be local optima before entering the binary operators.
+ * If these operators work well, they may jump close to other
+ * local optima. The pruning ensures that all "parents" from
+ * which new points in the search space are derived have a
+ * different solution quality. This, in turn, implies that they
+ * are different candidate solutions. These, in turn, must be the
  * result of representation mappings applied to different points
  * in the search space.
  * <p>
@@ -32,11 +40,9 @@ import aitoa.utils.RandomUtils;
  * some similarity thresholds.
  */
 // start relevant
-public class EAWithPruning implements IMetaheuristic {
+public class MAWithPruning implements IMetaheuristic {
 // end relevant
 
-  /** the crossover rate */
-  public final double cr;
   /** the number of selected parents */
   public final int mu;
   /** the number of offsprings per generation */
@@ -45,21 +51,13 @@ public class EAWithPruning implements IMetaheuristic {
   /**
    * Create a new instance of the evolutionary algorithm
    *
-   * @param _cr
-   *          the crossover rate
    * @param _mu
    *          the number of parents to be selected
    * @param _lambda
    *          the number of offspring to be created
    */
-  public EAWithPruning(final double _cr, final int _mu,
-      final int _lambda) {
+  public MAWithPruning(final int _mu, final int _lambda) {
     super();
-    if ((_cr < 0d) || (_cr > 1d) || (!(Double.isFinite(_cr)))) {
-      throw new IllegalArgumentException(
-          "Invalid crossover rate: " + _cr); //$NON-NLS-1$
-    }
-    this.cr = _cr;
     if ((_mu < 1) || (_mu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
     }
@@ -86,19 +84,13 @@ public class EAWithPruning implements IMetaheuristic {
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
     output.newLine();
-    output.write("cr: ");//$NON-NLS-1$
-    output.write(Double.toString(this.cr));
-    output.newLine();
-    output.write("cr(inhex): ");//$NON-NLS-1$
-    output.write(Double.toHexString(this.cr));
-    output.newLine();
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((((("eap_" + //$NON-NLS-1$
-        this.mu) + '+') + this.lambda) + '@') + this.cr);
+    return ((("map_" + //$NON-NLS-1$
+        this.mu) + '+') + this.lambda);
   }
 
   /** {@inheritDoc} */
@@ -120,71 +112,87 @@ public class EAWithPruning implements IMetaheuristic {
         process.getUnarySearchOperator();
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
-
+    final X temp = searchSpace.create();
     Individual<X>[] T = null,
         P = new Individual[this.mu + this.lambda],
         P2 = new Individual[P.length];
+    int p2;
+    boolean improved = false;
 // start relevant
+    restart: for (;;) { // (we reset if population collapses)
 // first generation: fill population with random individuals
-    for (int i = P.length; (--i) >= 0;) {
-      final X x = searchSpace.create();
-      nullary.apply(x, random);
-      P[i] = new Individual<>(x, process.evaluate(x));
-    }
-
-    for (;;) { // main loop: one iteration = one generation
-// shuffle P, so after sorting the order of unique recs is random
-      RandomUtils.shuffle(random, P, 0, P.length);
-// sort the population: mu best individuals at front are selected
-      Arrays.sort(P);
-// we now want to keep only the solutions with unique fitness
-      int unique = 0, done = 0, end = P.length;
-      T = P; // since array P is sorted, so we can do this by
-      P = P2; // processing it from begin to end and copying
-      P2 = T; // these individuals to the start of another array
-// we switch the two arrays here so the rest is the same as EA
-      makeUnique: for (final Individual<X> ind : P2) {
-        ++done;
-        if ((unique <= 0)
-            || (ind.quality > P[unique - 1].quality)) {
-          P[unique] = ind;
-          if ((++unique) >= this.mu) { // we are done and can
-            System.arraycopy(P2, done, P, unique, // copy the
-                P.length - done); // remaining individuals
-            break makeUnique; // directly, they do not need to
-          } // be unique, as they will be overwritten anyway
-        } else { // ind has an already-seen quality, so we copy
-          P[--end] = ind; // it to the end of the array, where
-        } // it will eventually be overwritten
+      for (int i = P.length; (--i) >= 0;) {
+        final X x = searchSpace.create();
+        nullary.apply(x, random);
+        P[i] = new Individual<>(x, process.evaluate(x));
       }
-// now we have 1 <= unique <= mu unique solutions
+      int localSearchStart = 0; // at first, apply ls to all
+
+      for (;;) { // main loop: one iteration = one generation
+        for (int i = P.length; (--i) >= localSearchStart;) {
+          final Individual<X> ind = P[i];
+          do { // local search in style of HillClimber2
+            improved = unary.enumerate(ind.x, temp, (point) -> {
+              final double newQuality = process.evaluate(point);
+              if (newQuality < ind.quality) { // better?
+                ind.quality = newQuality; // store quality
+                searchSpace.copy(point, ind.x); // store point
+                return (true); // exit to next loop
+              } // if we get here, point is not better
+              return process.shouldTerminate();
+            }); // repeat this until no improvement or time is up
+          } while (improved && (!process.shouldTerminate()));
+        } // end of 1 iteration: we have refined 1 solution by LS
+// shuffle P, so after sorting the order of unique recs is random
+        RandomUtils.shuffle(random, P, 0, P.length);
+// sort the population: mu best individuals at front are selected
+        Arrays.sort(P);
+// we now want to keep only the solutions with unique fitness
+        int unique = 0, done = 0, end = P.length;
+        T = P; // since array P is sorted, so we can do this by
+        P = P2; // processing it from begin to end and copying
+        P2 = T; // these individuals to the start of P
+// we switch the two arrays here so the rest is the same as EA
+        makeUnique: for (final Individual<X> ind : P2) {
+          ++done;
+          if ((unique <= 0)
+              || (ind.quality > P[unique - 1].quality)) {
+            P[unique] = ind;
+            if ((++unique) >= this.mu) { // we are done and can
+              System.arraycopy(P2, done, P, unique, // copy the
+                  P.length - done); // remaining individuals
+              break makeUnique; // directly, they do not need to
+            } // be unique, as they will be overwritten anyway
+          } else { // ind has an already-seen quality, so we copy
+            P[--end] = ind; // it to the end of the array, where
+          } // it will eventually be overwritten
+        }
+        if (unique <= 1) { // 1 <= unique <= mu unique solutions
+          continue restart; // if unique==1, restart, because
+        } // then recombination makes no sense
+// now we have 2 <= unique <= mu unique solutions
 // shuffle the first unique solutions to ensure fairness
-      RandomUtils.shuffle(random, P, 0, unique);
-      int p1 = -1; // index to iterate over first parent
+        RandomUtils.shuffle(random, P, 0, unique);
+        int p1 = -1; // index to iterate over first parent
 
 // override the worse (mu+lambda-unique) solutions
-      for (int index = P.length; (--index) >= unique;) {
-        if (process.shouldTerminate()) { // we return
-          return; // best solution is stored in process
-        }
-
-        final Individual<X> dest = P[index];
-        final Individual<X> sel = P[(++p1) % unique];
-        if (random.nextDouble() <= this.cr) { // crossover!
-          int p2; // to hold index of second selected record
+        for (int index = P.length; (--index) >= unique;) {
+          if (process.shouldTerminate()) { // we return
+            return; // best solution is stored in process
+          }
+          final Individual<X> dest = P[index];
+          final Individual<X> sel = P[(++p1) % unique];
+          // to hold index of second selected record
           do { // find a second, different record
             p2 = random.nextInt(unique);
           } while (p2 == p1);
-// perform recombination of the two selected individuals
+// perform recombination and compute quality
           binary.apply(sel.x, P[p2].x, dest.x, random);
-        } else {
-// create modified copy of parent using unary operator
-          unary.apply(sel.x, dest.x, random);
-        }
-// map to solution/schedule and evaluate quality
-        dest.quality = process.evaluate(dest.x);
-      } // the end of the offspring generation
-    } // the end of the main loop
+          dest.quality = process.evaluate(dest.x);
+        } // the end of the offspring generation
+        localSearchStart = this.mu; // ls only for lambda new
+      } // the end of the main loop
+    } // end of the restart loop
   }
 // end relevant
 

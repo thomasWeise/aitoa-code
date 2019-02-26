@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 
+import aitoa.bookExamples.Tools;
 import aitoa.examples.jssp.JSSPExperiment;
 import aitoa.examples.jssp.JSSPInstance;
 
@@ -57,11 +58,12 @@ public class JSSPSearchSpaceSize {
         System.out.print('|');
         System.out.print(m);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize.toString(
-            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n)));
+        Tools.printLongNumber(
+            JSSPSolutionSpaceSize.solutionSpaceSizeUpper(m, n),
+            15);
         System.out.print('|');
-        System.out.print(JSSPSolutionSpaceSize.toString(
-            JSSPSearchSpaceSize.searchSpaceSize(m, n)));
+        Tools.printLongNumber(
+            JSSPSearchSpaceSize.searchSpaceSize(m, n), 15);
         System.out.println();
       }
     }
@@ -75,16 +77,18 @@ public class JSSPSearchSpaceSize {
       System.out.print('|');
       System.out.print(inst.m);
       System.out.print('|');
-      System.out.print(
-          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
-              .solutionSpaceSizeLower(inst.m, inst.n)));
+
+      Tools.printLongNumber(JSSPSolutionSpaceSize
+          .solutionSpaceSizeLower(inst.m, inst.n), 15);
       System.out.print('|');
-      System.out.print(
-          JSSPSolutionSpaceSize.toString(JSSPSolutionSpaceSize
-              .solutionSpaceSizeUpper(inst.m, inst.n)));
+
+      Tools.printLongNumber(JSSPSolutionSpaceSize
+          .solutionSpaceSizeUpper(inst.m, inst.n), 15);
       System.out.print('|');
-      System.out.print(JSSPSolutionSpaceSize.toString(
-          JSSPSearchSpaceSize.searchSpaceSize(inst.m, inst.n)));
+
+      Tools.printLongNumber(
+          JSSPSearchSpaceSize.searchSpaceSize(inst.m, inst.n),
+          15);
       System.out.println();
     }
   }

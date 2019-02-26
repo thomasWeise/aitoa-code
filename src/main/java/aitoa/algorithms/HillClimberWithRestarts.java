@@ -14,7 +14,16 @@ import aitoa.structure.IUnarySearchOperator;
  * The hill climbing algorithm remembers the current best
  * solution and tries to improve upon it in each step. It does so
  * by applying a modification to this solution and keeps the
- * modified solution if and only if it is better.
+ * modified solution if and only if it is better. If no improving
+ * move could be made for some time, this algorithm restarts. Of
+ * course, it remembers the overall best solution.
+ * <p>
+ * If is different from the
+ * {@linkplain aitoa.algorithms.HillClimber2WithRestarts second
+ * version} of the hill climbing algorithm with restarts in that
+ * it uses single, randomized applications of the unary search
+ * operator to discover neighboring points while the second
+ * version scans the neighborhood by enumerating it.
  */
 // start relevant
 public final class HillClimberWithRestarts
