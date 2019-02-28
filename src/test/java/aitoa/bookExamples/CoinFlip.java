@@ -130,6 +130,12 @@ public class CoinFlip {
   @Test(timeout = 3600000)
   public void test_nChooseK() {
     BigInteger result;
+    
+
+    result = CoinFlip.nChooseK(10, 4);
+    Assert.assertEquals(210, result.intValue());
+    result = CoinFlip.nChooseK(10, 6);
+    Assert.assertEquals(210, result.intValue());
 
     result = CoinFlip.nChooseK(1, 1);
     Assert.assertEquals(1, result.intValue());
@@ -159,6 +165,12 @@ public class CoinFlip {
     Assert.assertEquals(
         new BigInteger("50062763930025152588146122462400"), //$NON-NLS-1$
         result);
+    
+    result = nChooseK(202,101);
+    Assert.assertEquals(
+        new BigInteger("360401018730232861668242368169788454233176683658575855546640"), //$NON-NLS-1$
+        result);
+
   }
 
   /**
@@ -168,9 +180,13 @@ public class CoinFlip {
    *          the command line arguments
    */
   public static final void main(final String[] args) {
+    final int total = 160;
+    final int wins = (total - (2 * (total / 10)));
+    System.out.print(wins);
+    System.out.print(" out of "); //$NON-NLS-1$
+    System.out.println(total);
     final BigInteger[] res =
-        CoinFlip.atLeastKHeadsFromNTosses(200, 180);
-
+        CoinFlip.atLeastKHeadsFromNTosses(total, wins);
     Tools.printLongNumber(res[0]);
     System.out.print('/');
     Tools.printLongNumber(res[1]);
@@ -179,6 +195,8 @@ public class CoinFlip {
     System.out.print('/');
     Tools.printLongNumber(res[1], 4);
     System.out.println();
+    System.out.println(
+        new BigDecimal(res[0]).divide(new BigDecimal(res[1])).toPlainString());
     System.out.println(
         new BigDecimal(res[0]).divide(new BigDecimal(res[1])));
     Tools.printLongNumber(

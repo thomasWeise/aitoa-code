@@ -170,7 +170,7 @@ public class EAWithPruning implements IMetaheuristic {
 
         final Individual<X> dest = P[index];
         final Individual<X> sel = P[(++p1) % unique];
-        if (random.nextDouble() <= this.cr) { // crossover!
+        if ((unique >= 2) && (random.nextDouble() <= this.cr)) {
           int p2; // to hold index of second selected record
           do { // find a second, different record
             p2 = random.nextInt(unique);
