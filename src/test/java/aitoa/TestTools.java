@@ -1,5 +1,6 @@
 package aitoa;
 
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Assert;
@@ -531,5 +532,52 @@ public class TestTools {
           a + " should be greater than " //$NON-NLS-1$
           + b + ", but is not.");//$NON-NLS-1$
     }
+  }
+
+  /**
+   * assert that all elements in a {@code boolean[]} array are
+   * {@code v}.
+   *
+   * @param v
+   *          the value to compare with
+   * @param a
+   *          the array
+   */
+  public static final void assertAllEquals(final boolean v,
+      final boolean[] a) {
+    ok: {
+      for (final boolean z : a) {
+        if (z != v) {
+          break ok;
+        }
+      }
+      return;
+    }
+    Assert.fail("some elements in " + //$NON-NLS-1$
+        Arrays.toString(a) + " are not "//$NON-NLS-1$ s
+        + v);
+  }
+
+  /**
+   * assert that all elements in a {@code int[]} array are
+   * {@code v}.
+   *
+   * @param v
+   *          the value
+   * @param a
+   *          the array
+   */
+  public static final void assertAllEquals(final int v,
+      final int[] a) {
+    ok: {
+      for (final int z : a) {
+        if (z != v) {
+          break ok;
+        }
+      }
+      return;
+    }
+    Assert.fail("some elements in " + //$NON-NLS-1$
+        Arrays.toString(a) + " are not " + v);//$NON-NLS-1$ s
   }
 }

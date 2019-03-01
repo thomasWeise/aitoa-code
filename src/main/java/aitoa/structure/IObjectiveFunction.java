@@ -19,4 +19,15 @@ public interface IObjectiveFunction<Y> {
    * @return the objective value: smaller values are better
    */
   public abstract double evaluate(final Y y);
+
+  /**
+   * Compute a lower bound, if possible. The default
+   * implementation of this method returns
+   * {@link Double#NEGATIVE_INFINITY}.
+   *
+   * @return the lower bound of the objective value
+   */
+  public default double lowerBound() {
+    return Double.NEGATIVE_INFINITY;
+  }
 }

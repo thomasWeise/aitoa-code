@@ -38,9 +38,7 @@ public class JSSPTestUtils {
       TestTools.assertValidIndex(i, count.length);
       ++count[i];
     }
-    for (final int c : count) {
-      Assert.assertEquals(inst.m, c);
-    }
+    TestTools.assertAllEquals(inst.m, count);
   }
 
   /**
@@ -90,6 +88,7 @@ public class JSSPTestUtils {
           }
         }
       }
+      TestTools.assertAllEquals(true, done);
     }
 
     for (final int job[] : jobPerspective) {

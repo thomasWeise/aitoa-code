@@ -68,7 +68,8 @@ public final class JSSPMakespanObjectiveFunction
    *
    * @return the lower bound
    */
-  public final int lowerBound() {
+  @Override
+  public final double lowerBound() {
     final JSSPInstance inst = this.m_instance;
 
     final int[] a = new int[inst.m]; // lb inactive time at start
