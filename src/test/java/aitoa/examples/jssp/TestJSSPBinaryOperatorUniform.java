@@ -1,30 +1,79 @@
 package aitoa.examples.jssp;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import aitoa.structure.IBinarySearchOperator;
+import aitoa.structure.IBinarySearchOperatorTest;
+import aitoa.structure.ISpace;
+
 /** test the binary sequence crossover search operator */
-public class TestJSSPBinaryOperatorUniform {
+public class TestJSSPBinaryOperatorUniform
+    extends IBinarySearchOperatorTest<int[]> {
+
+  /** the space we use */
+  private static final JSSPInstance PROBLEM =
+      new JSSPInstance("abz8"); //$NON-NLS-1$
+
+  /** the space we use */
+  private static final JSSPSearchSpace SPACE =
+      new JSSPSearchSpace(TestJSSPBinaryOperatorUniform.PROBLEM);
+
+  /** the operator we use */
+  private static final IBinarySearchOperator<int[]> OP =
+      new JSSPOperatorBinaryUniform(
+          TestJSSPBinaryOperatorUniform.PROBLEM);
+
+  /** {@inheritDoc} */
+  @Override
+  protected ISpace<int[]> getSpace() {
+    return TestJSSPBinaryOperatorUniform.SPACE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected IBinarySearchOperator<int[]>
+      getOperator(final ISpace<int[]> space) {
+    if (space == TestJSSPBinaryOperatorUniform.SPACE) {
+      return TestJSSPBinaryOperatorUniform.OP;
+    }
+    return new JSSPOperatorBinaryUniform(
+        ((JSSPSearchSpace) space).instance);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected boolean equals(final int[] a, final int[] b) {
+    return Arrays.equals(a, b);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected int[] createValid() {
+    return JSSPTestUtils
+        .createValidX(TestJSSPBinaryOperatorUniform.PROBLEM);
+  }
 
   /** test the application to the canonical instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testCanonical() {
     final Random random = ThreadLocalRandom.current();
-    for (final JSSPInstance inst : CheckJSSPOperatorUtils.INSTANCS) {
+    for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
       final JSSPOperatorBinaryUniform op =
           new JSSPOperatorBinaryUniform(inst);
       final int[] x = new int[inst.m * inst.n];
       final int[] c = new int[inst.m * inst.n];
-      CheckJSSPOperatorUtils.canonicalX(c, inst);
+      JSSPTestUtils.canonicalX(c, inst);
       final int[] c2 = c.clone();
-      CheckJSSPOperatorUtils.assertX(c2, inst);
+      JSSPTestUtils.assertX(c2, inst);
       for (int i = 1000; (--i) >= 0;) {
         op.apply(c, c, x, random);
-        CheckJSSPOperatorUtils.assertX(x, inst);
+        JSSPTestUtils.assertX(x, inst);
         Assert.assertArrayEquals(c, c2);
       }
     }
@@ -35,7 +84,7 @@ public class TestJSSPBinaryOperatorUniform {
   @Test(timeout = 3600000)
   public final void testRandom() {
     final Random random = ThreadLocalRandom.current();
-    for (final JSSPInstance inst : CheckJSSPOperatorUtils.INSTANCS) {
+    for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
       final JSSPOperatorBinaryUniform op =
           new JSSPOperatorBinaryUniform(inst);
       final int[] x = new int[inst.m * inst.n];
@@ -43,12 +92,12 @@ public class TestJSSPBinaryOperatorUniform {
       final int[] c2 = new int[inst.m * inst.n];
 
       for (int i = 1000; (--i) >= 0;) {
-        CheckJSSPOperatorUtils.randomX(c1, inst);
-        CheckJSSPOperatorUtils.assertX(c1, inst);
-        CheckJSSPOperatorUtils.randomX(c2, inst);
-        CheckJSSPOperatorUtils.assertX(c2, inst);
+        JSSPTestUtils.randomX(c1, inst);
+        JSSPTestUtils.assertX(c1, inst);
+        JSSPTestUtils.randomX(c2, inst);
+        JSSPTestUtils.assertX(c2, inst);
         op.apply(c1, c2, x, random);
-        CheckJSSPOperatorUtils.assertX(x, inst);
+        JSSPTestUtils.assertX(x, inst);
       }
     }
   }

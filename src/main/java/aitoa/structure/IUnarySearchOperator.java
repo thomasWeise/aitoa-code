@@ -77,8 +77,14 @@ public interface IUnarySearchOperator<X> {
    * implemented by a unary search operator. If exhaustive
    * enumeration is not supported, a
    * {@link java.lang.UnsupportedOperationException} should be
-   * thrown, as done by this default implementation.
-   * 
+   * thrown, as done by this default implementation. In this
+   * case, {@link #canEnumerate()} should return {@code false}.
+   * If {@link #canEnumerate()} is implemented to return
+   * {@code true}, then
+   * {@link #enumerate(Object, Object, Predicate)} must be
+   * implemented in a reasonable way as well and must not throw
+   * an @link java.lang.UnsupportedOperationException}.
+   *
    * @param x
    *          the point from the search space whose neighborhood
    *          we want to enumerate
@@ -96,6 +102,10 @@ public interface IUnarySearchOperator<X> {
    *         {@code visitor} never returned {@code true}),
    *         {@code true} if {@code visitor} returned
    *         {@code true}
+   * @see #canEnumerate()
+   * @throws java.lang.UnsupportedOperationException
+   *           if the neighborhood defined by this operator
+   *           cannot be enumerated in a reasonable way
    */
 // start enumerate
   public default boolean enumerate(final X x, final X dest,
@@ -105,6 +115,23 @@ public interface IUnarySearchOperator<X> {
         + " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
   }
 // end enumerate
+
+  /**
+   * This method allows an algorithm to query whether
+   * {@link #enumerate(Object, Object, Predicate)} can be called.
+   *
+   * @return {@code true} if
+   *         {@link #enumerate(Object, Object, Predicate)} can be
+   *         used, {@code false} if and only if
+   *         {@link #enumerate(Object, Object, Predicate)} will
+   *         throw a
+   *         {@link java.lang.UnsupportedOperationException}
+   * @see #enumerate(Object, Object, Predicate)
+   */
+  public default boolean canEnumerate() {
+    return false;
+  }
+
 // start relevant
 }
 // end relevant

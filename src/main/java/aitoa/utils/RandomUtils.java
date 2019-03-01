@@ -56,17 +56,17 @@ public final class RandomUtils {
           error);
     }
 
-    // if we only want at most 2 random seeds, that may already
-    // be enough
+// if we only want at most 1 random seed, that may already be
+// enough
     if (count <= 1) {// yes
       return new long[] { a };
     }
 
-    // to generate "count" unique seeds
+// to generate "count" unique seeds
     final long[] seeds = new long[count];
     int have;
 
-    // sort the two seeds we already have
+// sort the two seeds we already have
     if (a < b) {
       seeds[0] = a;
       seeds[1] = b;

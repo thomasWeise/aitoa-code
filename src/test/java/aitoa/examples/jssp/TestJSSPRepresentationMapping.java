@@ -6,10 +6,50 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import aitoa.bookExamples.jssp.JSSPRepresentationMappingExample;
+import aitoa.structure.IRepresentationMapping;
+import aitoa.structure.IRepresentationMappingTest;
 import aitoa.structure.ISpace;
 
-/** A Test for the JSSP representation mapping */
-public class TestJSSPRepresentationMapping {
+/** A test of the JSSP representation mapping */
+public class TestJSSPRepresentationMapping extends
+    IRepresentationMappingTest<int[], JSSPCandidateSolution> {
+
+  /** the instance */
+  private static final JSSPInstance INSTANCE =
+      new JSSPInstance("la22"); //$NON-NLS-1$
+  /** create the mapping */
+  private static final JSSPRepresentationMapping MAP =
+      new JSSPRepresentationMapping(
+          TestJSSPRepresentationMapping.INSTANCE);
+
+  /** {@inheritDoc} */
+  @Override
+  protected IRepresentationMapping<int[], JSSPCandidateSolution>
+      getInstance() {
+    return TestJSSPRepresentationMapping.MAP;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected int[] createValidX() {
+    return JSSPTestUtils
+        .createValidX(TestJSSPRepresentationMapping.INSTANCE);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected JSSPCandidateSolution createY() {
+    return new JSSPCandidateSolution(
+        TestJSSPRepresentationMapping.INSTANCE.m,
+        TestJSSPRepresentationMapping.INSTANCE.n);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void assertValid(final JSSPCandidateSolution y) {
+    JSSPTestUtils.assertY(y,
+        TestJSSPRepresentationMapping.INSTANCE);
+  }
 
   /** test the creation */
   @SuppressWarnings("static-method")

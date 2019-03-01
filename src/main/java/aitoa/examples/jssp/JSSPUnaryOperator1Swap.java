@@ -32,7 +32,7 @@ public final class JSSPUnaryOperator1Swap
   /**
    * Sample a point from the neighborhood of {@code x} by
    * swapping two different job-ids inside of {@code x}.
-   * 
+   *
    * @param x
    *          {@inheritDoc}
    * @param dest
@@ -75,7 +75,7 @@ public final class JSSPUnaryOperator1Swap
    * when swapping {@code i=5} and {@code j=2}, so we can skip
    * unnecessary indices by only looking at pairs with
    * {@code i>j}.
-   * 
+   *
    * @param x
    *          {@inheritDoc}
    * @param dest
@@ -107,6 +107,12 @@ public final class JSSPUnaryOperator1Swap
     return false; // we have enumerated the complete neighborhood
   }
 // end enumerate
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean canEnumerate() {
+    return true;
+  }
 // start relevant
 }
 // end relevant
