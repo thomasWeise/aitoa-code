@@ -63,6 +63,11 @@ public class EAWithPruning implements IMetaheuristic {
     if ((_mu < 1) || (_mu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
     }
+    if ((_mu <= 1) && (_cr > 0d)) {
+      throw new IllegalArgumentException(//
+          "crossover rate must be 0 if mu is 1, but cr is " //$NON-NLS-1$
+              + _cr);
+    }
     this.mu = _mu;
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
       throw new IllegalArgumentException(
@@ -132,7 +137,7 @@ public class EAWithPruning implements IMetaheuristic {
       P[i] = new Individual<>(x, process.evaluate(x));
     }
 
-    for (;;) { // main loop: one iteration = one generation
+    while (!process.shouldTerminate()) { // main loop
 // shuffle P, so after sorting the order of unique recs is random
       RandomUtils.shuffle(random, P, 0, P.length);
 // sort the population: mu best individuals at front are selected

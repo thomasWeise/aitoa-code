@@ -46,6 +46,11 @@ public class EA implements IMetaheuristic {
     if ((_mu < 1) || (_mu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
     }
+    if ((_mu <= 1) && (_cr > 0d)) {
+      throw new IllegalArgumentException(//
+          "crossover rate must be 0 if mu is 1, but cr is " //$NON-NLS-1$
+              + _cr);
+    }
     this.mu = _mu;
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
       throw new IllegalArgumentException(
@@ -117,6 +122,11 @@ public class EA implements IMetaheuristic {
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
+// end relevant
+      if (process.shouldTerminate()) { // we return
+        return; // best solution is stored in process
+      }
+// start relevant
     }
 
     for (;;) { // main loop: one iteration = one generation

@@ -580,4 +580,16 @@ public class TestTools {
     Assert.fail("some elements in " + //$NON-NLS-1$
         Arrays.toString(a) + " are not " + v);//$NON-NLS-1$ s
   }
+
+  /**
+   * check whether a value is finite
+   *
+   * @param d
+   *          the value that should be finite
+   */
+  public static final void assertFinite(final double d) {
+    if (!(Double.isFinite(d))) {
+      Assert.fail(d + " is not finite."); //$NON-NLS-1$
+    }
+  }
 }

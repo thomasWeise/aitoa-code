@@ -57,7 +57,7 @@ public final class HillClimber2WithRestarts
     boolean improved = false;
     final double[] f_best = new double[1]; // needs to be array
 // start relevant
-    for (;;) { // in each iteration of the main loop...
+    while (!process.shouldTerminate()) { // main loop
 // create starting point: a random point in the search space
 // put random point in x_best
       nullary.apply(x_best, random);

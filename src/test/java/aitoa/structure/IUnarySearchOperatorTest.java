@@ -157,7 +157,7 @@ public abstract class IUnarySearchOperatorTest<X> {
       boolean error = true;
       try {
         op.enumerate(src, dest, (x) -> false);
-      } catch (final UnsupportedOperationException ex) {
+      } catch (@SuppressWarnings("unused") final UnsupportedOperationException ex) {
         error = false;
       }
       if (error) {

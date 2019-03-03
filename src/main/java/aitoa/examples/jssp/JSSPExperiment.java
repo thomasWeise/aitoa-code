@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 
 import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithPruning;
-import aitoa.algorithms.EAWithRestarts;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
@@ -65,7 +64,7 @@ public class JSSPExperiment {
 
       for (final IUnarySearchOperator<int[]> unary : //
       new IUnarySearchOperator[] { new JSSPUnaryOperator1Swap(),
-          new JSSPUnaryOperator12Swap(),
+// new JSSPUnaryOperator12Swap(),
           new JSSPUnaryOperatorNSwap() }) {
 
 // plain hill climbers which do not enumerate their neighborhood
@@ -108,13 +107,14 @@ public class JSSPExperiment {
               JSSPExperiment.run(
                   new EAWithPruning(cr, mu, lambda), unary,
                   binary, inst, out);
+// omitted: EAs with restarts
 // EAs with restarts here probably won't work here due to small
 // computational budget, let's try them anyway
-              for (final int genRs : new int[] { 16 }) {
-                JSSPExperiment.run(
-                    new EAWithRestarts(cr, mu, lambda, genRs),
-                    unary, binary, inst, out);
-              } // end EA with restarts
+// for (final int genRs : new int[] { 16 }) {
+// JSSPExperiment.run(
+// new EAWithRestarts(cr, mu, lambda, genRs),
+// unary, binary, inst, out);
+// } // end EA with restarts
             } // end cr
 
             if (unary.canEnumerate()) {

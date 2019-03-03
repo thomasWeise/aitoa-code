@@ -50,7 +50,13 @@ public class EAWithRestarts implements IMetaheuristic {
     }
     this.cr = _cr;
     if ((_mu < 1) || (_mu > 1_000_000)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
+      throw new IllegalArgumentException(//
+          "Invalid mu: " + _mu); //$NON-NLS-1$
+    }
+    if ((_mu <= 1) && (_cr > 0d)) {
+      throw new IllegalArgumentException(//
+          "crossover rate must be 0 if mu is 1, but cr is " //$NON-NLS-1$
+              + _cr);
     }
     this.mu = _mu;
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
@@ -124,32 +130,33 @@ public class EAWithRestarts implements IMetaheuristic {
       double bestF = Double.POSITIVE_INFINITY;
       int nonImprovedGen = 0;
 
-      // first generation: fill population with random
-      // individuals
+// first generation: fill population with random individuals
       for (int i = population.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         nullary.apply(x, random);
         population[i] = new Individual<>(x, process.evaluate(x));
+// end relevant
+        if (process.shouldTerminate()) {
+          return;
+        }
+// start relevant
       }
 
       while (nonImprovedGen < this.generationsUntilRestart) {
-        // main loop: one iteration = one generation
+// main loop: one iteration = one generation
         ++nonImprovedGen; // assume no improvement
 
-        // sort the population: mu best individuals at front are
-        // selected
+// sort the population: mu best individuals at front are selected
         Arrays.sort(population);
-        // shuffle mating pool to ensure fairness if lambda<mu
+// shuffle mating pool to ensure fairness if lambda<mu
         RandomUtils.shuffle(random, population, 0, this.mu);
         int p1 = -1; // index to iterate over first parent
 
-        // override the worse lambda solutions with new
-        // offsprings
+// override the worse lambda solutions with new offsprings
         for (int index = population.length;
             (--index) >= this.mu;) {
           if (process.shouldTerminate()) {
-            return; // return best
-                    // solution
+            return; // return best solution
           }
 
           final Individual<X> dest = population[index];
@@ -159,7 +166,6 @@ public class EAWithRestarts implements IMetaheuristic {
           if (random.nextDouble() <= this.cr) { // crossover!
             int p2;
             do { // find a second parent who is different from
-                 // parent 1
               p2 = random.nextInt(this.mu);
             } while (p2 == p1);
 

@@ -119,16 +119,19 @@ public class MAWithPruning implements IMetaheuristic {
     int p2;
     boolean improved = false;
 // start relevant
-    restart: for (;;) { // (we reset if population collapses)
+    restart: while (!process.shouldTerminate()) {
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         nullary.apply(x, random);
         P[i] = new Individual<>(x, process.evaluate(x));
+        if (process.shouldTerminate()) {
+          return;
+        }
       }
       int localSearchStart = 0; // at first, apply ls to all
 
-      for (;;) { // main loop: one iteration = one generation
+      while (!process.shouldTerminate()) { // main loop
         for (int i = P.length; (--i) >= localSearchStart;) {
           final Individual<X> ind = P[i];
           do { // local search in style of HillClimber2
@@ -141,7 +144,10 @@ public class MAWithPruning implements IMetaheuristic {
               } // if we get here, point is not better
               return process.shouldTerminate();
             }); // repeat this until no improvement or time is up
-          } while (improved && (!process.shouldTerminate()));
+            if (process.shouldTerminate()) { // we return
+              return; // best solution is stored in process
+            }
+          } while (improved);
         } // end of 1 iteration: we have refined 1 solution by LS
 // shuffle P, so after sorting the order of unique recs is random
         RandomUtils.shuffle(random, P, 0, P.length);

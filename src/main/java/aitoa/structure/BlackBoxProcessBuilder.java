@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * @param <Y>
  *          the solution space
  */
-public final class BlackBoxProcessBuilder<X, Y>
+public class BlackBoxProcessBuilder<X, Y>
     extends _BlackBoxProcessData<X, Y>
     implements Supplier<IBlackBoxProcess<X, Y>> {
 
@@ -238,6 +238,24 @@ public final class BlackBoxProcessBuilder<X, Y>
   }
 
   /**
+   * The internal version of the log-path setter. This method is
+   * overridden by the test version of the black-box process
+   * builder.
+   *
+   * @param path
+   *          the log path
+   * @return this
+   */
+  BlackBoxProcessBuilder<X, Y> _setLogPath(final Path path) {
+    if (path != null) {
+      this.m_logPath = path.toAbsolutePath();
+    } else {
+      this.m_logPath = null;
+    }
+    return this;
+  }
+
+  /**
    * Set the log path
    *
    * @param path
@@ -246,12 +264,7 @@ public final class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setLogPath(final Path path) {
-    if (path != null) {
-      this.m_logPath = path.toAbsolutePath();
-    } else {
-      this.m_logPath = null;
-    }
-    return this;
+    return (this._setLogPath(path));
   }
 
   /**
@@ -302,10 +315,9 @@ public final class BlackBoxProcessBuilder<X, Y>
     try {
       return Files.newBufferedWriter(this.m_logPath);
     } catch (final IOException ioe) {
-      throw new IllegalArgumentException(
-          "File '" //$NON-NLS-1$
-              + this.m_logPath + //
-              "' cannot be created.", //$NON-NLS-1$
+      throw new IllegalArgumentException("File '" //$NON-NLS-1$
+          + this.m_logPath + //
+          "' cannot be created.", //$NON-NLS-1$
           ioe);
     }
   }
@@ -322,13 +334,14 @@ public final class BlackBoxProcessBuilder<X, Y>
   }
 
   /**
-   * Create the instance of the black box problem.
+   * The internal version used to create the instance of the
+   * black box problem. This method is overridden by the test
+   * version of the black-box process builder.
    *
    * @return the problem instance
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public final IBlackBoxProcess<X, Y> get() {
+  IBlackBoxProcess<X, Y> _get() {
     if (this.m_mapping == null) {
       // search space == solution space
       if (this.m_logPath == null) {
@@ -342,5 +355,15 @@ public final class BlackBoxProcessBuilder<X, Y>
       return new _BlackBoxProcess2NoLog(this);
     }
     return new _BlackBoxProcess2Log(this);
+  }
+
+  /**
+   * Create the instance of the black box problem.
+   *
+   * @return the problem instance
+   */
+  @Override
+  public final IBlackBoxProcess<X, Y> get() {
+    return this._get();
   }
 }
