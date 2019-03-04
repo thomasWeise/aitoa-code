@@ -4,10 +4,10 @@
 
 	<groupId>aitoa</groupId>
 	<artifactId>aitoa-code</artifactId>
-	<version>0.8.0</version>
+	<version>0.8.1</version>
 	<packaging>jar</packaging>
 	<name>aitoa-code</name>
-	<description>Example Source Codes from the Course "Metaheuristics for Smart Manufacturing"</description>
+	<description>Example Source Codes from the Book "Introduction to Optimization Algorithms"</description>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -48,8 +48,8 @@
 
 	<licenses>
 		<license>
-			<name>GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -97,19 +97,6 @@
 									<ignore />
 								</action>
 							</pluginExecution>
-							<pluginExecution>
-								<pluginExecutionFilter>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-antrun-plugin</artifactId>
-									<versionRange>[1.8,)</versionRange>
-									<goals>
-										<goal>run</goal>
-									</goals>
-								</pluginExecutionFilter>
-								<action>
-									<ignore />
-								</action>
-							</pluginExecution>
 						</pluginExecutions>
 					</lifecycleMappingMetadata>
 				</configuration>
@@ -119,7 +106,7 @@
 				<!-- The Maven Java Compiler plugin. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -133,14 +120,14 @@
 				<!-- The plugin for running the tests. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>3.0.0-M3</version>
 			</plugin>
 
 			<plugin>
 				<!-- The JavaDoc generating and packaging plugin. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>3.1.0 </version>
 				<configuration>
 					<show>private</show>
 					<detectLinks>true</detectLinks>
@@ -161,7 +148,7 @@
 				<!-- A plugin for generating a source jar. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.0.0</version>
 				<configuration>
 					<includePom>true</includePom>
 					<useDefaultExcludes>true</useDefaultExcludes>
@@ -181,7 +168,7 @@
 				<!-- The plugin for generating the actual jar archive. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.1.1</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -197,20 +184,17 @@
 
 	<reporting>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.7</version>
+				<version>3.0.0</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.18</version>
+				<version>3.0.0-M3</version>
 			</plugin>
-
 		</plugins>
 	</reporting>
-
 </project>

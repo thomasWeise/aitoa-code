@@ -2,22 +2,31 @@
 
 [<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
 
-## Introduction
+## 1. Introduction
 
-In this repository, we provide example source codes for the book "An Introduction to Optimization Algorithms".
-With the book, I try to provide an introduction in optimization, optimization algorithms, and, in particular, metaheuristics.
+In this repository, we provide example source codes for the book "[An Introduction to Optimization Algorithms](http://github.com/thomasWeise/aitoa)".
+With the book, we try to develop a readable and accessible introduction in optimization, optimization algorithms, and, in particular, metaheuristics.
+The code is designed as a versatile and general implementation of these algorithms in Java and provides one example application: the Job Shop Scheduling Problem ([JSSP](http://en.wikipedia.org/wiki/Job_shop_scheduling)).
 
 The book is available in the following formats:
 
-1. As [pdf](http://thomasweise.github.io/aitoa/aitoa.pdf), for reading on the computer and/or printing, if you must.
-2. As [epub](http://thomasweise.github.io/aitoa/aitoa.epub), for reading on mobile phones or other handheld devices (although the conversion to this format is not yet working nicely).
+1. as [pdf](http://thomasweise.github.io/aitoa/aitoa.pdf), for reading on the computer and/or printing (but please don't print this, save paper),
+2. as [html](http://thomasweise.github.io/aitoa/aitoa.html), for reading in the browser,  and
+3. as [epub](http://thomasweise.github.io/aitoa/aitoa.epub), for reading on mobile phones or other hand-held devices.
 
-## License
+## 2. How to Use
+
+The source code is provided at [GitHub](http://github.com/thomasWeise/aitoa-code) as a [Maven](http://en.wikipedia.org/wiki/Apache_Maven) project for [Java 1.8](http://en.wikipedia.org/wiki/Java_version_history#Java_SE_8) along with settings for the [Eclipse](http://www.eclipse.org/) developer environment.
+I therefore recommend using Eclipse for exploring and playing around with it.
+Once you have checked-out the code and imported it as existing project in Eclipse, you need to right-click the project, choose "Maven" and then "Update Project".
+This will automatically download the required dependencies (currently, only [Junit 4.12](http://junit.org/junit4/) and set up the folder structure properly.
+
+## 3. License
 
 The copyright holder of this package is Prof. Dr. Thomas Weise (see Contact).
 The package is licensed under the MIT License.
 
-## Contact
+## 4. Contact
 
 If you have any questions or suggestions, please contact
 [Prof. Dr. Thomas Weise](http://iao.hfuu.edu.cn/team/director) of the
