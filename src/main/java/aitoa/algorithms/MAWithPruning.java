@@ -15,11 +15,16 @@ import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
 /**
- * A memetic algorithm which always applies the binary operator
- * to find new points in the search space and then refines them
- * with a best-first local search based on a unary operator. It
- * also prunes the population from candidate solutions with
- * identical objective values before the reproduction step.
+ * A memetic algorithm is a combination of a
+ * {@linkplain aitoa.algorithms.EA evolutionary algorithm} with a
+ * local search. Our type of memetic algorithm always applies the
+ * binary operator to find new points in the search space and
+ * then refines them with a
+ * {@linkplain aitoa.algorithms.HillClimber2 first-improvement
+ * local search} based on a unary operator. This MA with pruning
+ * here also, well, prunes the population from candidate
+ * solutions with identical objective values before the
+ * reproduction step.
  * <p>
  * <p>
  * All candidate solutions represented in the population will
@@ -58,7 +63,7 @@ public class MAWithPruning implements IMetaheuristic {
    */
   public MAWithPruning(final int _mu, final int _lambda) {
     super();
-    if ((_mu < 1) || (_mu > 1_000_000)) {
+    if ((_mu <= 1) || (_mu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
     }
     this.mu = _mu;
@@ -73,7 +78,7 @@ public class MAWithPruning implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: eap"); //$NON-NLS-1$
+    output.write("algorithm: map"); //$NON-NLS-1$
     output.newLine();
     output.write("algorithm_class: "); //$NON-NLS-1$
     output.newLine();
@@ -148,7 +153,7 @@ public class MAWithPruning implements IMetaheuristic {
               return; // best solution is stored in process
             }
           } while (improved);
-        } // end of 1 iteration: we have refined 1 solution by LS
+        } // end of 1 ls iteration: we have refined 1 solution
 // shuffle P, so after sorting the order of unique recs is random
         RandomUtils.shuffle(random, P, 0, P.length);
 // sort the population: mu best individuals at front are selected

@@ -32,8 +32,13 @@ public abstract class TestMetaheuristicOnJSSP {
    *
    * @param instance
    *          the jssp instance
+   * @param maxFEs
+   *          the maximum FEs
+   * @param maxTime
+   *          the maximum time
    */
-  protected void runTest(final JSSPInstance instance) {
+  protected void runTest(final JSSPInstance instance,
+      final long maxFEs, final long maxTime) {
     final ISpace<int[]> searchSpace =
         new JSSPSearchSpace(instance);
     final ISpace<JSSPCandidateSolution> solutionSpace =
@@ -54,9 +59,19 @@ public abstract class TestMetaheuristicOnJSSP {
                     new JSSPOperatorBinarySequence(instance))//
                 .setRepresentationMapping(
                     new JSSPRepresentationMapping(instance))
-                .setMaxFEs(2048L)//
-                .setMaxTime(2000L)//
+                .setMaxFEs(maxFEs)//
+                .setMaxTime(maxTime)//
                 .get());
+  }
+
+  /**
+   * Run a test
+   *
+   * @param instance
+   *          the jssp instance
+   */
+  protected void runTest(final JSSPInstance instance) {
+    this.runTest(instance, 2048L, 2000L);
   }
 
   /**
@@ -65,7 +80,8 @@ public abstract class TestMetaheuristicOnJSSP {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testDemo() {
-    this.runTest(new JSSPInstance("demo")); //$NON-NLS-1$
+    this.runTest(new JSSPInstance("demo"), //$NON-NLS-1$
+        4096L, 4000L);
   }
 
   /**

@@ -11,6 +11,7 @@ import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SingleRandomSample;
@@ -77,10 +78,6 @@ public class JSSPExperiment {
           JSSPExperiment.run(
               new HillClimberWithRestarts(256, "256", inc), //$NON-NLS-1$
               unary, null, inst, out);
-// omitted: mxn is similar to 256, this did not add infos
-// JSSPExperiment.run(
-// new HillClimberWithRestarts(inst.n * inst.m, "mxn",
-// inc), unary, null, inst, out);
         }
 
 // hill climbers with neighborhood enumeration
@@ -107,20 +104,14 @@ public class JSSPExperiment {
               JSSPExperiment.run(
                   new EAWithPruning(cr, mu, lambda), unary,
                   binary, inst, out);
-// omitted: EAs with restarts
-// EAs with restarts here probably won't work here due to small
-// computational budget, let's try them anyway
-// for (final int genRs : new int[] { 16 }) {
-// JSSPExperiment.run(
-// new EAWithRestarts(cr, mu, lambda, genRs),
-// unary, binary, inst, out);
-// } // end EA with restarts
-            } // end cr
+            } // end enumerate cr
 
             if (unary.canEnumerate()) {
 // memetic algorithm relying on enumeration always using cr=1
               JSSPExperiment.run(new MAWithPruning(mu, lambda),
                   unary, binary, inst, out);
+              JSSPExperiment.run(new MA(mu, lambda), unary,
+                  binary, inst, out);
             } // end memetic algorithm
           } // end lambda
         } // end mu

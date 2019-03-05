@@ -24,6 +24,12 @@ import aitoa.structure.IUnarySearchOperator;
  * it uses single, randomized applications of the unary search
  * operator to discover neighboring points while the second
  * version scans the neighborhood by enumerating it.
+ * <p>
+ * The constructor allows to specify both the steps before the
+ * restart as well as a factor for increasing them. If the steps
+ * before the restarts are the result of a computation, say,
+ * depend on the problem size, then this logic can provided as an
+ * additional string parameter.
  */
 // start relevant
 public final class HillClimberWithRestarts
