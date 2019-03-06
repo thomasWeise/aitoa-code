@@ -79,10 +79,6 @@ public class JSSPSearchSpaceSize {
       System.out.print('|');
 
       Tools.printLongNumber(JSSPSolutionSpaceSize
-          .solutionSpaceSizeLower(inst.m, inst.n), 15);
-      System.out.print('|');
-
-      Tools.printLongNumber(JSSPSolutionSpaceSize
           .solutionSpaceSizeUpper(inst.m, inst.n), 15);
       System.out.print('|');
 
