@@ -2,7 +2,10 @@ package aitoa.bookExamples;
 
 import java.util.Random;
 
-/** An example for throwing dice */
+/**
+ * An example for throwing dice showing that the law of large
+ * numbers applies
+ */
 public class DiceThrow {
 
   /**

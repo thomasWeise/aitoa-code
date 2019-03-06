@@ -9,16 +9,17 @@ public class RandomizationTestExample {
 
   /**
    * the main routine
-   * 
+   *
    * @param args
-   *          the command line arguments
+   *          the command line arguments are ignored
    */
-  public static void main(String[] args) {
-    // how often did we find a mean <= 4
+  public static void main(final String[] args) {
+// start relevant
+// how often did we find a mean <= 4?
     int meanLowerOrEqualTo4 = 0;
-    // total number of tested combinations
+// total number of tested combinations
     int totalCombinations = 0;
-
+// enumerate all sets of four different numbers from 1..10
     for (int i = 10; i > 0; i--) { // as O = numbers from 1 to 10
       for (int j = (i - 1); j > 0; j--) { // we can iterate over
         for (int k = (j - 1); k > 0; k--) { // the sets of size 4
@@ -31,8 +32,9 @@ public class RandomizationTestExample {
         }
       }
     }
-
+// print the result: 27 210
     System.out.println(//
         meanLowerOrEqualTo4 + " " + totalCombinations); //$NON-NLS-1$
+// end relevant
   }
 }

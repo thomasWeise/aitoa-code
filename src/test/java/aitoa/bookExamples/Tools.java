@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Computing the probability to win at least k times in n coin
- * flips
+ * Here we provide some general tools used in the examples.
+ * These contain especially the formatting of numbers and computation with, as we try to compute with big numbers.
  */
 public class Tools {
 
