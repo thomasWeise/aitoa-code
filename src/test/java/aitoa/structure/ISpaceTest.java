@@ -35,17 +35,19 @@ public abstract class ISpaceTest<X> {
   }
 
   /**
-   * Create a valid instance. Ideally, this method should return
-   * a different instance every time it is called.
+   * Create a valid instance of the data structure {@code X}.
+   * Ideally, this method should return a different instance
+   * every time it is called.
    *
    * @return a valid instance
    */
   protected abstract X createValid();
 
   /**
-   * Create an invalid instance, or {@code null} if no instance
-   * of {@code X} can be invalid. Ideally, this method should
-   * return a different instance every time it is called.
+   * Create an invalid instance of the data structure {@code X},
+   * or {@code null} if no instance of {@code X} can be invalid.
+   * Ideally, this method should return a different instance
+   * every time it is called.
    *
    * @return the instance
    */

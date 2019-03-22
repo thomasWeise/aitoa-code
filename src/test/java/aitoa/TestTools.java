@@ -190,6 +190,26 @@ public class TestTools {
   }
 
   /**
+   * Assert whether one long value is in a range
+   *
+   * @param a
+   *          the a value
+   * @param min
+   *          the minimum of the range
+   * @param max
+   *          the maximum of the range
+   */
+  public static final void assertInRange(final long a,
+      final long min, final long max) {
+    if ((a < min) || (a > max)) {
+      Assert.fail("Value " + //$NON-NLS-1$
+          a + " must be in range " //$NON-NLS-1$
+          + min + "..." + max//$NON-NLS-1$
+          + ", but is not.");//$NON-NLS-1$
+    }
+  }
+
+  /**
    * Assert whether one integer value is in a range
    *
    * @param a

@@ -38,8 +38,8 @@ public abstract class INullarySearchOperatorTest<X> {
       getOperator(final ISpace<X> space);
 
   /**
-   * check if two instances of the data structure are equal or
-   * not
+   * check if two instances of the data structure {@code X} are
+   * equal or not
    *
    * @param a
    *          the first instance

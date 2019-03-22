@@ -34,4 +34,4 @@ If you have any questions or suggestions, please contact
 [Institute of Applied Optimization](http://iao.hfuu.edu.cn/) at
 [Hefei University](http://www.hfuu.edu.cn) in
 Hefei, Anhui, China via
-email to [tweise@hfuu.edu.cn](mailto:tweise@hfuu.edu.cn).
+email to [tweise@hfuu.edu.cn](mailto:tweise@hfuu.edu.cn) with CC to [tweise@ustc.edu.cn](mailto:tweise@ustc.edu.cn).

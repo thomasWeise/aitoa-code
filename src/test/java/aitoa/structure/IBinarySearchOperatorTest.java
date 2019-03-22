@@ -38,8 +38,8 @@ public abstract class IBinarySearchOperatorTest<X> {
       getOperator(final ISpace<X> space);
 
   /**
-   * check if two instances of the data structure are equal or
-   * not
+   * check if two instances of the data structure {@code X} are
+   * equal or not
    *
    * @param a
    *          the first instance
@@ -52,8 +52,10 @@ public abstract class IBinarySearchOperatorTest<X> {
   }
 
   /**
-   * Create a valid instance. Ideally, this method should return
-   * a different instance every time it is called.
+   * Create a valid point in the search space, i.e., instances of
+   * the data structure {@code X} . Ideally, this method should
+   * return a different a valid point in the search space every
+   * time it is called.
    *
    * @return a valid instance
    */

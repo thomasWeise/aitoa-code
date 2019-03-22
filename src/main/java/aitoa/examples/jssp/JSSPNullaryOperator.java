@@ -39,7 +39,7 @@ public final class JSSPNullaryOperator
 // start relevant
   public final void apply(final int[] dest,
       final Random random) {
-// create first seuence of jobs: n-1, n-2, ..., 0
+// create first sequence of jobs: n-1, n-2, ..., 0
     for (int i = this.n; (--i) >= 0;) {
       dest[i] = i;
     }
