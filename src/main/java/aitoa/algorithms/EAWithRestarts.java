@@ -79,6 +79,7 @@ public class EAWithRestarts implements IMetaheuristic {
   public final void printSetup(final BufferedWriter output)
       throws IOException {
     output.write("algorithm: ea_rs"); //$NON-NLS-1$
+    output.write(this.getClass().getCanonicalName());
     output.newLine();
     output.write("algorithm_class: "); //$NON-NLS-1$
     output.newLine();

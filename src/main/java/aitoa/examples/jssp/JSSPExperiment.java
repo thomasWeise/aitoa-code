@@ -7,10 +7,12 @@ import java.nio.file.Paths;
 
 import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithPruning;
+import aitoa.algorithms.EDA;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
@@ -19,6 +21,7 @@ import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
+import aitoa.structure.IModel;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.ConsoleIO;
 import aitoa.utils.RandomUtils;
@@ -115,6 +118,32 @@ public class JSSPExperiment {
             } // end memetic algorithm
           } // end lambda
         } // end mu
+
+        for (final IModel<int[]> model : new IModel[] {
+            new JSSPUMDAModel(inst) }) { // models for EDAs
+
+          for (final int lambda : new int[] { 16, 64, 256,
+              1024 }) {
+            int[] mus;
+            if (lambda > 16) {
+              if (lambda > 64) {
+                mus = new int[] { 1, 2, 4, 16, 64 };
+              } else {
+                mus = new int[] { 1, 2, 4, 16 };
+              }
+            } else {
+              mus = new int[] { 1, 2, 4 };
+            }
+            for (final int mu : mus) {
+              JSSPExperiment.run(new EDA(mu, lambda, model),
+                  unary, null, inst, out);
+              JSSPExperiment.run(
+                  new HybridEDA(mu, lambda, model), unary, null,
+                  inst, out);
+            } // mu
+          } // lambda
+        } // models
+
       } // end unary operators
     } // end instances
   }

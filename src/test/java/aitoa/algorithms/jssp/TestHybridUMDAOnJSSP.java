@@ -3,15 +3,16 @@ package aitoa.algorithms.jssp;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import aitoa.algorithms.EAWithPruning;
+import aitoa.algorithms.HybridEDA;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPUMDAModel;
 import aitoa.structure.IMetaheuristic;
 
 /**
- * Test the {@linkplain aitoa.algorithms.EAWithPruning
- * evolutionary algorithm with pruning} on the JSSP
+ * Test the {@linkplain aitoa.algorithms.EA evolutionary
+ * algorithm} on the JSSP
  */
-public class TestEAWithPruningOnJSSP
+public class TestHybridUMDAOnJSSP
     extends TestMetaheuristicOnJSSP {
 
   /** {@inheritDoc} */
@@ -19,9 +20,10 @@ public class TestEAWithPruningOnJSSP
   protected IMetaheuristic
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
-    final int mu = 1 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
-    final double cr = (mu > 1) ? rand.nextDouble() : 0;
-    return new EAWithPruning(cr, mu, lambda);
+    final int mu = 1 + rand.nextInt(lambda);
+
+    return new HybridEDA(mu, lambda,
+        new JSSPUMDAModel(instance));
   }
 }

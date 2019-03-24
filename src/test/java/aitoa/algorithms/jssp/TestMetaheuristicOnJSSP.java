@@ -22,10 +22,13 @@ public abstract class TestMetaheuristicOnJSSP {
 
   /**
    * Get the algorithm instance
-   *
+   * 
+   * @param instance
+   *          the jssp instance
    * @return the algorithm
    */
-  protected abstract IMetaheuristic getAlgorithm();
+  protected abstract IMetaheuristic
+      getAlgorithm(final JSSPInstance instance);
 
   /**
    * Run a test
@@ -44,7 +47,7 @@ public abstract class TestMetaheuristicOnJSSP {
     final ISpace<JSSPCandidateSolution> solutionSpace =
         new JSSPSolutionSpace(instance);
 
-    this.getAlgorithm().solve(//
+    this.getAlgorithm(instance).solve(//
         new TestBlackBoxProcessBuilder<int[],
             JSSPCandidateSolution>()//
                 .setSearchSpace(searchSpace)//

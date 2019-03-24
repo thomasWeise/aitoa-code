@@ -115,6 +115,12 @@ public final class JSSPUMDAModel implements IModel<int[]> {
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return "umda"; //$NON-NLS-1$
+  }
+
   /**
    * Find the given value in the array. We use
    * {@link java.util.Arrays#binarySearch(long[], int, int, long)}

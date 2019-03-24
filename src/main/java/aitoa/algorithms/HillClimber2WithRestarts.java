@@ -52,7 +52,7 @@ public final class HillClimber2WithRestarts
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator(); // get nullary op
+        process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
     boolean improved = false;
     final double[] f_best = new double[1]; // needs to be array

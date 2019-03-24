@@ -1,6 +1,7 @@
 package aitoa.algorithms.jssp;
 
 import aitoa.algorithms.HillClimber2;
+import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -12,7 +13,8 @@ public class TestHillClimber2OnJSSP
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic getAlgorithm() {
+  protected IMetaheuristic
+      getAlgorithm(final JSSPInstance instance) {
     return new HillClimber2();
   }
 }

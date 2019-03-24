@@ -83,6 +83,7 @@ public class EAWithPruning implements IMetaheuristic {
     output.write("algorithm: eap"); //$NON-NLS-1$
     output.newLine();
     output.write("algorithm_class: "); //$NON-NLS-1$
+    output.write(this.getClass().getCanonicalName());
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$

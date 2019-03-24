@@ -40,7 +40,7 @@ public final class HillClimber implements IMetaheuristic {
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator(); // get nullary op
+        process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
 // start relevant
 // create starting point: a random point in the search space

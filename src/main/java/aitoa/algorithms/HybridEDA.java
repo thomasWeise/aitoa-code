@@ -5,59 +5,64 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Supplier;
 
-import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
+import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.utils.RandomUtils;
 
 /**
- * A memetic algorithm is a combination of a
- * {@linkplain aitoa.algorithms.EA evolutionary algorithm} with a
- * local search. Our type of memetic algorithm always applies the
- * binary operator to find new points in the search space and
- * then refines them with a
- * {@linkplain aitoa.algorithms.HillClimber2 first-improvement
- * local search} based on a unary operator.
+ * A hybrid estimation of distribution algorithm which also
+ * performs local search.
  */
 // start relevant
-public class MA implements IMetaheuristic {
+public class HybridEDA implements IMetaheuristic {
 // end relevant
 
-  /** the number of selected parents */
+  /** the number of solution to be selected */
   public final int mu;
-  /** the number of offsprings per generation */
+  /** the number of new points per generation */
   public final int lambda;
+  /** the model */
+  public final IModel<?> model;
 
   /**
-   * Create a new instance of the evolutionary algorithm
+   * Create a new instance of the estimation of distribution
    *
    * @param _mu
-   *          the number of parents to be selected
+   *          the number of solution to be selected
    * @param _lambda
-   *          the number of offspring to be created
+   *          the number of new points per generation
+   * @param _model
+   *          the model
    */
-  public MA(final int _mu, final int _lambda) {
+  public HybridEDA(final int _mu, final int _lambda,
+      final IModel<?> _model) {
     super();
-    if ((_mu <= 1) || (_mu > 1_000_000)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
-    }
-    this.mu = _mu;
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
       throw new IllegalArgumentException(
           "Invalid lambda: " + _lambda); //$NON-NLS-1$
     }
     this.lambda = _lambda;
+
+    if ((_mu < 1) || (_mu > this.lambda)) {
+      throw new IllegalArgumentException("Invalid mu: " + _mu //$NON-NLS-1$
+          + " must be in 1..lambda and lambda=" //$NON-NLS-1$
+          + this.lambda);
+    }
+    this.mu = _mu;
+
+    this.model = Objects.requireNonNull(_model);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: ma"); //$NON-NLS-1$
+    output.write("algorithm: heda"); //$NON-NLS-1$
     output.newLine();
     output.write("algorithm_class: "); //$NON-NLS-1$
     output.write(this.getClass().getCanonicalName());
@@ -69,13 +74,20 @@ public class MA implements IMetaheuristic {
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
     output.newLine();
+    output.write("model: ");//$NON-NLS-1$
+    output.write(this.model.toString());
+    output.newLine();
+    output.write("model_class: ");//$NON-NLS-1$
+    output.write(this.model.getClass().getCanonicalName());
+    output.newLine();
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("ma_" + //$NON-NLS-1$
-        this.mu) + '+') + this.lambda);
+    return ((((("heda_" + //$NON-NLS-1$
+        this.model.toString()) + '_') + this.mu) + '+')
+        + this.lambda);
   }
 
   /** {@inheritDoc} */
@@ -84,8 +96,6 @@ public class MA implements IMetaheuristic {
 // start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
-// omitted: initialize local variables random, searchSpace,
-// nullary, unary, binary, and array P of length mu+lambda
 // end relevant
 // create local variables
     final Random random = process.getRandom();
@@ -94,15 +104,14 @@ public class MA implements IMetaheuristic {
         process.getNullarySearchOperator();
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator();
-    final IBinarySearchOperator<X> binary =
-        process.getBinarySearchOperator();
-    boolean improved = false;
+    final IModel<X> Model = ((IModel<X>) (this.model));
+    boolean improved;
+    final Individual<X>[] P = new Individual[this.lambda];
     final X temp = searchSpace.create();
-    int p2;
 
-    final Individual<X>[] P =
-        new Individual[this.mu + this.lambda];
 // start relevant
+    Model.initialize(); // initialize model=uniform distribution
+
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
@@ -114,11 +123,9 @@ public class MA implements IMetaheuristic {
       }
 // start relevant
     }
-    final int localSearchStart = 0; // at first, apply ls to all
 
-    while (!process.shouldTerminate()) { // main loop
-      for (int i = P.length; (--i) >= localSearchStart;) {
-        final Individual<X> ind = P[i];
+    for (;;) {
+      for (final Individual<X> ind : P) {
         do { // local search in style of HillClimber2
           improved = unary.enumerate(ind.x, temp, (point) -> {
             final double newQuality = process.evaluate(point);
@@ -133,28 +140,18 @@ public class MA implements IMetaheuristic {
             return; // best solution is stored in process
           }
         } while (improved);
-      } // end of 1 ls iteration: we have refined 1 solution
-// sort the population: mu best individuals at front are selected
-      Arrays.sort(P);
-// shuffle the first mu solutions to ensure fairness
-      RandomUtils.shuffle(random, P, 0, this.mu);
-      int p1 = -1; // index to iterate over first parent
+      }
 
-// override the worse lambda solutions with new offsprings
-      for (int index = P.length; (--index) >= this.mu;) {
+      Arrays.sort(P); // sort: best solutions at start
+      Model.update(IModel.use(P, 0, this.mu), // good solutions
+          IModel.use(P, this.mu, P.length)); // the rest
+
+// sample new population
+      for (final Individual<X> dest : P) {
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-
-        final Individual<X> dest = P[index];
-        final Individual<X> sel = P[(++p1) % this.mu];
-
-        do { // find a second, different record
-          p2 = random.nextInt(this.mu);
-        } while (p2 == p1);
-// perform recombination of the two selected individuals
-        binary.apply(sel.x, P[p2].x, dest.x, random);
-// map to solution/schedule and evaluate quality
+        Model.sample(dest.x, random);
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
     } // the end of the main loop
@@ -169,7 +166,7 @@ public class MA implements IMetaheuristic {
    *          the data structure of the search space
    */
   private static final class Individual<X>
-      implements Comparable<Individual<X>> {
+      implements Comparable<Individual<X>>, Supplier<X> {
     /** the point in the search space */
     final X x;
     /** the quality */
@@ -199,6 +196,12 @@ public class MA implements IMetaheuristic {
     @Override
     public final int compareTo(final Individual<X> o) {
       return Double.compare(this.quality, o.quality);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final X get() {
+      return this.x;
     }
   }
 // start relevant

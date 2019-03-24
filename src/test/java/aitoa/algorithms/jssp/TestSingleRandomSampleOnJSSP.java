@@ -1,6 +1,7 @@
 package aitoa.algorithms.jssp;
 
 import aitoa.algorithms.SingleRandomSample;
+import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -12,7 +13,8 @@ public class TestSingleRandomSampleOnJSSP
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic getAlgorithm() {
+  protected IMetaheuristic
+      getAlgorithm(final JSSPInstance instance) {
     return new SingleRandomSample();
   }
 }

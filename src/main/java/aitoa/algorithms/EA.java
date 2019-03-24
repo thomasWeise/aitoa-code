@@ -14,7 +14,32 @@ import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
-/** A evolutionary algorithm */
+/**
+ * The evolutionary algorithm (EA) is a population-based
+ * metaheuristic. Here we implement the (mu+lambda)&nbsp;EA,
+ * which begins by generating mu+lambda random candidate
+ * solution. In each step (called generation), it preserves the
+ * mu best points from the search space. From these mu points, it
+ * derives lambda new points. Together with their mu "parents",
+ * these form a population of size mu+lambda. In the next
+ * iteration, we again preserve the mu best records. There are
+ * two ways to derive "offspring" solutions from parents: We can
+ * either apply an unary or a binary search operator. The unary
+ * operator, in this context often called "mutation", derives one
+ * new point in the search space from one existing point by
+ * creating a slightly modified copy. This is the same kind of
+ * operator applied in the
+ * {@linkplain aitoa.algorithms.HillClimber}. The binary operator
+ * takes two existing points from the search space to build a new
+ * point by combining the characteristics of both "parents". It
+ * is often referred to as "recombination" or "crossover" and the
+ * idea is as follows: Both parents have been selected, i.e.,
+ * they must be good in some way. If they are different, then
+ * they must have different positive characteristics. If we are
+ * lucky, then maybe we can merge these different characteristics
+ * and obtain a new point which represents a combination of
+ * different positive traits and is even better.
+ */
 // start relevant
 public class EA implements IMetaheuristic {
 // end relevant
@@ -66,6 +91,7 @@ public class EA implements IMetaheuristic {
     output.write("algorithm: ea"); //$NON-NLS-1$
     output.newLine();
     output.write("algorithm_class: "); //$NON-NLS-1$
+    output.write(this.getClass().getCanonicalName());
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$

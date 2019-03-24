@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.EA;
+import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -14,7 +15,8 @@ public class TestEAOnJSSP extends TestMetaheuristicOnJSSP {
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic getAlgorithm() {
+  protected IMetaheuristic
+      getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
     final int mu = 1 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
