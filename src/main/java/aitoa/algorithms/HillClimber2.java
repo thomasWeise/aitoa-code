@@ -8,9 +8,10 @@ import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
 
 /**
- * The second version of the hill climbing algorithm remembers
- * the current best solution and tries to improve upon it in each
- * step by enumerating its neighborhood.
+ * The second version of the
+ * {@linkplain aitoa.algorithms.HillClimber hill climbing}
+ * algorithm remembers the current best solution and tries to
+ * improve upon it in each step by enumerating its neighborhood.
  * <p>
  * Different from the first version of the
  * {@linkplain aitoa.algorithms.HillClimber hill climber}, this
@@ -36,7 +37,8 @@ public final class HillClimber2 implements IMetaheuristic {
 // start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables x_cur, x_best, nullary, unary, random
+// init local variables x_cur, x_best, nullary, unary, random,
+// f_best, improved
 // end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();

@@ -1,6 +1,5 @@
 package aitoa.structure;
 
-import java.util.Collections;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -19,17 +18,13 @@ public interface IModel<X> {
   /**
    * Update the model. The internal data structures of the model
    * will be updated based on the information of the selected
-   * (and potentially also the unselected) elements.
+   * elements.
    *
    * @param selected
    *          the array with the points in the search space that
    *          have been selected
-   * @param unselected
-   *          the array with the points in the search space that
-   *          have not been selected
    */
-  public abstract void update(final Iterable<X> selected,
-      final Iterable<X> unselected);
+  public abstract void update(final Iterable<X> selected);
 
   /**
    * Sample the model and fill the destination point in the
@@ -44,16 +39,8 @@ public interface IModel<X> {
   public abstract void sample(final X dest, final Random random);
 
   /**
-   * Get an empty iterable
-   *
-   * @return the empty iterable
-   */
-  public static <X> Iterable<X> empty() {
-    return Collections.EMPTY_LIST;
-  }
-
-  /**
-   * Create an iterable over a given range of the specified array
+   * Create an iterable over a given range of the specified
+   * array. The range must be non-empty.
    *
    * @param array
    *          the array
@@ -62,11 +49,13 @@ public interface IModel<X> {
    * @param end
    *          the exclusive end index
    * @return the iterable
+   * @throws IllegalArgumentException
+   *           if the range is empty or exceeds the array length
    */
   public static <X> Iterable<X> use(final X[] array,
       final int start, final int end) {
-    return ((start == end) ? IModel.empty()
-        : (() -> new _ArrayIterator<>(array, start, end)));
+    _Iterator._checkRange(array, start, end);
+    return () -> new _ArrayIterator<>(array, start, end);
   }
 
   /**
@@ -74,7 +63,7 @@ public interface IModel<X> {
    * array, where each element is actually a supplier for the
    * wanted type. From each supplier, the {@link Supplier#get()}
    * method will then be invoked at most once during the
-   * iteration
+   * iteration. The range must be non-empty.
    *
    * @param array
    *          the array
@@ -83,11 +72,12 @@ public interface IModel<X> {
    * @param end
    *          the exclusive end index
    * @return the iterable
+   * @throws IllegalArgumentException
+   *           if the range is empty or exceeds the array length
    */
   public static <X> Iterable<X> use(final Supplier<X>[] array,
       final int start, final int end) {
-    return ((start == end) ? IModel.empty()
-        : (() -> new _SupplierArrayIterator<>(array, start,
-            end)));
+    _Iterator._checkRange(array, start, end);
+    return () -> new _SupplierArrayIterator<>(array, start, end);
   }
 }

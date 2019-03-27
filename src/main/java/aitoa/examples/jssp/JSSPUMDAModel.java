@@ -71,8 +71,7 @@ public final class JSSPUMDAModel implements IModel<int[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void update(final Iterable<int[]> selected,
-      final Iterable<int[]> unselectedEnd) {
+  public final void update(final Iterable<int[]> selected) {
     for (final int[] sel : selected) {
       for (int j = sel.length; (--j) >= 0;) {
         ++this.m_counts[j][sel[j]];

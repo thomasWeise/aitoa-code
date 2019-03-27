@@ -15,11 +15,11 @@ import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
 /**
- * A memetic algorithm is a combination of a
- * {@linkplain aitoa.algorithms.EA evolutionary algorithm} with a
- * local search. Our type of memetic algorithm always applies the
- * binary operator to find new points in the search space and
- * then refines them with a
+ * A {@linkplain aitoa.algorithms.MA memetic algorithm} is a
+ * combination of a {@linkplain aitoa.algorithms.EA evolutionary
+ * algorithm} with a local search. Our type of memetic algorithm
+ * always applies the binary operator to find new points in the
+ * search space and then refines them with a
  * {@linkplain aitoa.algorithms.HillClimber2 first-improvement
  * local search} based on a unary operator. This MA with pruning
  * here also, well, prunes the population from candidate
@@ -78,10 +78,7 @@ public class MAWithPruning implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: map"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: ma"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -89,6 +86,11 @@ public class MAWithPruning implements IMetaheuristic {
     output.newLine();
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
+    output.newLine();
+    output.newLine();
+    output.write("pruning: true"); //$NON-NLS-1$
+    output.newLine();
+    output.write("restarts: false"); //$NON-NLS-1$
     output.newLine();
   }
 

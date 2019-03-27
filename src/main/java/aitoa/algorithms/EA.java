@@ -88,10 +88,7 @@ public class EA implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: ea"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: ea"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -105,6 +102,10 @@ public class EA implements IMetaheuristic {
     output.newLine();
     output.write("cr(inhex): ");//$NON-NLS-1$
     output.write(Double.toHexString(this.cr));
+    output.newLine();
+    output.write("pruning: false"); //$NON-NLS-1$
+    output.newLine();
+    output.write("restarts: false"); //$NON-NLS-1$
     output.newLine();
   }
 

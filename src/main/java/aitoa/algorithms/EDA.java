@@ -13,7 +13,21 @@ import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 
-/** An estimation of distribution algorithm. */
+/**
+ * An estimation of distribution algorithm does not apply search
+ * operations directly (except for the nullary operator creating
+ * the initial points in the search space). Instead, it tries to
+ * build a model of what the best solution could look like. The
+ * model is basically a statistical distribution describing
+ * assigning probabilities to the values of the different
+ * decision variables. Such a distribution can be sampled, i.e.,
+ * we can create random points from the search space that follow
+ * the probabilities prescribed by these distributions. We then
+ * use the best sampled points to make their characteristics
+ * "more likely" by updating the model. This process is repeated
+ * again and again and we can hope that the model, i.e., the
+ * distribution that we update, will approach the optimum.
+ */
 // start relevant
 public class EDA implements IMetaheuristic {
 // end relevant
@@ -58,10 +72,7 @@ public class EDA implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: eda"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: eda"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -102,6 +113,7 @@ public class EDA implements IMetaheuristic {
 
     final Individual<X>[] P = new Individual[this.lambda];
 // start relevant
+// local variable initialization omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
 
 // first generation: fill population with random individuals
@@ -116,19 +128,19 @@ public class EDA implements IMetaheuristic {
 // start relevant
     }
 
-    for (;;) {
+    for (;;) {// each iteration: update model, sample model
       Arrays.sort(P); // sort: best solutions at start
-      Model.update(IModel.use(P, 0, this.mu), // good solutions
-          IModel.use(P, this.mu, P.length)); // the rest
+// update model with mu<lambda best solutions
+      Model.update(IModel.use(P, 0, this.mu));
 
 // sample new population
       for (final Individual<X> dest : P) {
+        Model.sample(dest.x, random); // create new solution
+        dest.quality = process.evaluate(dest.x);
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-        Model.sample(dest.x, random);
-        dest.quality = process.evaluate(dest.x);
-      } // the end of the offspring generation
+      } // the end of the solution generation
     } // the end of the main loop
   }
 // end relevant

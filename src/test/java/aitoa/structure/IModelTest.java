@@ -113,9 +113,8 @@ public abstract class IModelTest<X> {
         array[i] = this.createValid();
       }
 
-      final int selectedEnd = j % (array.length + 1);
-      model.update(IModel.use(array, 0, selectedEnd),
-          IModel.use(array, selectedEnd, array.length));
+      final int selectedEnd = 1 + (j % array.length);
+      model.update(IModel.use(array, 0, selectedEnd));
 
       dest[j] = space.create();
       model.sample(dest[j], random);

@@ -15,21 +15,23 @@ import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
 /**
- * A evolutionary algorithm which prunes the population from
- * candidate solutions with identical objective values before the
- * reproduction step. This ensures that all "parents" from which
- * new points in the search space are derived have a different
- * solution quality. This, in turn, implies that they are
- * different candidate solutions. These, in turn, must be the
- * result of representation mappings applied to different points
- * in the search space.
+ * An {@linkplain aitoa.algorithms.EA evolutionary algorithm}
+ * which prunes the population from candidate solutions with
+ * identical objective values before the reproduction step. This
+ * ensures that all "parents" from which new points in the search
+ * space are derived have a different solution quality. This, in
+ * turn, implies that they are different candidate solutions.
+ * These, in turn, must be the result of representation mappings
+ * applied to different points in the search space.
  * <p>
  * Please notice that the direct, simple comparisons of the
  * objective values applied here in form of
- * {@code ind.quality > P[unique - 1].quality} only make sense in
- * combinatorial problems where these values are integers. In
- * numerical problems, we could, e.g., base the comparisons on
- * some similarity thresholds.
+ * {@code ind.quality > P[unique - 1].quality} only make sense
+ * when the objective values can exactly be represented in the
+ * {@code double} range. This is the case in combinatorial
+ * problems where these values are integers. In numerical
+ * problems, we could, e.g., base the comparisons on some
+ * similarity thresholds.
  */
 // start relevant
 public class EAWithPruning implements IMetaheuristic {
@@ -80,10 +82,7 @@ public class EAWithPruning implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: eap"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: ea"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -97,6 +96,11 @@ public class EAWithPruning implements IMetaheuristic {
     output.newLine();
     output.write("cr(inhex): ");//$NON-NLS-1$
     output.write(Double.toHexString(this.cr));
+    output.newLine();
+    output.newLine();
+    output.write("pruning: true"); //$NON-NLS-1$
+    output.newLine();
+    output.write("restarts: false"); //$NON-NLS-1$
     output.newLine();
   }
 

@@ -16,7 +16,9 @@ import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
+import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
+import aitoa.algorithms.TemperatureSchedule;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
@@ -91,6 +93,22 @@ public class JSSPExperiment {
               unary, null, inst, out);
         }
 
+// simulated annealing
+        for (final double Ts : new double[] { 1000d, 100d,
+            10d }) {
+          JSSPExperiment.run(
+              new SimulatedAnnealing(
+                  new TemperatureSchedule.Logarithmic(Ts)),
+              unary, null, inst, out);
+          for (final double ep : new double[] { 0.001d, 0.01d,
+              0.1d }) {
+            JSSPExperiment.run(
+                new SimulatedAnnealing(
+                    new TemperatureSchedule.Exponential(Ts, ep)),
+                unary, null, inst, out);
+          }
+        }
+
 // create the binary search operator
         final IBinarySearchOperator<int[]> binary =
             new JSSPOperatorBinarySequence(inst);
@@ -119,9 +137,10 @@ public class JSSPExperiment {
           } // end lambda
         } // end mu
 
+// the estimation of distribution algorithms
         for (final IModel<int[]> model : new IModel[] {
             new JSSPUMDAModel(inst) }) { // models for EDAs
-
+// test different number of samples
           for (final int lambda : new int[] { 16, 64, 256,
               1024 }) {
             int[] mus;

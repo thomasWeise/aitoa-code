@@ -15,8 +15,11 @@ import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 
 /**
- * A hybrid estimation of distribution algorithm which also
- * performs local search.
+ * A hybrid {@linkplain aitoa.algorithms.EDA estimation of
+ * distribution algorithm} combines the EDA with a local search.
+ * The concept is the same as in {@linkplain aitoa.algorithms.MA
+ * memetic algorithms}, which introduce a local search into an
+ * {@linkplain aitoa.algorithms.EA EA}.
  */
 // start relevant
 public class HybridEDA implements IMetaheuristic {
@@ -62,10 +65,7 @@ public class HybridEDA implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: heda"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: heda"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -110,6 +110,7 @@ public class HybridEDA implements IMetaheuristic {
     final X temp = searchSpace.create();
 
 // start relevant
+// the initialization of local variables is omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
 
 // first generation: fill population with random individuals
@@ -124,7 +125,7 @@ public class HybridEDA implements IMetaheuristic {
 // start relevant
     }
 
-    for (;;) {
+    for (;;) {// each iteration: LS, update model, then sample
       for (final Individual<X> ind : P) {
         do { // local search in style of HillClimber2
           improved = unary.enumerate(ind.x, temp, (point) -> {
@@ -143,8 +144,7 @@ public class HybridEDA implements IMetaheuristic {
       }
 
       Arrays.sort(P); // sort: best solutions at start
-      Model.update(IModel.use(P, 0, this.mu), // good solutions
-          IModel.use(P, this.mu, P.length)); // the rest
+      Model.update(IModel.use(P, 0, this.mu)); // update model
 
 // sample new population
       for (final Individual<X> dest : P) {
@@ -153,7 +153,7 @@ public class HybridEDA implements IMetaheuristic {
         }
         Model.sample(dest.x, random);
         dest.quality = process.evaluate(dest.x);
-      } // the end of the offspring generation
+      } // the end of the new points generation
     } // the end of the main loop
   }
 // end relevant

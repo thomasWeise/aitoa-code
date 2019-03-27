@@ -57,10 +57,7 @@ public class MA implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: ma"); //$NON-NLS-1$
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write("base_algorithm: ma"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -68,6 +65,11 @@ public class MA implements IMetaheuristic {
     output.newLine();
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
+    output.newLine();
+    output.newLine();
+    output.write("pruning: false"); //$NON-NLS-1$
+    output.newLine();
+    output.write("restarts: false"); //$NON-NLS-1$
     output.newLine();
   }
 
@@ -84,8 +86,7 @@ public class MA implements IMetaheuristic {
 // start relevant
   public final <X, Y> void
       solve(final IBlackBoxProcess<X, Y> process) {
-// omitted: initialize local variables random, searchSpace,
-// nullary, unary, binary, and array P of length mu+lambda
+// the initialization of local variables is omitted for brevity
 // end relevant
 // create local variables
     final Random random = process.getRandom();

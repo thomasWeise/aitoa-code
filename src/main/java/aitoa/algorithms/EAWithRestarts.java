@@ -14,7 +14,10 @@ import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.RandomUtils;
 
-/** A evolutionary algorithm */
+/**
+ * An {@linkplain aitoa.algorithms.EA evolutionary algorithm}
+ * which restarts every couple of generations.
+ */
 public class EAWithRestarts implements IMetaheuristic {
 
   /** the crossover rate */
@@ -78,10 +81,7 @@ public class EAWithRestarts implements IMetaheuristic {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: ea_rs"); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
+    output.write("base_algorithm: ea"); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     output.write("mu: "); //$NON-NLS-1$
@@ -98,6 +98,11 @@ public class EAWithRestarts implements IMetaheuristic {
     output.newLine();
     output.write("generationsUntilRestart: ");//$NON-NLS-1$
     output.write(Integer.toString(this.generationsUntilRestart));
+    output.newLine();
+    output.newLine();
+    output.write("pruning: false"); //$NON-NLS-1$
+    output.newLine();
+    output.write("restarts: true"); //$NON-NLS-1$
     output.newLine();
   }
 
