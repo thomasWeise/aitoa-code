@@ -6,6 +6,7 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -16,7 +17,8 @@ import aitoa.TestTools;
  *          the data structure
  */
 @Ignore
-public abstract class IModelTest<X> {
+public abstract class IModelTest<X>
+    extends ObjectTest<IModel<X>> {
 
   /**
    * get an instance of the space backing the operator
@@ -34,6 +36,12 @@ public abstract class IModelTest<X> {
    * @see #getSpace()
    */
   protected abstract IModel<X> getModel(final ISpace<X> space);
+
+  /** {@inheritDoc} */
+  @Override
+  protected IModel<X> getInstance() {
+    return this.getModel(this.getSpace());
+  }
 
   /**
    * check if two instances of the data structure {@code X} are

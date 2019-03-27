@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -17,7 +18,8 @@ import aitoa.TestTools;
  *          the data structure
  */
 @Ignore
-public abstract class IUnarySearchOperatorTest<X> {
+public abstract class IUnarySearchOperatorTest<X>
+    extends ObjectTest<IUnarySearchOperator<X>> {
 
   /**
    * get an instance of the space backing the operator
@@ -36,6 +38,12 @@ public abstract class IUnarySearchOperatorTest<X> {
    */
   protected abstract IUnarySearchOperator<X>
       getOperator(final ISpace<X> space);
+
+  /** {@inheritDoc} */
+  @Override
+  protected IUnarySearchOperator<X> getInstance() {
+    return this.getOperator(this.getSpace());
+  }
 
   /**
    * check if two instances of the data structure {@code X} are

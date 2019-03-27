@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -15,14 +16,8 @@ import aitoa.TestTools;
  *          the data structure used in the space
  */
 @Ignore
-public abstract class ISpaceTest<X> {
-
-  /**
-   * Get the instance of {@link ISpace} for testing.
-   *
-   * @return the instance
-   */
-  protected abstract ISpace<X> getInstance();
+public abstract class ISpaceTest<X>
+    extends ObjectTest<ISpace<X>> {
 
   /**
    * fill the given object with (random?) data

@@ -99,7 +99,6 @@ public class EAWithRestarts implements IMetaheuristic {
     output.write("generationsUntilRestart: ");//$NON-NLS-1$
     output.write(Integer.toString(this.generationsUntilRestart));
     output.newLine();
-    output.newLine();
     output.write("pruning: false"); //$NON-NLS-1$
     output.newLine();
     output.write("restarts: true"); //$NON-NLS-1$

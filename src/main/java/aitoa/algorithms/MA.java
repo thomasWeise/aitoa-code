@@ -66,7 +66,6 @@ public class MA implements IMetaheuristic {
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
     output.newLine();
-    output.newLine();
     output.write("pruning: false"); //$NON-NLS-1$
     output.newLine();
     output.write("restarts: false"); //$NON-NLS-1$

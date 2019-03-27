@@ -3,6 +3,8 @@ package aitoa.structure;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
+
 /**
  * A test for an instance of {@link IRepresentationMapping}
  *
@@ -12,15 +14,8 @@ import org.junit.Test;
  *          the data structure used in the solution space
  */
 @Ignore
-public abstract class IRepresentationMappingTest<X, Y> {
-
-  /**
-   * Get the instance of {@link IRepresentationMapping} for
-   * testing.
-   *
-   * @return the instance
-   */
-  protected abstract IRepresentationMapping<X, Y> getInstance();
+public abstract class IRepresentationMappingTest<X, Y>
+    extends ObjectTest<IRepresentationMapping<X, Y>> {
 
   /**
    * Create a valid instance of the search space. Ideally, this

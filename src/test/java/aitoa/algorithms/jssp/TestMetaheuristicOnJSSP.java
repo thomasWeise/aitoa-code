@@ -3,6 +3,7 @@ package aitoa.algorithms.jssp;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.algorithms.TestMetaheuristic;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
@@ -18,11 +19,18 @@ import aitoa.structure.TestBlackBoxProcessBuilder;
 
 /** Test a metaheuristic on the JSSP */
 @Ignore
-public abstract class TestMetaheuristicOnJSSP {
+public abstract class TestMetaheuristicOnJSSP
+    extends TestMetaheuristic {
+
+  /** {@inheritDoc} */
+  @Override
+  protected IMetaheuristic getInstance() {
+    return this.getAlgorithm(new JSSPInstance("demo")); //$NON-NLS-1$
+  }
 
   /**
    * Get the algorithm instance
-   * 
+   *
    * @param instance
    *          the jssp instance
    * @return the algorithm

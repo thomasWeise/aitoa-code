@@ -97,7 +97,6 @@ public class EAWithPruning implements IMetaheuristic {
     output.write("cr(inhex): ");//$NON-NLS-1$
     output.write(Double.toHexString(this.cr));
     output.newLine();
-    output.newLine();
     output.write("pruning: true"); //$NON-NLS-1$
     output.newLine();
     output.write("restarts: false"); //$NON-NLS-1$

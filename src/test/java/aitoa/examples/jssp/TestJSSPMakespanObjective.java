@@ -27,7 +27,7 @@ public class TestJSSPMakespanObjective
   /** {@inheritDoc} */
   @Override
   protected IObjectiveFunction<JSSPCandidateSolution>
-      getObjective() {
+      getInstance() {
     return TestJSSPMakespanObjective.F;
   }
 

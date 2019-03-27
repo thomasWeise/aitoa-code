@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -17,7 +18,8 @@ import aitoa.TestTools;
  *          the data structure
  */
 @Ignore
-public abstract class INullarySearchOperatorTest<X> {
+public abstract class INullarySearchOperatorTest<X>
+    extends ObjectTest<INullarySearchOperator<X>> {
 
   /**
    * get an instance of the space backing the operator
@@ -36,6 +38,12 @@ public abstract class INullarySearchOperatorTest<X> {
    */
   protected abstract INullarySearchOperator<X>
       getOperator(final ISpace<X> space);
+
+  /** {@inheritDoc} */
+  @Override
+  protected INullarySearchOperator<X> getInstance() {
+    return this.getOperator(this.getSpace());
+  }
 
   /**
    * check if two instances of the data structure {@code X} are

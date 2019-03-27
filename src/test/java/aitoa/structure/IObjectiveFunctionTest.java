@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -13,14 +14,8 @@ import aitoa.TestTools;
  *          the data structure
  */
 @Ignore
-public abstract class IObjectiveFunctionTest<Y> {
-
-  /**
-   * get the objective function
-   *
-   * @return the objective function
-   */
-  protected abstract IObjectiveFunction<Y> getObjective();
+public abstract class IObjectiveFunctionTest<Y>
+    extends ObjectTest<IObjectiveFunction<Y>> {
 
   /**
    * Create a valid instance. Ideally, this method should return
@@ -37,7 +32,7 @@ public abstract class IObjectiveFunctionTest<Y> {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testApplyValidAndDifferent() {
-    final IObjectiveFunction<Y> f = this.getObjective();
+    final IObjectiveFunction<Y> f = this.getInstance();
     final double lb = f.lowerBound();
     for (int i = 100; (--i) >= 0;) {
       final double d = f.evaluate(this.createValid());

@@ -108,7 +108,7 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
     final Random r = new Random();
     for (int N = 1; N < 100; N++) {
       final int[] count = new int[N];
-      for (int i = 10000; (--i) >= 0;) {
+      for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
         final long l = JSSPUMDAModel.uniformFrom0ToNminus1(r, N);
         TestTools.assertInRange(l, 0, N - 1L);
         ++count[(int) l];
@@ -124,7 +124,7 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
           max = i;
         }
       }
-      TestTools.assertGreater(min << 1, max);
+      TestTools.assertGreater(min * 5, max << 1);
     }
   }
 }
