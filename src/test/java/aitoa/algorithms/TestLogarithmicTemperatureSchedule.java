@@ -2,10 +2,7 @@ package aitoa.algorithms;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.Ignore;
-
 /** Test a logarithmic temperature schedule */
-@Ignore
 public class TestLogarithmicTemperatureSchedule
     extends TestTemperatureSchedule {
 

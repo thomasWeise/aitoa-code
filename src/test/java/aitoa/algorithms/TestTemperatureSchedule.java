@@ -18,7 +18,7 @@ public abstract class TestTemperatureSchedule
     for (long l = 1L; l < 1000; l++) {
       final double t = ts.temperature(l);
       TestTools.assertFinite(t);
-      TestTools.assertGreater(t, 0);
+      TestTools.assertGreaterOrEqual(t, 0);
     }
     final double x = ts.temperature(Long.MAX_VALUE);
     TestTools.assertFinite(x);

@@ -147,6 +147,9 @@ public abstract class TemperatureSchedule {
     /** {@inheritDoc} */
     @Override
     public double temperature(final long t) {
+      if (t >= Long.MAX_VALUE) {
+        return 0d;
+      }
       return (this.startTemperature / Math.log(t + 1L));
     }
 
