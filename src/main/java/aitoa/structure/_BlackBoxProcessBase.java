@@ -224,4 +224,10 @@ abstract class _BlackBoxProcessBase<X, Y>
     out.append(Double.toString(this.m_bestF));
     out.append("\n# END_STATE\n");//$NON-NLS-1$
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final double lowerBound() {
+    return this.m_f.lowerBound();
+  }
 }
