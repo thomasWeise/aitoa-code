@@ -120,15 +120,18 @@ public class MA implements IMetaheuristic {
       for (int i = P.length; (--i) >= localSearchStart;) {
         final Individual<X> ind = P[i];
         do { // local search in style of HillClimber2
-          improved = unary.enumerate(ind.x, temp, (point) -> {
-            final double newQuality = process.evaluate(point);
-            if (newQuality < ind.quality) { // better?
-              ind.quality = newQuality; // store quality
-              searchSpace.copy(point, ind.x); // store point
-              return (true); // exit to next loop
-            } // if we get here, point is not better
-            return process.shouldTerminate();
-          }); // repeat this until no improvement or time is up
+          improved = unary.enumerate(random, ind.x, temp, //
+              (point) -> {
+                final double newQuality =
+                    process.evaluate(point);
+                if (newQuality < ind.quality) { // better?
+                  ind.quality = newQuality; // store quality
+                  searchSpace.copy(point, ind.x); // store point
+                  return (true); // exit to next loop
+                } // if we get here, point is not better
+                return process.shouldTerminate();
+              }); // repeat this until no improvement or time is
+                  // up
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }

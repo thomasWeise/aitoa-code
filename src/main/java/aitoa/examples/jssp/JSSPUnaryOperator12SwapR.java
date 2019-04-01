@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.utils.RandomUtils;
 
 /**
  * An implementation of the unary search operator for the JSSP
@@ -15,28 +16,41 @@ import aitoa.structure.IUnarySearchOperator;
  * then swapped.
  * <p>
  * This operator is very similar to
- * {@link aitoa.examples.jssp.JSSPUnaryOperator12SwapR} and it
+ * {@link aitoa.examples.jssp.JSSPUnaryOperator12Swap} and it
  * spans the exactly same neighborhood. Its
  * {@link #apply(int[], int[], Random)} operator thus is
  * identical. Its
  * {@link #enumerate(Random, int[], int[], Predicate)} method,
- * however, applies a strictly deterministic enumeration
- * procedure.
+ * however, is randomized: It first chooses a random order of
+ * indices. Based on this order, the possible search moves are
+ * enumerated.
  */
 // start relevant
-public final class JSSPUnaryOperator12Swap
+public final class JSSPUnaryOperator12SwapR
     implements IUnarySearchOperator<int[]> {
-// end relevant
+  // end relevant
+  /** the indexes */
+  private final int[] m_indexes;
 
-  /** create the representation */
-  public JSSPUnaryOperator12Swap() {
+  /**
+   * create the representation
+   *
+   * @param instance
+   *          the jssp instance
+   */
+  public JSSPUnaryOperator12SwapR(final JSSPInstance instance) {
     super();
+
+    this.m_indexes = new int[instance.m * instance.n];
+    for (int i = this.m_indexes.length; (--i) >= 0;) {
+      this.m_indexes[i] = i;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "12swap"; //$NON-NLS-1$
+    return "12swapR"; //$NON-NLS-1$
   }
 
   /**
@@ -99,6 +113,9 @@ public final class JSSPUnaryOperator12Swap
    * index, which we both test. We can skip unnecessary indices
    * by only looking at pairs with {@code i>j} and triples with
    * {@code i>j>k}.
+   * <p>
+   * This enumeration uses a randomized order of indices
+   * {@code i} and {@code j}.
    *
    * @param random
    *          {@inheritDoc}
@@ -114,14 +131,22 @@ public final class JSSPUnaryOperator12Swap
   public final boolean enumerate(final Random random,
       final int[] x, final int[] dest,
       final Predicate<int[]> visitor) {
-    int i = x.length; // get the length
-    System.arraycopy(x, 0, dest, 0, i); // copy x to dest
-    for (; (--i) > 0;) {// i from 1...n-1
+// end enumerate
+    final int[] indexes = this.m_indexes;
+// start enumerate
+    int ii = x.length; // get the length
+    // randomize the order in which indices are processed
+    RandomUtils.shuffle(random, indexes, 0, ii);
+    System.arraycopy(x, 0, dest, 0, ii); // copy x to dest
+    for (; (--ii) > 0;) {// ii from 1...n-1
+      final int i = indexes[ii]; // get i: random order
       final int job_i = dest[i];
-      for (int j = i; (--j) >= 0;) { // j from 0...i-1
+      for (int jj = ii; (--jj) >= 0;) { // jj from 0...ii-1
+        final int j = indexes[jj]; // get j: random order
         final int job_j = dest[j];
         if (job_i != job_j) {
-          for (int k = j; (--k) >= 0;) { // k from 0...j-1
+          for (int kk = jj; (--kk) >= 0;) { // kk from 0...j-1
+            final int k = indexes[kk];
             final int job_k = dest[k];
             if ((job_i != job_k) && (job_j != job_k)) {
               dest[i] = job_j;// there are two possible moves

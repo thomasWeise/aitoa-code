@@ -56,7 +56,7 @@ public final class HillClimber2 implements IMetaheuristic {
     do {// repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of x_best and receive them
 // one-by-one in parameter x (for which x_cur is used)
-      improved = unary.enumerate(x_best, x_cur, (x) -> {
+      improved = unary.enumerate(random, x_best, x_cur, (x) -> {
 // map x from X to Y and evaluate candidate solution
         final double f_cur = process.evaluate(x);
         if (f_cur < f_best[0]) { // we found a better solution

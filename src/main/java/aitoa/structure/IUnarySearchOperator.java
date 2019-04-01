@@ -64,10 +64,11 @@ public interface IUnarySearchOperator<X> {
    * function}.
    * <p>
    * Notice that this function may be implemented in a
-   * deterministic way. Actually, most likely we will do this in
-   * a deterministic way. Nevertheless, there is no guarantee
-   * about the order in which the neighboring points of {@code x}
-   * are enumerated.
+   * deterministic way. However, there is no guarantee about the
+   * order in which the neighboring points of {@code x} are
+   * enumerated. In order to allow for a potential randomized
+   * (though still necessarily exhaustive) enumeration, the
+   * parameter {@code random} provides a random number generator.
    * <p>
    * Notice that the variable {@code dest} <em>must not be</em>
    * modified by the predicate receiving it. Otherwise, the
@@ -81,10 +82,12 @@ public interface IUnarySearchOperator<X> {
    * case, {@link #canEnumerate()} should return {@code false}.
    * If {@link #canEnumerate()} is implemented to return
    * {@code true}, then
-   * {@link #enumerate(Object, Object, Predicate)} must be
-   * implemented in a reasonable way as well and must not throw
-   * an @link java.lang.UnsupportedOperationException}.
+   * {@link #enumerate(java.util.Random, Object, Object, Predicate)}
+   * must be implemented in a reasonable way as well and must not
+   * throw an @link java.lang.UnsupportedOperationException}.
    *
+   * @param random
+   *          a random number generator
    * @param x
    *          the point from the search space whose neighborhood
    *          we want to enumerate
@@ -108,8 +111,8 @@ public interface IUnarySearchOperator<X> {
    *           cannot be enumerated in a reasonable way
    */
 // start enumerate
-  public default boolean enumerate(final X x, final X dest,
-      final Predicate<X> visitor) {
+  public default boolean enumerate(final Random random,
+      final X x, final X dest, final Predicate<X> visitor) {
     throw new UnsupportedOperationException("The operator " + //$NON-NLS-1$
         this.getClass().getName()
         + " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
@@ -118,15 +121,16 @@ public interface IUnarySearchOperator<X> {
 
   /**
    * This method allows an algorithm to query whether
-   * {@link #enumerate(Object, Object, Predicate)} can be called.
+   * {@link #enumerate(java.util.Random, Object, Object, Predicate)}
+   * can be called.
    *
    * @return {@code true} if
-   *         {@link #enumerate(Object, Object, Predicate)} can be
-   *         used, {@code false} if and only if
-   *         {@link #enumerate(Object, Object, Predicate)} will
-   *         throw a
+   *         {@link #enumerate(java.util.Random, Object, Object, Predicate)}
+   *         can be used, {@code false} if and only if
+   *         {@link #enumerate(java.util.Random, Object, Object, Predicate)}
+   *         will throw a
    *         {@link java.lang.UnsupportedOperationException}
-   * @see #enumerate(Object, Object, Predicate)
+   * @see #enumerate(java.util.Random, Object, Object, Predicate)
    */
   public default boolean canEnumerate() {
     return false;

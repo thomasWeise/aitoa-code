@@ -1,5 +1,6 @@
 package aitoa.structure;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -106,18 +107,20 @@ public abstract class IUnarySearchOperatorTest<X>
 
   /**
    * test that the
-   * {@link IUnarySearchOperator#enumerate(Object, Object, java.util.function.Predicate)}
+   * {@link IUnarySearchOperator#enumerate(java.util.Random, Object, Object, java.util.function.Predicate)}
    * method works correctly and respects the return values of the
    * visitor
    */
-  @SuppressWarnings("static-method")
+  @SuppressWarnings({ "static-method", "unchecked" })
   @Test(timeout = 3600000)
   public void testEnumerate() {
     final ISpace<X> space = this.getSpace();
     final IUnarySearchOperator<X> op = this.getOperator(space);
+    final Random random = ThreadLocalRandom.current();
 
     final X src = this.createValid();
     final X dest = space.create();
+    final Object[] preserve = new Object[1024];
 
     if (op.canEnumerate()) {
       final X copy = space.create();
@@ -126,27 +129,49 @@ public abstract class IUnarySearchOperatorTest<X>
       final long[] count = new long[2];
 
       // perform one complete enumeration
-      Assert.assertFalse(op.enumerate(src, dest, (x) -> {
+      Assert.assertFalse(op.enumerate(random, src, dest, (x) -> {
         Assert.assertSame(dest, x);
         space.check(x);
         Assert.assertTrue(this.equals(src, copy));
-        ++count[0];
+        final long l = count[0]++;
+        // check that elements do not appear twice
+        for (int i = ((int) (Math.min(preserve.length, l)));
+            (--i) >= 0;) {
+          Assert.assertFalse(//
+              this.equals(((X) (preserve[i])), x));
+        }
+        if (l < preserve.length) {
+          final X cc = space.create();
+          space.copy(x, cc);
+          preserve[(int) l] = cc;
+        }
         return false;
       }));
       Assert.assertTrue(this.equals(src, copy));
       TestTools.assertGreater(count[0], 0L);
 
       // test two enumerations have the same number of steps
-      Assert.assertFalse(op.enumerate(src, dest, (x) -> {
-        ++count[1];
+      Assert.assertFalse(op.enumerate(random, src, dest, (x) -> {
+        final long l = count[1]++;
+        // check that elements do not appear twice
+        for (int i = ((int) (Math.min(preserve.length, l)));
+            (--i) >= 0;) {
+          Assert.assertFalse(//
+              this.equals(((X) (preserve[i])), x));
+        }
+        if (l < preserve.length) {
+          space.copy(x, ((X) (preserve[(int) l])));
+        }
+
         return false;
       }));
       Assert.assertTrue(this.equals(src, copy));
       Assert.assertEquals(count[0], count[1]);
+      Arrays.fill(preserve, null);
 
       // assert that stopping works 1
       count[1] = 0L;
-      Assert.assertTrue(op.enumerate(src, dest, (x) -> {
+      Assert.assertTrue(op.enumerate(random, src, dest, (x) -> {
         ++count[1];
         return true;
       }));
@@ -156,9 +181,10 @@ public abstract class IUnarySearchOperatorTest<X>
       if (count[0] > 5L) {
 // assert that stopping works 2
         count[1] = 0L;
-        Assert.assertTrue(op.enumerate(src, dest, (x) -> {
-          return ((++count[1]) == 5L);
-        }));
+        Assert
+            .assertTrue(op.enumerate(random, src, dest, (x) -> {
+              return ((++count[1]) == 5L);
+            }));
         Assert.assertTrue(this.equals(src, copy));
         Assert.assertEquals(5L, count[1]);
       }
@@ -166,7 +192,7 @@ public abstract class IUnarySearchOperatorTest<X>
     } else {
       boolean error = true;
       try {
-        op.enumerate(src, dest, (x) -> false);
+        op.enumerate(random, src, dest, (x) -> false);
       } catch (@SuppressWarnings("unused") final UnsupportedOperationException ex) {
         error = false;
       }

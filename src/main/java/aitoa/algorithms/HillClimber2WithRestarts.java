@@ -66,18 +66,20 @@ public final class HillClimber2WithRestarts
       do {// repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of x_best and receive them
 // one-by-one in parameter x (for which x_cur is used)
-        improved = unary.enumerate(x_best, x_cur, (x) -> {
+        improved = unary.enumerate(random, x_best, x_cur, //
+            (x) -> {
 // map x from X to Y and evaluate candidate solution
-          final double f_cur = process.evaluate(x);
-          if (f_cur < f_best[0]) { // we found a better solution
+              final double f_cur = process.evaluate(x);
+              if (f_cur < f_best[0]) { // we found a better
+                                       // solution
 // remember best objective value and copy x to x_best
-            f_best[0] = f_cur;
-            process.getSearchSpace().copy(x, x_best);
-            return true; // quit enumerating neighborhood
-          }
+                f_best[0] = f_cur;
+                process.getSearchSpace().copy(x, x_best);
+                return true; // quit enumerating neighborhood
+              }
 // no improvement: continue enumeration unless time is up
-          return process.shouldTerminate();
-        });
+              return process.shouldTerminate();
+            });
 // repeat until time is up or no further improvement possible
         if (process.shouldTerminate()) {
           return; // ok, we should exit
