@@ -130,7 +130,6 @@ public class CoinFlip {
   @Test(timeout = 3600000)
   public void test_nChooseK() {
     BigInteger result;
-    
 
     result = CoinFlip.nChooseK(10, 4);
     Assert.assertEquals(210, result.intValue());
@@ -165,10 +164,10 @@ public class CoinFlip {
     Assert.assertEquals(
         new BigInteger("50062763930025152588146122462400"), //$NON-NLS-1$
         result);
-    
-    result = nChooseK(202,101);
-    Assert.assertEquals(
-        new BigInteger("360401018730232861668242368169788454233176683658575855546640"), //$NON-NLS-1$
+
+    result = CoinFlip.nChooseK(202, 101);
+    Assert.assertEquals(new BigInteger(
+        "360401018730232861668242368169788454233176683658575855546640"), //$NON-NLS-1$
         result);
 
   }
@@ -195,8 +194,8 @@ public class CoinFlip {
     System.out.print('/');
     Tools.printLongNumber(res[1], 4);
     System.out.println();
-    System.out.println(
-        new BigDecimal(res[0]).divide(new BigDecimal(res[1])).toPlainString());
+    System.out.println(new BigDecimal(res[0])
+        .divide(new BigDecimal(res[1])).toPlainString());
     System.out.println(
         new BigDecimal(res[0]).divide(new BigDecimal(res[1])));
     Tools.printLongNumber(

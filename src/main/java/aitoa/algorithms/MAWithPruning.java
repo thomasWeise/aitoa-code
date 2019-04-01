@@ -43,9 +43,15 @@ import aitoa.utils.RandomUtils;
  * combinatorial problems where these values are integers. In
  * numerical problems, we could, e.g., base the comparisons on
  * some similarity thresholds.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public class MAWithPruning implements IMetaheuristic {
+public class MAWithPruning<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of selected parents */
@@ -104,8 +110,7 @@ public class MAWithPruning implements IMetaheuristic {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // omitted: initialize local variables random, searchSpace,
 // nullary, unary, binary, and arrays P and P2 of length
 // mu+lambda, and array T to null

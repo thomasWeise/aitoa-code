@@ -19,9 +19,15 @@ import aitoa.structure.IUnarySearchOperator;
  * applications of the unary search operator to discover
  * neighboring points while the second version scans the
  * neighborhood by enumerating it.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class HillClimber implements IMetaheuristic {
+public final class HillClimber<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
   /** create */
   public HillClimber() {
@@ -31,8 +37,7 @@ public final class HillClimber implements IMetaheuristic {
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random
 // end relevant
     final X x_cur = process.getSearchSpace().create();

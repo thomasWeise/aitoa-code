@@ -30,10 +30,15 @@ import aitoa.structure.IUnarySearchOperator;
  * before the restarts are the result of a computation, say,
  * depend on the problem size, then this logic can provided as an
  * additional string parameter.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class HillClimberWithRestarts
-    implements IMetaheuristic {
+public final class HillClimberWithRestarts<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
   /** the initial steps before restarts */
   public final int initialFailsBeforeRestart;
@@ -105,8 +110,7 @@ public final class HillClimberWithRestarts
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();

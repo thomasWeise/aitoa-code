@@ -39,9 +39,14 @@ import aitoa.utils.RandomUtils;
  * lucky, then maybe we can merge these different characteristics
  * and obtain a new point which represents a combination of
  * different positive traits and is even better.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public class EA implements IMetaheuristic {
+public class EA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the crossover rate */
@@ -120,8 +125,7 @@ public class EA implements IMetaheuristic {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
 // start withoutcrossover
 // omitted: initialize local variables random, searchSpace,

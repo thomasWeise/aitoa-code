@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.TemperatureSchedule;
+import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
@@ -18,7 +19,7 @@ public class TestSimulatedAnnealingExpJSSP
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic
+  protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
     double st, ep;
@@ -30,7 +31,7 @@ public class TestSimulatedAnnealingExpJSSP
       ep = rand.nextDouble();
     } while ((ep <= 0d) || (ep >= 1d));
 
-    return new SimulatedAnnealing(
+    return new SimulatedAnnealing<>(
         new TemperatureSchedule.Exponential(st, ep));
   }
 }

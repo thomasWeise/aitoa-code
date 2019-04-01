@@ -17,8 +17,14 @@ import aitoa.utils.RandomUtils;
 /**
  * An {@linkplain aitoa.algorithms.EA evolutionary algorithm}
  * which restarts every couple of generations.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
-public class EAWithRestarts implements IMetaheuristic {
+public class EAWithRestarts<X, Y>
+    implements IMetaheuristic<X, Y> {
 
   /** the crossover rate */
   public final double cr;
@@ -116,8 +122,7 @@ public class EAWithRestarts implements IMetaheuristic {
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
     // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();

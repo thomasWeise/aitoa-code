@@ -5,20 +5,23 @@ package aitoa.structure;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-/** A metaheuristic optimization algorithm */
+/**
+ * A metaheuristic optimization algorithm
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
+ */
 // start relevant
-public interface IMetaheuristic {
+public interface IMetaheuristic<X, Y> {
   /**
    * Solve the given problem instance
    *
    * @param process
    *          the process with all instance information
-   * @param <X>
-   *          the search space
-   * @param <Y>
-   *          the solution space
    */
-  public abstract <X, Y> void
+  public abstract void
       solve(final IBlackBoxProcess<X, Y> process);
 
 // end relevant

@@ -14,10 +14,17 @@ import aitoa.ObjectTest;
 import aitoa.TestTools;
 import aitoa.structure.IMetaheuristic;
 
-/** Test a metaheuristic */
+/**
+ * Test a metaheuristic
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
+ */
 @Ignore
-public abstract class TestMetaheuristic
-    extends ObjectTest<IMetaheuristic> {
+public abstract class TestMetaheuristic<X, Y>
+    extends ObjectTest<IMetaheuristic<X, Y>> {
   /**
    * test printing the setup
    *

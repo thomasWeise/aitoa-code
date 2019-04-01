@@ -26,4 +26,4 @@ public interface INullarySearchOperator<X> {
    */
   public abstract void apply(final X dest, final Random random);
 }
-//end relevant
+// end relevant

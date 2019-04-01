@@ -27,9 +27,14 @@ import aitoa.structure.ISpace;
  * "more likely" by updating the model. This process is repeated
  * again and again and we can hope that the model, i.e., the
  * distribution that we update, will approach the optimum.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public class EDA implements IMetaheuristic {
+public class EDA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of solution to be selected */
@@ -37,7 +42,7 @@ public class EDA implements IMetaheuristic {
   /** the number of new points per generation */
   public final int lambda;
   /** the model */
-  public final IModel<?> model;
+  public final IModel<X> model;
 
   /**
    * Create a new instance of the estimation of distribution
@@ -50,7 +55,7 @@ public class EDA implements IMetaheuristic {
    *          the model
    */
   public EDA(final int _mu, final int _lambda,
-      final IModel<?> _model) {
+      final IModel<X> _model) {
     super();
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
       throw new IllegalArgumentException(
@@ -101,15 +106,14 @@ public class EDA implements IMetaheuristic {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator();
-    final IModel<X> Model = ((IModel<X>) (this.model));
+    final IModel<X> Model = this.model;
 
     final Individual<X>[] P = new Individual[this.lambda];
 // start relevant

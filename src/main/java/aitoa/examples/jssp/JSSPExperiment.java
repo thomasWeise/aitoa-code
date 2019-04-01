@@ -63,10 +63,10 @@ public class JSSPExperiment {
       final JSSPInstance inst = new JSSPInstance(instId);
 
 // random samplers
-      JSSPExperiment.run(new SingleRandomSample(), null, null,
+      JSSPExperiment.run(new SingleRandomSample<>(), null, null,
           inst, out);
-      JSSPExperiment.run(new RandomSampling(), null, null, inst,
-          out);
+      JSSPExperiment.run(new RandomSampling<>(), null, null,
+          inst, out);
 
       for (final IUnarySearchOperator<int[]> unary : //
       new IUnarySearchOperator[] { //
@@ -77,23 +77,23 @@ public class JSSPExperiment {
 
         if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
 // plain hill climbers which do not enumerate their neighborhood
-          JSSPExperiment.run(new HillClimber(), unary, null,
+          JSSPExperiment.run(new HillClimber<>(), unary, null,
               inst, out);
 
 // hill climbers which do not enumerate neighborhood with
 // restarts
           for (final double inc : new double[] { 0d, 0.05d }) {
             JSSPExperiment.run(
-                new HillClimberWithRestarts(256, "256", inc), //$NON-NLS-1$
+                new HillClimberWithRestarts<>(256, "256", inc), //$NON-NLS-1$
                 unary, null, inst, out);
           } // end restart settings
         } // only use basic unary ops
 
 // hill climbers with neighborhood enumeration
         if (unary.canEnumerate()) {
-          JSSPExperiment.run(new HillClimber2(), unary, null,
+          JSSPExperiment.run(new HillClimber2<>(), unary, null,
               inst, out);
-          JSSPExperiment.run(new HillClimber2WithRestarts(),
+          JSSPExperiment.run(new HillClimber2WithRestarts<>(),
               unary, null, inst, out);
         } // end enumerable unary ops
 
@@ -102,12 +102,12 @@ public class JSSPExperiment {
           for (final double Ts : new double[] { 1000d, 100d,
               10d }) {
             JSSPExperiment.run(
-                new SimulatedAnnealing(
+                new SimulatedAnnealing<>(
                     new TemperatureSchedule.Logarithmic(Ts)),
                 unary, null, inst, out);
             for (final double ep : new double[] { 0.001d, 0.01d,
                 0.1d }) {
-              JSSPExperiment.run(new SimulatedAnnealing(
+              JSSPExperiment.run(new SimulatedAnnealing<>(
                   new TemperatureSchedule.Exponential(Ts, ep)),
                   unary, null, inst, out);
             } // end epsilon
@@ -125,11 +125,11 @@ public class JSSPExperiment {
                 0.3 }) {
               if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
 // the plain EA
-                JSSPExperiment.run(new EA(cr, mu, lambda), unary,
-                    binary, inst, out);
+                JSSPExperiment.run(new EA<>(cr, mu, lambda),
+                    unary, binary, inst, out);
 // the EA with pruning, i.e., which enforces population diversity
                 JSSPExperiment.run(
-                    new EAWithPruning(cr, mu, lambda), unary,
+                    new EAWithPruning<>(cr, mu, lambda), unary,
                     binary, inst, out);
               } // only use basic unary ops
             } // end enumerate cr
@@ -137,9 +137,10 @@ public class JSSPExperiment {
             if (!(unary instanceof JSSPUnaryOperator1Swap)) {
               if (unary.canEnumerate()) {
 // memetic algorithms here rely on enumeration and use cr=1
-                JSSPExperiment.run(new MAWithPruning(mu, lambda),
-                    unary, binary, inst, out);
-                JSSPExperiment.run(new MA(mu, lambda), unary,
+                JSSPExperiment.run(
+                    new MAWithPruning<>(mu, lambda), unary,
+                    binary, inst, out);
+                JSSPExperiment.run(new MA<>(mu, lambda), unary,
                     binary, inst, out);
               } // end memetic algorithm
             } // only use randomized enumeration
@@ -163,16 +164,16 @@ public class JSSPExperiment {
               mus = new int[] { 1, 2, 4 };
             }
             for (final int mu : mus) {
-              JSSPExperiment.run(new EDA(mu, lambda, model),
+              JSSPExperiment.run(new EDA<>(mu, lambda, model),
                   unary, null, inst, out);
 
               if (unary.canEnumerate()) {
                 if (!(unary instanceof JSSPUnaryOperator1Swap)) {
                   JSSPExperiment.run(
-                      new HybridEDA(mu, lambda, model), unary,
+                      new HybridEDA<>(mu, lambda, model), unary,
                       null, inst, out);
                 } // only use randomized enumeration
-              }
+              } // can enumerate
             } // mu
           } // lambda
         } // models
@@ -196,10 +197,12 @@ public class JSSPExperiment {
    * @param baseDir
    *          the base directory
    */
-  public static final void run(final IMetaheuristic algorithm,
-      final IUnarySearchOperator<int[]> unary,
-      final IBinarySearchOperator<int[]> binary,
-      final JSSPInstance inst, final Path baseDir) {
+  public static final void
+      run(final IMetaheuristic<int[],
+          JSSPCandidateSolution> algorithm,
+          final IUnarySearchOperator<int[]> unary,
+          final IBinarySearchOperator<int[]> binary,
+          final JSSPInstance inst, final Path baseDir) {
 
     // create the process builder
     final BlackBoxProcessBuilder<int[],

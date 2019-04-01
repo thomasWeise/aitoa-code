@@ -6,9 +6,15 @@ import aitoa.structure.IMetaheuristic;
 /**
  * The single random sample algorithm samples one point from the
  * search space and evaluates it.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class SingleRandomSample implements IMetaheuristic {
+public final class SingleRandomSample<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
   /** create */
   public SingleRandomSample() {
@@ -24,8 +30,7 @@ public final class SingleRandomSample implements IMetaheuristic {
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // allocate data structure for holding 1 point from search space
     final X x = process.getSearchSpace().create();
 

@@ -22,9 +22,14 @@ import aitoa.utils.RandomUtils;
  * then refines them with a
  * {@linkplain aitoa.algorithms.HillClimber2 first-improvement
  * local search} based on a unary operator.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public class MA implements IMetaheuristic {
+public class MA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of selected parents */
@@ -83,8 +88,7 @@ public class MA implements IMetaheuristic {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // the initialization of local variables is omitted for brevity
 // end relevant
 // create local variables

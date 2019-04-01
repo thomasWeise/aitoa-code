@@ -29,9 +29,15 @@ import aitoa.structure.IUnarySearchOperator;
  * In each step, the algorithm will accept a new solution if it
  * is better than the current best solution. If it is worse, it
  * might still be accepted, but only with a certain probability.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class SimulatedAnnealing implements IMetaheuristic {
+public final class SimulatedAnnealing<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the temperature scheduke */
@@ -53,8 +59,7 @@ public final class SimulatedAnnealing implements IMetaheuristic {
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random
 // end relevant
     final X x_cur = process.getSearchSpace().create();

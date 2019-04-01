@@ -20,9 +20,14 @@ import aitoa.structure.IUnarySearchOperator;
  * The concept is the same as in {@linkplain aitoa.algorithms.MA
  * memetic algorithms}, which introduce a local search into an
  * {@linkplain aitoa.algorithms.EA EA}.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public class HybridEDA implements IMetaheuristic {
+public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of solution to be selected */
@@ -94,8 +99,7 @@ public class HybridEDA implements IMetaheuristic {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
 // create local variables
     final Random random = process.getRandom();

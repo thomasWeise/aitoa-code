@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.MA;
+import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
@@ -15,11 +16,11 @@ public class TestMAOnJSSP extends TestMetaheuristicOnJSSP {
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic
+  protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
     final int mu = 2 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
-    return new MA(mu, lambda);
+    return new MA<>(mu, lambda);
   }
 }

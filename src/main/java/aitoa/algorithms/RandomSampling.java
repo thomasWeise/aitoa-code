@@ -10,9 +10,15 @@ import aitoa.structure.INullarySearchOperator;
  * The random sampling algorithm keeps sampling points from the
  * search space and evaluates them until the termination
  * criterion is met.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class RandomSampling implements IMetaheuristic {
+public final class RandomSampling<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** create */
@@ -23,8 +29,7 @@ public final class RandomSampling implements IMetaheuristic {
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // allocate data structure for holding 1 point from search space
     final X x = process.getSearchSpace().create();
 // get nullary search operation for creating random point of X

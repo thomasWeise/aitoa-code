@@ -20,11 +20,12 @@ import aitoa.structure.TestBlackBoxProcessBuilder;
 /** Test a metaheuristic on the JSSP */
 @Ignore
 public abstract class TestMetaheuristicOnJSSP
-    extends TestMetaheuristic {
+    extends TestMetaheuristic<int[], JSSPCandidateSolution> {
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic getInstance() {
+  protected IMetaheuristic<int[], JSSPCandidateSolution>
+      getInstance() {
     return this.getAlgorithm(new JSSPInstance("demo")); //$NON-NLS-1$
   }
 
@@ -35,7 +36,7 @@ public abstract class TestMetaheuristicOnJSSP
    *          the jssp instance
    * @return the algorithm
    */
-  protected abstract IMetaheuristic
+  protected abstract IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance);
 
   /**

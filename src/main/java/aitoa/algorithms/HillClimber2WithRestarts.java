@@ -29,10 +29,15 @@ import aitoa.structure.IUnarySearchOperator;
  * It should be noted that only the search iterations are
  * deterministic, the starting points are still randomly chosen.
  * Hence, the results of this algorithm are still randomized.
+ *
+ * @param <X>
+ *          the search space
+ * @param <Y>
+ *          the solution space
  */
 // start relevant
-public final class HillClimber2WithRestarts
-    implements IMetaheuristic {
+public final class HillClimber2WithRestarts<X, Y>
+    implements IMetaheuristic<X, Y> {
 
 // end relevant
   /** create */
@@ -43,8 +48,7 @@ public final class HillClimber2WithRestarts
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final <X, Y> void
-      solve(final IBlackBoxProcess<X, Y> process) {
+  public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random
 // end relevant
     final X x_cur = process.getSearchSpace().create();
