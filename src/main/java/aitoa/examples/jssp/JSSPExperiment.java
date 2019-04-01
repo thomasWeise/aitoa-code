@@ -166,11 +166,13 @@ public class JSSPExperiment {
               JSSPExperiment.run(new EDA(mu, lambda, model),
                   unary, null, inst, out);
 
-              if (!(unary instanceof JSSPUnaryOperator1Swap)) {
-                JSSPExperiment.run(
-                    new HybridEDA(mu, lambda, model), unary,
-                    null, inst, out);
-              } // only use randomized enumeration
+              if (unary.canEnumerate()) {
+                if (!(unary instanceof JSSPUnaryOperator1Swap)) {
+                  JSSPExperiment.run(
+                      new HybridEDA(mu, lambda, model), unary,
+                      null, inst, out);
+                } // only use randomized enumeration
+              }
             } // mu
           } // lambda
         } // models
