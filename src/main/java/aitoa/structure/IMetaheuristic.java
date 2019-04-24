@@ -24,7 +24,7 @@ public interface IMetaheuristic<X, Y> {
   public abstract void
       solve(final IBlackBoxProcess<X, Y> process);
 // end relevant
-  
+
   /**
    * Print the setup of this algorithm to the provided buffered
    * writer

@@ -189,4 +189,174 @@ public class RandomUtilsTest {
     TestTools.assertGreater(total, 10);
     TestTools.assertGreater(diff, total - (total >>> 4L));
   }
+
+  /**
+   * Test whether the internal uniformFrom0ToNminus1 function
+   * works correct
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFrom0ToNminus1() {
+    final Random r = ThreadLocalRandom.current();
+    for (int N = 1; N < 100; N++) {
+      final int[] count = new int[N];
+      for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
+        final long l = RandomUtils.uniformFrom0ToNminus1(r, N);
+        TestTools.assertInRange(l, 0, N - 1L);
+        ++count[(int) l];
+      }
+
+      int min = Integer.MAX_VALUE;
+      int max = Integer.MIN_VALUE;
+      for (final int i : count) {
+        if (i < min) {
+          min = i;
+        }
+        if (i > max) {
+          max = i;
+        }
+      }
+      TestTools.assertGreater(min * 5, max << 1);
+    }
+  }
+
+  /**
+   * Test whether the internal uniformFromMtoN function works
+   * correct
+   *
+   * @param M
+   *          the lower bound
+   * @param N
+   *          the upper bound
+   */
+  private static final void
+      __testUniformFromMtoNSmall(final int M, final int N) {
+    final Random r = ThreadLocalRandom.current();
+    final int[] count = new int[(N - M) + 1];
+    for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
+      final long l = RandomUtils.uniformFromMtoN(r, M, N);
+      TestTools.assertInRange(l, M, N);
+      ++count[(int) (l - M)];
+    }
+
+    int min = Integer.MAX_VALUE;
+    int max = Integer.MIN_VALUE;
+    for (final int i : count) {
+      if (i < min) {
+        min = i;
+      }
+      if (i > max) {
+        max = i;
+      }
+    }
+    TestTools.assertGreater(min * 5, max << 1);
+  }
+
+  /**
+   * test uniformFromMtoN with 0 to 10
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFrom0To10() {
+    RandomUtilsTest.__testUniformFromMtoNSmall(0, 10);
+  }
+
+  /**
+   * test uniformFromMtoN with -10 to 10
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinus10To10() {
+    RandomUtilsTest.__testUniformFromMtoNSmall(-10, 10);
+  }
+
+  /**
+   * test uniformFromMtoN with -10 to 0
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinus10To0() {
+    RandomUtilsTest.__testUniformFromMtoNSmall(-10, 0);
+  }
+
+  /**
+   * test uniformFromMtoN with 0 to 1
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinus0To1() {
+    RandomUtilsTest.__testUniformFromMtoNSmall(0, 1);
+  }
+
+  /**
+   * test uniformFromMtoN with 20 to 31
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinus20To31() {
+    RandomUtilsTest.__testUniformFromMtoNSmall(20, 31);
+  }
+
+  /**
+   * test uniformFromMtoN with 0 to 0
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinus0To0() {
+    final Random r = ThreadLocalRandom.current();
+    for (long l = -10; l <= 10; l++) {
+      for (int i = 0; i < 100; i++) {
+        Assert.assertEquals(l,
+            RandomUtils.uniformFromMtoN(r, l, l));
+      }
+    }
+  }
+
+  /**
+   * Test whether the internal uniformFromMtoN function works
+   * correct
+   *
+   * @param M
+   *          the lower bound
+   * @param N
+   *          the upper bound
+   */
+  private static final void
+      __testUniformFromMtoNBig(final long M, final long N) {
+    final Random r = ThreadLocalRandom.current();
+    for (int i = 10000; (--i) >= 0;) {
+      TestTools.assertInRange(
+          RandomUtils.uniformFromMtoN(r, M, N), M, N);
+    }
+  }
+
+  /**
+   * test uniformFromMtoN with Long.MIN_VALUE to 0
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinusMinTo0() {
+    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE, 0);
+  }
+
+  /**
+   * test uniformFromMtoN with Long.MIN_VALUE to Long.MAX_VALUE
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinusMinToMax() {
+    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE,
+        Long.MAX_VALUE);
+  }
+
+  /**
+   * test uniformFromMtoN with Long.MIN_VALUE/2 to
+   * Long.MAX_VALUE/2
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinusMin2ToMax2() {
+    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE / 2,
+        Long.MAX_VALUE / 2);
+  }
 }

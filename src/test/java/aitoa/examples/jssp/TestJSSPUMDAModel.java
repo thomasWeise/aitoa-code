@@ -1,12 +1,10 @@
 package aitoa.examples.jssp;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import aitoa.TestTools;
 import aitoa.structure.IModel;
 import aitoa.structure.IModelTest;
 import aitoa.structure.ISpace;
@@ -96,35 +94,5 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
     Assert.assertEquals(3, JSSPUMDAModel.find(5, array, 4));
     Assert.assertEquals(3, JSSPUMDAModel.find(6, array, 4));
     Assert.assertEquals(3, JSSPUMDAModel.find(7, array, 4));
-  }
-
-  /**
-   * Test whether the internal uniformFrom0ToNminus1 function
-   * works correct
-   */
-  @SuppressWarnings("static-method")
-  @Test(timeout = 3600000)
-  public final void testUniformFrom0ToNminus1() {
-    final Random r = new Random();
-    for (int N = 1; N < 100; N++) {
-      final int[] count = new int[N];
-      for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
-        final long l = JSSPUMDAModel.uniformFrom0ToNminus1(r, N);
-        TestTools.assertInRange(l, 0, N - 1L);
-        ++count[(int) l];
-      }
-
-      int min = Integer.MAX_VALUE;
-      int max = Integer.MIN_VALUE;
-      for (final int i : count) {
-        if (i < min) {
-          min = i;
-        }
-        if (i > max) {
-          max = i;
-        }
-      }
-      TestTools.assertGreater(min * 5, max << 1);
-    }
   }
 }

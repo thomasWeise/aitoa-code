@@ -145,6 +145,15 @@ public abstract class ISpaceTest<X>
   }
 
   /**
+   * get the number of times we should check validity
+   *
+   * @return the number of times
+   */
+  protected int testCheckValidityTimes() {
+    return 100;
+  }
+
+  /**
    * a self-test to check whether our test here makes the same
    * assumptions and checks as the {@link ISpace#check(Object)}
    * method of the space
@@ -154,7 +163,7 @@ public abstract class ISpaceTest<X>
   public final void testCheckAgreesWithAssertValid() {
     X d;
 
-    for (int i = 100; (--i) >= 0;) {
+    for (int i = this.testCheckValidityTimes(); (--i) >= 0;) {
       d = this.createValid();
       this.assertValid(d);
 
@@ -192,7 +201,7 @@ public abstract class ISpaceTest<X>
     final ISpace<X> space = this.getInstance();
     boolean error = false;
 
-    for (int j = 100; (--j) >= 0;) {
+    for (int j = this.testCheckValidityTimes(); (--j) >= 0;) {
       final X x = this.createInvalid();
       try {
         space.check(x);

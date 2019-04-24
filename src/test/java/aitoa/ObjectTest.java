@@ -1,5 +1,10 @@
 package aitoa;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -102,6 +107,35 @@ public abstract class ObjectTest<T> {
           instance2.hashCode());
       Assert.assertEquals(instance1.toString(),
           instance2.toString());
+    }
+  }
+
+  /**
+   * This method can be used to recursively invoke all test
+   * methods
+   */
+  protected void runAllTests() {
+    final Method[] methods = this.getClass().getMethods();
+    final Random r = ThreadLocalRandom.current();
+    for (int size = methods.length; size > 0;) {
+      final int choice = r.nextInt(size);
+      final Method method = methods[choice];
+      methods[choice] = methods[--size];
+      // method.getName().startsWith("test"))//$NON-NLS-1$
+      if (method.getAnnotation(org.junit.Test.class) != null) {
+        if (method.getParameterCount() <= 0) {
+          try {
+            method.invoke(this);
+          } catch (IllegalAccessException
+              | IllegalArgumentException
+              | InvocationTargetException e) {
+            throw new AssertionError(//
+                "error when calling " //$NON-NLS-1$
+                    + method,
+                e);
+          }
+        }
+      }
     }
   }
 }

@@ -102,7 +102,7 @@ public final class JSSPUMDAModel implements IModel<int[]> {
       }
 
       final int i = JSSPUMDAModel.find(
-          JSSPUMDAModel.uniformFrom0ToNminus1(random, N), prob,
+          RandomUtils.uniformFrom0ToNminus1(random, N), prob,
           jobChooseLength);
 
       final int job = jobChooseFrom[i];
@@ -162,27 +162,5 @@ public final class JSSPUMDAModel implements IModel<int[]> {
       final int length) {
     return (Math.abs(//
         Arrays.binarySearch(array, 0, length, value) + 1));
-  }
-
-  /**
-   * Create a uniformly distributed random {@code long} from
-   * 0...(N-1). This is basically a version of
-   * {@link java.util.Random#nextInt(int)} translated to
-   * {@code long}.
-   *
-   * @param random
-   *          the random number generator
-   * @param N
-   *          the number
-   * @return the long
-   */
-  static final long uniformFrom0ToNminus1(final Random random,
-      final long N) {
-    long bits, val;
-    do {
-      bits = (random.nextLong() << 1) >>> 1;
-      val = bits % N;
-    } while (((bits - val) + (N - 1L)) < 0L);
-    return val;
   }
 }

@@ -228,4 +228,62 @@ public final class RandomUtils {
       }
     }
   }
+
+  /**
+   * Create a uniformly distributed random {@code long} from
+   * 0...(N-1). This is basically a version of
+   * {@link java.util.Random#nextInt(int)} translated to
+   * {@code long}.
+   *
+   * @param random
+   *          the random number generator
+   * @param N
+   *          the exclusive upper bound
+   * @return the long
+   */
+  public static final long
+      uniformFrom0ToNminus1(final Random random, final long N) {
+    long bits, val;
+    do {
+      bits = (random.nextLong() << 1) >>> 1;
+      val = bits % N;
+    } while (((bits - val) + (N - 1L)) < 0L);
+    return val;
+  }
+
+  /**
+   * Create a uniformly distributed random {@code long} from
+   * 0...(N-1).
+   *
+   * @param random
+   *          the random number generator
+   * @param M
+   *          the inclusive lower bound
+   * @param N
+   *          the inclusive upper bound
+   * @return the long
+   */
+  public static final long uniformFromMtoN(final Random random,
+      final long M, final long N) {
+
+    long r = random.nextLong();
+    final long m = N - M;
+    final long n = m + 1L;
+    if ((n & m) == 0L) { // power of two
+      r = ((r & m) + M);
+    } else {
+      if (n > 0L) { // reject over-represented candidates
+        for (long u = (r >>> 1); // ensure nonnegative
+            ((u + m) - (r = (u % n))) < 0L; // rejection check
+            u = (random.nextLong() >>> 1)) {
+          /* */}
+        r += M;
+      } else { // range not representable as long
+        while ((r < M) || (r > N)) {
+          r = random.nextLong();
+        }
+      }
+    }
+    return r;
+  }
 }
