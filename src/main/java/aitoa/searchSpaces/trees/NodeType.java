@@ -200,6 +200,10 @@ public abstract class NodeType<T extends Node>
     return super.hashCode();
   }
 
+  /** get the instance */
+  @SuppressWarnings("rawtypes")
+  private static final NodeType INSTANCE = new __DummyType();
+
   /**
    * Obtain a dummy node type. This node type cannot be used in
    * any search operation or other context within the procedure
@@ -216,31 +220,22 @@ public abstract class NodeType<T extends Node>
    * @see Node#asJava(Appendable)
    */
   public static final <T extends Node> NodeType<T> dummy() {
-    return __Dummy.INSTANCE;
+    return NodeType.INSTANCE;
   }
 
   /** a dummy node type */
-  @SuppressWarnings("rawtypes")
-  private static final class __Dummy {
+  private static final class __DummyType extends NodeType<Node> {
+    /** create */
+    __DummyType() {
+      super(new NodeTypeSet[0]);
+    }
 
-    /** get the instance */
-    static final NodeType INSTANCE = new __DummyType();
-
-    /** a dummy node type */
-    private static final class __DummyType extends NodeType {
-      /** create */
-      @SuppressWarnings("unchecked")
-      __DummyType() {
-        super(new NodeTypeSet[0]);
-      }
-
-      /** {@inheritDoc} */
-      @Override
-      public final Node instantiate(final Node[] children,
-          final Random random) {
-        throw new UnsupportedOperationException(//
-            "this is a dummy node type. it cannot be used for instantiating nodes!"); //$NON-NLS-1$
-      }
+    /** {@inheritDoc} */
+    @Override
+    public final Node instantiate(final Node[] children,
+        final Random random) {
+      throw new UnsupportedOperationException(//
+          "this is a dummy node type. it cannot be used for instantiating nodes!"); //$NON-NLS-1$
     }
   }
 }
