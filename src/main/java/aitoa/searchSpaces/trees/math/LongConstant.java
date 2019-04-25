@@ -15,8 +15,7 @@ import aitoa.utils.RandomUtils;
  * @param <C>
  *          the basic context
  */
-public final class LongConstant<C> extends NullaryFunction<C>
-    implements Comparable<LongConstant<?>> {
+public final class LongConstant<C> extends NullaryFunction<C> {
 
   /** the constant value */
   public final long value;
@@ -72,12 +71,6 @@ public final class LongConstant<C> extends NullaryFunction<C>
       throws IOException {
     out.append(',').append(' ').append(Long.toString(this.value))
         .append('L');
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int compareTo(final LongConstant<?> o) {
-    return Long.compare(this.value, o.value);
   }
 
   /** {@inheritDoc} */

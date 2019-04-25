@@ -169,6 +169,24 @@ public class NodeTest extends _StructureTest<Node> {
     }
   }
 
+  /** should we test compiling the code? */
+  private static final boolean DONT_TEST_COMPILER;
+
+  static {
+    String s = System.getProperty("java.vm.name"); //$NON-NLS-1$
+    if (s == null) {
+      DONT_TEST_COMPILER = false;
+    } else {
+      s = s.toLowerCase();
+      if (s.contains("openjdk")) { //$NON-NLS-1$
+        DONT_TEST_COMPILER = false;
+      } else {
+        // check for oracle vm
+        DONT_TEST_COMPILER = s.contains("hotspot"); //$NON-NLS-1$
+      }
+    }
+  }
+
   /**
    * test the to-Java method of the node works and produces an
    * exact copy of the given node
@@ -208,6 +226,10 @@ public class NodeTest extends _StructureTest<Node> {
     n.asJava(sb);
     TestTools.assertGreater(sb.length(), l);
     sb.append(";}}");//$NON-NLS-1$
+
+    if (NodeTest.DONT_TEST_COMPILER) {
+      return;
+    }
 
     final Path tempDir = Files.createTempDirectory(null);
     try {

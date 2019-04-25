@@ -15,8 +15,7 @@ import aitoa.searchSpaces.trees.NodeTypeSet;
  * @param <C>
  *          the basic context
  */
-public final class DoubleConstant<C> extends NullaryFunction<C>
-    implements Comparable<DoubleConstant<?>> {
+public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** a set of default constants */
   private static final double[] DEFAULT_CONSTANTS = { //
@@ -102,12 +101,6 @@ public final class DoubleConstant<C> extends NullaryFunction<C>
       throws IOException {
     out.append(',').append(' ')
         .append(Double.toString(this.value)).append('d');
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int compareTo(final DoubleConstant<?> o) {
-    return Double.compare(this.value, o.value);
   }
 
   /** {@inheritDoc} */
