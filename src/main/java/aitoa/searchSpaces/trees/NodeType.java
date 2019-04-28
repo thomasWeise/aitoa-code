@@ -202,7 +202,7 @@ public abstract class NodeType<T extends Node>
 
   /** get the instance */
   @SuppressWarnings("rawtypes")
-  private static final NodeType INSTANCE = new __DummyType();
+  private static final NodeType DUMMY_TYPE = new __DummyType();
 
   /**
    * Obtain a dummy node type. This node type cannot be used in
@@ -220,7 +220,7 @@ public abstract class NodeType<T extends Node>
    * @see Node#asJava(Appendable)
    */
   public static final <T extends Node> NodeType<T> dummy() {
-    return NodeType.INSTANCE;
+    return NodeType.DUMMY_TYPE;
   }
 
   /** a dummy node type */
