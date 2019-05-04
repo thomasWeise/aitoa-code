@@ -191,10 +191,7 @@ public class JSSPInstance {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return (((((("jssp:" + this.id) + //$NON-NLS-1$
-        "(m=") + //$NON-NLS-1$
-        this.m) + ", n=") + //$NON-NLS-1$
-        this.n) + ')');
+    return this.id;
   }
 
 // start relevant

@@ -296,4 +296,23 @@ abstract class _BlackBoxProcessData<X, Y> {
   public final long getMaxTime() {
     return this.m_maxTime;
   }
+
+  /**
+   * Get the objective function
+   *
+   * @return the objective function
+   */
+  public final IObjectiveFunction<Y> getObjectiveFunction() {
+    return this.m_f;
+  }
+
+  /**
+   * Get the solution space
+   *
+   * @return the solution space
+   */
+  public final ISpace<Y> getSolutionSpace() {
+    return this.m_solutionSpace;
+  }
+
 }

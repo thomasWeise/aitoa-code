@@ -34,15 +34,6 @@ public class BlackBoxProcessBuilder<X, Y>
   }
 
   /**
-   * Get the solution space
-   *
-   * @return the solution space
-   */
-  public final ISpace<Y> getSolutionSpace() {
-    return this.m_solutionSpace;
-  }
-
-  /**
    * Set the solution space
    *
    * @param space
@@ -53,15 +44,6 @@ public class BlackBoxProcessBuilder<X, Y>
       setSolutionSpace(final ISpace<Y> space) {
     this.m_solutionSpace = Objects.requireNonNull(space);
     return this;
-  }
-
-  /**
-   * Get the objective function
-   *
-   * @return the objective function
-   */
-  public final IObjectiveFunction<Y> getObjectiveFunction() {
-    return this.m_f;
   }
 
   /**

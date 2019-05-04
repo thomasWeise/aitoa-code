@@ -1,9 +1,7 @@
 package aitoa.examples.jssp;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithPruning;
@@ -26,6 +24,8 @@ import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.utils.ConsoleIO;
+import aitoa.utils.Experiment;
+import aitoa.utils.IOUtils;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -51,12 +51,8 @@ public class JSSPExperiment {
    */
   @SuppressWarnings("unchecked")
   public static final void main(final String[] args) {
-    final Path out;
-    if (args.length > 0) {
-      out = Paths.get(args[0]);
-    } else {
-      out = Paths.get("results");//$NON-NLS-1$
-    }
+    final Path out = IOUtils.canonicalizePath(
+        (args.length > 0) ? args[0] : "results");//$NON-NLS-1$
 
     for (final String instId : JSSPExperiment.INSTANCES) {
       // load the instance
@@ -211,73 +207,58 @@ public class JSSPExperiment {
 // set the maximum runtime
     builder.setMaxTime(3L * 60L * 1000L);
 
-    try {
-      // create the algorithm directory
-      String algoName = algorithm.toString().replace('.', 'd');
-      if (unary != null) {
-        algoName += '_' + unary.toString().replace('.', 'd');
-      }
-      if (binary != null) {
-        algoName += '_' + binary.toString().replace('.', 'd');
-      }
+    // create the algorithm directory
+    final String algoName = Experiment
+        .nameFromObjectsMerge(algorithm, unary, binary);
+    // create the instance bane
+    final String instName =
+        Experiment.nameFromObjectPrepare(inst);
 
-      final Path adir =
-          baseDir.resolve(algoName).toAbsolutePath();
-      Files.createDirectories(adir);
+    // setup the data
+    final JSSPSearchSpace searchSpace =
+        new JSSPSearchSpace(inst);
+    builder.setSearchSpace(searchSpace);
+    builder.setSolutionSpace(new JSSPSolutionSpace(inst));
+    builder.setRepresentationMapping(
+        new JSSPRepresentationMapping(inst));
+    builder.setObjectiveFunction(
+        new JSSPMakespanObjectiveFunction(inst));
+    builder
+        .setNullarySearchOperator(new JSSPNullaryOperator(inst));
+    if (unary != null) {
+      builder.setUnarySearchOperator(unary);
+    }
+    if (binary != null) {
+      builder.setBinarySearchOperator(binary);
+    }
+    // iterate over the random seeds
+    for (final long seed : RandomUtils
+        .uniqueRandomSeeds(instName, 101)) {
+      final Path file =
+          Experiment.logFile(baseDir, algoName, instName, seed);
+      if (file == null) {
+        ConsoleIO.stdout(((((("Logfile for run " + algoName)//$NON-NLS-1$
+            + ';') + instName) + ';') + seed)
+            + " already exists, skipping run."); //$NON-NLS-1$
+      } else {
+        ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
+            + file + "'."); //$NON-NLS-1$
 
-      // create the instance directory
-      final String instName = inst.id.replace('.', 'd');
-      final Path idir = adir.resolve(instName).toAbsolutePath();
-      Files.createDirectories(idir);
-
-      // setup the data
-      final JSSPSearchSpace searchSpace =
-          new JSSPSearchSpace(inst);
-      builder.setSearchSpace(searchSpace);
-      builder.setSolutionSpace(new JSSPSolutionSpace(inst));
-      builder.setRepresentationMapping(
-          new JSSPRepresentationMapping(inst));
-      builder.setObjectiveFunction(
-          new JSSPMakespanObjectiveFunction(inst));
-      builder.setNullarySearchOperator(
-          new JSSPNullaryOperator(inst));
-      if (unary != null) {
-        builder.setUnarySearchOperator(unary);
-      }
-      if (binary != null) {
-        builder.setBinarySearchOperator(binary);
-      }
-      // iterate over the random seeds
-      for (final long seed : RandomUtils
-          .uniqueRandomSeeds(instName, 101)) {
-        final Path file = idir.resolve(algoName + '_' + instName
-            + '_' + RandomUtils.randSeedToString(seed) //
-            + ".txt"); //$NON-NLS-1$
-        if (Files.exists(file)) {
-          ConsoleIO.stdout("File '" + file //$NON-NLS-1$
-              + "' already exists, skipping run."); //$NON-NLS-1$
-        } else {
-          ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
-              + file + "'."); //$NON-NLS-1$
-
-          builder.setRandSeed(seed);
-          builder.setLogPath(file);
-          try (final IBlackBoxProcess<int[],
-              JSSPCandidateSolution> process = builder.get()) {
-            algorithm.solve(process);
-            process.printLogSection("ALGORITHM_SETUP", //$NON-NLS-1$
-                (bw) -> {
-                  try {
-                    algorithm.printSetup(bw);
-                  } catch (final IOException ioe) {
-                    throw new RuntimeException(ioe);
-                  }
-                });
-          }
+        builder.setRandSeed(seed);
+        builder.setLogPath(file);
+        try (final IBlackBoxProcess<int[],
+            JSSPCandidateSolution> process = builder.get()) {
+          algorithm.solve(process);
+          process.printLogSection("ALGORITHM_SETUP", //$NON-NLS-1$
+              (bw) -> {
+                try {
+                  algorithm.printSetup(bw);
+                } catch (final IOException ioe) {
+                  throw new RuntimeException(ioe);
+                }
+              });
         }
       }
-    } catch (final IOException error) {
-      throw new RuntimeException(error);
     }
   }
 }

@@ -66,9 +66,6 @@ public final class ConsoleIO {
    */
   private static final void __printDate(final PrintStream ps) {
     ps.print(new Date());
-    ps.print(" [thread "); //$NON-NLS-1$
-    ps.print(Thread.currentThread().getId());
-    ps.print(']');
     ps.print('\t');
   }
 
