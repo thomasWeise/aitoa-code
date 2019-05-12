@@ -75,8 +75,7 @@ public final class HillClimber2WithRestarts<X, Y>
             (x) -> {
 // map x from X to Y and evaluate candidate solution
               final double f_cur = process.evaluate(x);
-              if (f_cur < f_best[0]) { // we found a better
-                                       // solution
+              if (f_cur < f_best[0]) { // found better solution
 // remember best objective value and copy x to x_best
                 f_best[0] = f_cur;
                 process.getSearchSpace().copy(x, x_best);
@@ -93,7 +92,7 @@ public final class HillClimber2WithRestarts<X, Y>
     } // outer loop: if we get here, we need to restart
   } // process will have remembered the best candidate solution
 // end relevant
-  
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {
