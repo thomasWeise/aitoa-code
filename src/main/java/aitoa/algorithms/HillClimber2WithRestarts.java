@@ -49,7 +49,8 @@ public final class HillClimber2WithRestarts<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables x_cur, x_best, nullary, unary, random
+// initialization of local variables x_cur, x_best, nullary,
+// unary, random omitted for brevety
 // end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
@@ -91,8 +92,8 @@ public final class HillClimber2WithRestarts<X, Y>
       } while (improved); // can find improvements
     } // outer loop: if we get here, we need to restart
   } // process will have remembered the best candidate solution
-
 // end relevant
+  
   /** {@inheritDoc} */
   @Override
   public final String toString() {
