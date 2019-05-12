@@ -114,8 +114,8 @@ public interface IUnarySearchOperator<X> {
   public default boolean enumerate(final Random random,
       final X x, final X dest, final Predicate<X> visitor) {
     throw new UnsupportedOperationException("The operator " + //$NON-NLS-1$
-        this.getClass().getName()
-        + " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
+        this.getClass().getName() + //
+        " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
   }
 // end enumerate
 

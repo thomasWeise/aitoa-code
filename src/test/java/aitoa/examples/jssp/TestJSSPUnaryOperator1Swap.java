@@ -93,4 +93,33 @@ public class TestJSSPUnaryOperator1Swap
       }
     }
   }
+
+  /** test the number of unique outcomes */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public void testNumberOfUniqueOutcomes() {
+    final Random random = ThreadLocalRandom.current();
+    final JSSPInstance inst = new JSSPInstance("demo"); //$NON-NLS-1$
+    final int[] in = new int[inst.n * inst.m];
+    final int[] out = new int[in.length];
+    final int[][] unique = new int[(inst.n * inst.m
+        * (inst.n - 1) * inst.m) >>> 1][out.length];
+
+    new JSSPNullaryOperator(inst).apply(in, random);
+    final JSSPUnaryOperator1Swap op =
+        new JSSPUnaryOperator1Swap();
+    int count = 0;
+    outer: for (int i = (50 * unique.length * unique.length);
+        (--i) >= 0;) {
+      op.apply(in, out, random);
+      for (int j = count; (--j) >= 0;) {
+        if (Arrays.equals(unique[j], out)) {
+          continue outer;
+        }
+      }
+      System.arraycopy(out, 0, unique[count++], 0, out.length);
+    }
+
+    Assert.assertEquals(unique.length, count);
+  }
 }
