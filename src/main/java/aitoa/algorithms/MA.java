@@ -109,10 +109,11 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
 // start relevant
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
+// set P[i] = random individual (code omitted)
+// end relevant
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
-// end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
@@ -123,6 +124,8 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
     while (!process.shouldTerminate()) { // main loop
       for (int i = P.length; (--i) >= localSearchStart;) {
         final Individual<X> ind = P[i];
+// refine P[i] with local search à la HillClimber2 (code omitted)
+// end relevant
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
               (point) -> {
@@ -141,6 +144,7 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
           }
         } while (improved);
       } // end of 1 ls iteration: we have refined 1 solution
+// start relevant
 // sort the population: mu best individuals at front are selected
       Arrays.sort(P);
 // shuffle the first mu solutions to ensure fairness
@@ -149,10 +153,11 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
 
 // override the worse lambda solutions with new offsprings
       for (int index = P.length; (--index) >= this.mu;) {
+// end relevant
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-
+// start relevant
         final Individual<X> dest = P[index];
         final Individual<X> sel = P[(++p1) % this.mu];
 
