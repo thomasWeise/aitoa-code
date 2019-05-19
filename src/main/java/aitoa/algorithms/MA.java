@@ -119,7 +119,7 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
       }
 // start relevant
     }
-    final int localSearchStart = 0; // at first, apply ls to all
+    int localSearchStart = 0; // at first, apply ls to all
 
     while (!process.shouldTerminate()) { // main loop
       for (int i = P.length; (--i) >= localSearchStart;) {
@@ -169,6 +169,8 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
 // map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
+      
+      localSearchStart = this.mu;
     } // the end of the main loop
   }
 // end relevant
