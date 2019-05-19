@@ -57,6 +57,7 @@ public class JSSPExperiment {
     for (final String instId : JSSPExperiment.INSTANCES) {
       // load the instance
       final JSSPInstance inst = new JSSPInstance(instId);
+      boolean plainEDADone = false;
 
 // random samplers
       JSSPExperiment.run(new SingleRandomSample<>(), null, null,
@@ -160,8 +161,11 @@ public class JSSPExperiment {
               mus = new int[] { 1, 2, 4 };
             }
             for (final int mu : mus) {
-              JSSPExperiment.run(new EDA<>(mu, lambda, model),
-                  unary, null, inst, out);
+              if (!plainEDADone) {
+                // only do EDA once
+                JSSPExperiment.run(new EDA<>(mu, lambda, model),
+                    null, null, inst, out);
+              }
 
               if (unary.canEnumerate()) {
                 if (!(unary instanceof JSSPUnaryOperator1Swap)) {
@@ -173,6 +177,7 @@ public class JSSPExperiment {
             } // mu
           } // lambda
         } // models
+        plainEDADone = true;
       } // end unary operators
     } // end instances
   }
@@ -208,8 +213,8 @@ public class JSSPExperiment {
     builder.setMaxTime(3L * 60L * 1000L);
 
     // create the algorithm directory
-    final String algoName = Experiment
-        .nameFromObjectsMerge(algorithm, unary, binary);
+    final String algoName = Experiment.nameFromObjectsMerge(//
+        algorithm, unary, binary);
     // create the instance bane
     final String instName =
         Experiment.nameFromObjectPrepare(inst);
