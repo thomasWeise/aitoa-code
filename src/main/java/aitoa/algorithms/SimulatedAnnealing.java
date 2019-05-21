@@ -60,10 +60,10 @@ public final class SimulatedAnnealing<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables x_cur, x_best, nullary, unary, random
+// init local variables x_new, x_cur, nullary, unary, random
 // end relevant
+    final X x_new = process.getSearchSpace().create();
     final X x_cur = process.getSearchSpace().create();
-    final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
@@ -71,24 +71,24 @@ public final class SimulatedAnnealing<X, Y>
     final Random random = process.getRandom();// get random gen
 // start relevant
 // create starting point: a random point in the search space
-    nullary.apply(x_best, random); // put random point in x_best
-    double f_best = process.evaluate(x_best); // map & evaluate
+    nullary.apply(x_cur, random); // put random point in x_cur
+    double f_cur = process.evaluate(x_cur); // map & evaluate
     long tau = 1L;
 
     do {// repeat until budget exhausted
-// create a slightly modified copy of x_best and store in x_cur
-      unary.apply(x_best, x_cur, random);
-      ++tau; // increase step cont
-// map x_cur from X to Y and evaluate candidate solution
-      final double f_cur = process.evaluate(x_cur);
-      if ((f_cur <= f_best) || // accept if better solution OR
+// create a slightly modified copy of x_cur and store in x_new
+      unary.apply(x_cur, x_new, random);
+      ++tau; // increase step counter
+// map x_new from X to Y and evaluate candidate solution
+      final double f_new = process.evaluate(x_new);
+      if ((f_new <= f_cur) || // accept if better solution OR
           (random.nextDouble() < // probability is e^(-dE/T)
-          Math.exp((f_best - f_cur) / // -dE == -(f_cur-f_best)
+          Math.exp((f_cur - f_new) / // -dE == -(f_new-f_cur)
               this.schedule.temperature(tau)))) {
-// accepted: remember objective value and copy x_cur to x_best
-        f_best = f_cur;
-        process.getSearchSpace().copy(x_cur, x_best);
-      } // otherwise, i.e., f_cur >= f_best: just forget x_cur
+// accepted: remember objective value and copy x_new to x_cur
+        f_cur = f_new;
+        process.getSearchSpace().copy(x_new, x_cur);
+      } // otherwise, i.e., f_new >= f_cur: just forget x_new
     } while (!process.shouldTerminate()); // until time is up
   } // process will have remembered the best candidate solution
 // end relevant
