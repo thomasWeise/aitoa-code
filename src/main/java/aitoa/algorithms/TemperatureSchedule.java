@@ -9,10 +9,11 @@ import java.io.IOException;
  * annealing} to compute the temperature that should be used at
  * each iteration.
  */
+// start main
 public abstract class TemperatureSchedule {
   /** the start temperature */
   public final double startTemperature;
-
+// end main
   /**
    * create
    *
@@ -37,7 +38,9 @@ public abstract class TemperatureSchedule {
    *          the time step
    * @return the temperature
    */
+// start main
   public abstract double temperature(final long t);
+// end main
 
   /**
    * print the setup of this class to the given output writer
@@ -70,12 +73,13 @@ public abstract class TemperatureSchedule {
    * temperature and {@code e} is an epsilon value which should
    * be close to zero but not zero, say, 0.01.
    */
+// start exponential
   public static final class Exponential
       extends TemperatureSchedule {
 
     /** the epsilon */
     public final double epsilon;
-
+// end exponential
     /**
      * create
      *
@@ -98,12 +102,13 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
+// start exponential
     public double temperature(final long t) {
       return (this.startTemperature
           * Math.pow((1d - this.epsilon), t));
     }
+// end exponential
 
-    // end relevant
     /** {@inheritDoc} */
     @Override
     public final String toString() {
@@ -124,16 +129,20 @@ public abstract class TemperatureSchedule {
       output.write(Double.toHexString(this.epsilon));
       output.newLine();
     }
+// start exponential
   }
+// end exponential
 
   /**
    * The logarithmic temperature schedule: Here, the temperature
    * equals {@code Ts/log(t+1)}, where {@code Ts} is the start
    * temperature and {@code t} is the algorithm iteration index.
    */
+// start logarithmic
   public static final class Logarithmic
       extends TemperatureSchedule {
-
+// end logarithmic
+    
     /**
      * create
      *
@@ -146,18 +155,24 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
+// start logarithmic
     public double temperature(final long t) {
       if (t >= Long.MAX_VALUE) {
         return 0d;
       }
       return (this.startTemperature / Math.log(t + 1L));
-    }
-
-    // end relevant
+    }    
+// end logarithmic
+    
     /** {@inheritDoc} */
     @Override
     public final String toString() {
       return "log"; //$NON-NLS-1$
     }
+// start logarithmic
   }
+// end logarithmic
+  
+// start main
 }
+// end main

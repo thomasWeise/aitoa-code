@@ -73,7 +73,7 @@ public final class SimulatedAnnealing<X, Y>
 // create starting point: a random point in the search space
     nullary.apply(x_cur, random); // put random point in x_cur
     double f_cur = process.evaluate(x_cur); // map & evaluate
-    long tau = 1L;
+    long tau = 1L; // initialize step counter to 1
 
     do {// repeat until budget exhausted
 // create a slightly modified copy of x_cur and store in x_new
