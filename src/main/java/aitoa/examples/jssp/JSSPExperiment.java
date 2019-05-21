@@ -96,20 +96,19 @@ public class JSSPExperiment {
 
 // simulated annealing
         if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
-          for (final double Ts : new double[] { 10d }) {
-            for (final double ep : new double[] { 1d, 0.1d,
-                10d }) {
-              JSSPExperiment.run(new SimulatedAnnealing<>(
-                  new TemperatureSchedule.Logarithmic(Ts, ep)),
-                  unary, null, inst, out);
-            }
-            for (final double ep : new double[] { 0.0000005d,
-                0.000001d, 0.000002d }) {
-              JSSPExperiment.run(new SimulatedAnnealing<>(
-                  new TemperatureSchedule.Exponential(Ts, ep)),
-                  unary, null, inst, out);
-            } // end epsilon
+          for (final double Ts : new double[] { 20d, 0.5d * 20d,
+              0.25d * 20d }) {
+            JSSPExperiment.run(
+                new SimulatedAnnealing<>(
+                    new TemperatureSchedule.Logarithmic(Ts, 1)),
+                unary, null, inst, out);
           } // end start temperature
+          for (final double ep : new double[] { 2e-7d, 4e-7d,
+              8e-7d }) {
+            JSSPExperiment.run(new SimulatedAnnealing<>(
+                new TemperatureSchedule.Exponential(20d, ep)),
+                unary, null, inst, out);
+          } // end epsilon
         } // only use basic unary ops
 
 // create the binary search operator

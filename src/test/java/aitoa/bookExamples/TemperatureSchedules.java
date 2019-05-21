@@ -11,7 +11,7 @@ import aitoa.algorithms.TemperatureSchedule;
 public class TemperatureSchedules {
 
   /** the maximum FEs */
-  private static final int MAX_FEs = 1024 * 1024 * 16;
+  private static final int MAX_FEs = 1024 * 1024 * 64;
 
   /**
    * add the value
@@ -51,16 +51,15 @@ public class TemperatureSchedules {
    *          the arguments
    */
   public static final void main(final String[] args) {
-    final double Ts = 10d;
+    final double Ts = 20d;
     final TemperatureSchedule[] sched =
         new TemperatureSchedule[] {
-            new TemperatureSchedule.Logarithmic(Ts, 0.1d),
             new TemperatureSchedule.Logarithmic(Ts, 1d),
-            new TemperatureSchedule.Logarithmic(Ts, 10d),
-            new TemperatureSchedule.Exponential(Ts, 0.0000005d),
-            new TemperatureSchedule.Exponential(Ts, 0.000001d),
-            new TemperatureSchedule.Exponential(Ts,
-                0.000002d), };
+            new TemperatureSchedule.Logarithmic(0.5d * Ts, 1d),
+            new TemperatureSchedule.Logarithmic(0.25d * Ts, 1d),
+            new TemperatureSchedule.Exponential(Ts, 2e-7),
+            new TemperatureSchedule.Exponential(Ts, 4e-7),
+            new TemperatureSchedule.Exponential(Ts, 8e-7), };
 
     final HashSet<Integer> points =
         new HashSet<>(TemperatureSchedules.MAX_FEs);
@@ -81,35 +80,13 @@ public class TemperatureSchedules {
       TemperatureSchedules.__add(points, 3 * i * 5);
     }
 
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 3) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 5) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 6) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 7) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 9) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 10) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 11) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 13) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 15) {
-      TemperatureSchedules.__add(points, i);
-    }
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i *= 20) {
-      TemperatureSchedules.__add(points, i);
+    for (int j = 2; j < 64; j++) {
+      for (int i = 1; i <= TemperatureSchedules.MAX_FEs;
+          i *= j) {
+        TemperatureSchedules.__add(points, i);
+        TemperatureSchedules.__add(points, i / 3);
+        TemperatureSchedules.__add(points, i * 3);
+      }
     }
 
     final double[] critTS = TemperatureSchedules
@@ -155,7 +132,7 @@ public class TemperatureSchedules {
       }
     }
 
-    final int[] targets = { 1, 2, 3, 5 };
+    final int[] targets = { 1, 2, 3, 5, 10 };
     final double[] critProb = TemperatureSchedules.__make(
         new double[] { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07,
             0.08, 0.09, 0.01, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
