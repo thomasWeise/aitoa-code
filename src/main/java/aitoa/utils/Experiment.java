@@ -1,6 +1,7 @@
 package aitoa.utils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -361,5 +362,64 @@ public class Experiment {
     }
 
     return filePath;
+  }
+
+  /**
+   * This is a utility method for converting {@code double}
+   * values to strings
+   *
+   * @param d
+   *          the {@code double}
+   * @return the string
+   */
+  public static final String doubleToString(final double d) {
+    if ((d <= Double.NEGATIVE_INFINITY) || //
+        (d >= Double.POSITIVE_INFINITY) || //
+        Double.isNaN(d)) {
+      return Double.toString(d);
+    }
+
+    if ((d >= Long.MIN_VALUE) && (d <= Long.MAX_VALUE)) {
+      final long l = Math.round(d);
+      if (l == d) {
+        return Long.toString(l);
+      }
+    }
+
+    final String s = Double.toString(d);
+    if (s.indexOf('E') < 0) {
+      return s;
+    }
+
+    try {
+      final BigDecimal bd = BigDecimal.valueOf(d);
+      try {
+        final String bis = bd.toBigInteger().toString();
+        if (Double.parseDouble(bis) == d) {
+          return bis;
+        }
+      } catch (@SuppressWarnings("unused") final Throwable error1) {
+        // ignore
+      }
+      final String bds = bd.toPlainString();
+      if (Double.parseDouble(bds) == d) {
+        String best = bds;
+        inner: for (int i = bds.length(); (--i) > 0;) {
+          try {
+            final String test = bds.substring(0, i);
+            if (Double.parseDouble(test) == d) {
+              best = test;
+            }
+          } catch (@SuppressWarnings("unused") final Throwable error3) {
+            break inner;
+          }
+        }
+        return best;
+      }
+    } catch (@SuppressWarnings("unused") final Throwable error2) {
+      // ignore
+    }
+
+    return s;
   }
 }

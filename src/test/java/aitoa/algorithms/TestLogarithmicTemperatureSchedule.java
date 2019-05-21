@@ -9,7 +9,9 @@ public class TestLogarithmicTemperatureSchedule
   /** {@inheritDoc} */
   @Override
   protected final TemperatureSchedule getInstance() {
-    return new TemperatureSchedule.Logarithmic(Math.max(1e-17,
-        ThreadLocalRandom.current().nextDouble() * 1e3));
+    final ThreadLocalRandom r = ThreadLocalRandom.current();
+    return new TemperatureSchedule.Logarithmic(
+        Math.max(1e-17, r.nextDouble() * 1e3), Math.max(1e-17,
+            Math.min(0.999999999999, r.nextDouble())));
   }
 }

@@ -29,6 +29,6 @@ public class TestSimulatedAnnealingLogJSSP
     } while (st <= 0d);
 
     return new SimulatedAnnealing<>(
-        new TemperatureSchedule.Logarithmic(st));
+        new TemperatureSchedule.Logarithmic(st, 0.3));
   }
 }

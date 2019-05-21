@@ -96,14 +96,15 @@ public class JSSPExperiment {
 
 // simulated annealing
         if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
-          for (final double Ts : new double[] { 1000d, 100d,
-              10d }) {
-            JSSPExperiment.run(
-                new SimulatedAnnealing<>(
-                    new TemperatureSchedule.Logarithmic(Ts)),
-                unary, null, inst, out);
-            for (final double ep : new double[] { 0.001d, 0.01d,
-                0.1d }) {
+          for (final double Ts : new double[] { 10d }) {
+            for (final double ep : new double[] { 1d, 0.1d,
+                10d }) {
+              JSSPExperiment.run(new SimulatedAnnealing<>(
+                  new TemperatureSchedule.Logarithmic(Ts, ep)),
+                  unary, null, inst, out);
+            }
+            for (final double ep : new double[] { 0.0000005d,
+                0.000001d, 0.000002d }) {
               JSSPExperiment.run(new SimulatedAnnealing<>(
                   new TemperatureSchedule.Exponential(Ts, ep)),
                   unary, null, inst, out);
