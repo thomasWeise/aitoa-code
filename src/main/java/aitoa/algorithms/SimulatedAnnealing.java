@@ -73,25 +73,26 @@ public final class SimulatedAnnealing<X, Y>
 // create starting point: a random point in the search space
     nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
-    final long t = 1L;
+    long tau = 1L;
 
     do {// repeat until budget exhausted
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(x_best, x_cur, random);
+      ++tau; // increase step cont
 // map x_cur from X to Y and evaluate candidate solution
       final double f_cur = process.evaluate(x_cur);
       if ((f_cur <= f_best) || // accept if better solution OR
           (random.nextDouble() < // probability is e^(-dE/T)
           Math.exp((f_best - f_cur) / // -dE == -(f_cur-f_best)
-              this.schedule.temperature(t)))) {
+              this.schedule.temperature(tau)))) {
 // accepted: remember objective value and copy x_cur to x_best
         f_best = f_cur;
         process.getSearchSpace().copy(x_cur, x_best);
       } // otherwise, i.e., f_cur >= f_best: just forget x_cur
     } while (!process.shouldTerminate()); // until time is up
   } // process will have remembered the best candidate solution
-
 // end relevant
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {
