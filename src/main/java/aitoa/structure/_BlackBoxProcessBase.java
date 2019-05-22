@@ -218,8 +218,6 @@ abstract class _BlackBoxProcessBase<X, Y>
     out.append(Long.toString(this.getConsumedTime()));
     out.append("\n# LAST_IMPROVEMENT_TIME: ");//$NON-NLS-1$
     out.append(Long.toString(this.getLastImprovementTime()));
-    out.append("\n# CONSUMED_FES: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_consumedFEs));
     out.append("\n# BEST_F: ");//$NON-NLS-1$
     out.append(Double.toString(this.m_bestF));
     out.append("\n# END_STATE\n");//$NON-NLS-1$

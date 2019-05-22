@@ -38,10 +38,11 @@ import aitoa.structure.IUnarySearchOperator;
 // start relevant
 public final class SimulatedAnnealing<X, Y>
     implements IMetaheuristic<X, Y> {
-// end relevant
 
-  /** the temperature scheduke */
+  /** the temperature schedule */
   public final TemperatureSchedule schedule;
+  
+//end relevant
 
   /**
    * create
