@@ -137,9 +137,11 @@ public class MAWithPruning<X, Y>
         final X x = searchSpace.create();
         nullary.apply(x, random);
         P[i] = new Individual<>(x, process.evaluate(x));
+// end relevant
         if (process.shouldTerminate()) {
           return;
         }
+// start relevant
       }
       int localSearchStart = 0; // at first, apply ls to all
 

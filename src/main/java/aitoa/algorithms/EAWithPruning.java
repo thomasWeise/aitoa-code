@@ -144,6 +144,11 @@ public class EAWithPruning<X, Y>
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
+// end relevant
+      if (process.shouldTerminate()) { // we return
+        return; // best solution is stored in process
+      }
+// start relevant
     }
 
     while (!process.shouldTerminate()) { // main loop
