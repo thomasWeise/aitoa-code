@@ -7,7 +7,10 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
+  - oraclejdk11
   - openjdk8
+  - openjdk10
+  - openjdk11
   
 # needed to get openjdk8 to work
 dist: trusty
