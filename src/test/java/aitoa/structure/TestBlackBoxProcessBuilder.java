@@ -118,6 +118,9 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** the lower bound */
     final double m_lb;
 
+    /** the upper bound */
+    final double m_ub;
+
     /**
      * create
      *
@@ -128,6 +131,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       super();
       this.m_process = Objects.requireNonNull(process);
       this.m_lb = process.m_f.lowerBound();
+      this.m_ub = process.m_f.upperBound();
     }
 
     /** fail if we are terminated */
@@ -218,6 +222,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       if (this.m_process.m_consumedFEs > 0L) {
         TestTools.assertFinite(f);
         TestTools.assertGreaterOrEqual(f, this.m_lb);
+        TestTools.assertLessOrEqual(f, this.m_ub);
       } else {
         Assert.assertTrue(f >= Double.POSITIVE_INFINITY);
       }
@@ -374,6 +379,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
 
       TestTools.assertFinite(result);
       TestTools.assertGreaterOrEqual(result, this.m_lb);
+      TestTools.assertLessOrEqual(result, this.m_ub);
 
       // did we improve
       if (result < this.m_process.m_bestF) {// yes, we did

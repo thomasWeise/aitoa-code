@@ -69,6 +69,52 @@ public class JSSPInstance {
       throw new IllegalArgumentException(//
           "Instance name cannot be empty.");//$NON-NLS-1$
     }
+
+    int totalTimeSum = 0;
+    for (final int[] job : this.jobs) {
+      int jobTimeSum = 0;
+      if (job.length != (2 * this.m)) {
+        throw new IllegalArgumentException(//
+            "Job length invalid, is " //$NON-NLS-1$
+                + job.length + //
+                ", but should be " //$NON-NLS-1$
+                + (2 * this.m));
+      }
+      for (int i = 0; i < job.length;) {
+        final int machine = job[i++];
+        if ((machine < 0) || (machine >= this.m)) {
+          throw new IllegalArgumentException(//
+              "Invalid machine " //$NON-NLS-1$
+                  + machine + //
+                  ", must be in 0.." //$NON-NLS-1$
+                  + (this.m - 1));
+        }
+        final int time = job[i++];
+        if ((time < 0) || (time > 1_000_000)) {
+          throw new IllegalArgumentException(//
+              "Invalid time " //$NON-NLS-1$
+                  + time + //
+                  ", must be in 0..1_000_000"); //$NON-NLS-1$
+        }
+        jobTimeSum = Math.addExact(jobTimeSum, time);
+        totalTimeSum = Math.addExact(totalTimeSum, time);
+      }
+      if ((jobTimeSum < 1) || (jobTimeSum > 10_000_000)) {
+        throw new IllegalArgumentException(//
+            "Invalid job time sum " //$NON-NLS-1$
+                + totalTimeSum + //
+                ", must be in 1..10_000_000"); //$NON-NLS-1$
+      }
+    }
+
+    if ((totalTimeSum < this.n)
+        || (totalTimeSum > 100_000_000)) {
+      throw new IllegalArgumentException(//
+          "Invalid time sum " //$NON-NLS-1$
+              + totalTimeSum + //
+              ", must be in " //$NON-NLS-1$
+              + this.n + "..100_000_000"); //$NON-NLS-1$
+    }
   }
 
   /**

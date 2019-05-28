@@ -123,6 +123,29 @@ public final class JSSPMakespanObjectiveFunction
 // end lowerBound
     return lowerBound;
   }
+
+  /**
+   * Compute the upper bound of the instance in a very sloppy
+   * way. This is just a placeholder for now. The idea is that I
+   * can use this in unit tests to check whether results are
+   * sane.
+   */
+  @Override
+  public final double upperBound() {
+    int sum = 0;
+    for (final int[] job : this.m_instance.jobs) {
+      for (int i = job.length - 1; i > 0; i -= 2) {
+        sum = Math.addExact(sum, job[i]);
+      }
+    }
+    if ((sum <= 0) || (sum >= 100_000_000)) {
+      throw new IllegalStateException(//
+          "Invalid upper bound: " //$NON-NLS-1$
+              + sum);
+    }
+    return sum;
+  }
+
 // start relevant
 }
 // end relevant

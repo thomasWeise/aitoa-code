@@ -30,4 +30,17 @@ public interface IObjectiveFunction<Y> {
   public default double lowerBound() {
     return Double.NEGATIVE_INFINITY;
   }
+
+  /**
+   * Compute an upper bound, if possible. The default
+   * implementation of this method returns
+   * {@link Double#POSITIVE_INFINITY}. This method is mainly used
+   * in our unit tests to ensure that the computed objective
+   * values are valid.
+   *
+   * @return the upper bound of the objective value
+   */
+  public default double upperBound() {
+    return Double.POSITIVE_INFINITY;
+  }
 }

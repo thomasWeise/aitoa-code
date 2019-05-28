@@ -42,4 +42,10 @@ public final class TreeNullaryOperator extends _TreeOperator
         "failed to create tree " + //$NON-NLS-1$
             _TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return "create" + this.m_maxDepth;//$NON-NLS-1$
+  }
 }

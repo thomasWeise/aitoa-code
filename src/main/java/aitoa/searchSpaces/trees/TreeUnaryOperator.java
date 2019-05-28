@@ -50,4 +50,10 @@ public final class TreeUnaryOperator extends _TreePathOperator
             xx.toString() + " after trying "//$NON-NLS-1$
             + _TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return "rep" + this.m_maxDepth;//$NON-NLS-1$
+  }
 }

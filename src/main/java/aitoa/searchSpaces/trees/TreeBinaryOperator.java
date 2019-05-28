@@ -108,4 +108,10 @@ public final class TreeBinaryOperator extends _TreePathOperator
     // give up: if we cannot combine the trees
     dest[0] = random.nextBoolean() ? p0 : p1;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return "rec" + this.m_maxDepth;//$NON-NLS-1$
+  }
 }
