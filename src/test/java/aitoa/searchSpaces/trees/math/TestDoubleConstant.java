@@ -3,11 +3,11 @@ package aitoa.searchSpaces.trees.math;
 import org.junit.Assert;
 import org.junit.Test;
 
-import aitoa.searchSpaces.trees.NodeTest;
 import aitoa.searchSpaces.trees.NodeType;
+import aitoa.searchSpaces.trees.TestNode;
 
 /** Test the double constant function */
-public class TestDoubleConstant extends NodeTest {
+public class TestDoubleConstant extends TestNode {
 
   /** create */
   public TestDoubleConstant() {

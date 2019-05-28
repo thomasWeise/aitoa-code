@@ -3,11 +3,11 @@ package aitoa.searchSpaces.trees.math;
 import aitoa.searchSpaces.trees.NodeTypeSet;
 import aitoa.searchSpaces.trees.NodeTypeSetBuilder;
 import aitoa.searchSpaces.trees.NodeTypeSetBuilder.Builder;
-import aitoa.searchSpaces.trees.NodeTypeSetTest;
+import aitoa.searchSpaces.trees.TestNodeTypeSet;
 
 /** test a function node type set */
 public class TestFunctionNodeTypeSet
-    extends NodeTypeSetTest<MathFunction<?>> {
+    extends TestNodeTypeSet<MathFunction<?>> {
 
   /** create */
   public TestFunctionNodeTypeSet() {

@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import aitoa.searchSpaces.trees.NodeTest;
+import aitoa.searchSpaces.trees.TestNode;
 
 /** test a math function */
 @Ignore
-public abstract class MathFunctionTest extends NodeTest {
+public abstract class MathFunctionTest extends TestNode {
   /**
    * test a function
    *

@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import aitoa.searchSpaces.trees.Node;
-import aitoa.searchSpaces.trees.NodeTest;
 import aitoa.searchSpaces.trees.NodeType;
 import aitoa.searchSpaces.trees.NodeTypeSet;
 import aitoa.searchSpaces.trees.NodeTypeSetBuilder;
 import aitoa.searchSpaces.trees.NodeTypeSetBuilder.Builder;
+import aitoa.searchSpaces.trees.TestNode;
 
 /** Test basic math functions */
 public class TestBasicMath {
@@ -43,6 +43,6 @@ public class TestBasicMath {
     Assert.assertEquals(2, a1.getChildCount());
     Assert.assertEquals(2, a2.getChildCount());
     Assert.assertEquals(17, a2.applyAsDouble(null), 0);
-    NodeTest.testNode(a2);
+    TestNode.testNode(a2);
   }
 }

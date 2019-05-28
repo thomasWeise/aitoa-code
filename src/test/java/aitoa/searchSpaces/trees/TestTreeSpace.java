@@ -37,7 +37,7 @@ public class TestTreeSpace extends ISpaceTest<Node[]> {
   @Override
   protected void fillWithRandomData(final Node[] dest) {
     final Random r = ThreadLocalRandom.current();
-    dest[0] = NodeTypeTest
+    dest[0] = TestNodeType
         ._instantiate(this.m_typeSet.getRandomType(r), r, 0);
   }
 
@@ -75,7 +75,7 @@ public class TestTreeSpace extends ISpaceTest<Node[]> {
   protected void assertValid(final Node[] a) {
     Assert.assertNotNull(a);
     Assert.assertEquals(1, a.length);
-    NodeTest.testNode(a[0]);
+    TestNode.testNode(a[0]);
   }
 
   /** {@inheritDoc} */

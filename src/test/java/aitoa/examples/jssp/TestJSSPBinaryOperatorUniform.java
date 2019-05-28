@@ -11,7 +11,9 @@ import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBinarySearchOperatorTest;
 import aitoa.structure.ISpace;
 
-/** test the binary sequence crossover search operator */
+/**
+ * test the binary uniform crossover search operator for the JSSP
+ */
 public class TestJSSPBinaryOperatorUniform
     extends IBinarySearchOperatorTest<int[]> {
 
@@ -25,7 +27,7 @@ public class TestJSSPBinaryOperatorUniform
 
   /** the operator we use */
   private static final IBinarySearchOperator<int[]> OP =
-      new JSSPOperatorBinaryUniform(
+      new JSSPBinaryOperatorUniform(
           TestJSSPBinaryOperatorUniform.PROBLEM);
 
   /** {@inheritDoc} */
@@ -41,7 +43,7 @@ public class TestJSSPBinaryOperatorUniform
     if (space == TestJSSPBinaryOperatorUniform.SPACE) {
       return TestJSSPBinaryOperatorUniform.OP;
     }
-    return new JSSPOperatorBinaryUniform(
+    return new JSSPBinaryOperatorUniform(
         ((JSSPSearchSpace) space).instance);
   }
 
@@ -64,8 +66,8 @@ public class TestJSSPBinaryOperatorUniform
   public final void testCanonical() {
     final Random random = ThreadLocalRandom.current();
     for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
-      final JSSPOperatorBinaryUniform op =
-          new JSSPOperatorBinaryUniform(inst);
+      final JSSPBinaryOperatorUniform op =
+          new JSSPBinaryOperatorUniform(inst);
       final int[] x = new int[inst.m * inst.n];
       final int[] c = new int[inst.m * inst.n];
       JSSPTestUtils.canonicalX(c, inst);
@@ -85,8 +87,8 @@ public class TestJSSPBinaryOperatorUniform
   public final void testRandom() {
     final Random random = ThreadLocalRandom.current();
     for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
-      final JSSPOperatorBinaryUniform op =
-          new JSSPOperatorBinaryUniform(inst);
+      final JSSPBinaryOperatorUniform op =
+          new JSSPBinaryOperatorUniform(inst);
       final int[] x = new int[inst.m * inst.n];
       final int[] c1 = new int[inst.m * inst.n];
       final int[] c2 = new int[inst.m * inst.n];

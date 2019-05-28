@@ -113,7 +113,7 @@ public class JSSPExperiment {
 
 // create the binary search operator
         final IBinarySearchOperator<int[]> binary =
-            new JSSPOperatorBinarySequence(inst);
+            new JSSPBinaryOperatorSequence(inst);
 // evolutionary algorithms
         for (final int mu : new int[] { 16, 32, 64, 512, 2048,
             4096 }) {
