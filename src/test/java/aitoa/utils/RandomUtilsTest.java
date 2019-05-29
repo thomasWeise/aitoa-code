@@ -127,6 +127,142 @@ public class RandomUtilsTest {
 
   /**
    * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle2() {
+    RandomUtilsTest.__permShuffleTest(2);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle3() {
+    RandomUtilsTest.__permShuffleTest(3);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle4() {
+    RandomUtilsTest.__permShuffleTest(4);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle5() {
+    RandomUtilsTest.__permShuffleTest(5);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle6() {
+    RandomUtilsTest.__permShuffleTest(6);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle7() {
+    RandomUtilsTest.__permShuffleTest(7);
+  }
+
+  /**
+   * test the method
+   * {@link RandomUtils#shuffle(Random, int[], int, int)}
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testIntShuffle8() {
+    RandomUtilsTest.__permShuffleTest(8);
+  }
+
+  /**
+   * test the shuffling of arrays of length {@code n}
+   *
+   * @param n
+   *          the array length
+   */
+  private static final void __permShuffleTest(final int n) {
+    final int[] perm = new int[n];
+    final int[] temp1 = new int[n];
+    final int[] temp2 = new int[n];
+    int count = 1;
+    for (int i = n; i >= 1; i--) {
+      count = Math.multiplyExact(count, i);
+    }
+    final Random random = ThreadLocalRandom.current();
+
+    final int[] counters = new int[count];
+
+    for (int k = Math.multiplyExact(64, count); (--k) >= 0;) {
+      for (int i = perm.length; (--i) >= 0;) {
+        perm[i] = i;
+      }
+      RandomUtils.shuffle(random, perm, 0, perm.length);
+      ++counters[RandomUtilsTest.__perm_to_int(perm, temp1,
+          temp2)];
+    }
+
+    for (final int v : counters) {
+      TestTools.assertGreater(v, 8);
+    }
+  }
+
+  /**
+   * convert a permutation to a number
+   *
+   * @param perm
+   *          the permutation
+   * @param temp1
+   *          the first temporary array (same length as
+   *          {@code perm})
+   * @param temp2
+   *          the second temporary array (same length as
+   *          {@code perm})
+   * @return the number representation see
+   *         https://stackoverflow.com/a/24689277
+   */
+  private static final int __perm_to_int(final int[] perm,
+      final int[] temp1, final int[] temp2) {
+    int i, k = 0, m = 1;
+    final int n = perm.length;
+
+    for (i = 0; i < n; i++) {
+      temp1[i] = i;
+      temp2[i] = i;
+    }
+
+    for (i = 0; i < (n - 1); i++) {
+      k += m * temp1[perm[i]];
+      m = m * (n - i);
+      temp1[temp2[n - i - 1]] = temp1[perm[i]];
+      temp2[temp1[perm[i]]] = temp2[n - i - 1];
+    }
+
+    return k;
+  }
+
+  /**
+   * test the method
    * {@link RandomUtils#shuffle(Random, Object[], int, int)}
    */
   @SuppressWarnings("static-method")

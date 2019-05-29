@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import aitoa.TestTools;
 import aitoa.structure.IBinarySearchOperatorTest;
 import aitoa.structure.ISpace;
 
@@ -76,5 +77,52 @@ public class TestBitStringBinaryOperatorUniform
       b[i] = r.nextBoolean();
     }
     return b;
+  }
+
+  /**
+   * test that the uniform crossover produces all possible
+   * results
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public void testAllResultsPossible() {
+    if (this.m_space.length > 12) {
+      return;
+    }
+    final int[] count = new int[1 << this.m_space.length];
+    final boolean[] a = new boolean[this.m_space.length];
+    final boolean[] b = new boolean[this.m_space.length];
+    final Random random = ThreadLocalRandom.current();
+    Arrays.fill(random.nextBoolean() ? a : b, true);
+
+    final boolean[] x = new boolean[this.m_space.length];
+
+    final BitStringBinaryOperatorUniform op = this.m_operator;
+
+    for (int i = 100 * (10 + count.length); (--i) >= 0;) {
+      op.apply(a, b, x, random);
+      int idx = 0;
+      for (final boolean v : x) {
+        idx <<= 1;
+        if (v) {
+          idx |= 1;
+        }
+      }
+      ++count[idx];
+    }
+
+    int min = Integer.MAX_VALUE;
+    int max = Integer.MIN_VALUE;
+    for (final int c : count) {
+      if (c < min) {
+        min = c;
+      }
+      if (c > max) {
+        max = c;
+      }
+    }
+
+    TestTools.assertGreater(min, 0);
+    TestTools.assertGreaterOrEqual(min * 5, max);
   }
 }

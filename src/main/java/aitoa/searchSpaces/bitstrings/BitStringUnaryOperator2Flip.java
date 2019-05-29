@@ -15,7 +15,7 @@ public final class BitStringUnaryOperator2Flip
   private final int[] m_indexes;
 
   /**
-   * create the bit string space
+   * create the 2-bit flip unary operator
    *
    * @param _length
    *          the _length

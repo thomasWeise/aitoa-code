@@ -15,7 +15,7 @@ public final class BitStringUnaryOperator1Flip
   private final int[] m_indexes;
 
   /**
-   * create the bit string space
+   * create the 31-bit flip unary operator
    *
    * @param _length
    *          the _length
