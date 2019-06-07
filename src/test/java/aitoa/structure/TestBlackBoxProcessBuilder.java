@@ -369,7 +369,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
 
       final long fes = ++this.m_process.m_consumedFEs;
       // map and evaluate
-      this.m_process.m_mapping.map(y, this.m_process.m_current);
+      this.m_process.m_mapping.map(this.m_process.m_random, y,
+          this.m_process.m_current);
 
       this.m_process.m_solutionSpace
           .check(this.m_process.m_current);

@@ -118,7 +118,7 @@ public class TestJSSPTreeRepresentationMapping extends
     for (int i = 100; (--i) >= 0;) {
       op.apply(x, random);
       searchSpace.check(x);
-      mapping.map(x, y);
+      mapping.map(random, x, y);
       solutionSpace.check(y);
     }
   }

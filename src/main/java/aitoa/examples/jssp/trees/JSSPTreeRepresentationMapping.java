@@ -1,6 +1,7 @@
 package aitoa.examples.jssp.trees;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
@@ -9,8 +10,17 @@ import aitoa.searchSpaces.trees.math.MathFunction;
 import aitoa.structure.IRepresentationMapping;
 
 /**
- * The representation mapping: translate a one-dimensional
- * integer array to a candidate solution for the JSSP.
+ * The representation mapping for scheduling formulas to Gantt
+ * charts. The idea is that the input of this mapping is a
+ * formula which is used to step-by-step construct a Gantt chart.
+ * In each step, the formula receives information about the
+ * current construction state of the Gantt chart. It then
+ * computes one rating value for each job that may be scheduled.
+ * The job with the smallest rating value is then scheduled. The
+ * Gantt chart is updated. This is repeated again and again,
+ * until the Gantt chart has been filled and no job is left that
+ * might be scheduled. If more than one job receive the smallest
+ * rating, we randomly choose one of them.
  */
 // start relevant
 public final class JSSPTreeRepresentationMapping implements
@@ -87,6 +97,10 @@ public final class JSSPTreeRepresentationMapping implements
 
   /** the job ids */
   final int[] m_jobIDs;
+  /** the best jobs ids */
+  final int[] m_bestJobIDs;
+  /** the best jobs indexes */
+  final int[] m_bestJobIndexes;
   /** the steo if the job */
   final int[] m_jobCompletedSubjobs;
   /** the next job machine */
@@ -130,6 +144,8 @@ public final class JSSPTreeRepresentationMapping implements
     }
 
     this.m_jobIDs = new int[instance.n];
+    this.m_bestJobIDs = new int[instance.n];
+    this.m_bestJobIndexes = new int[instance.n];
     this.m_jobCompletedSubjobs = new int[instance.n];
     this.m_jobNextMachine = new int[instance.n];
     this.m_jobLastSubjobFinishedTime = new int[instance.n];
@@ -148,9 +164,13 @@ public final class JSSPTreeRepresentationMapping implements
 
 // start relevant
   /**
-   * Map a point {@code x} from the search space to a candidate
-   * solution {@code y} in the solution space.
+   * Map a point {@code x} from the search space (here a formula
+   * describing how job should be priorized based on the current
+   * scheduling state) to a candidate solution {@code y} in the
+   * solution space (here a Gantt chart).
    *
+   * @param random
+   *          a random number generator
    * @param x
    *          the point in the search space
    * @param y
@@ -158,7 +178,7 @@ public final class JSSPTreeRepresentationMapping implements
    */
   @Override
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void map(final Node[] x,
+  public void map(final Random random, final Node[] x,
       final JSSPCandidateSolution y) {
     final MathFunction<double[][]> func =
         ((MathFunction) (x[0]));
@@ -180,7 +200,8 @@ public final class JSSPTreeRepresentationMapping implements
     for (int count = n; count > 0;) {
       JSSPTreeRepresentationMapping.__clear(this.m_state);
 
-      // in the first loop, we gather statistics about all the
+      // in the first stop of the main loop, we gather statistics
+      // about all the
       // sub-jobs that could be executed next
       if (count > 1) {
         for (final int job : this.m_jobIDs) {
@@ -220,9 +241,12 @@ public final class JSSPTreeRepresentationMapping implements
         }
       }
 
+// now we have computed all necessary statistics, so we can
+// actually apply the formula and select the job to schedule next
       double bestScore = Double.POSITIVE_INFINITY;
-      int bestJobIndex = 0;
-      int bestJob = this.m_jobIDs[bestJobIndex];
+      int bestCount = 1;
+      this.m_bestJobIDs[0] = 0;
+      this.m_bestJobIndexes[0] = this.m_jobIDs[0];
 
       if (count > 1) {
         // finalize the statistics, e.g., compute the mean values
@@ -260,21 +284,32 @@ public final class JSSPTreeRepresentationMapping implements
           // compute the score for the job
           final double score = func.applyAsDouble(this.m_state);
           if (score < bestScore) {
-            bestJob = job;
-            bestJobIndex = i;
+            bestCount = 1;
+            this.m_bestJobIDs[0] = job;
+            this.m_bestJobIndexes[0] = i;
             bestScore = score;
+          } else {
+            if (score == bestScore) {
+              this.m_bestJobIDs[bestCount] = job;
+              this.m_bestJobIndexes[bestCount] = i;
+              ++bestCount;
+            }
           }
         }
       }
 
       // ok, we have selected a job to execute, now we need to
       // execute it and update the data
+      bestCount = random.nextInt(bestCount);
+      final int bestJob = this.m_bestJobIDs[bestCount];
       int next = this.m_jobCompletedSubjobs[bestJob];
       final int machine = this.m_jobs[bestJob][next << 1];
       final int time = this.m_jobs[bestJob][1 + (next << 1)];
 
       this.m_jobCompletedSubjobs[bestJob] = (++next);
       if (next >= m) {
+        final int bestJobIndex =
+            this.m_bestJobIndexes[bestCount];
         this.m_jobIDs[bestJobIndex] = this.m_jobIDs[--count];
         this.m_jobIDs[count] = -1;
       }

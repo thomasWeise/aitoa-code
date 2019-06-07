@@ -1,6 +1,7 @@
 package aitoa.examples.jssp;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import aitoa.structure.IRepresentationMapping;
 
@@ -52,16 +53,21 @@ public final class JSSPRepresentationMapping implements
 
 // start relevant
   /**
-   * Map a point {@code x} from the search space to a candidate
-   * solution {@code y} in the solution space.
+   * Map a point {@code x} from the search space, i.e., an
+   * {@code int[]} representing the sub-job priorities, to a
+   * candidate solution {@code y} in the solution space, here a
+   * Gantt chart.
    *
+   * @param random
+   *          the random number generator (here: ignored)
    * @param x
    *          the point in the search space
    * @param y
    *          the solution record, i.e., the Gantt chart
    */
   @Override
-  public void map(final int[] x, final JSSPCandidateSolution y) {
+  public void map(final Random random, final int[] x,
+      final JSSPCandidateSolution y) {
 // create variables machineState, machineTime of length m and
 // jobState, jobTime of length n, filled with 0 [omitted brevity]
 // end relevant

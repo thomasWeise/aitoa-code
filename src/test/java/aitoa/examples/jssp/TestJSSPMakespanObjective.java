@@ -1,5 +1,7 @@
 package aitoa.examples.jssp;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,8 +39,11 @@ public class TestJSSPMakespanObjective
     final JSSPCandidateSolution y = new JSSPCandidateSolution(
         TestJSSPMakespanObjective.PROBLEM.m,
         TestJSSPMakespanObjective.PROBLEM.n);
-    TestJSSPMakespanObjective.MAPPING.map(JSSPTestUtils
-        .createValidX(TestJSSPMakespanObjective.PROBLEM), y);
+    TestJSSPMakespanObjective.MAPPING
+        .map(
+            ThreadLocalRandom.current(), JSSPTestUtils
+                .createValidX(TestJSSPMakespanObjective.PROBLEM),
+            y);
     return y;
   }
 

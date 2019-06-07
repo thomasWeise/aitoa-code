@@ -117,7 +117,7 @@ public class TestJSSPRepresentationMapping extends
 
     for (int i = 1000; (--i) >= 0;) {
       searchSpace.check(x);
-      mapping.map(x, y);
+      mapping.map(ThreadLocalRandom.current(), x, y);
       solutionSpace.check(y);
       final int a = random.nextInt(x.length);
       final int b = random.nextInt(x.length);

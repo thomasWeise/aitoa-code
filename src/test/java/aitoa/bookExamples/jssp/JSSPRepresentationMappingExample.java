@@ -1,5 +1,7 @@
 package aitoa.bookExamples.jssp;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
@@ -35,6 +37,7 @@ public class JSSPRepresentationMappingExample {
         JSSPRepresentationMappingExample.INSTANCE.m,
         JSSPRepresentationMappingExample.INSTANCE.n);
     JSSPRepresentationMappingExample.MAPPING.map(
+        ThreadLocalRandom.current(),
         JSSPRepresentationMappingExample.POINT,
         JSSPRepresentationMappingExample.SOLUTION);
   }

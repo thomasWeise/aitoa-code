@@ -1,5 +1,8 @@
 package aitoa.structure;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -49,9 +52,9 @@ public abstract class IRepresentationMappingTest<X, Y>
   public final void testMap() {
     final Y dest = this.createY();
     final IRepresentationMapping<X, Y> map = this.getInstance();
-
+    final Random random = ThreadLocalRandom.current();
     for (int i = 100; (--i) >= 0;) {
-      map.map(this.createValidX(), dest);
+      map.map(random, this.createValidX(), dest);
       this.assertValid(dest);
     }
   }

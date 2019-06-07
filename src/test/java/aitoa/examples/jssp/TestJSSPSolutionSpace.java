@@ -61,8 +61,11 @@ public class TestJSSPSolutionSpace
   @Override
   protected void
       fillWithRandomData(final JSSPCandidateSolution dest) {
-    TestJSSPSolutionSpace.MAPPING.map(JSSPTestUtils
-        .createValidX(TestJSSPSolutionSpace.PROBLEM), dest);
+    TestJSSPSolutionSpace.MAPPING
+        .map(
+            ThreadLocalRandom.current(), JSSPTestUtils
+                .createValidX(TestJSSPSolutionSpace.PROBLEM),
+            dest);
   }
 
   /** {@inheritDoc} */

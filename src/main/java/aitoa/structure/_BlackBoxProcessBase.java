@@ -17,7 +17,7 @@ abstract class _BlackBoxProcessBase<X, Y>
     extends _BlackBoxProcessData<X, Y>
     implements IBlackBoxProcess<X, Y> {
   /** the random number generator */
-  private final Random m_random;
+  final Random m_random;
   /** the end time */
   final long m_endTime;
   /** the start time */

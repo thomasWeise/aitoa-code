@@ -89,7 +89,7 @@ final class _BlackBoxProcess2Log<X, Y>
     }
     final long fes = ++this.m_consumedFEs; // increase fes
     // map and evaluate
-    this.m_mapping.map(y, this.m_current);
+    this.m_mapping.map(this.m_random, y, this.m_current);
     final double result = this.m_f.evaluate(this.m_current);
 
     // did we improve
