@@ -244,9 +244,7 @@ public final class JSSPTreeRepresentationMapping implements
 // now we have computed all necessary statistics, so we can
 // actually apply the formula and select the job to schedule next
       double bestScore = Double.POSITIVE_INFINITY;
-      int bestCount = 1;
-      this.m_bestJobIDs[0] = 0;
-      this.m_bestJobIndexes[0] = this.m_jobIDs[0];
+      int bestCount = 0;
 
       if (count > 1) {
         // finalize the statistics, e.g., compute the mean values
@@ -298,9 +296,16 @@ public final class JSSPTreeRepresentationMapping implements
         }
       }
 
+      if (bestCount == 0) {
+        this.m_bestJobIndexes[0] = random.nextInt(count);
+        this.m_bestJobIDs[0] =
+            this.m_jobIDs[this.m_bestJobIndexes[0]];
+      } else {
+        bestCount = random.nextInt(bestCount);
+      }
+
       // ok, we have selected a job to execute, now we need to
       // execute it and update the data
-      bestCount = random.nextInt(bestCount);
       final int bestJob = this.m_bestJobIDs[bestCount];
       int next = this.m_jobCompletedSubjobs[bestJob];
       final int machine = this.m_jobs[bestJob][next << 1];
