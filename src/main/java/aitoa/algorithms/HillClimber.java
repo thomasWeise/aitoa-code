@@ -64,8 +64,8 @@ public final class HillClimber<X, Y>
       } // otherwise, i.e., f_cur >= f_best: just forget x_cur
     } while (!process.shouldTerminate()); // until time is up
   } // process will have remembered the best candidate solution
-
 // end relevant
+  
   /** {@inheritDoc} */
   @Override
   public final String toString() {

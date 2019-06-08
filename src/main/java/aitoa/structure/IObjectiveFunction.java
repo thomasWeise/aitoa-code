@@ -8,6 +8,7 @@ package aitoa.structure;
  *          the solution space data structure
  */
 @FunctionalInterface
+// start relevant
 public interface IObjectiveFunction<Y> {
 
   /**
@@ -30,7 +31,8 @@ public interface IObjectiveFunction<Y> {
   public default double lowerBound() {
     return Double.NEGATIVE_INFINITY;
   }
-
+// end relevant
+  
   /**
    * Compute an upper bound, if possible. The default
    * implementation of this method returns
@@ -43,4 +45,7 @@ public interface IObjectiveFunction<Y> {
   public default double upperBound() {
     return Double.POSITIVE_INFINITY;
   }
+  
+// start relevant
 }
+// end relevant

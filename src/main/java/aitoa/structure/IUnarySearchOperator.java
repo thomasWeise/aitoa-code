@@ -29,8 +29,8 @@ public interface IUnarySearchOperator<X> {
    */
   public abstract void apply(final X x, final X dest,
       final Random random);
-
 // end relevant
+  
   /**
    * Exhaustively enumerate the complete neighborhood of the
    * point {@code x}.

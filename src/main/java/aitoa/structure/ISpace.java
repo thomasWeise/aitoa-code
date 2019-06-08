@@ -1,4 +1,3 @@
-// start relevant
 package aitoa.structure;
 
 /**
@@ -7,6 +6,7 @@ package aitoa.structure;
  * @param <Z>
  *          the space data structure
  */
+// start relevant
 public interface ISpace<Z> {
 
   /**

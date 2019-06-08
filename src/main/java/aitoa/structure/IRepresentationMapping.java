@@ -12,6 +12,7 @@ import java.util.Random;
  *          the solution space
  */
 @FunctionalInterface
+// start relevant
 public interface IRepresentationMapping<X, Y> {
 
   /**
@@ -28,3 +29,4 @@ public interface IRepresentationMapping<X, Y> {
   public abstract void map(final Random random, final X x,
       final Y y);
 }
+// end relevant
