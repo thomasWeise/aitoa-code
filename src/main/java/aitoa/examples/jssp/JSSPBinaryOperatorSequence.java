@@ -10,12 +10,14 @@ import aitoa.structure.IBinarySearchOperator;
  * representation, where jobs are appended from both parents. We
  * randomly pick one of the two parents, take its first sub-job,
  * and add it to the (initially empty) child. We then mark this
- * sub-job as done in both parents. We then, in each step,
- * randomly pick one of the parents and take the next,
- * not-yet-done sub-job from it and add it to the child. We mark
- * the sub-job as done in both parents. We do this until the
- * child schedule representation has been filled, at which point
- * all sub-jobs from all parents must have been completed.
+ * sub-job (i.e., the first occurrence of the job id) as done in
+ * both parents. We then, in each step, randomly pick one of the
+ * parents and take the next, not-yet-done sub-job from it and
+ * add it to the child. We mark the sub-job (i.e., the first
+ * unmarked occurrence of the job id) as done in both parents. We
+ * do this until the child schedule representation has been
+ * filled, at which point all sub-jobs from all parents must have
+ * been completed.
  */
 // start relevant
 public final class JSSPBinaryOperatorSequence
