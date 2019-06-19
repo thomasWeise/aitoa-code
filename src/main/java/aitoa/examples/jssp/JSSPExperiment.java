@@ -124,7 +124,7 @@ public class JSSPExperiment {
             for (final int lambda : new int[] { mu }) {
               for (final double cr : new double[] { 0, 0.05,
                   0.3 }) {
-                if ((cr <= 0d) && (binary == binops[0])) {
+                if ((cr <= 0d) && (binary != binops[0])) {
                   continue; // test only binary op for cr=0
                 }
                 if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
