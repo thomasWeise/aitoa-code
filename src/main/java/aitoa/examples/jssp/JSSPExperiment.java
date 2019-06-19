@@ -49,7 +49,7 @@ public class JSSPExperiment {
    * @param args
    *          only first element considered: the destination path
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static final void main(final String[] args) {
     final Path out = IOUtils.canonicalizePath(
         (args.length > 0) ? args[0] : "results");//$NON-NLS-1$
@@ -112,37 +112,45 @@ public class JSSPExperiment {
         } // only use basic unary ops
 
 // create the binary search operator
-        final IBinarySearchOperator<int[]> binary =
-            new JSSPBinaryOperatorSequence(inst);
+        final IBinarySearchOperator[] binops =
+            new IBinarySearchOperator[] {
+                new JSSPBinaryOperatorSequence(inst),
+                new JSSPBinaryOperatorUniform(inst) };
+        for (final IBinarySearchOperator<
+            int[]> binary : binops) {
 // evolutionary algorithms
-        for (final int mu : new int[] { 16, 32, 64, 512, 2048,
-            4096 }) {
-          for (final int lambda : new int[] { mu }) {
-            for (final double cr : new double[] { 0, 0.05,
-                0.3 }) {
-              if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
+          for (final int mu : new int[] { 16, 32, 64, 512, 2048,
+              4096 }) {
+            for (final int lambda : new int[] { mu }) {
+              for (final double cr : new double[] { 0, 0.05,
+                  0.3 }) {
+                if ((cr <= 0d) && (binary == binops[0])) {
+                  continue; // test only binary op for cr=0
+                }
+                if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
 // the plain EA
-                JSSPExperiment.run(new EA<>(cr, mu, lambda),
-                    unary, binary, inst, out);
+                  JSSPExperiment.run(new EA<>(cr, mu, lambda),
+                      unary, binary, inst, out);
 // the EA with pruning, i.e., which enforces population diversity
-                JSSPExperiment.run(
-                    new EAWithPruning<>(cr, mu, lambda), unary,
-                    binary, inst, out);
-              } // only use basic unary ops
-            } // end enumerate cr
+                  JSSPExperiment.run(
+                      new EAWithPruning<>(cr, mu, lambda), unary,
+                      binary, inst, out);
+                } // only use basic unary ops
+              } // end enumerate cr
 
-            if (!(unary instanceof JSSPUnaryOperator1Swap)) {
-              if (unary.canEnumerate()) {
+              if (!(unary instanceof JSSPUnaryOperator1Swap)) {
+                if (unary.canEnumerate()) {
 // memetic algorithms here rely on enumeration and use cr=1
-                JSSPExperiment.run(
-                    new MAWithPruning<>(mu, lambda), unary,
-                    binary, inst, out);
-                JSSPExperiment.run(new MA<>(mu, lambda), unary,
-                    binary, inst, out);
-              } // end memetic algorithm
-            } // only use randomized enumeration
-          } // end lambda
-        } // end mu
+                  JSSPExperiment.run(
+                      new MAWithPruning<>(mu, lambda), unary,
+                      binary, inst, out);
+                  JSSPExperiment.run(new MA<>(mu, lambda), unary,
+                      binary, inst, out);
+                } // end memetic algorithm
+              } // only use randomized enumeration
+            } // end lambda
+          } // end mu
+        } // end binary op
 
 // the estimation of distribution algorithms
         for (final IModel<int[]> model : new IModel[] {
