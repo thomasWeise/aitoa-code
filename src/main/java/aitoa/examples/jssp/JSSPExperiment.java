@@ -138,16 +138,14 @@ public class JSSPExperiment {
                 } // only use basic unary ops
               } // end enumerate cr
 
-              if (!(unary instanceof JSSPUnaryOperator1Swap)) {
-                if (unary.canEnumerate()) {
+              if (unary.canEnumerate()) {
 // memetic algorithms here rely on enumeration and use cr=1
-                  JSSPExperiment.run(
-                      new MAWithPruning<>(mu, lambda), unary,
-                      binary, inst, out);
-                  JSSPExperiment.run(new MA<>(mu, lambda), unary,
-                      binary, inst, out);
-                } // end memetic algorithm
-              } // only use randomized enumeration
+                JSSPExperiment.run(
+                    new MAWithPruning<>(mu, lambda), unary,
+                    binary, inst, out);
+                JSSPExperiment.run(new MA<>(mu, lambda), unary,
+                    binary, inst, out);
+              } // end memetic algorithm
             } // end lambda
           } // end mu
         } // end binary op
