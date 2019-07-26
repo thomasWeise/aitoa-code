@@ -17,6 +17,24 @@ import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
 import aitoa.algorithms.TemperatureSchedule;
+import aitoa.examples.jssp.trees.JSSPTreeRepresentationMapping;
+import aitoa.examples.jssp.trees.JobStatistic;
+import aitoa.searchSpaces.trees.Node;
+import aitoa.searchSpaces.trees.NodeTypeSet;
+import aitoa.searchSpaces.trees.NodeTypeSetBuilder;
+import aitoa.searchSpaces.trees.TreeBinaryOperator;
+import aitoa.searchSpaces.trees.TreeNullaryOperator;
+import aitoa.searchSpaces.trees.TreeSpace;
+import aitoa.searchSpaces.trees.TreeUnaryOperator;
+import aitoa.searchSpaces.trees.math.ATan2;
+import aitoa.searchSpaces.trees.math.Add;
+import aitoa.searchSpaces.trees.math.Divide;
+import aitoa.searchSpaces.trees.math.DoubleConstant;
+import aitoa.searchSpaces.trees.math.MathFunction;
+import aitoa.searchSpaces.trees.math.Max;
+import aitoa.searchSpaces.trees.math.Min;
+import aitoa.searchSpaces.trees.math.Multiply;
+import aitoa.searchSpaces.trees.math.Subtract;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
@@ -185,8 +203,35 @@ public class JSSPExperiment {
         } // models
         plainEDADone = true;
       } // end unary operators
+
+      // random sampling with gp
+      for (final int maxDepth : new int[] { 4, 6, 8 }) {
+        JSSPExperiment.__runGP(new RandomSampling<>(), maxDepth,
+            inst, out);
+        // evolutionary algorithms
+        for (final int mu : new int[] { 16, 128, 1024 }) {
+          for (final int lambda : new int[] { mu }) {
+            for (final double cr : new double[] { 0.05, 0.3 }) {
+              // the plain EA
+              JSSPExperiment.__runGP(new EA<>(cr, mu, lambda),
+                  maxDepth, inst, out);
+              // the EA with pruning, i.e., which enforces
+              // population diversity
+              JSSPExperiment.__runGP(
+                  new EAWithPruning<>(cr, mu, lambda), maxDepth,
+                  inst, out);
+            } // end enumerate cr
+          } // end lambda
+        } // end mu
+      } // end maxDepth
     } // end instances
   }
+
+  /** the maximum time */
+  private static final long MAX_TIME = 3L * 60L * 1000L;
+
+  /** the number of runs */
+  private static final int N_RUNS = 101;
 
   /**
    * Apply a metaheuristic algorithm with the given operators to
@@ -216,7 +261,7 @@ public class JSSPExperiment {
         JSSPCandidateSolution> builder =
             new BlackBoxProcessBuilder<>();
 // set the maximum runtime
-    builder.setMaxTime(3L * 60L * 1000L);
+    builder.setMaxTime(JSSPExperiment.MAX_TIME);
 
     // create the algorithm directory
     final String algoName = Experiment.nameFromObjectsMerge(//
@@ -244,7 +289,7 @@ public class JSSPExperiment {
     }
     // iterate over the random seeds
     for (final long seed : RandomUtils
-        .uniqueRandomSeeds(instName, 101)) {
+        .uniqueRandomSeeds(instName, JSSPExperiment.N_RUNS)) {
       final Path file =
           Experiment.logFile(baseDir, algoName, instName, seed);
       if (file == null) {
@@ -258,6 +303,104 @@ public class JSSPExperiment {
         builder.setRandSeed(seed);
         builder.setLogPath(file);
         try (final IBlackBoxProcess<int[],
+            JSSPCandidateSolution> process = builder.get()) {
+          algorithm.solve(process);
+          process.printLogSection("ALGORITHM_SETUP", //$NON-NLS-1$
+              (bw) -> {
+                try {
+                  algorithm.printSetup(bw);
+                } catch (final IOException ioe) {
+                  throw new RuntimeException(ioe);
+                }
+              });
+        }
+      }
+    }
+  }
+
+  /**
+   * Apply a metaheuristic algorithm with the given operators to
+   * the specified instance and log the results to the provided
+   * directory.
+   *
+   * @param algorithm
+   *          the algorithm
+   * @param inst
+   *          the instance
+   * @param maxDepth
+   *          the maximum depth
+   * @param baseDir
+   *          the base directory
+   */
+  private static final void __runGP(
+      final IMetaheuristic<Node[],
+          JSSPCandidateSolution> algorithm,
+      final int maxDepth, final JSSPInstance inst,
+      final Path baseDir) {
+
+    // create the process builder
+    final BlackBoxProcessBuilder<Node[],
+        JSSPCandidateSolution> builder =
+            new BlackBoxProcessBuilder<>();
+// set the maximum runtime
+    builder.setMaxTime(JSSPExperiment.MAX_TIME);
+
+    // create the algorithm directory
+    final String algoName = Experiment.nameFromObjectsMerge(//
+        "gp" + maxDepth, algorithm); //$NON-NLS-1$
+    // create the instance bane
+    final String instName =
+        Experiment.nameFromObjectPrepare(inst);
+
+    final TreeSpace searchSpace = new TreeSpace(maxDepth);
+
+    final NodeTypeSetBuilder ntsb = new NodeTypeSetBuilder();
+    final NodeTypeSetBuilder.Builder nodes =
+        ntsb.rootNodeTypeSet();
+    nodes.add(Add.class, nodes, nodes);
+    nodes.add(ATan2.class, nodes, nodes);
+    nodes.add(Divide.class, nodes, nodes);
+    nodes.add(DoubleConstant.type());
+    nodes.add(Max.class, nodes, nodes);
+    nodes.add(Min.class, nodes, nodes);
+    nodes.add(Multiply.class, nodes, nodes);
+    nodes.add(Subtract.class, nodes, nodes);
+    nodes.add(JobStatistic.type());
+    final NodeTypeSet<MathFunction<double[][]>> root =
+        ntsb.build();
+
+    // setup the data
+    builder.setSearchSpace(searchSpace);
+    builder.setSolutionSpace(new JSSPSolutionSpace(inst));
+    builder.setRepresentationMapping(
+        new JSSPTreeRepresentationMapping(inst));
+    builder.setObjectiveFunction(
+        new JSSPMakespanObjectiveFunction(inst));
+    builder.setNullarySearchOperator(
+        new TreeNullaryOperator(root, maxDepth));
+
+    builder
+        .setUnarySearchOperator(new TreeUnaryOperator(maxDepth));
+
+    builder.setBinarySearchOperator(
+        new TreeBinaryOperator(maxDepth));
+
+    // iterate over the random seeds
+    for (final long seed : RandomUtils
+        .uniqueRandomSeeds(instName, JSSPExperiment.N_RUNS)) {
+      final Path file =
+          Experiment.logFile(baseDir, algoName, instName, seed);
+      if (file == null) {
+        ConsoleIO.stdout(((((("Logfile for run " + algoName)//$NON-NLS-1$
+            + ';') + instName) + ';') + seed)
+            + " already exists, skipping run."); //$NON-NLS-1$
+      } else {
+        ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
+            + file + "'."); //$NON-NLS-1$
+
+        builder.setRandSeed(seed);
+        builder.setLogPath(file);
+        try (final IBlackBoxProcess<Node[],
             JSSPCandidateSolution> process = builder.get()) {
           algorithm.solve(process);
           process.printLogSection("ALGORITHM_SETUP", //$NON-NLS-1$
