@@ -149,7 +149,7 @@ public class JSSPInstance {
         JSSPInstance.class.getResourceAsStream(//
             (instance.equalsIgnoreCase("demo") ? //$NON-NLS-1$
                 "demo.txt" : //$NON-NLS-1$
-                "orlib.txt")); //$NON-NLS-1$
+                "instance_data.txt")); //$NON-NLS-1$
         final InputStreamReader isr = new InputStreamReader(is);
         final BufferedReader br = new BufferedReader(isr)) {
 
