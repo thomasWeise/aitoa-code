@@ -117,7 +117,8 @@ public class TestJSSPInstance {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void test_load_all_instances() {
-    for (final String s : new String[] { "abz5", //$NON-NLS-1$
+    for (final String s : new String[] { //
+        "abz5", //$NON-NLS-1$
         "abz6", //$NON-NLS-1$
         "abz7", //$NON-NLS-1$
         "abz8", //$NON-NLS-1$
@@ -358,7 +359,7 @@ public class TestJSSPInstance {
         "yn1", //$NON-NLS-1$
         "yn2", //$NON-NLS-1$
         "yn3", //$NON-NLS-1$
-        "yn4", //$NON-NLS-1$ "
+        "yn4", //$NON-NLS-1$
     }) {
       final JSSPInstance inst = new JSSPInstance(s);
       Assert.assertEquals(s, inst.id);
