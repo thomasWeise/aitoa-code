@@ -22,6 +22,6 @@ public class TestMAWithPruningOnJSSP
     final Random rand = ThreadLocalRandom.current();
     final int mu = 2 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
-    return new MAWithPruning<>(mu, lambda);
+    return new MAWithPruning<>(mu, lambda, Integer.MAX_VALUE);
   }
 }

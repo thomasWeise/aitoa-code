@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import aitoa.TestTools;
 import aitoa.bookExamples.Tools;
 import aitoa.examples.jssp.JSSPExperiment;
 import aitoa.examples.jssp.JSSPInstance;
@@ -78,6 +79,18 @@ public class JSSPSolutionSpaceSize {
    */
   static final BigInteger solutionSpaceSizeLower(final int m,
       final int n) {
+    TestTools.assertGreater(m, 0);
+    TestTools.assertGreater(n, 0);
+    if (n == 1) {
+      return BigInteger.valueOf(1);
+    }
+    if (m == 1) {
+      return JSSPSolutionSpaceSize
+          .factorial(BigInteger.valueOf(n));
+    }
+    if (n == 2) {
+      return BigInteger.valueOf(m + 1);
+    }
     for (final long[] bound : JSSPSolutionSpaceSize.BOUNDS) {
       if (bound[0] == m) {
         if (bound[1] == n) {

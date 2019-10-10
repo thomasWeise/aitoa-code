@@ -157,12 +157,15 @@ public class JSSPExperiment {
               } // end enumerate cr
 
               if (unary.canEnumerate()) {
+                for (final int steps : new int[] {
+                    Integer.MAX_VALUE, 10, 100 }) {
 // memetic algorithms here rely on enumeration and use cr=1
-                JSSPExperiment.run(
-                    new MAWithPruning<>(mu, lambda), unary,
-                    binary, inst, out);
-                JSSPExperiment.run(new MA<>(mu, lambda), unary,
-                    binary, inst, out);
+                  JSSPExperiment.run(
+                      new MAWithPruning<>(mu, lambda, steps),
+                      unary, binary, inst, out);
+                  JSSPExperiment.run(new MA<>(mu, lambda, steps),
+                      unary, binary, inst, out);
+                }
               } // end memetic algorithm
             } // end lambda
           } // end mu
@@ -193,9 +196,12 @@ public class JSSPExperiment {
 
               if (unary.canEnumerate()) {
                 if (!(unary instanceof JSSPUnaryOperator1Swap)) {
-                  JSSPExperiment.run(
-                      new HybridEDA<>(mu, lambda, model), unary,
-                      null, inst, out);
+                  for (final int steps : new int[] {
+                      Integer.MAX_VALUE, 10, 100 }) {
+                    JSSPExperiment.run(new HybridEDA<>(mu,
+                        lambda, steps, model), unary, null, inst,
+                        out);
+                  }
                 } // only use randomized enumeration
               } // can enumerate
             } // mu

@@ -34,6 +34,8 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
   public final int mu;
   /** the number of new points per generation */
   public final int lambda;
+  /** the maximum number of local search steps */
+  public final int maxLSSteps;
   /** the model */
   public final IModel<?> model;
 
@@ -44,11 +46,13 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
    *          the number of solution to be selected
    * @param _lambda
    *          the number of new points per generation
+   * @param _maxLSSteps
+   *          the maximum number of local search steps
    * @param _model
    *          the model
    */
   public HybridEDA(final int _mu, final int _lambda,
-      final IModel<?> _model) {
+      final int _maxLSSteps, final IModel<?> _model) {
     super();
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
       throw new IllegalArgumentException(
@@ -62,6 +66,12 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
           + this.lambda);
     }
     this.mu = _mu;
+    if (_maxLSSteps <= 0) {
+      throw new IllegalArgumentException(
+          "Invalid number of maximum local search steps: " //$NON-NLS-1$
+              + _maxLSSteps);
+    }
+    this.maxLSSteps = _maxLSSteps;
 
     this.model = Objects.requireNonNull(_model);
   }
@@ -79,6 +89,9 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
     output.newLine();
+    output.write("maxLSSteps: ");//$NON-NLS-1$
+    output.write(Integer.toString(this.maxLSSteps));
+    output.newLine();
     output.write("model: ");//$NON-NLS-1$
     output.write(this.model.toString());
     output.newLine();
@@ -90,9 +103,13 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((((("heda_" + //$NON-NLS-1$
+    final String s = ((((("heda_" + //$NON-NLS-1$
         this.model.toString()) + '_') + this.mu) + '+')
         + this.lambda);
+    if (this.maxLSSteps >= Integer.MAX_VALUE) {
+      return s;
+    }
+    return (s + '_') + this.maxLSSteps;
   }
 
   /** {@inheritDoc} */
@@ -131,6 +148,7 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
 
     for (;;) {// each iteration: LS, update model, then sample
       for (final Individual<X> ind : P) {
+        int steps = this.maxLSSteps;
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
               (point) -> {
@@ -147,7 +165,7 @@ public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-        } while (improved);
+        } while (improved && ((--steps) > 0));
       }
 
       Arrays.sort(P); // sort: best solutions at start

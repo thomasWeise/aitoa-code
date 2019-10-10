@@ -36,6 +36,8 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
   public final int mu;
   /** the number of offsprings per generation */
   public final int lambda;
+  /** the maximum number of local search steps */
+  public final int maxLSSteps;
 
   /**
    * Create a new instance of the evolutionary algorithm
@@ -44,8 +46,11 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
    *          the number of parents to be selected
    * @param _lambda
    *          the number of offspring to be created
+   * @param _maxLSSteps
+   *          the maximum number of local search steps
    */
-  public MA(final int _mu, final int _lambda) {
+  public MA(final int _mu, final int _lambda,
+      final int _maxLSSteps) {
     super();
     if ((_mu <= 1) || (_mu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
@@ -56,6 +61,12 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
           "Invalid lambda: " + _lambda); //$NON-NLS-1$
     }
     this.lambda = _lambda;
+    if (_maxLSSteps <= 0) {
+      throw new IllegalArgumentException(
+          "Invalid number of maximum local search steps: " //$NON-NLS-1$
+              + _maxLSSteps);
+    }
+    this.maxLSSteps = _maxLSSteps;
   }
 
   /** {@inheritDoc} */
@@ -71,6 +82,9 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
     output.write("lambda: ");//$NON-NLS-1$
     output.write(Integer.toString(this.lambda));
     output.newLine();
+    output.write("maxLSSteps: ");//$NON-NLS-1$
+    output.write(Integer.toString(this.maxLSSteps));
+    output.newLine();
     output.write("pruning: false"); //$NON-NLS-1$
     output.newLine();
     output.write("restarts: false"); //$NON-NLS-1$
@@ -80,8 +94,12 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("ma_" + //$NON-NLS-1$
+    final String s = ((("ma_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda);
+    if (this.maxLSSteps >= Integer.MAX_VALUE) {
+      return s;
+    }
+    return (s + '_') + this.maxLSSteps;
   }
 
   /** {@inheritDoc} */
@@ -125,7 +143,9 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
       for (int i = P.length; (--i) >= localSearchStart;) {
         final Individual<X> ind = P[i];
 // refine P[i] with local search à la HillClimber2 (code omitted)
+// for a given number of maximum steps
 // end relevant
+        int steps = this.maxLSSteps;
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
               (point) -> {
@@ -142,7 +162,7 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-        } while (improved);
+        } while (improved && ((--steps) > 0));
       } // end of 1 ls iteration: we have refined 1 solution
 // start relevant
 // sort the population: mu best individuals at front are selected
@@ -169,7 +189,7 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
 // map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
-      
+
       localSearchStart = this.mu;
     } // the end of the main loop
   }

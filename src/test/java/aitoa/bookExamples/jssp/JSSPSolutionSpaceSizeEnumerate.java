@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /** Print the solution space sizes for the JSSP instances */
 public class JSSPSolutionSpaceSizeEnumerate {
@@ -45,7 +45,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
    *          the number of jobs
    * @return the number
    */
-  static final long[][] enumerate(final int m, final int n) {
+  static final long enumerate(final int m, final int n) {
     // for each of the n jobs, the order machines
     final int[][] jobMachines =
         JSSPSolutionSpaceSizeEnumerate.makeArray(m, n);
@@ -57,7 +57,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
         gantt, new __ValidGanttCounter(jobMachines));
 
     JSSPSolutionSpaceSizeEnumerate.permute(jobMachines, proc);
-    return (proc.get());
+    return (proc.m_min);
   }
 
   /**
@@ -84,10 +84,11 @@ public class JSSPSolutionSpaceSizeEnumerate {
    *          the array
    * @param consumer
    *          the consumer
+   * @return true if aborted, false if not
    */
-  static void permute(final int[][] a,
-      final Consumer<int[][]> consumer) {
-    JSSPSolutionSpaceSizeEnumerate.permute(a, a[0].length,
+  static boolean permute(final int[][] a,
+      final Predicate<int[][]> consumer) {
+    return JSSPSolutionSpaceSizeEnumerate.permute(a, a[0].length,
         a.length - 1, consumer);
   }
 
@@ -102,39 +103,34 @@ public class JSSPSolutionSpaceSizeEnumerate {
    *          the first-level index
    * @param consumer
    *          the consumer
+   * @return true if aborted, false if not
    */
-  private static void permute(final int[][] a, final int n1,
-      final int n2, final Consumer<int[][]> consumer) {
+  private static boolean permute(final int[][] a, final int n1,
+      final int n2, final Predicate<int[][]> consumer) {
     if (n1 <= 1) {
       if (n2 <= 0) {
-        consumer.accept(a);
-        return;
+        return consumer.test(a);
       }
-      JSSPSolutionSpaceSizeEnumerate.permute(a, a[0].length,
-          n2 - 1, consumer);
-      return;
+      return JSSPSolutionSpaceSizeEnumerate.permute(a,
+          a[0].length, n2 - 1, consumer);
     }
     for (int i = 0; i < n1; i++) {
       JSSPSolutionSpaceSizeEnumerate.swap(a[n2], i, n1 - 1);
-      JSSPSolutionSpaceSizeEnumerate.permute(a, n1 - 1, n2,
-          consumer);
+      if (JSSPSolutionSpaceSizeEnumerate.permute(a, n1 - 1, n2,
+          consumer)) {
+        return true;
+      }
       JSSPSolutionSpaceSizeEnumerate.swap(a[n2], i, n1 - 1);
     }
+    return false;
   }
 
   /** the checker */
   private static final class __InstanceProcessor
-      implements Consumer<int[][]> {
+      implements Predicate<int[][]> {
 
     /** the minimum number of valid Gantt charts */
-    private long m_min;
-    /** the number of times the minimum number was encounterd */
-    private long m_minCount;
-
-    /** the maximum number of valid Gantt charts */
-    private long m_max;
-    /** the number of times the maximum number was encounterd */
-    private long m_maxCount;
+    long m_min;
 
     /** the gantt charts */
     private final int[][] m_gantt;
@@ -155,52 +151,34 @@ public class JSSPSolutionSpaceSizeEnumerate {
       super();
       this.m_gantt = gantt;
       this.m_min = Long.MAX_VALUE;
-      this.m_max = Long.MIN_VALUE;
       this.m_counter = counter;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final int[][] jobMachines) {
+    public final boolean test(final int[][] jobMachines) {
       // then test all possible gantt diagrams and count
       // those which are deadlock-free
       this.m_counter.counter = 0L;
+      this.m_counter.bound = this.m_min;
       JSSPSolutionSpaceSizeEnumerate.permute(this.m_gantt,
           this.m_counter);
 
       final long res = this.m_counter.counter;
-      if (res >= this.m_max) {
-        if (res > this.m_max) {
-          this.m_maxCount = 0L;
-          this.m_max = res;
-        }
-        this.m_maxCount++;
+      if (res < this.m_min) {
+        this.m_min = res;
       }
-      if (res <= this.m_min) {
-        if (res < this.m_min) {
-          this.m_minCount = 0L;
-          this.m_min = res;
-        }
-        this.m_minCount++;
-      }
-    }
-
-    /**
-     * get the result
-     *
-     * @return the min, min-count, max, and max-count
-     */
-    final long[][] get() {
-      return (new long[][] { { this.m_min, this.m_minCount },
-          { this.m_max, this.m_maxCount } });
+      return false;
     }
   }
 
   /** the checker */
   private static final class __ValidGanttCounter
-      implements Consumer<int[][]> {
+      implements Predicate<int[][]> {
     /** the counter */
     long counter;
+    /** the interesting bound */
+    long bound;
 
     /** the job machines */
     private final int[][] m_jobMachines;
@@ -225,7 +203,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final int[][] gantt) {
+    public final boolean test(final int[][] gantt) {
       // set all job and machine indices to 0
       Arrays.fill(this.m_jobStage, 0);
       Arrays.fill(this.m_ganttStage, 0);
@@ -263,11 +241,11 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
       for (final int completedJobs : this.m_ganttStage) {
         if (completedJobs < jobCount) {
-          return; // we had a deadlock
+          return false; // we had a deadlock
         }
       }
       // do deadlock: Gantt chart is valid
-      ++this.counter;
+      return ((++this.counter) >= this.bound);
     }
   }
 
@@ -324,7 +302,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
     @Override
     public final void run() {
       final long res = JSSPSolutionSpaceSizeEnumerate
-          .enumerate(this.m_m, this.m_n)[0][0];
+          .enumerate(this.m_m, this.m_n);
       synchronized (System.out) {
         System.out.print('{');
         System.out.print(this.m_m);
