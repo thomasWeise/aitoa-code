@@ -7,6 +7,7 @@ import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithFitness;
 import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EDA;
+import aitoa.algorithms.EDAWithFitness;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
@@ -205,8 +206,13 @@ public class JSSPExperiment {
             }
             for (final int mu : mus) {
               if (!plainEDADone) {
-                // only do EDA once
+// only do EDA once
                 JSSPExperiment.run(new EDA<>(mu, lambda, model),
+                    null, null, inst, out);
+// and the version with fitness
+                JSSPExperiment.run(
+                    new EDAWithFitness<>(mu, lambda, model,
+                        new IntFFA(upperBound)),
                     null, null, inst, out);
               }
 
