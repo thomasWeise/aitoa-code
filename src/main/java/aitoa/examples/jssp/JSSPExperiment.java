@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import aitoa.algorithms.EA;
+import aitoa.algorithms.EAWithFitness;
 import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.HillClimber;
@@ -11,7 +12,10 @@ import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.algorithms.HybridEDA;
+import aitoa.algorithms.HybridEDAWithFitness;
+import aitoa.algorithms.IntFFA;
 import aitoa.algorithms.MA;
+import aitoa.algorithms.MAWithFitness;
 import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
@@ -75,6 +79,8 @@ public class JSSPExperiment {
     for (final String instId : JSSPExperiment.INSTANCES) {
       // load the instance
       final JSSPInstance inst = new JSSPInstance(instId);
+      final int upperBound =
+          JSSPExperiment.__get_makespan_upper_bound(inst);
       boolean plainEDADone = false;
 
 // random samplers
@@ -153,6 +159,11 @@ public class JSSPExperiment {
                   JSSPExperiment.run(
                       new EAWithPruning<>(cr, mu, lambda), unary,
                       binary, inst, out);
+// the EA with frequency fitness assignment
+                  JSSPExperiment.run(
+                      new EAWithFitness<>(cr, mu, lambda,
+                          new IntFFA(upperBound)),
+                      unary, binary, inst, out);
                 } // only use basic unary ops
               } // end enumerate cr
 
@@ -164,6 +175,11 @@ public class JSSPExperiment {
                       new MAWithPruning<>(mu, lambda, steps),
                       unary, binary, inst, out);
                   JSSPExperiment.run(new MA<>(mu, lambda, steps),
+                      unary, binary, inst, out);
+                  // the EA with frequency fitness assignment
+                  JSSPExperiment.run(
+                      new MAWithFitness<>(mu, lambda, steps,
+                          new IntFFA(upperBound)),
                       unary, binary, inst, out);
                 }
               } // end memetic algorithm
@@ -201,6 +217,11 @@ public class JSSPExperiment {
                     JSSPExperiment.run(new HybridEDA<>(mu,
                         lambda, steps, model), unary, null, inst,
                         out);
+                    JSSPExperiment.run(
+                        new HybridEDAWithFitness<>(mu, lambda,
+                            steps, model,
+                            new IntFFA(upperBound)),
+                        unary, null, inst, out);
                   }
                 } // only use randomized enumeration
               } // can enumerate
@@ -211,7 +232,7 @@ public class JSSPExperiment {
       } // end unary operators
 
       // random sampling with gp
-      for (final int maxDepth : new int[] { 4, 6, 8 }) {
+      for (final int maxDepth : new int[] { 6, 8 }) {
         JSSPExperiment.__runGP(new RandomSampling<>(), maxDepth,
             inst, out);
         // evolutionary algorithms
@@ -221,11 +242,14 @@ public class JSSPExperiment {
               // the plain EA
               JSSPExperiment.__runGP(new EA<>(cr, mu, lambda),
                   maxDepth, inst, out);
-              // the EA with pruning, i.e., which enforces
-              // population diversity
+// the EA with pruning, i.e., which enforces population diversity
               JSSPExperiment.__runGP(
                   new EAWithPruning<>(cr, mu, lambda), maxDepth,
                   inst, out);
+              JSSPExperiment.__runGP(
+                  new EAWithFitness<>(cr, mu, lambda,
+                      new IntFFA(upperBound)),
+                  maxDepth, inst, out);
             } // end enumerate cr
           } // end lambda
         } // end mu
@@ -420,5 +444,19 @@ public class JSSPExperiment {
         }
       }
     }
+  }
+
+  /**
+   * Get the upper bound for the makespan of any solution for a
+   * JSSP instance
+   *
+   * @param instance
+   *          the instance
+   * @return the upper bound
+   */
+  private static final int
+      __get_makespan_upper_bound(final JSSPInstance instance) {
+    return ((int) (new JSSPMakespanObjectiveFunction(instance)
+        .upperBound() + 0.5));
   }
 }

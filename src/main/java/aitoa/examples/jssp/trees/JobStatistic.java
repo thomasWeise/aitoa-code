@@ -13,10 +13,44 @@ import aitoa.searchSpaces.trees.math.NullaryFunction;
  * a constant number in {@code double} format
  */
 public final class JobStatistic
-    extends NullaryFunction<double[][]> {
+    extends NullaryFunction<double[]> {
 
-  /** the statistic type */
-  final int m_statType;
+  /** create the names */
+  private static final String[] NAMES =
+      new String[JSSPTreeRepresentationMapping.DIM_VALUES];
+
+  static {
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_ID] =
+        "job"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_COMPLETED_SUBJOBS] =
+        "jobCompletedSubJobs"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_NEXT_SUBJOB_WORK_TIME] =
+        "jobNextSubJobWorkTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_LAST_SUBJOB_FINISHED_TIME] =
+        "obLastSubJobFinishedTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_FINISHED_WORKTIME] =
+        "jobFinishedWorkTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.JOB_TOTAL_WORKTIME] =
+        "jobTotalWorkTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.MACHINE_ID] =
+        "machine"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.MACHINE_LAST_SUBJOB_FINISHED_TIME] =
+        "machineLastSubJobFinishedTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.MACHINE_COMPLETED_SUBJOBS] =
+        "machineCompletedSubJobs"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.MACHINE_FINISHED_WORKTIME] =
+        "machineFinishedWorkTime"; //$NON-NLS-1$
+    JobStatistic.NAMES[JSSPTreeRepresentationMapping.MACHINE_TOTAL_WORKTIME] =
+        "machineTotalWorkTime"; //$NON-NLS-1$
+
+    for (final String n : JobStatistic.NAMES) {
+      if (n == null) {
+        throw new IllegalStateException(
+            "Missing statistic key.");//$NON-NLS-1$
+      }
+    }
+  }
+
   /** the statistic value */
   final int m_statValue;
 
@@ -25,35 +59,36 @@ public final class JobStatistic
    *
    * @param type
    *          the node type
-   * @param statType
-   *          the statistics type
    * @param statValue
    *          the statistics value
    */
   public JobStatistic(final NodeType<JobStatistic> type,
-      final int statType, final int statValue) {
+      final int statValue) {
     super(type);
-    this.m_statType = statType;
     this.m_statValue = statValue;
+    if ((statValue < 0)
+        || (statValue >= JSSPTreeRepresentationMapping.DIM_VALUES)) {
+      throw new IllegalArgumentException("invalid stat value: "//$NON-NLS-1$
+          + statValue);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final double[][] param) {
-    return param[this.m_statType][this.m_statValue];
+  public final double applyAsDouble(final double[] param) {
+    return param[this.m_statValue];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final double[][] param) {
-    return Math.round(param[this.m_statType][this.m_statValue]);
+  public final long applyAsLong(final double[] param) {
+    return Math.round(param[this.m_statValue]);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final double[][] param) {
-    final long value =
-        Math.round(param[this.m_statType][this.m_statValue]);
+  public final int applyAsInt(final double[] param) {
+    final long value = Math.round(param[this.m_statValue]);
     if (value >= Integer.MAX_VALUE) {
       return Integer.MAX_VALUE;
     }
@@ -67,81 +102,15 @@ public final class JobStatistic
   @Override
   public final void asText(final Appendable out)
       throws IOException {
-
-    char end = ')';
-    switch (this.m_statType) {
-      case JSSPTreeRepresentationMapping.CURRENT: {
-        end = 0;
-        break;
-      }
-      case JSSPTreeRepresentationMapping.MIN: {
-        out.append("min("); //$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.MEAN: {
-        out.append("mean("); //$NON-NLS-1$
-        break;
-      }
-      // case JSSPTreeRepresentationMapping.MAX:
-      default: {
-        out.append("max("); //$NON-NLS-1$
-        break;
-      }
-    }
-
-    switch (this.m_statValue) {
-      case JSSPTreeRepresentationMapping.JOB_COMPLETED_SUBJOBS: {
-        out.append("jobCompletedSubjobs");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.JOB_NEXT_SUBJOB_WORK_TIME: {
-        out.append("subjobWorkTime");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.JOB_LAST_SUBJOB_FINISHED_TIME: {
-        out.append("jobLastSubjobFinishedTime");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.JOB_FINISHED_WORKTIME: {
-        out.append("jobFinishedWorkTime");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.JOB_TOTAL_WORKTIME: {
-        out.append("jobTotalWorkTime");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.MACHINE_LAST_SUBJOB_FINISHED_TIME: {
-        out.append("machineLastSubjobFinishedTime");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.MACHINE_COMPLETED_SUBJOBS: {
-        out.append("machineCompletedSubjobs");//$NON-NLS-1$
-        break;
-      }
-      case JSSPTreeRepresentationMapping.MACHINE_FINISHED_WORKTIME: {
-        out.append("machineFinishedWorkTime");//$NON-NLS-1$
-        break;
-      }
-      // case
-      // JSSPTreeRepresentationMapping.MACHINE_TOTAL_WORKTIME:
-      default: {
-        out.append("machineTotalWorkTime");//$NON-NLS-1$
-        break;
-      }
-    }
-
-    if (end != 0) {
-      out.append(end);
-    }
+    out.append(JobStatistic.NAMES[this.m_statValue]);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void asJavaPrintParameters(final Appendable out)
       throws IOException {
-    out.append(',').append(' ')
-        .append(Integer.toString(this.m_statType)).append(',')
-        .append(' ').append(Integer.toString(this.m_statValue));
+    out.append(',').append(' ').append(',').append(' ')
+        .append(Integer.toString(this.m_statValue));
   }
 
   /** {@inheritDoc} */
@@ -155,8 +124,7 @@ public final class JobStatistic
     }
     if (o instanceof JobStatistic) {
       final JobStatistic q = ((JobStatistic) o);
-      return ((q.m_statType == this.m_statType)
-          && (q.m_statValue == this.m_statValue));
+      return (q.m_statValue == this.m_statValue);
     }
     return false;
   }
@@ -164,9 +132,7 @@ public final class JobStatistic
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return (0x28947517
-        ^ ((Integer.hashCode(this.m_statType) * 0xfffff)
-            + Integer.hashCode(this.m_statValue)));
+    return (0x28947517 ^ Integer.hashCode(this.m_statValue));
   }
 
   /**
@@ -184,7 +150,7 @@ public final class JobStatistic
       extends NodeType<JobStatistic> {
 
     /** a set of statistics */
-    private final JobStatistic[][] m_statistics;
+    private final JobStatistic[] m_statistics;
 
     /**
      * create the constant node factory
@@ -196,11 +162,9 @@ public final class JobStatistic
       super(children);
 
       this.m_statistics =
-          new JobStatistic[JSSPTreeRepresentationMapping.DIM_STAT][JSSPTreeRepresentationMapping.DIM_VALUES];
+          new JobStatistic[JSSPTreeRepresentationMapping.DIM_VALUES];
       for (int i = this.m_statistics.length; (--i) >= 0;) {
-        for (int j = this.m_statistics[i].length; (--j) >= 0;) {
-          this.m_statistics[i][j] = new JobStatistic(this, i, j);
-        }
+        this.m_statistics[i] = new JobStatistic(this, i);
       }
     }
 
@@ -208,32 +172,20 @@ public final class JobStatistic
     @Override
     public final JobStatistic instantiate(final Node[] children,
         final Random random) {
+      if ((children != null) && (children.length > 0)) {
+        throw new IllegalArgumentException(
+            "job statistics cannot have children, but you provided " //$NON-NLS-1$
+                + children.length);
+      }
       final int i = random.nextInt(this.m_statistics.length);
-      final int j = random.nextInt(this.m_statistics[i].length);
-      return (this.m_statistics[i][j]);
+      return (this.m_statistics[i]);
     }
 
     /** {@inheritDoc} */
     @Override
     public final JobStatistic createModifiedCopy(
         final JobStatistic node, final Random random) {
-      final int type = node.m_statType;
-      final int value = node.m_statValue;
-
-      int newType = type, newValue = value;
-
-      do {
-        if (random.nextBoolean()) {
-          newType = random
-              .nextInt(JSSPTreeRepresentationMapping.DIM_STAT);
-        }
-        if (random.nextBoolean()) {
-          newValue = random
-              .nextInt(JSSPTreeRepresentationMapping.DIM_VALUES);
-        }
-      } while ((newType == type) && (newValue == value));
-
-      return this.m_statistics[newType][newValue];
+      return this.instantiate(null, random);
     }
 
     /** {@inheritDoc} */
