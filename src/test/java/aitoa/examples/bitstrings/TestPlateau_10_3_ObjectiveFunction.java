@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
@@ -52,8 +53,10 @@ public class TestPlateau_10_3_ObjectiveFunction
       } else {
         exp = F.n - F.k;
       }
-
-      Assert.assertEquals(res, x.length - exp, 0);
+      exp = x.length - exp;
+      Assert.assertEquals(res, exp, 0);
+      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
+      TestTools.assertLessOrEqual(exp, F.upperBound());
       if (i >= x.length) {
         break;
       }

@@ -57,10 +57,10 @@ public final class JumpObjectiveFunction
     }
 
     if ((res >= this.n) || (res <= this.nMinusk)) {
-      return (this.nMinusk - res);
+      return (this.n - res);
     }
 
-    return res;
+    return (this.k + res);
   }
 
   /** {@inheritDoc} */
@@ -72,7 +72,7 @@ public final class JumpObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final double upperBound() {
-    return this.n;
+    return (this.n + this.k);
   }
 
   /** {@inheritDoc} */

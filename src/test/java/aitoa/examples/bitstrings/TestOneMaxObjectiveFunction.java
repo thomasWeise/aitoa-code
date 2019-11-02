@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
@@ -43,10 +44,14 @@ public class TestOneMaxObjectiveFunction
         new boolean[TestOneMaxObjectiveFunction.F.n];
 
     for (int i = 0; i <= x.length; i++) {
+      final int exp = x.length - i;
       Assert.assertEquals(
-          TestOneMaxObjectiveFunction.F.evaluate(x),
-          x.length - i, 0);
-      if(i >= x.length) { break; }
+          TestOneMaxObjectiveFunction.F.evaluate(x), exp, 0);
+      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
+      TestTools.assertLessOrEqual(exp, F.upperBound());
+      if (i >= x.length) {
+        break;
+      }
       x[i] = true;
     }
   }
