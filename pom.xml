@@ -133,6 +133,7 @@
 					<detectLinks>true</detectLinks>
 					<detectJavaApiLink>true</detectJavaApiLink>
 					<quiet>true</quiet>
+                	<failOnError>false</failOnError>
 				</configuration>
 				<executions>
 					<execution>
