@@ -34,10 +34,12 @@ public abstract class IObjectiveFunctionTest<Y>
   public void testApplyValidAndDifferent() {
     final IObjectiveFunction<Y> f = this.getInstance();
     final double lb = f.lowerBound();
+    final double ub = f.upperBound();
     for (int i = 100; (--i) >= 0;) {
       final double d = f.evaluate(this.createValid());
       Assert.assertTrue(Double.isFinite(d));
       TestTools.assertGreaterOrEqual(d, lb);
+      TestTools.assertLessOrEqual(d, ub);
     }
   }
 }
