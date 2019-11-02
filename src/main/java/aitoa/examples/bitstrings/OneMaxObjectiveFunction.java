@@ -54,4 +54,10 @@ public final class OneMaxObjectiveFunction
   public final double upperBound() {
     return this.n;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return "OneMax_" + this.n; //$NON-NLS-1$
+  }
 }

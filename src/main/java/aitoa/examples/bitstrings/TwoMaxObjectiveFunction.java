@@ -3,13 +3,12 @@ package aitoa.examples.bitstrings;
 import aitoa.structure.IObjectiveFunction;
 
 /**
- * The well-known LeadingOnes problem: The goal is to maximize
- * the number of {@code true} bits at the beginning of the bit
- * string, which we can transform into a minimization problem by
- * subtracting the value of leadings ones from the total number
- * of bits.
+ * The TwoMax problem as defined in "Escaping large deceptive
+ * basins of attraction with heavy-tailed mutation operators,"
+ * July 2018, DOI: 10.1145/3205455.3205515, just inverted to a
+ * minimization problems.
  */
-public final class LeadingOnesObjectiveFunction
+public final class TwoMaxObjectiveFunction
     implements IObjectiveFunction<boolean[]> {
 
   /** the length of the bit string */
@@ -21,7 +20,7 @@ public final class LeadingOnesObjectiveFunction
    * @param _n
    *          the length of the bit string
    */
-  public LeadingOnesObjectiveFunction(final int _n) {
+  public TwoMaxObjectiveFunction(final int _n) {
     super();
     if (_n <= 0) {
       throw new IllegalArgumentException(
@@ -34,14 +33,16 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final double evaluate(final boolean[] y) {
-    int s = 0;
+    int om = 0;
     for (final boolean b : y) {
-      if (!b) {
-        break;
+      if (b) {
+        ++om;
       }
-      ++s;
     }
-    return (this.n - s);
+    if (om == this.n) {
+      return 0;
+    }
+    return 1 + this.n - Math.max(om, this.n - om);
   }
 
   /** {@inheritDoc} */
@@ -53,12 +54,12 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final double upperBound() {
-    return this.n;
+    return this.n + 1;
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "LeadingOnes_" + this.n; //$NON-NLS-1$
+    return "TwoMax_" + this.n; //$NON-NLS-1$
   }
 }

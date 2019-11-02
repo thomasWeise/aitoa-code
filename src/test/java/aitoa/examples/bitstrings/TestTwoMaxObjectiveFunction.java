@@ -9,25 +9,25 @@ import org.junit.Test;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the LeadingOnes Objective Function */
-public class TestLeadingOnesObjectiveFunction
+/** A Test for the TwoMax Objective Function */
+public class TestTwoMaxObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
-  /** the LeadingOnes */
-  public static final LeadingOnesObjectiveFunction F =
-      new LeadingOnesObjectiveFunction(20);
+  /** the twomax */
+  public static final TwoMaxObjectiveFunction F =
+      new TwoMaxObjectiveFunction(20);
 
   /** {@inheritDoc} */
   @Override
   protected IObjectiveFunction<boolean[]> getInstance() {
-    return TestLeadingOnesObjectiveFunction.F;
+    return TestTwoMaxObjectiveFunction.F;
   }
 
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
     final boolean[] x =
-        new boolean[TestLeadingOnesObjectiveFunction.F.n];
+        new boolean[TestTwoMaxObjectiveFunction.F.n];
     final Random r = ThreadLocalRandom.current();
     for (int i = x.length; (--i) >= 0;) {
       x[i] = r.nextBoolean();
@@ -40,12 +40,13 @@ public class TestLeadingOnesObjectiveFunction
   @Test(timeout = 3600000)
   public final void testCorrectness() {
     final boolean[] x =
-        new boolean[TestLeadingOnesObjectiveFunction.F.n];
+        new boolean[TestTwoMaxObjectiveFunction.F.n];
 
     for (int i = 0; i <= x.length; i++) {
       Assert.assertEquals(
-          TestLeadingOnesObjectiveFunction.F.evaluate(x),
-          x.length - i, 0);
+          TestTwoMaxObjectiveFunction.F.evaluate(x),          
+          (i==x.length) ? 0 : (1 + x.length - Math.max(i, x.length - i)),
+          0);
       if(i >= x.length) { break; }
       x[i] = true;
     }

@@ -9,7 +9,7 @@ import org.junit.Test;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the JSSP MakeSpan Objective Function */
+/** A Test for the OneMax Objective Function */
 public class TestOneMaxObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
@@ -42,10 +42,11 @@ public class TestOneMaxObjectiveFunction
     final boolean[] x =
         new boolean[TestOneMaxObjectiveFunction.F.n];
 
-    for (int i = 0; i < x.length; i++) {
+    for (int i = 0; i <= x.length; i++) {
       Assert.assertEquals(
           TestOneMaxObjectiveFunction.F.evaluate(x),
           x.length - i, 0);
+      if(i >= x.length) { break; }
       x[i] = true;
     }
   }
