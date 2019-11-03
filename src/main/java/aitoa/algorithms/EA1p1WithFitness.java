@@ -74,7 +74,7 @@ public final class EA1p1WithFitness<X, Y>
     nullary.apply(pop[0].x, random); // create and evaluate first
     pop[0].quality = process.evaluate(pop[0].x); // individual
 
-    do {// repeat until budget exhausted
+    while (!process.shouldTerminate()) {// repeat until budget exhausted
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(pop[0].x, pop[1].x, random);
 // map x_cur from X to Y and evaluate candidate solution
@@ -85,7 +85,7 @@ public final class EA1p1WithFitness<X, Y>
         pop[0] = pop[1]; // if new individual has better or
         pop[1] = temp; // equal fitness: accept it
       }
-    } while (!process.shouldTerminate()); // until time is up
+    } // until time is up
   } // process will have remembered the best candidate solution
 // end relevant
 

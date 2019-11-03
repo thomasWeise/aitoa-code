@@ -52,13 +52,14 @@ public final class HillClimber2<X, Y>
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
-    boolean improved = false;
+    boolean improved = true;
 // start relevant
 // create starting point: a random point in the search space
     nullary.apply(x_best, random); // put random point in x_best
     final double[] f_best = { process.evaluate(x_best) }; // evaluate
 
-    do {// repeat until budget exhausted or no improving move
+    while (improved && !process.shouldTerminate()) {
+// repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of x_best and receive them
 // one-by-one in parameter x (for which x_cur is used)
       improved = unary.enumerate(random, x_best, x_cur, (x) -> {
@@ -74,11 +75,11 @@ public final class HillClimber2<X, Y>
         return process.shouldTerminate();
       });
 // repeat until time is up or no further improvement possible
-    } while (improved && !process.shouldTerminate());
+    }
 
   } // process will have remembered the best candidate solution
 // end relevant
-  
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {
