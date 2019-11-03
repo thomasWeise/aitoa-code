@@ -121,10 +121,10 @@ public class EDAWithFitness<X, Y>
 
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.lambda];
+    this.fitness.initialize();
 // start relevant
 // local variable initialization omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
-    this.fitness.initialize();
 
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {

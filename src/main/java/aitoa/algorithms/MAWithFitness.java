@@ -135,10 +135,8 @@ public class MAWithFitness<X, Y>
 
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.mu + this.lambda];
-// start relevant
-
     this.fitness.initialize();
-
+// start relevant
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
 // set P[i] = random individual (code omitted)

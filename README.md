@@ -29,7 +29,7 @@ Therefore, you need to do the following.
 
 First, you need to add the following repository, which is a repository that can kind of dynamically mirror repositories at GitHub:
 
-```Maven POM
+```xml
 <repositories>
   <repository>
     <id>jitpack.io</id>
@@ -39,15 +39,15 @@ First, you need to add the following repository, which is a repository that can 
 ```
 
 Than you can add the dependency on our `aitoa-code` repository into your `dependencies` section.
-Here, `0.8.4` is the current version of  `aitoa-code`.
-Notive that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
+Here, `0.8.5` is the current version of  `aitoa-code`.
+Notice that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
 
-```Maven POM
+```xml
 <dependencies>
   <dependency>
     <groupId>com.github.thomasWeise</groupId>
     <artifactId>aitoa-code</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
   </dependency>
 </dependencies>
 
@@ -58,7 +58,7 @@ In the snippet below, you must then replace `${project.mainClass}` with the main
 This should result in a so-called "fat" `jar`, which includes the dependencies.
 In other words, you do not need to have our `jar` in the classpath anymore but can ship your code as one single `jar`.
 
-```Maven POM
+```xml
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-shade-plugin</artifactId>

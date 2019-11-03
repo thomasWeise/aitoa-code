@@ -142,11 +142,11 @@ public class HybridEDAWithFitness<X, Y>
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.lambda];
     final X temp = searchSpace.create();
+    this.fitness.initialize();
 
 // start relevant
 // the initialization of local variables is omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
-    this.fitness.initialize();
 
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {

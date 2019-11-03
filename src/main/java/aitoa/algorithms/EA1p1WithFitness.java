@@ -69,6 +69,7 @@ public final class EA1p1WithFitness<X, Y>
         process.getUnarySearchOperator(); // get unary op
 
     final Random random = process.getRandom();// get random gen
+    this.fitness.initialize();
 // start relevant
     nullary.apply(pop[0].x, random); // create and evaluate first
     pop[0].quality = process.evaluate(pop[0].x); // individual
