@@ -1,7 +1,5 @@
 package aitoa.examples.bitstrings;
 
-import aitoa.structure.IObjectiveFunction;
-
 /**
  * The well-known LeadingOnes problem: The goal is to maximize
  * the number of {@code true} bits at the beginning of the bit
@@ -10,10 +8,7 @@ import aitoa.structure.IObjectiveFunction;
  * of bits.
  */
 public final class LeadingOnesObjectiveFunction
-    implements IObjectiveFunction<boolean[]> {
-
-  /** the length of the bit string */
-  public final int n;
+    extends BitStringObjectiveFunction {
 
   /**
    * create
@@ -22,13 +17,7 @@ public final class LeadingOnesObjectiveFunction
    *          the length of the bit string
    */
   public LeadingOnesObjectiveFunction(final int _n) {
-    super();
-    if (_n <= 0) {
-      throw new IllegalArgumentException(
-          "n must be at least one, but is " //$NON-NLS-1$
-              + _n);
-    }
-    this.n = _n;
+    super(_n);
   }
 
   /** {@inheritDoc} */

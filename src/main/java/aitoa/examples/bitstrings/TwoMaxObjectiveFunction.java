@@ -1,7 +1,5 @@
 package aitoa.examples.bitstrings;
 
-import aitoa.structure.IObjectiveFunction;
-
 /**
  * The TwoMax problem as defined in "Escaping large deceptive
  * basins of attraction with heavy-tailed mutation operators,"
@@ -9,10 +7,7 @@ import aitoa.structure.IObjectiveFunction;
  * minimization problems.
  */
 public final class TwoMaxObjectiveFunction
-    implements IObjectiveFunction<boolean[]> {
-
-  /** the length of the bit string */
-  public final int n;
+    extends BitStringObjectiveFunction {
 
   /**
    * create
@@ -21,13 +16,7 @@ public final class TwoMaxObjectiveFunction
    *          the length of the bit string
    */
   public TwoMaxObjectiveFunction(final int _n) {
-    super();
-    if (_n <= 0) {
-      throw new IllegalArgumentException(
-          "n must be at least one, but is " //$NON-NLS-1$
-              + _n);
-    }
-    this.n = _n;
+    super(_n);
   }
 
   /** {@inheritDoc} */

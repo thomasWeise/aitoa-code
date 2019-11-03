@@ -1,7 +1,5 @@
 package aitoa.examples.bitstrings;
 
-import aitoa.structure.IObjectiveFunction;
-
 /**
  * The well-known OneMax problem: The goal is to maximize the
  * number of {@code true} bits in a bit string, which we can
@@ -9,10 +7,7 @@ import aitoa.structure.IObjectiveFunction;
  * of {@code false} bits.
  */
 public final class OneMaxObjectiveFunction
-    implements IObjectiveFunction<boolean[]> {
-
-  /** the length of the bit string */
-  public final int n;
+    extends BitStringObjectiveFunction {
 
   /**
    * create
@@ -21,13 +16,7 @@ public final class OneMaxObjectiveFunction
    *          the length of the bit string
    */
   public OneMaxObjectiveFunction(final int _n) {
-    super();
-    if (_n <= 0) {
-      throw new IllegalArgumentException(
-          "n must be at least one, but is " //$NON-NLS-1$
-              + _n);
-    }
-    this.n = _n;
+    super(_n);
   }
 
   /** {@inheritDoc} */

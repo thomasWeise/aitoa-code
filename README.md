@@ -22,6 +22,93 @@ I therefore recommend using Eclipse for exploring and playing around with it.
 Once you have checked-out the code and imported it as existing project in Eclipse, you need to right-click the project, choose "Maven" and then "Update Project".
 This will automatically download the required dependencies (currently, only [Junit 4.12](http://junit.org/junit4/)) and set up the folder structure properly.
 
+You can also use this package as a `jar` library directly, which will allow you to use all the implemented algorithms and API directly in your project.
+Then, it may make sense to remember that this is rather an educational package, not necessarily designed for efficiency.
+Anyway, if your software project uses Maven as well, then you can even directly link these sources as dependency.
+Therefore, you need to do the following.
+
+First, you need to add the following repository, which is a repository that can kind of dynamically mirror repositories at GitHub:
+
+```Maven POM
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+```
+
+Than you can add the dependency on our `aitoa-code` repository into your `dependencies` section.
+Here, `0.8.4` is the current version of  `aitoa-code`.
+Notive that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
+
+```Maven POM
+<dependencies>
+  <dependency>
+    <groupId>com.github.thomasWeise</groupId>
+    <artifactId>aitoa-code</artifactId>
+    <version>0.8.4</version>
+  </dependency>
+</dependencies>
+
+```
+
+Finally, in order to include all required external `jar`s into your `jar` upon compilation, you may want to add the following plugin into your `<build><plugins>` section:
+In the snippet below, you must then replace `${project.mainClass}` with the main class that should run when your `jar` is executed.
+This should result in a so-called "fat" `jar`, which includes the dependencies.
+In other words, you do not need to have our `jar` in the classpath anymore but can ship your code as one single `jar`.
+
+```Maven POM
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.2.0</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+        <createSourcesJar>true</createSourcesJar>
+        <shadeTestJar>true</shadeTestJar>
+        <minimizeJar>false</minimizeJar>
+        <shadedArtifactAttached>true</shadedArtifactAttached>
+        <createDependencyReducedPom>false</createDependencyReducedPom>
+
+        <shadedClassifierName>full</shadedClassifierName>
+
+        <filters>
+          <filter>
+            <artifact>*:*</artifact>
+            <excludes>
+              <exclude>META-INF/*.SF</exclude>
+              <exclude>META-INF/*.DSA</exclude>
+              <exclude>META-INF/*.RSA</exclude>
+            </excludes>
+          </filter>
+        </filters>
+
+        <transformers>
+          <transformer
+            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <mainClass>${project.mainClass}</mainClass>
+          </transformer>
+          <transformer
+            implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+          <transformer
+            implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer" />
+          <transformer
+            implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
+          <transformer
+            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+        </transformers>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
 ## 3. License
 
 The copyright holder of this package is Prof. Dr. Thomas Weise (see Contact).

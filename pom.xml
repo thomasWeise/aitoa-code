@@ -4,7 +4,7 @@
 
 	<groupId>aitoa</groupId>
 	<artifactId>aitoa-code</artifactId>
-	<version>0.8.3</version>
+	<version>0.8.4</version>
 	<packaging>jar</packaging>
 	<name>aitoa-code</name>
 	<description>Example Source Codes from the Book "Introduction to Optimization Algorithms"</description>
