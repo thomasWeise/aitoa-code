@@ -217,7 +217,7 @@ public class JSSPExperiment {
               }
 
               if (unary.canEnumerate()) {
-                if (!(unary instanceof JSSPUnaryOperator1Swap)) {
+                if (!(unary instanceof JSSPUnaryOperator1SwapR)) {
                   for (final int steps : new int[] {
                       Integer.MAX_VALUE, 10, 100 }) {
                     JSSPExperiment.run(new HybridEDA<>(mu,
