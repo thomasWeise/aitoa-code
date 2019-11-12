@@ -3,6 +3,7 @@ package aitoa.algorithms;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import aitoa.structure.LogFormat;
 import aitoa.utils.Experiment;
 
 /**
@@ -55,17 +56,11 @@ public abstract class TemperatureSchedule {
    */
   public void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("temperatureSchedule: "); //$NON-NLS-1$
-    output.write(this.toString());
+    output.write(LogFormat.mapEntry("temperatureSchedule", //$NON-NLS-1$
+        this));
     output.newLine();
-    output.write("temperatureScheduleClass: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
-    output.newLine();
-    output.write("startTemperature: ");//$NON-NLS-1$
-    output.write(Double.toString(this.startTemperature));
-    output.newLine();
-    output.write("startTemperature(inhex): ");//$NON-NLS-1$
-    output.write(Double.toHexString(this.startTemperature));
+    output.write(LogFormat.mapEntry("startTemperature", ///$NON-NLS-1$
+        this.startTemperature));
     output.newLine();
   }
 
@@ -117,9 +112,10 @@ public abstract class TemperatureSchedule {
     @Override
     public final String toString() {
       return ((("exp_" + //$NON-NLS-1$
-          Experiment.doubleToString(this.startTemperature))
+          Experiment
+              .doubleToStringForName(this.startTemperature))
           + '_')//
-          + Experiment.doubleToString(this.epsilon));
+          + Experiment.doubleToStringForName(this.epsilon));
     }
 
     /** {@inheritDoc} */
@@ -127,11 +123,8 @@ public abstract class TemperatureSchedule {
     public final void printSetup(final BufferedWriter output)
         throws IOException {
       super.printSetup(output);
-      output.write("epsilon: ");//$NON-NLS-1$
-      output.write(Double.toString(this.epsilon));
-      output.newLine();
-      output.write("epsilon(inhex): ");//$NON-NLS-1$
-      output.write(Double.toHexString(this.epsilon));
+      output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$
+          this.epsilon));
       output.newLine();
     }
 // start exponential
@@ -187,9 +180,10 @@ public abstract class TemperatureSchedule {
     @Override
     public final String toString() {
       return ((("log_" + //$NON-NLS-1$
-          Experiment.doubleToString(this.startTemperature))
-          + '_')//
-          + Experiment.doubleToString(this.epsilon));
+          Experiment
+              .doubleToStringForName(this.startTemperature))
+          + '_')
+          + Experiment.doubleToStringForName(this.epsilon));
     }
 
     /** {@inheritDoc} */
@@ -197,11 +191,8 @@ public abstract class TemperatureSchedule {
     public final void printSetup(final BufferedWriter output)
         throws IOException {
       super.printSetup(output);
-      output.write("epsilon: ");//$NON-NLS-1$
-      output.write(Double.toString(this.epsilon));
-      output.newLine();
-      output.write("epsilon(inhex): ");//$NON-NLS-1$
-      output.write(Double.toHexString(this.epsilon));
+      output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$
+          this.epsilon));
       output.newLine();
     }
 // start logarithmic

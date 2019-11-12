@@ -12,7 +12,7 @@ import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
-import aitoa.utils.ReflectionUtils;
+import aitoa.structure.LogFormat;
 
 /**
  * An {@linkplain aitoa.algorithms.EDA estimation of distribution
@@ -74,26 +74,18 @@ public class EDAWithFitness<X, Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: eda"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "eda")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(this.mu));
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(this.lambda));
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
     output.newLine();
-    output.write("model: ");//$NON-NLS-1$
-    output.write(this.model.toString());
+    output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
     output.newLine();
-    output.write("model_class: ");//$NON-NLS-1$
-    output.write(this.model.getClass().getCanonicalName());
-    output.newLine();
-    output.write("fitness: "); //$NON-NLS-1$
-    output.write(this.fitness.toString());
-    output.newLine();
-    output.write("fitness_class: "); //$NON-NLS-1$
-    output.write(ReflectionUtils.className(this.fitness));
+    output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
+        this.fitness));
     output.newLine();
   }
 

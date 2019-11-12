@@ -13,6 +13,7 @@ import org.junit.Test;
 import aitoa.ObjectTest;
 import aitoa.TestTools;
 import aitoa.structure.IMetaheuristic;
+import aitoa.structure.LogFormat;
 
 /**
  * Test a metaheuristic
@@ -53,12 +54,15 @@ public abstract class TestMetaheuristic<X, Y>
           break;
         }
         count++;
-        TestTools.assertGreaterOrEqual(s.length(), 4);
+        TestTools.assertGreaterOrEqual(s.length(), 6);
+        Assert.assertEquals(s.charAt(0), LogFormat.COMMENT_CHAR);
+        s = s.substring(1).trim();
         Assert.assertEquals(s.length(), s.trim().length());
-        int i = s.indexOf(':');
+        int i = s.indexOf(LogFormat.MAP_SEPARATOR_CHAR);
         TestTools.assertInRange(i, 1, s.length() - 3);
         Assert.assertEquals(' ', s.charAt(i + 1));
-        Assert.assertEquals(-1, s.indexOf(':', i + 1));
+        Assert.assertEquals(-1,
+            s.indexOf(LogFormat.MAP_SEPARATOR_CHAR, i + 1));
         Assert.assertEquals(-1, s.indexOf('\t'));
         boolean flip = false;
         for (i = s.length(); (--i) >= 0;) {

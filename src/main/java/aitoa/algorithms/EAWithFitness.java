@@ -13,8 +13,8 @@ import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 import aitoa.utils.RandomUtils;
-import aitoa.utils.ReflectionUtils;
 
 /**
  * The evolutionary algorithm (EA) which employs a fitness
@@ -82,30 +82,22 @@ public class EAWithFitness<X, Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: fitness_ea"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "fitness_ea")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(this.mu));
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(this.lambda));
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
     output.newLine();
-    output.write("cr: ");//$NON-NLS-1$
-    output.write(Double.toString(this.cr));
+    output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
     output.newLine();
-    output.write("cr(inhex): ");//$NON-NLS-1$
-    output.write(Double.toHexString(this.cr));
+    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("pruning: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("restarts: false"); //$NON-NLS-1$
-    output.newLine();
-    output.write("fitness: "); //$NON-NLS-1$
-    output.write(this.fitness.toString());
-    output.newLine();
-    output.write("fitness_class: "); //$NON-NLS-1$
-    output.write(ReflectionUtils.className(this.fitness));
+    output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
+        this.fitness));
     output.newLine();
   }
 

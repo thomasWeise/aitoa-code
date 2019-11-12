@@ -93,4 +93,10 @@ public final class BitStringSpace implements ISpace<boolean[]> {
               + z.length);
     }
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return (("boolean[" + this.length) + ']');//$NON-NLS-1$
+  }
 }

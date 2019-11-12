@@ -52,7 +52,8 @@ public final class HillClimber<X, Y>
     nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
 
-    while (!process.shouldTerminate()) {// repeat until budget exhausted
+    while (!process.shouldTerminate()) {// repeat until budget
+                                        // exhausted
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(x_best, x_cur, random);
 // map x_cur from X to Y and evaluate candidate solution
@@ -65,7 +66,7 @@ public final class HillClimber<X, Y>
     } // until time is up
   } // process will have remembered the best candidate solution
 // end relevant
-  
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {

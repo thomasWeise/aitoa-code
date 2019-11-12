@@ -17,6 +17,8 @@ The [book](http://thomasweise.github.io/aitoa/index.html) is available in the fo
 
 ## 2. How to Use
 
+### 2.1. Installation
+
 The source code is provided at [GitHub](http://github.com/thomasWeise/aitoa-code) as a [Maven](http://en.wikipedia.org/wiki/Apache_Maven) project for [Java 1.8](http://en.wikipedia.org/wiki/Java_version_history#Java_SE_8) along with settings for the [Eclipse](http://www.eclipse.org/) developer environment.
 I therefore recommend using Eclipse for exploring and playing around with it.
 Once you have checked-out the code and imported it as existing project in Eclipse, you need to right-click the project, choose "Maven" and then "Update Project".
@@ -108,6 +110,13 @@ In other words, you do not need to have our `jar` in the classpath anymore but c
   </executions>
 </plugin>
 ```
+
+### 2.2. Running Experiments
+
+How to run experiments with this code is discussed and shown in the book "[An Introduction to Optimization Algorithms](http://github.com/thomasWeise/aitoa)".
+Basically, an objective function, a search and a solution space as well as a mapping in between them, and search operators can be composed and provided to a black-box optimization algorithm.
+They are encapsulated in a `IBlackBoxProcess` instance which can automatically remember the best solution and create comprehensive log files during an experiment run.
+We also provide tools to then read the log files and create result summaries (see package `aitoa.utils.logs`).
 
 ## 3. License
 

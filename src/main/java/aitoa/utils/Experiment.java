@@ -372,7 +372,8 @@ public class Experiment {
    *          the {@code double}
    * @return the string
    */
-  public static final String doubleToString(final double d) {
+  public static final String
+      doubleToStringForName(final double d) {
     if ((d <= Double.NEGATIVE_INFINITY) || //
         (d >= Double.POSITIVE_INFINITY) || //
         Double.isNaN(d)) {

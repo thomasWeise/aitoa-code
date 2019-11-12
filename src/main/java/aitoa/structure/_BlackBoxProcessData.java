@@ -140,66 +140,80 @@ abstract class _BlackBoxProcessData<X, Y> {
    *           if i/o fails
    */
   void _printInfos(final Appendable out) throws IOException {
-    out.append("# BEGIN_SETUP\n# SEARCH_SPACE: ");//$NON-NLS-1$
-    out.append((this.m_searchSpace == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_searchSpace.toString());
-    out.append("\n# NULLARY_OP: ");//$NON-NLS-1$
-    out.append((this.m_nullary == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_nullary.toString());
-    out.append("\n# UNARY_OP: ");//$NON-NLS-1$
-    out.append((this.m_unary == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_unary.toString());
-    out.append("\n# BINARY_OP: ");//$NON-NLS-1$
-    out.append((this.m_binary == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_binary.toString());
-    out.append("\n# TERNARY_OP: ");//$NON-NLS-1$
-    out.append((this.m_ternary == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_ternary.toString());
-    out.append("\n# SOLUTION_SPACE: ");//$NON-NLS-1$
-    out.append((this.m_solutionSpace == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_solutionSpace.toString());
-    out.append("\n# REPRESENTATION_MAPPING: ");//$NON-NLS-1$
-    out.append((this.m_mapping == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_mapping.toString());
-    out.append("\n# OBJECTIVE_FUNCTION: ");//$NON-NLS-1$
-    out.append((this.m_f == null) //
-        ? "null" : //$NON-NLS-1$
-        this.m_f.toString());
-    out.append("\n# MAX_FES: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_maxFEs));
-    out.append("\n# MAX_TIME: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_maxTime));
-    out.append("\n# GOAL_F: ");//$NON-NLS-1$
-    out.append(Double.toString(this.m_goalF));
-    out.append("\n# RANDOM_SEED: 0x");//$NON-NLS-1$
-    out.append(RandomUtils.randSeedToString(this.m_randSeed));
+    out.append(LogFormat.asComment(LogFormat.BEGIN_SETUP));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.SEARCH_SPACE,
+        this.m_searchSpace));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.NULLARY_OP,
+        this.m_nullary));
+    out.append(System.lineSeparator());
     out.append(
-        "\n# END_SETUP\n# BEGIN_SYSTEM\n# JAVA_VERSION: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.version"));//$NON-NLS-1$
-    out.append("\n# JAVA_VENDOR: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.vendor"));//$NON-NLS-1$
-    out.append("\n# JAVA_VM_VERSION: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.vm.version"));//$NON-NLS-1$
-    out.append("\n# JAVA_VM_VENDOR: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.vm.vendor"));//$NON-NLS-1$
-    out.append("\n# JAVA_VM_NAME: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.vm.name"));//$NON-NLS-1$
-    out.append("\n# JAVA_SPECIFICATION_VERSION: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.specification.version"));//$NON-NLS-1$
-    out.append("\n# JAVA_SPECIFICATION_VENDOR: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.specification.vendor"));//$NON-NLS-1$
-    out.append("\n# JAVA_SPECIFICATION_NAME: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.specification.name"));//$NON-NLS-1$
-    out.append("\n# JAVA_COMPILER: ");//$NON-NLS-1$
-    out.append(System.getProperty("java.compiler"));//$NON-NLS-1$
-    out.append("\n# END_SYSTEM");//$NON-NLS-1$
+        LogFormat.mapEntry(LogFormat.UNARY_OP, this.m_unary));
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.BINARY_OP, this.m_binary));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.TERNARY_OP,
+        this.m_ternary));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.SOLUTION_SPACE,
+        this.m_solutionSpace));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(
+        LogFormat.REPRESENTATION_MAPPING, this.m_mapping));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.OBJECTIVE_FUNCTION,
+        this.m_f));
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.MAX_FES, this.m_maxFEs));
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.MAX_TIME, this.m_maxTime));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.GOAL_F,
+        LogFormat.doubleToStringForLog(this.m_goalF)));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.RANDOM_SEED,
+        LogFormat.RANDOM_SEED_PREFIX
+            + RandomUtils.randSeedToString(this.m_randSeed)));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.asComment(LogFormat.END_SETUP));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.asComment(LogFormat.BEGIN_SYSTEM));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_VERSION,
+        System.getProperty("java.version")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_VENDOR,
+        System.getProperty("java.vendor")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_VERSION,
+        System.getProperty("java.vm.version")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_VENDOR,
+        System.getProperty("java.vm.vendor")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_NAME,
+        System.getProperty("java.vm.name")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_VERSION,
+            System.getProperty("java.specification.version")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_VENDOR,
+            System.getProperty("java.specification.vendor")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_NAME,
+            System.getProperty("java.specification.name")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.JAVA_COMPILER,
+        System.getProperty("java.compiler")));//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append(LogFormat.asComment(LogFormat.END_SYSTEM));
   }
 
   /** {@inheritDoc} */

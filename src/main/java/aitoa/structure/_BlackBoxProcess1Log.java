@@ -133,12 +133,13 @@ final class _BlackBoxProcess1Log<X>
   public final void printLogSection(final String sectionName,
       final Consumer<BufferedWriter> printer) {
     try {
-      this.m_logWriter.write('#');
+      this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(' ');
       this.m_logWriter.write(sectionName);
       this.m_logWriter.newLine();
       printer.accept(this.m_logWriter);
-      this.m_logWriter.write("# END_"); //$NON-NLS-1$
+      this.m_logWriter.write(LogFormat.COMMENT_CHAR);
+      this.m_logWriter.write(" END_"); //$NON-NLS-1$
       this.m_logWriter.write(sectionName);
       this.m_logWriter.newLine();
     } catch (final IOException ioe) {

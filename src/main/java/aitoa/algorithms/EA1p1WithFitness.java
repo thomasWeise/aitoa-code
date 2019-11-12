@@ -10,7 +10,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.utils.ReflectionUtils;
+import aitoa.structure.LogFormat;
 
 /**
  * The (1+1)-EA is a hill climbing algorithm remembers the
@@ -74,7 +74,8 @@ public final class EA1p1WithFitness<X, Y>
     nullary.apply(pop[0].x, random); // create and evaluate first
     pop[0].quality = process.evaluate(pop[0].x); // individual
 
-    while (!process.shouldTerminate()) {// repeat until budget exhausted
+    while (!process.shouldTerminate()) {// repeat until budget
+                                        // exhausted
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(pop[0].x, pop[1].x, random);
 // map x_cur from X to Y and evaluate candidate solution
@@ -100,27 +101,22 @@ public final class EA1p1WithFitness<X, Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: fitness_1+1_ea"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "fitness_1+1_ea")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(1));
+    output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(1));
+    output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
     output.newLine();
-    output.write("cr: ");//$NON-NLS-1$
-    output.write(Double.toString(0));
+    output.write(LogFormat.mapEntry("cr", 0));//$NON-NLS-1$
     output.newLine();
-    output.write("pruning: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("restarts: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("fitness: "); //$NON-NLS-1$
-    output.write(this.fitness.toString());
-    output.newLine();
-    output.write("fitness_class: "); //$NON-NLS-1$
-    output.write(ReflectionUtils.className(this.fitness));
+    output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
+        this.fitness));
     output.newLine();
   }
 

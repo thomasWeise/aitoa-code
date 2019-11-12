@@ -1,9 +1,11 @@
 package aitoa.utils;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /** Utils for I/O */
 public final class IOUtils {
@@ -76,5 +78,147 @@ public final class IOUtils {
       // ignore
     }
     return r;
+  }
+
+  /**
+   * Create an array of (sorted) paths from a given stream
+   *
+   * @param stream
+   *          the stream
+   * @return the path array
+   */
+  public static final Path[]
+      pathArray(final Stream<Path> stream) {
+    return stream.sorted().toArray((i) -> new Path[i]);
+  }
+
+  /**
+   * A comprehensive check whether a path is contained inside a
+   * given directory.
+   *
+   * @param dir
+   *          the directory
+   * @param inside
+   *          the inside file
+   * @return {@code true} if {@code inside} is inside
+   *         {@code dir}, {@code false} otherwise
+   */
+  private static final boolean __inDir(final Path inside,
+      final Path dir) {
+    if (dir == inside) {
+      return false;
+    }
+    if (dir.equals(inside)) {
+      return false;
+    }
+    try {
+      if (Files.isSameFile(dir, inside)) {
+        return false;
+      }
+    } catch (@SuppressWarnings("unused") final Throwable error) {
+      return false;
+    }
+    final String s = inside.getFileName().toString();
+    if (".".equals(s) || //$NON-NLS-1$
+        "..".equals(s)) {//$NON-NLS-1$
+      return false;
+    }
+    return inside.startsWith(dir);
+  }
+
+  /**
+   * Get a stream of canonicalized sub-directories in a given
+   * path. This method is not recursive.
+   *
+   * @param dir
+   *          the path to list
+   * @return the stream of immediate sub-directories
+   * @throws IOException
+   *           if something fails
+   */
+  public static final Stream<Path>
+      subDirectoriesStream(final Path dir) throws IOException {
+    final Path p = IOUtils.canonicalizePath(dir);
+    return Files.list(p)//
+        .filter(Files::exists)//
+        .filter(Files::isDirectory)//
+        .map(IOUtils::canonicalizePath)//
+        .filter((pp) -> IOUtils.__inDir(pp, p));
+  }
+
+  /**
+   * Get an array of sub-directories in a given path. This method
+   * is not recursive.
+   *
+   * @param dir
+   *          the path to list
+   * @return the array of immediate sub-directories
+   * @throws IOException
+   *           if something fails
+   */
+  public static final Path[] subDirectories(final Path dir)
+      throws IOException {
+    return (IOUtils
+        .pathArray(IOUtils.subDirectoriesStream(dir)));
+  }
+
+  /**
+   * A comprehensive check whether a given file is readable
+   *
+   * @param f
+   *          the file
+   * @return {@code true} if it is readable, {@code false}
+   *         otherwise
+   */
+  private static final boolean __isReadableFile(final Path f) {
+    if (!Files.isReadable(f)) {
+      return false;
+    }
+
+    try {
+      if (Files.size(f) <= 0L) {
+        return false;
+      }
+    } catch (@SuppressWarnings("unused") final Throwable error) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Get a stream of canonicalized files of size greater than 0
+   * in a given directory. This method is not recursive.
+   *
+   * @param dir
+   *          the path to list
+   * @return the stream of immediately contained files
+   * @throws IOException
+   *           if something fails
+   */
+  public static final Stream<Path> filesStream(final Path dir)
+      throws IOException {
+    final Path p = IOUtils.canonicalizePath(dir);
+    return Files.list(p)//
+        .filter(Files::exists)//
+        .filter(Files::isRegularFile)//
+        .map(IOUtils::canonicalizePath)//
+        .filter((pp) -> IOUtils.__inDir(pp, p))//
+        .filter(IOUtils::__isReadableFile);
+  }
+
+  /**
+   * Get an array of canonicalized files of size greater than 0
+   * in a given directory. This method is not recursive.
+   *
+   * @param dir
+   *          the path to list
+   * @return the array of immediately contained files
+   * @throws IOException
+   *           if something fails
+   */
+  public static final Path[] files(final Path dir)
+      throws IOException {
+    return IOUtils.pathArray(IOUtils.filesStream(dir));
   }
 }

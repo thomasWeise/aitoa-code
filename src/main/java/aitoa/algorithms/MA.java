@@ -12,6 +12,7 @@ import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -73,21 +74,22 @@ public class MA<X, Y> implements IMetaheuristic<X, Y> {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: ma"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "ma")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(this.mu));
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(this.lambda));
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
     output.newLine();
-    output.write("maxLSSteps: ");//$NON-NLS-1$
-    output.write(Integer.toString(this.maxLSSteps));
+    output.write(LogFormat.mapEntry("cr", 1d));//$NON-NLS-1$
     output.newLine();
-    output.write("pruning: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("restarts: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
+    output.newLine();
+    output.write(LogFormat.mapEntry("maxLSSteps", //$NON-NLS-1$
+        this.maxLSSteps));
     output.newLine();
   }
 

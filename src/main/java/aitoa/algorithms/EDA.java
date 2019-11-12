@@ -12,6 +12,7 @@ import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
+import aitoa.structure.LogFormat;
 
 /**
  * An estimation of distribution algorithm does not apply search
@@ -77,20 +78,15 @@ public class EDA<X, Y> implements IMetaheuristic<X, Y> {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: eda"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "eda")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(this.mu));
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(this.lambda));
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
     output.newLine();
-    output.write("model: ");//$NON-NLS-1$
-    output.write(this.model.toString());
-    output.newLine();
-    output.write("model_class: ");//$NON-NLS-1$
-    output.write(this.model.getClass().getCanonicalName());
+    output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
     output.newLine();
   }
 

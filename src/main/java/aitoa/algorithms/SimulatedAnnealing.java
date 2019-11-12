@@ -9,6 +9,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 
 /**
  * A simulated annealing (SA) algorithm is much similar to a hill
@@ -41,8 +42,8 @@ public final class SimulatedAnnealing<X, Y>
 
   /** the temperature schedule */
   public final TemperatureSchedule schedule;
-  
-//end relevant
+
+// end relevant
 
   /**
    * create
@@ -84,8 +85,8 @@ public final class SimulatedAnnealing<X, Y>
       final double f_new = process.evaluate(x_new);
       if ((f_new <= f_cur) || // accept if better solution OR
           (random.nextDouble() < // probability is e^(-dE/T)
-          Math.exp((f_cur - f_new) / // -dE == -(f_new-f_cur)
-              this.schedule.temperature(tau)))) {
+              Math.exp((f_cur - f_new) / // -dE == -(f_new-f_cur)
+                  this.schedule.temperature(tau)))) {
 // accepted: remember objective value and copy x_new to x_cur
         f_cur = f_new;
         process.getSearchSpace().copy(x_new, x_cur);
@@ -105,7 +106,8 @@ public final class SimulatedAnnealing<X, Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: sa"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "sa")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
     this.schedule.printSetup(output);

@@ -36,11 +36,7 @@ public interface IMetaheuristic<X, Y> {
    */
   public default void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: "); //$NON-NLS-1$
-    output.write(this.toString());
-    output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write(LogFormat.mapEntry("algorithm", this)); //$NON-NLS-1$
     output.newLine();
   }
 // start relevant

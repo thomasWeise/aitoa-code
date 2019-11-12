@@ -9,6 +9,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 
 /**
  * The hill climbing algorithm remembers the current best
@@ -87,23 +88,16 @@ public final class HillClimberWithRestarts<X, Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("algorithm: hc_rs"); //$NON-NLS-1$
+    IMetaheuristic.super.printSetup(output);
+    output.write(LogFormat.mapEntry("initialStepsBeforeRestart", ///$NON-NLS-1$
+        this.initialFailsBeforeRestart));
     output.newLine();
-    output.write("algorithm_class: "); //$NON-NLS-1$
-    output.write(this.getClass().getCanonicalName());
+    output.write(
+        LogFormat.mapEntry("initialStepsBeforeRestartStrategy", //$NON-NLS-1$
+            this.initialFailsBeforeRestartStrategy));
     output.newLine();
-    output.write("initialStepsBeforeRestart: "); //$NON-NLS-1$
-    output.write(//
-        Integer.toString(this.initialFailsBeforeRestart));
-    output.newLine();
-    output.write("initialStepsBeforeRestartStrategy: ");//$NON-NLS-1$
-    output.write(this.initialFailsBeforeRestartStrategy);
-    output.newLine();
-    output.write("increaseFactor: ");//$NON-NLS-1$
-    output.write(Double.toString(this.increaseFactor));
-    output.newLine();
-    output.write("increaseFactor(hex): ");//$NON-NLS-1$
-    output.write(Double.toHexString(this.increaseFactor));
+    output.write(LogFormat.mapEntry("increaseFactor", //$NON-NLS-1$
+        this.increaseFactor));
     output.newLine();
   }
 

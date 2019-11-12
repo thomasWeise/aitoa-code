@@ -8,6 +8,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 
 /**
  * The (1+1)-EA is a hill climbing algorithm remembers the
@@ -52,7 +53,8 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
 
-    while (!process.shouldTerminate()) {// repeat until budget exhausted
+    while (!process.shouldTerminate()) {// repeat until budget
+                                        // exhausted
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(x_best, x_cur, random);
 // map x_cur from X to Y and evaluate candidate solution
@@ -76,21 +78,19 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    output.write("base_algorithm: 1+1_ea"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "1+1_ea")); //$NON-NLS-1$
     output.newLine();
     IMetaheuristic.super.printSetup(output);
-    output.write("mu: "); //$NON-NLS-1$
-    output.write(Integer.toString(1));
+    output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
     output.newLine();
-    output.write("lambda: ");//$NON-NLS-1$
-    output.write(Integer.toString(1));
+    output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
     output.newLine();
-    output.write("cr: ");//$NON-NLS-1$
-    output.write(Double.toString(0));
+    output.write(LogFormat.mapEntry("cr", 0));//$NON-NLS-1$
     output.newLine();
-    output.write("pruning: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
     output.newLine();
-    output.write("restarts: false"); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.newLine();
   }
 // start relevant

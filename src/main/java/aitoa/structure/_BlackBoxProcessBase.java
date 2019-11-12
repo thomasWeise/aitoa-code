@@ -157,6 +157,20 @@ abstract class _BlackBoxProcessBase<X, Y>
         Math.addExact(log.length, log.length));
   }
 
+  /** the log header */
+  private static final char[] LOG_HEADER =
+      LogFormat.asComment(LogFormat.joinLogLine("fbest", //$NON-NLS-1$
+          "consumedFEs", //$NON-NLS-1$
+          "consumedTimeMS")).toCharArray();//$NON-NLS-1$
+
+  /** the begin log string */
+  private static final char[] BEGIN_LOG =
+      LogFormat.asComment(LogFormat.BEGIN_LOG).toCharArray();
+
+  /** the end log string */
+  private static final char[] END_OF_LOG =
+      LogFormat.asComment(LogFormat.END_OF_LOG).toCharArray();
+
   /**
    * flush the log information to a file. The format of each log
    * point must be: bestF, FEs, time
@@ -175,9 +189,9 @@ abstract class _BlackBoxProcessBase<X, Y>
   static final void _writeLog(final long[] log, final int size,
       final long startTime, final BufferedWriter out)
       throws IOException {
-    out.write("# BEGIN_LOG"); //$NON-NLS-1$
+    out.write(_BlackBoxProcessBase.BEGIN_LOG);
     out.newLine();
-    out.write("# fbest;consumedFEs;consumedTimeMS"); //$NON-NLS-1$
+    out.write(_BlackBoxProcessBase.LOG_HEADER);
     out.newLine();
     for (int i = 0; i < size;) {
       final double f = Double.longBitsToDouble(log[i++]);
@@ -196,31 +210,47 @@ abstract class _BlackBoxProcessBase<X, Y>
         out.write(Double.toString(f));
       }
 
-      out.write(';');
+      out.write(LogFormat.CSV_SEPARATOR_CHAR);
       out.write(Long.toString(fes));
-      out.write(';');
+      out.write(LogFormat.CSV_SEPARATOR_CHAR);
       out.write(Long.toString(time));
       out.newLine();
     }
-    out.write("# END_OF_LOG");//$NON-NLS-1$
+    out.write(_BlackBoxProcessBase.END_OF_LOG);
     out.newLine();
   }
+
+  /** the state begin */
+  private static final String BEGIN_STATE =
+      System.lineSeparator()
+          + LogFormat.asComment(LogFormat.BEGIN_STATE);
+
+  /** the state end */
+  private static final String END_STATE = System.lineSeparator()
+      + LogFormat.asComment(LogFormat.END_STATE);
 
   /** {@inheritDoc} */
   @Override
   void _printInfos(final Appendable out) throws IOException {
     super._printInfos(out);
-    out.append("\n# BEGIN_STATE\n# CONSUMED_FES: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_consumedFEs));
-    out.append("\n# LAST_IMPROVEMENT_FE: ");//$NON-NLS-1$
-    out.append(Long.toString(this.m_lastImprovementFE));
-    out.append("\n# CONSUMED_TIME: ");//$NON-NLS-1$
-    out.append(Long.toString(this.getConsumedTime()));
-    out.append("\n# LAST_IMPROVEMENT_TIME: ");//$NON-NLS-1$
-    out.append(Long.toString(this.getLastImprovementTime()));
-    out.append("\n# BEST_F: ");//$NON-NLS-1$
-    out.append(Double.toString(this.m_bestF));
-    out.append("\n# END_STATE\n");//$NON-NLS-1$
+    out.append(_BlackBoxProcessBase.BEGIN_STATE);
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
+        this.m_consumedFEs));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_FE,
+        this.m_lastImprovementFE));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
+        this.getConsumedTime()));
+    out.append(System.lineSeparator());
+    out.append(
+        LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
+            this.getLastImprovementTime()));
+    out.append(System.lineSeparator());
+    out.append(LogFormat.mapEntry(LogFormat.BEST_F,
+        LogFormat.doubleToStringForLog(this.m_bestF)));
+    out.append(_BlackBoxProcessBase.END_STATE);
   }
 
   /** {@inheritDoc} */
