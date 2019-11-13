@@ -1,9 +1,11 @@
 package aitoa.utils.logs;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.ConsoleIO;
@@ -13,7 +15,7 @@ import aitoa.utils.IOUtils;
  * This class allows you to create a (potentially large) csv
  * table with the end results from all the runs.
  */
-public final class EndResultsTable {
+public final class EndResults {
 
   /** the file name used for end results tables */
   public static final String FILE_NAME = "endResults.txt"; //$NON-NLS-1$
@@ -37,7 +39,7 @@ public final class EndResultsTable {
       "last.improvement.fes";//$NON-NLS-1$
   /** the column with the number of improvements */
   public static final String COL_NUMBER_OF_IMPROVEMENTS =
-      "number.of.improvements";//$NON-NLS-1$
+      "n.improvements";//$NON-NLS-1$
   /** the column with the budget time */
   public static final String COL_BUDGET_TIME = "budget.time";//$NON-NLS-1$
   /** the column with the fe budget */
@@ -46,18 +48,16 @@ public final class EndResultsTable {
   public static final String COL_GOAL_F = "goal.f";//$NON-NLS-1$
 
   /** the internal header */
-  private static final char[] HEADER = LogFormat.asComment(
-      LogFormat.joinLogLine(EndResultsTable.COL_ALGORITHM,
-          EndResultsTable.COL_INSTANCE, EndResultsTable.COL_SEED,
-          EndResultsTable.COL_BEST_F,
-          EndResultsTable.COL_TOTAL_TIME,
-          EndResultsTable.COL_TOTAL_FES,
-          EndResultsTable.COL_LAST_IMPROVEMENT_TIME,
-          EndResultsTable.COL_LAST_IMPROVEMENT_FES,
-          EndResultsTable.COL_NUMBER_OF_IMPROVEMENTS,
-          EndResultsTable.COL_BUDGET_TIME,
-          EndResultsTable.COL_BUDGET_FES,
-          EndResultsTable.COL_GOAL_F))
+  private static final char[] HEADER = LogFormat
+      .asComment(LogFormat.joinLogLine(EndResults.COL_ALGORITHM,
+          EndResults.COL_INSTANCE, EndResults.COL_SEED,
+          EndResults.COL_BEST_F, EndResults.COL_TOTAL_TIME,
+          EndResults.COL_TOTAL_FES,
+          EndResults.COL_LAST_IMPROVEMENT_TIME,
+          EndResults.COL_LAST_IMPROVEMENT_FES,
+          EndResults.COL_NUMBER_OF_IMPROVEMENTS,
+          EndResults.COL_BUDGET_TIME, EndResults.COL_BUDGET_FES,
+          EndResults.COL_GOAL_F))
       .toCharArray();
 
   /**
@@ -74,7 +74,7 @@ public final class EndResultsTable {
   public static final Path makeEndResultsTable(
       final Path inputFolder, final Path outputFolder)
       throws IOException {
-    return EndResultsTable.makeEndResultsTable(inputFolder,
+    return EndResults.makeEndResultsTable(inputFolder,
         outputFolder, true);
   }
 
@@ -95,7 +95,7 @@ public final class EndResultsTable {
   public static final Path makeEndResultsTable(
       final Path inputFolder, final Path outputFolder,
       final boolean keepExisting) throws IOException {
-    return EndResultsTable.makeEndResultsTable(inputFolder,
+    return EndResults.makeEndResultsTable(inputFolder,
         outputFolder, keepExisting, true);
   }
 
@@ -119,6 +119,7 @@ public final class EndResultsTable {
       final Path inputFolder, final Path outputFolder,
       final boolean keepExisting,
       final boolean logProgressToConsole) throws IOException {
+
     final Path in = IOUtils.canonicalizePath(inputFolder);
     if (!(Files.exists(in) && Files.isDirectory(in))) {
       throw new IOException(
@@ -135,8 +136,8 @@ public final class EndResultsTable {
       Files.createDirectories(out);
     }
 
-    final Path end = IOUtils.canonicalizePath(
-        out.resolve(EndResultsTable.FILE_NAME));
+    final Path end = IOUtils
+        .canonicalizePath(out.resolve(EndResults.FILE_NAME));
     if (Files.exists(end)) {
       if (!Files.isRegularFile(end)) {
         throw new IOException(end + " is not a file."); //$NON-NLS-1$
@@ -146,14 +147,14 @@ public final class EndResultsTable {
           ConsoleIO.stdout("End result table '" + //$NON-NLS-1$
               end + "' found.");//$NON-NLS-1$
         }
-      } else {
-        if (logProgressToConsole) {
-          ConsoleIO.stdout("End result table '" + //$NON-NLS-1$
-              end
-              + "' found, but will be deleted and re-created.");//$NON-NLS-1$
-        }
-        Files.delete(end);
+        return end;
       }
+      if (logProgressToConsole) {
+        ConsoleIO.stdout("End result table '" + //$NON-NLS-1$
+            end
+            + "' found, but will be deleted and re-created.");//$NON-NLS-1$
+      }
+      Files.delete(end);
     }
 
     if (logProgressToConsole) {
@@ -164,7 +165,7 @@ public final class EndResultsTable {
     try (
         final BufferedWriter bw = Files.newBufferedWriter(end)) {
 
-      bw.write(EndResultsTable.HEADER);
+      bw.write(EndResults.HEADER);
       bw.newLine();
 
       final Path[] algorithms = IOUtils.subDirectories(in);
@@ -209,7 +210,7 @@ public final class EndResultsTable {
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(line.m_seed);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResultsTable.__str(line.m_f_min));
+            bw.write(EndResults.__str(line.m_f_min));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long.toString(line.m_time_max));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
@@ -226,7 +227,7 @@ public final class EndResultsTable {
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long.toString(line.m_budgetFEs));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResultsTable.__str(line.m_goalF));
+            bw.write(EndResults.__str(line.m_goalF));
             bw.newLine();
           }
         }
@@ -314,6 +315,265 @@ public final class EndResultsTable {
     }
   }
 
+  /** a line of the end results table */
+  public static final class EndResult {
+    /** create */
+    EndResult() {
+      super();
+    }
+
+    /** the algorithm id */
+    public String algorithm;
+    /** the instance id */
+    public String instance;
+    /** the seed */
+    public String seed;
+    /** the best objective value achieved by the run */
+    public double bestF;
+    /** the total time consumed by the run */
+    public long totalTime;
+    /** the total FEs consumed by the run */
+    public long totalFEs;
+    /**
+     * the last time at which an improvement was achieved
+     */
+    public long lastImprovementTime;
+    /** the last FE at which an improvement was achieved */
+    public long lastImprovementFEs;
+    /**
+     * the total number of times the run improved its result
+     */
+    public long numberOfImprovements;
+    /** the time budget */
+    public long budgetTime;
+    /** the FE budget */
+    public long budgetFEs;
+    /** the goal objective value */
+    public double goalF;
+
+  }
+
+  /**
+   * Read and verify the end results table.
+   *
+   * @param path
+   *          the path to end results table
+   * @param consumer
+   *          the consumer for the data
+   * @param logProgressToConsole
+   *          should logging information be printed?
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void parseEndResultsTable(final Path path,
+      final Consumer<EndResult> consumer,
+      final boolean logProgressToConsole) throws IOException {
+
+    final Path p = IOUtils.canonicalizePath(path);
+    if (!(Files.exists(p) && Files.isRegularFile(p)
+        && Files.isReadable(p))) {
+      throw new IOException("Path " + p + //$NON-NLS-1$
+          " is not a readable file.");//$NON-NLS-1$
+    }
+
+    if (consumer == null) {
+      throw new NullPointerException(//
+          "null end result consumer");//$NON-NLS-1$
+    }
+
+    try (final BufferedReader br = Files.newBufferedReader(p)) {
+      final EndResult e = new EndResult();
+      String line;
+
+      while ((line = br.readLine()) != null) {
+        if (line.isEmpty()) {
+          continue;
+        }
+        line = line.trim();
+        if (line.isEmpty()) {
+          continue;
+        }
+        if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
+          continue;
+        }
+
+        try {
+
+          int lastSemi = -1;
+          int nextSemi =
+              line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                  ++lastSemi);
+          e.algorithm =
+              line.substring(lastSemi, nextSemi).trim();
+          if (e.algorithm.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Algorithm ID must be specified."); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.instance = line.substring(lastSemi, nextSemi).trim();
+          if (e.instance.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Instance ID must be specified."); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.seed = line.substring(lastSemi, nextSemi).trim();
+          if ((e.seed.length() < 3) || (!e.seed
+              .startsWith(LogFormat.RANDOM_SEED_PREFIX))) {
+            throw new IllegalArgumentException(
+                "Random seed invalid, must start with " + //$NON-NLS-1$
+                    LogFormat.RANDOM_SEED_PREFIX);
+          }
+          try {
+            Long.parseUnsignedLong(e.seed.substring(2), 16);
+          } catch (final Throwable error2) {
+            throw new IllegalArgumentException(
+                "Invalid random seed: '" + e.seed + //$NON-NLS-1$
+                    "'.", //$NON-NLS-1$
+                error2);
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.bestF = Double.parseDouble(
+              line.substring(lastSemi, nextSemi).trim());
+          if (!Double.isFinite(e.bestF)) {
+            throw new IllegalArgumentException(
+                "Invalid best-F value: " + e.bestF); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.totalTime = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.totalTime < 0L) {
+            throw new IllegalArgumentException(
+                "Invalid total time: " + e.totalTime); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.totalFEs = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.totalFEs < 1L) {
+            throw new IllegalArgumentException(
+                "Invalid total FEs: " + e.totalFEs); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.lastImprovementTime = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.lastImprovementTime < 0L) {
+            throw new IllegalArgumentException(
+                "Invalid last improvement time: " //$NON-NLS-1$
+                    + e.lastImprovementTime);
+          }
+          if (e.lastImprovementTime > e.totalTime) {
+            throw new IllegalArgumentException(
+                "Last last improvement time " //$NON-NLS-1$
+                    + e.lastImprovementTime
+                    + " cannot be bigger than total time "//$NON-NLS-1$
+                    + e.totalTime);
+
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.lastImprovementFEs = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.lastImprovementFEs < 1L) {
+            throw new IllegalArgumentException(
+                "Invalid last improvement FEs: " //$NON-NLS-1$
+                    + e.lastImprovementFEs);
+          }
+          if (e.lastImprovementFEs > e.totalFEs) {
+            throw new IllegalArgumentException(
+                "Last last improvement FEs " //$NON-NLS-1$
+                    + e.lastImprovementFEs
+                    + " cannot be bigger than total FEs "//$NON-NLS-1$
+                    + e.totalFEs);
+
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.numberOfImprovements = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.numberOfImprovements < 1L) {
+            throw new IllegalArgumentException(
+                "Invalid number of improvements: " //$NON-NLS-1$
+                    + e.numberOfImprovements);
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.budgetTime = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.budgetTime < 0L) {
+            throw new IllegalArgumentException(
+                "Invalid time budget: " //$NON-NLS-1$
+                    + e.budgetTime);
+          }
+          LogParser._checkTime(e.totalTime, e.budgetTime);
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e.budgetFEs = Long.parseLong(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e.budgetFEs < 1L) {
+            throw new IllegalArgumentException(
+                "Invalid last FE budget: " //$NON-NLS-1$
+                    + e.budgetFEs);
+          }
+          if (e.totalFEs > e.budgetFEs) {
+            throw new IllegalArgumentException("Last total FEs " //$NON-NLS-1$
+                + e.totalFEs
+                + " cannot be bigger than FEs budget "//$NON-NLS-1$
+                + e.budgetFEs);
+
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          if (nextSemi > lastSemi) {
+            throw new IllegalArgumentException(
+                "line has too many columns");//$NON-NLS-1$
+          }
+          nextSemi = line.length();
+          e.goalF = Double.parseDouble(
+              line.substring(lastSemi, nextSemi).trim());
+          if ((!Double.isFinite(e.goalF))
+              && (!(e.goalF == Double.NEGATIVE_INFINITY))) {
+            throw new IllegalArgumentException(
+                "Invalid goal-F value: " + e.goalF); //$NON-NLS-1$
+          }
+
+          consumer.accept(e);
+
+        } catch (final Throwable error) {
+          throw new IOException("Invalid line '" + line + //$NON-NLS-1$
+              "' in end results file '" + //$NON-NLS-1$
+              p + "'.", error);//$NON-NLS-1$
+        }
+      }
+    }
+  }
+
   /**
    * The main routine
    *
@@ -340,7 +600,7 @@ public final class EndResultsTable {
       final Path out = IOUtils.canonicalizePath(args[1]);
       ConsoleIO.stdout(("dstDir = '" + out) + '\'');//$NON-NLS-1$
 
-      EndResultsTable.makeEndResultsTable(in, out, false);
+      EndResults.makeEndResultsTable(in, out, false);
     } catch (final Throwable error) {
       ConsoleIO.stderr(
           "An error occured while creating the end result tables.", //$NON-NLS-1$

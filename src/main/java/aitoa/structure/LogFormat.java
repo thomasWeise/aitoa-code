@@ -1,5 +1,8 @@
 package aitoa.structure;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import aitoa.utils.ReflectionUtils;
 
 /** The class with constants for logging information */
@@ -155,6 +158,10 @@ public final class LogFormat {
     if (value == null) {
       return LogFormat.mapEntry(key, LogFormat.NULL);
     }
+    if (value instanceof Number) {
+      return LogFormat.mapEntry(key,
+          LogFormat.numberToStringForLog((Number) value));
+    }
     return LogFormat.mapEntry(key, value.toString())
         + System.lineSeparator()
         + LogFormat.mapEntry(key + "(class)", //$NON-NLS-1$
@@ -254,5 +261,39 @@ public final class LogFormat {
       }
     }
     return Double.toString(d);
+  }
+
+  /**
+   * Convert a number object to a string for use in a log
+   *
+   * @param number
+   *          the number object
+   * @return the string
+   */
+  public static final String
+      numberToStringForLog(final Number number) {
+    if ((number instanceof Long) || //
+        (number instanceof Integer) || //
+        (number instanceof Byte) || //
+        (number instanceof Short) || //
+        (number instanceof BigInteger)) {
+      return number.toString();
+    }
+    if ((number instanceof Float) || //
+        (number instanceof Double)) {
+      return LogFormat
+          .doubleToStringForLog(number.doubleValue());
+    }
+    if (number instanceof BigDecimal) {
+      try {
+        return Long.toString(//
+            ((BigDecimal) number).longValueExact());
+      } catch (@SuppressWarnings("unused") //
+      final ArithmeticException ignore) {
+        //
+      }
+    }
+
+    return number.toString();
   }
 }

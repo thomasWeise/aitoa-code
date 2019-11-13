@@ -34,7 +34,7 @@ public interface IObjectiveFunction<Y> {
     return Double.NEGATIVE_INFINITY;
   }
 // end lowerBound
-  
+
   /**
    * Compute an upper bound, if possible. The default
    * implementation of this method returns
@@ -47,7 +47,7 @@ public interface IObjectiveFunction<Y> {
   public default double upperBound() {
     return Double.POSITIVE_INFINITY;
   }
-  
+
 // start relevant
 }
 // end relevant

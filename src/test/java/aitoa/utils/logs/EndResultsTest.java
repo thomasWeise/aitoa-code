@@ -12,7 +12,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 
 /** test the end results table generator */
-public class EndResultsTableTest {
+public class EndResultsTest {
 
   /**
    * test the end results table generator
@@ -61,8 +61,12 @@ public class EndResultsTableTest {
       final Path evalDir = dir.getPath().resolve("evaluation");//$NON-NLS-1$
       Files.createDirectories(evalDir);
 
-      EndResultsTable.makeEndResultsTable(resultsDir, evalDir,
-          false, false);
+      final Path pp = EndResults.makeEndResultsTable(resultsDir,
+          evalDir, false, false);
+
+      EndResults.parseEndResultsTable(pp, (a) -> {
+        /** */
+      }, false);
     }
   }
 }
