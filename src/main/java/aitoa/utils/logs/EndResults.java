@@ -315,51 +315,18 @@ public final class EndResults {
     }
   }
 
-  /** a line of the end results table */
-  public static final class EndResult {
-    /** create */
-    EndResult() {
-      super();
-    }
-
-    /** the algorithm id */
-    public String algorithm;
-    /** the instance id */
-    public String instance;
-    /** the seed */
-    public String seed;
-    /** the best objective value achieved by the run */
-    public double bestF;
-    /** the total time consumed by the run */
-    public long totalTime;
-    /** the total FEs consumed by the run */
-    public long totalFEs;
-    /**
-     * the last time at which an improvement was achieved
-     */
-    public long lastImprovementTime;
-    /** the last FE at which an improvement was achieved */
-    public long lastImprovementFEs;
-    /**
-     * the total number of times the run improved its result
-     */
-    public long numberOfImprovements;
-    /** the time budget */
-    public long budgetTime;
-    /** the FE budget */
-    public long budgetFEs;
-    /** the goal objective value */
-    public double goalF;
-
-  }
-
   /**
    * Read and verify the end results table.
    *
    * @param path
    *          the path to end results table
    * @param consumer
-   *          the consumer for the data
+   *          the consumer for the data. Notice: The instance of
+   *          {@link EndResult} passed to this consumers
+   *          {@link java.util.function.Consumer#accept(Object)}
+   *          method will be re-used and modified in each call.
+   *          If you need to preserve it, you must make a copy of
+   *          it.
    * @param logProgressToConsole
    *          should logging information be printed?
    * @throws IOException
@@ -398,7 +365,6 @@ public final class EndResults {
         }
 
         try {
-
           int lastSemi = -1;
           int nextSemi =
               line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -490,17 +456,17 @@ public final class EndResults {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFEs = Long.parseLong(
+          e.lastImprovementFE = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementFEs < 1L) {
+          if (e.lastImprovementFE < 1L) {
             throw new IllegalArgumentException(
                 "Invalid last improvement FEs: " //$NON-NLS-1$
-                    + e.lastImprovementFEs);
+                    + e.lastImprovementFE);
           }
-          if (e.lastImprovementFEs > e.totalFEs) {
+          if (e.lastImprovementFE > e.totalFEs) {
             throw new IllegalArgumentException(
                 "Last last improvement FEs " //$NON-NLS-1$
-                    + e.lastImprovementFEs
+                    + e.lastImprovementFE
                     + " cannot be bigger than total FEs "//$NON-NLS-1$
                     + e.totalFEs);
 

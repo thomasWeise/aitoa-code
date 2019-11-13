@@ -43,7 +43,7 @@ public class EndResultsTest {
               algoDir.resolve(Character.toString(inst));
           Files.createDirectories(instDir);
 
-          for (int r = 1; r <= 5; r++) {
+          for (int r = 1; r <= 6; r++) {
 
             final Path logFile = instDir.resolve(
                 ((((Character.toString(algo) + '_') + inst)
@@ -61,12 +61,21 @@ public class EndResultsTest {
       final Path evalDir = dir.getPath().resolve("evaluation");//$NON-NLS-1$
       Files.createDirectories(evalDir);
 
-      final Path pp = EndResults.makeEndResultsTable(resultsDir,
-          evalDir, false, false);
+      final Path endResults = EndResults.makeEndResultsTable(
+          resultsDir, evalDir, false, false);
 
-      EndResults.parseEndResultsTable(pp, (a) -> {
-        /** */
+      EndResults.parseEndResultsTable(endResults, (a) -> {
+        a.hashCode();
       }, false);
+
+      final Path endResultStatistics = EndResultStatistics
+          .makeEndResultStatisticsTable(endResults, evalDir,
+              (a) -> (a.bestF <= a.goalF), false, false);
+
+      EndResultStatistics.parseEndResultStatisticsTable(
+          endResultStatistics, (a) -> {
+            a.hashCode();
+          }, false);
     }
   }
 }
