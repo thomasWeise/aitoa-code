@@ -3,11 +3,14 @@ package aitoa.utils.logs;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import aitoa.structure.LogFormat;
+import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
 import aitoa.utils.IOUtils;
 
@@ -540,6 +543,44 @@ public final class EndResults {
     }
   }
 
+  /** the source directory parameter */
+  private static final String PARAM_SRC_DIR = "src"; //$NON-NLS-1$
+  /** the destination directory parameter */
+  private static final String PARAM_DST_DIR = "dest";//$NON-NLS-1$
+
+  /**
+   * print the arguments
+   *
+   * @param s
+   *          the print stream
+   */
+  static final void _printArgs(final PrintStream s) {
+    s.println(' ' + EndResults.PARAM_SRC_DIR
+        + "=sourceDir: is the directory with the recorded experiment results (log file root dir).");//$NON-NLS-1$
+    s.println(' ' + EndResults.PARAM_DST_DIR
+        + "=destDir: is the directory where the table should be written to.");//$NON-NLS-1$
+  }
+
+  /**
+   * get the input path
+   *
+   * @return the input path
+   */
+  static final Path _argIn() {
+    return Configuration.getPath(EndResults.PARAM_SRC_DIR,
+        () -> Paths.get("results"));//$NON-NLS-1$ ;
+  }
+
+  /**
+   * get the output path
+   *
+   * @return the output path
+   */
+  static final Path _argOut() {
+    return Configuration.getPath(EndResults.PARAM_DST_DIR,
+        () -> Paths.get("evaluation"));//$NON-NLS-1$ ;
+  }
+
   /**
    * The main routine
    *
@@ -547,25 +588,22 @@ public final class EndResults {
    *          the command line arguments
    */
   public static final void main(final String[] args) {
-    ConsoleIO
-        .stdout("Welcome to the End-Result CSV Table Generator"); //$NON-NLS-1$
-    if (args.length != 2) {
-      ConsoleIO.stdout((s) -> {
-        s.println(
-            "You must provide two command line arguments: srcDir and dstDir.");//$NON-NLS-1$
-        s.println(
-            " srcDir is the directory with the recorded experiment results (log file root dir).");//$NON-NLS-1$
-        s.println(
-            " dstDir is the directory where the table should be written to.");//$NON-NLS-1$
-      });
-    }
+    ConsoleIO.stdout((s) -> {
+      s.println("Welcome to the End-Result CSV Table Generator"); //$NON-NLS-1$
+      s.println("The command line arguments are as follows: ");//$NON-NLS-1$
+      EndResults._printArgs(s);
+      s.println(
+          "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
+    });
+
+    Configuration.putCommandLine(args);
+
+    final Path in = EndResults._argIn();
+    final Path out = EndResults._argOut();
+
+    Configuration.print();
 
     try {
-      final Path in = IOUtils.canonicalizePath(args[0]);
-      ConsoleIO.stdout(("srcDir = '" + in) + '\'');//$NON-NLS-1$
-      final Path out = IOUtils.canonicalizePath(args[1]);
-      ConsoleIO.stdout(("dstDir = '" + out) + '\'');//$NON-NLS-1$
-
       EndResults.makeEndResultsTable(in, out, false);
     } catch (final Throwable error) {
       ConsoleIO.stderr(

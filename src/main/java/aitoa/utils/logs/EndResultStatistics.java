@@ -3,6 +3,7 @@ package aitoa.utils.logs;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
@@ -13,7 +14,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import aitoa.structure.LogFormat;
+import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
+import aitoa.utils.Experiment;
 import aitoa.utils.IOUtils;
 import aitoa.utils.Statistics;
 
@@ -141,17 +144,23 @@ public class EndResultStatistics {
       )).toCharArray();
 
   /**
-   * Create the end results table.
+   * Create the end result statistics table.
    *
    * @param endResults
    *          the path to the end results file
    * @param outputFolder
    *          the output folder
    * @param success
-   *          the success predicate
+   *          the success predicate; If this is {@code null}, a
+   *          run is considered successful if it's best-F value
+   *          has reached or surpassed the goal-F value
+   *          (downward-wise)
+   * @param successID
+   *          the id of the success predicate, can be
+   *          {@code null} or empty to use default file name
    * @param keepExisting
-   *          if the end results table exists, should it be
-   *          preserved?
+   *          if the end result statistics table exists, should
+   *          it be preserved, i.e., not computed anew?
    * @param logProgressToConsole
    *          should logging information be printed?
    * @return the path to the end results table
@@ -160,7 +169,7 @@ public class EndResultStatistics {
    */
   public static final Path makeEndResultStatisticsTable(
       final Path endResults, final Path outputFolder,
-      final Predicate<EndResult> success,
+      final Predicate<EndResult> success, final String successID,
       final boolean keepExisting,
       final boolean logProgressToConsole) throws IOException {
 
@@ -180,8 +189,16 @@ public class EndResultStatistics {
       Files.createDirectories(out);
     }
 
-    final Path end = IOUtils.canonicalizePath(
-        out.resolve(EndResultStatistics.FILE_NAME));
+    final String baseName;
+    if ((successID == null) || (successID.isEmpty())) {
+      baseName = EndResultStatistics.FILE_NAME;
+    } else {
+      baseName = Experiment.nameStringsMerge(
+          EndResultStatistics.FILE_NAME, successID);
+    }
+
+    final Path end =
+        IOUtils.canonicalizePath(out.resolve(baseName));
     if (Files.exists(end)) {
       if (!Files.isRegularFile(end)) {
         throw new IOException(end + " is not a file."); //$NON-NLS-1$
@@ -208,7 +225,9 @@ public class EndResultStatistics {
     }
 
     // compute the data
-    __Parser p = new __Parser(success);
+    __Parser p = new __Parser((success == null)
+        ? (x) -> Double.compare(x.bestF, x.goalF) <= 0
+        : success);
     EndResults.parseEndResultsTable(in, p, logProgressToConsole);
     final __Holder[] results = p._finalize();
     p = null;
@@ -2015,6 +2034,37 @@ public class EndResultStatistics {
     }
   }
 
+  /** the goal function value */
+  private static final String PARAM_GOAL = "goal"; //$NON-NLS-1$
+
+  /**
+   * print the arguments
+   *
+   * @param s
+   *          the print stream
+   */
+  static final void _printArgs(final PrintStream s) {
+    EndResults._printArgs(s);
+    s.println(' ' + EndResultStatistics.PARAM_GOAL
+        + "=value: is the objective value at which a run is considered as success (if not provided, goalF will be taken).");//$NON-NLS-1$
+
+  }
+
+  /**
+   * get the success predicate
+   *
+   * @return the success predicate
+   */
+  static final Predicate<EndResult> _argSuccess() {
+    final Double goal =
+        Configuration.getDouble(EndResultStatistics.PARAM_GOAL);
+    if (goal != null) {
+      final double threshold = goal.doubleValue();
+      return (x) -> (x.bestF <= threshold);
+    }
+    return null;
+  }
+
   /**
    * The main routine
    *
@@ -2022,39 +2072,29 @@ public class EndResultStatistics {
    *          the command line arguments
    */
   public static final void main(final String[] args) {
-    ConsoleIO.stdout(
-        "Welcome to the End-Result Statistics CSV Table Generator"); //$NON-NLS-1$
-    if ((args.length < 2) || (args.length > 3)) {
-      ConsoleIO.stdout((s) -> {
-        s.println(
-            "You must provide at least two and at most three command line arguments: srcDir, dstDir, and optionally goal.");//$NON-NLS-1$
-        s.println(
-            " srcDir is the directory with the recorded experiment results (log file root dir).");//$NON-NLS-1$
-        s.println(
-            " dstDir is the directory where the table should be written to.");//$NON-NLS-1$
-        s.println(
-            " goal is the objective value at which a run is considered as success (if not provided, goalF will be taken).");//$NON-NLS-1$
-      });
-    }
+    ConsoleIO.stdout((s) -> {
+      s.println(
+          "Welcome to the End-Result Statistics CSV Table Generator"); //$NON-NLS-1$
+      s.println("The command line arguments are as follows: ");//$NON-NLS-1$
+      EndResultStatistics._printArgs(s);
+      s.println(
+          "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
+    });
 
-    final Predicate<EndResult> pred;
-    if (args.length == 3) {
-      final double threshold = Double.parseDouble(args[2]);
-      pred = (x) -> (x.bestF <= threshold);
-    } else {
-      pred = (x) -> (x.bestF <= x.goalF);
-    }
+    Configuration.putCommandLine(args);
+
+    final Predicate<EndResult> pred =
+        EndResultStatistics._argSuccess();
+
+    final Path in = EndResults._argIn();
+    final Path out = EndResults._argOut();
+    Configuration.print();
 
     try {
-      final Path in = IOUtils.canonicalizePath(args[0]);
-      ConsoleIO.stdout(("srcDir = '" + in) + '\'');//$NON-NLS-1$
-      final Path out = IOUtils.canonicalizePath(args[1]);
-      ConsoleIO.stdout(("dstDir = '" + out) + '\'');//$NON-NLS-1$
-
       final Path endResults =
           EndResults.makeEndResultsTable(in, out, true);
       EndResultStatistics.makeEndResultStatisticsTable(
-          endResults, out, pred, false, true);
+          endResults, out, pred, null, false, true);
     } catch (final Throwable error) {
       ConsoleIO.stderr(
           "An error occured while creating the end result statistics tables.", //$NON-NLS-1$

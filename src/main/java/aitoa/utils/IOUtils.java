@@ -1,5 +1,6 @@
 package aitoa.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -220,5 +221,34 @@ public final class IOUtils {
   public static final Path[] files(final Path dir)
       throws IOException {
     return IOUtils.pathArray(IOUtils.filesStream(dir));
+  }
+
+  /**
+   * Delete a path. If the path is a file, the file will be
+   * deleted. If the path points to a directory, the directory
+   * will be deleted recursively with everything in it.
+   *
+   * @param path
+   *          the path to delete
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void delete(final Path path)
+      throws IOException {
+    final Path p = IOUtils.canonicalizePath(path);
+    if (Files.exists(p)) {
+      if (Files.isRegularFile(p)) {
+        Files.delete(p);
+      } else {
+        Files.walk(p).map(Path::toFile)
+            .sorted((o1, o2) -> -o1.compareTo(o2))
+            .forEach(File::delete);
+      }
+    }
+
+    if (Files.exists(p)) {
+      throw new IOException("Path '" + p //$NON-NLS-1$
+          + "' still exists after trying to delete it.");//$NON-NLS-1$
+    }
   }
 }

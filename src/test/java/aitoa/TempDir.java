@@ -1,7 +1,6 @@
 package aitoa;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,8 +55,6 @@ public final class TempDir implements Closeable {
   /** {@inheritDoc} */
   @Override
   public final void close() throws IOException {
-    Files.walk(this.m_dir).map(Path::toFile)
-        .sorted((o1, o2) -> -o1.compareTo(o2))
-        .forEach(File::delete);
+    IOUtils.delete(this.m_dir);
   }
 }

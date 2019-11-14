@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import aitoa.TempDir;
@@ -38,7 +39,7 @@ public class EndResultsTest {
         final Path algoDir =
             resultsDir.resolve(Character.toString(algo));
         Files.createDirectories(algoDir);
-        for (char inst = 'X'; inst <= 'Z'; inst++) {
+        for (char inst = 'W'; inst <= 'Z'; inst++) {
           final Path instDir =
               algoDir.resolve(Character.toString(inst));
           Files.createDirectories(instDir);
@@ -68,14 +69,18 @@ public class EndResultsTest {
         a.hashCode();
       }, false);
 
-      final Path endResultStatistics = EndResultStatistics
-          .makeEndResultStatisticsTable(endResults, evalDir,
-              (a) -> (a.bestF <= a.goalF), false, false);
+      final Path endResultStatistics =
+          EndResultStatistics.makeEndResultStatisticsTable(
+              endResults, evalDir, null, null, false, false);
 
       EndResultStatistics.parseEndResultStatisticsTable(
           endResultStatistics, (a) -> {
             a.hashCode();
           }, false);
+
+      Assert.assertEquals(('d' - 'a') + 1,
+          ErtEcdf.makeErtEcdf(endResultStatistics, evalDir, true,
+              null, null, null, false).size());
     }
   }
 }
