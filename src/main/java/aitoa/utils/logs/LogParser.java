@@ -165,6 +165,14 @@ public final class LogParser {
       final ILogPointConsumer logConsumer,
       final ISetupConsumer setupConsumer) throws IOException {
 
+    final String name = file.getFileName().toString();
+    if (!name.endsWith(LogFormat.FILE_SUFFIX)) {
+      throw new IllegalArgumentException(//
+          "Invalid file name '" + file //$NON-NLS-1$
+              + "', must end with '" + //$NON-NLS-1$
+              LogFormat.FILE_SUFFIX + "'.");//$NON-NLS-1$
+    }
+
     try (final BufferedReader in =
         Files.newBufferedReader(file)) {
 
@@ -191,520 +199,535 @@ public final class LogParser {
 
       boolean invokeLogAfterState = false;
 
-      String line = null;
-      while ((line = in.readLine()) != null) {
-        line = line.trim();
+      String line2 = null;
+      int lineIndex = 0;
+      while ((line2 = in.readLine()) != null) {
+        ++lineIndex;
+        String line = line2.trim();
         if (line.length() <= 0) {
           continue;
         }
 
-        // we enter a comment?
-        if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
-          line = line.substring(1).trim();
-          if (line.length() <= 0) {
-            continue;
-          }
+        try {
 
-          if (LogFormat.BEGIN_LOG.equals(line)) {
-            switch (state_log) {
-              case 0: {
-                if (state_setup == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin log section inside setup section.");//$NON-NLS-1$
-                }
-                if (state_state == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin log section inside state section??");//$NON-NLS-1$
-                }
-                if (state_state != 0) {
-                  throw new IllegalStateException(
-                      "Log section must come before state section??");//$NON-NLS-1$
-                }
-                state_log = 1;
-                continue;
-              }
-              case 1: {
-                throw new IllegalStateException(
-                    "Log section cannot begin inside log section.");//$NON-NLS-1$
-              }
-              default: {
-                throw new IllegalStateException(
-                    "Log section can only occur once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (LogFormat.END_OF_LOG.equals(line)) {
-            switch (state_log) {
-              case 0: {
-                throw new IllegalStateException(
-                    "Log section can only end after log section begins.");//$NON-NLS-1$
-              }
-              case 1: {
-                if (state_setup == 1) {
-                  throw new IllegalStateException(
-                      "Log section cannot end inside setup section??");//$NON-NLS-1$
-                }
-                if (state_state == 1) {
-                  throw new IllegalStateException(
-                      "Log section cannot end inside state section??");//$NON-NLS-1$
-                }
-                if (state_setup != 0) {
-                  throw new IllegalStateException(
-                      "Log section must end before state section??");//$NON-NLS-1$
-                }
-                state_log = 2;
-                continue;
-              }
-              default: {
-                throw new IllegalStateException(
-                    "Log section can only end once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (LogFormat.BEGIN_SETUP.equals(line)) {
-            switch (state_setup) {
-              case 0: {
-                if (state_log == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin setup section inside log section.");//$NON-NLS-1$
-                }
-                if (state_state == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin setup section inside state section.");//$NON-NLS-1$
-                }
-                state_setup = 1;
-                setupKeys = new HashSet<>();
-                continue;
-              }
-              case 1: {
-                throw new IllegalStateException(
-                    "Setup section cannot begin inside setup section.");//$NON-NLS-1$
-              }
-              default: {
-                throw new IllegalStateException(
-                    "Setup section can only occur once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (LogFormat.END_SETUP.equals(line)) {
-            switch (state_setup) {
-              case 0: {
-                throw new IllegalStateException(
-                    "Setup section can only end after setup section begins.");//$NON-NLS-1$
-              }
-              case 1: {
-                if (state_log == 1) {
-                  throw new IllegalStateException(
-                      "Setup section cannot end inside log section??");//$NON-NLS-1$
-                }
-                if (state_state == 1) {
-                  throw new IllegalStateException(
-                      "Setup section cannot end inside state section??");//$NON-NLS-1$
-                }
-                state_setup = 2;
-                continue;
-              }
-              default: {
-                throw new IllegalStateException(
-                    "Setup section can only end once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (LogFormat.BEGIN_STATE.equals(line)) {
-            switch (state_state) {
-              case 0: {
-                if (state_log == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin state section inside log section.");//$NON-NLS-1$
-                }
-                if (state_log != 2) {
-                  throw new IllegalStateException(
-                      "Can begin state section only after log section.");//$NON-NLS-1$
-                }
-                if (state_setup == 1) {
-                  throw new IllegalStateException(
-                      "Cannot begin state section inside setup section.");//$NON-NLS-1$
-                }
-                state_state = 1;
-                stateKeys = new HashSet<>();
-                continue;
-              }
-              case 1: {
-                throw new IllegalStateException(
-                    "State section cannot begin inside state section.");//$NON-NLS-1$
-              }
-              default: {
-                throw new IllegalStateException(
-                    "State section can only occur once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (LogFormat.END_STATE.equals(line)) {
-            switch (state_state) {
-              case 0: {
-                throw new IllegalStateException(
-                    "State section can only end after state section begins.");//$NON-NLS-1$
-              }
-              case 1: {
-                if (state_log == 1) {
-                  throw new IllegalStateException(
-                      "State section cannot end inside log section??");//$NON-NLS-1$
-                }
-                if (state_log != 2) {
-                  throw new IllegalStateException(
-                      "State section can only end after log section??");//$NON-NLS-1$
-                }
-                if (state_setup == 1) {
-                  throw new IllegalStateException(
-                      "State section cannot end inside setup section??");//$NON-NLS-1$
-                }
-                state_state = 2;
-
-                if (invokeLogAfterState
-                    && (logConsumer != null)) {
-                  logConsumer.accept(fe_last_improvement, fe_max,
-                      time_last_improvement, time_max,
-                      improvements, f_min, false);
-                }
-
-                continue;
-              }
-              default: {
-                throw new IllegalStateException(
-                    "State section can only end once.");//$NON-NLS-1$
-              }
-            }
-          }
-
-          if (state_setup == 1) {
-            // ok, we are in the setup section
-
-            final int colon =
-                line.indexOf(LogFormat.MAP_SEPARATOR_CHAR);
-            if ((colon <= 0) || (colon >= (line.length() - 1))) {
-              throw new IllegalArgumentException(
-                  "Invalid setup line '" //$NON-NLS-1$
-                      + line + "'.");//$NON-NLS-1$
+          // we enter a comment?
+          if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
+            line = line.substring(1).trim();
+            if (line.length() <= 0) {
+              continue;
             }
 
-            final String key = line.substring(0, colon).trim();
-            final String value =
-                line.substring(colon + 1).trim();
-
-            if (key.isEmpty() || value.isEmpty()) {
-              throw new IllegalArgumentException(
-                  "Invalid setup line '" //$NON-NLS-1$
-                      + line
-                      + "': neither key nor value must be empty.");//$NON-NLS-1$
-            }
-
-            if (!setupKeys.add(key)) {
-              throw new IllegalArgumentException(
-                  "Invalid setup line '" //$NON-NLS-1$
-                      + line + "': key '" + //$NON-NLS-1$
-                      key + "' already appeared.");//$NON-NLS-1$
-            }
-
-            final boolean isStandard =
-                LogParser.STANDARD_SETUP_KEYS.contains(key);
-
-            if (isStandard) {
-              switch (key) {
-                case LogFormat.MAX_FES: {
-                  final long fes = Long.parseLong(value);
-                  if (fes <= 0L) {
-                    throw new IllegalArgumentException(
-                        "FEs budget must be positive, but is " //$NON-NLS-1$
-                            + fes);
+            if (LogFormat.BEGIN_LOG.equals(line)) {
+              switch (state_log) {
+                case 0: {
+                  if (state_setup == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin log section inside setup section.");//$NON-NLS-1$
                   }
-                  budgetFEs = fes;
-                  break;
-                }
-                case LogFormat.MAX_TIME: {
-                  final long time = Long.parseLong(value);
-                  if (time <= 0L) {
-                    throw new IllegalArgumentException(
-                        "Time budget must be positive, but is " //$NON-NLS-1$
-                            + time);
+                  if (state_state == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin log section inside state section??");//$NON-NLS-1$
                   }
-                  budgetTime = time;
-                  break;
-                }
-                case LogFormat.GOAL_F: {
-                  final double f = Double.parseDouble(value);
-                  if (Double.isNaN(f)
-                      || (f >= Double.POSITIVE_INFINITY)) {
-                    throw new IllegalArgumentException(
-                        "Goal objective value must be finite or negative infinite, but is " //$NON-NLS-1$
-                            + f);
+                  if (state_state != 0) {
+                    throw new IllegalStateException(
+                        "Log section must come before state section??");//$NON-NLS-1$
                   }
-                  goalF = f;
-                  break;
+                  state_log = 1;
+                  continue;
                 }
-                case LogFormat.RANDOM_SEED: {
-                  randSeedString = value;
-                  if ((!value
-                      .startsWith(LogFormat.RANDOM_SEED_PREFIX))
-                      || (value.length() < 3)) {
-                    throw new IllegalArgumentException(
-                        "Random seed must start with '" //$NON-NLS-1$
-                            + LogFormat.RANDOM_SEED_PREFIX
-                            + "' and contain at least one hexadecimal digit, but is "//$NON-NLS-1$
-                            + value);
-                  }
-                  randSeedLong = Long
-                      .parseUnsignedLong(value.substring(2), 16);
-                  break;
+                case 1: {
+                  throw new IllegalStateException(
+                      "Log section cannot begin inside log section.");//$NON-NLS-1$
                 }
                 default: {
                   throw new IllegalStateException(
-                      "Invalid standard setup key: "//$NON-NLS-1$
-                          + key);
+                      "Log section can only occur once.");//$NON-NLS-1$
                 }
               }
             }
 
-            if (setupConsumer != null) {
-              setupConsumer.accept(key, value, isStandard);
-            }
-            // end setup section
-          }
-
-          if (state_state == 1) {
-            // inside state section
-
-            final int colon =
-                line.indexOf(LogFormat.MAP_SEPARATOR_CHAR);
-            if ((colon <= 0) || (colon >= (line.length() - 1))) {
-              throw new IllegalArgumentException(
-                  "Invalid state line '" //$NON-NLS-1$
-                      + line + "'.");//$NON-NLS-1$
-            }
-
-            final String key = line.substring(0, colon).trim();
-            final String value =
-                line.substring(colon + 1).trim();
-
-            if (key.isEmpty() || value.isEmpty()) {
-              throw new IllegalArgumentException(
-                  "Invalid state line '" //$NON-NLS-1$
-                      + line
-                      + "': neither key nor value must be empty.");//$NON-NLS-1$
-            }
-
-            if (!stateKeys.add(key)) {
-              throw new IllegalArgumentException(
-                  "Invalid state line '" //$NON-NLS-1$
-                      + line + "': key '" + //$NON-NLS-1$
-                      key + "' already appeared.");//$NON-NLS-1$
+            if (LogFormat.END_OF_LOG.equals(line)) {
+              switch (state_log) {
+                case 0: {
+                  throw new IllegalStateException(
+                      "Log section can only end after log section begins.");//$NON-NLS-1$
+                }
+                case 1: {
+                  if (state_setup == 1) {
+                    throw new IllegalStateException(
+                        "Log section cannot end inside setup section??");//$NON-NLS-1$
+                  }
+                  if (state_state == 1) {
+                    throw new IllegalStateException(
+                        "Log section cannot end inside state section??");//$NON-NLS-1$
+                  }
+                  if (state_setup != 0) {
+                    throw new IllegalStateException(
+                        "Log section must end before state section??");//$NON-NLS-1$
+                  }
+                  state_log = 2;
+                  continue;
+                }
+                default: {
+                  throw new IllegalStateException(
+                      "Log section can only end once.");//$NON-NLS-1$
+                }
+              }
             }
 
-            switch (key) {
-
-              case LogFormat.CONSUMED_FES: {
-                final long t = Long.parseLong(value);
-                if (t <= 0L) {
-                  throw new IllegalArgumentException(
-                      "Consumed FEs in state must be positive, but are "//$NON-NLS-1$
-                          + t);
+            if (LogFormat.BEGIN_SETUP.equals(line)) {
+              switch (state_setup) {
+                case 0: {
+                  if (state_log == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin setup section inside log section.");//$NON-NLS-1$
+                  }
+                  if (state_state == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin setup section inside state section.");//$NON-NLS-1$
+                  }
+                  state_setup = 1;
+                  setupKeys = new HashSet<>();
+                  continue;
                 }
-                if (t < fe_max) {
-                  throw new IllegalArgumentException(
-                      "Consumed FEs in state must be at least as much as in log, but are "//$NON-NLS-1$
-                          + t + " compared to the " + fe_max + //$NON-NLS-1$
-                          " in the log.");//$NON-NLS-1$
+                case 1: {
+                  throw new IllegalStateException(
+                      "Setup section cannot begin inside setup section.");//$NON-NLS-1$
                 }
-                if (t > fe_max) {
-                  fe_max = t;
-                  invokeLogAfterState = true;
+                default: {
+                  throw new IllegalStateException(
+                      "Setup section can only occur once.");//$NON-NLS-1$
                 }
-                break;
               }
+            }
 
-              case LogFormat.LAST_IMPROVEMENT_FE: {
-                final long t = Long.parseLong(value);
-                if (t != fe_last_improvement) {
-                  throw new IllegalArgumentException(
-                      "Last improvement FEs in state must be same as in log, but are "//$NON-NLS-1$
-                          + t + " compared to the " //$NON-NLS-1$
-                          + fe_last_improvement
-                          + " in the log.");//$NON-NLS-1$
+            if (LogFormat.END_SETUP.equals(line)) {
+              switch (state_setup) {
+                case 0: {
+                  throw new IllegalStateException(
+                      "Setup section can only end after setup section begins.");//$NON-NLS-1$
                 }
-                if (t > fe_max) {
-                  throw new IllegalArgumentException(
-                      "Last improvement FEs in state must be less than max FEs, but are "//$NON-NLS-1$
-                          + t + " compared to the " + fe_max + //$NON-NLS-1$
-                          " in the log.");//$NON-NLS-1$
+                case 1: {
+                  if (state_log == 1) {
+                    throw new IllegalStateException(
+                        "Setup section cannot end inside log section??");//$NON-NLS-1$
+                  }
+                  if (state_state == 1) {
+                    throw new IllegalStateException(
+                        "Setup section cannot end inside state section??");//$NON-NLS-1$
+                  }
+                  state_setup = 2;
+                  continue;
                 }
-                break;
+                default: {
+                  throw new IllegalStateException(
+                      "Setup section can only end once.");//$NON-NLS-1$
+                }
               }
+            }
 
-              case LogFormat.CONSUMED_TIME: {
-                final long t = Long.parseLong(value);
-                if (t < 0L) {
-                  throw new IllegalArgumentException(
-                      "Consumed time in state must be 0 or positive, but is "//$NON-NLS-1$
-                          + t);
+            if (LogFormat.BEGIN_STATE.equals(line)) {
+              switch (state_state) {
+                case 0: {
+                  if (state_log == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin state section inside log section.");//$NON-NLS-1$
+                  }
+                  if (state_log != 2) {
+                    throw new IllegalStateException(
+                        "Can begin state section only after log section.");//$NON-NLS-1$
+                  }
+                  if (state_setup == 1) {
+                    throw new IllegalStateException(
+                        "Cannot begin state section inside setup section.");//$NON-NLS-1$
+                  }
+                  state_state = 1;
+                  stateKeys = new HashSet<>();
+                  continue;
                 }
-                if (t < time_max) {
-                  throw new IllegalArgumentException(
-                      "Consumed time in state must be at least as much as in log, but is "//$NON-NLS-1$
-                          + t + " compared to the " + time_max + //$NON-NLS-1$
-                          " in the log.");//$NON-NLS-1$
+                case 1: {
+                  throw new IllegalStateException(
+                      "State section cannot begin inside state section.");//$NON-NLS-1$
                 }
-                if (t > time_max) {
-                  time_max = t;
-                  invokeLogAfterState = true;
+                default: {
+                  throw new IllegalStateException(
+                      "State section can only occur once.");//$NON-NLS-1$
                 }
-                break;
               }
+            }
 
-              case LogFormat.LAST_IMPROVEMENT_TIME: {
-                final long t = Long.parseLong(value);
-                if (t != time_last_improvement) {
-                  throw new IllegalArgumentException(
-                      "Last improvement time in state must be same as in log, but is "//$NON-NLS-1$
-                          + t + " compared to the " //$NON-NLS-1$
-                          + time_last_improvement
-                          + " in the log.");//$NON-NLS-1$
+            if (LogFormat.END_STATE.equals(line)) {
+              switch (state_state) {
+                case 0: {
+                  throw new IllegalStateException(
+                      "State section can only end after state section begins.");//$NON-NLS-1$
                 }
-                if (t > time_max) {
-                  throw new IllegalArgumentException(
-                      "Last improvement time in state must be less than max time, but is "//$NON-NLS-1$
-                          + t + " compared to the " + time_max + //$NON-NLS-1$
-                          " in the log.");//$NON-NLS-1$
+                case 1: {
+                  if (state_log == 1) {
+                    throw new IllegalStateException(
+                        "State section cannot end inside log section??");//$NON-NLS-1$
+                  }
+                  if (state_log != 2) {
+                    throw new IllegalStateException(
+                        "State section can only end after log section??");//$NON-NLS-1$
+                  }
+                  if (state_setup == 1) {
+                    throw new IllegalStateException(
+                        "State section cannot end inside setup section??");//$NON-NLS-1$
+                  }
+                  state_state = 2;
+
+                  if (invokeLogAfterState
+                      && (logConsumer != null)) {
+                    logConsumer.accept(fe_last_improvement,
+                        fe_max, time_last_improvement, time_max,
+                        improvements, f_min, false);
+                  }
+
+                  continue;
                 }
-                break;
+                default: {
+                  throw new IllegalStateException(
+                      "State section can only end once.");//$NON-NLS-1$
+                }
               }
+            }
 
-              case LogFormat.BEST_F: {
-                final double t = Double.parseDouble(value);
-                if (t != f_min) {
-                  throw new IllegalArgumentException(
-                      "Best-f value in state must be same as in log, but is "//$NON-NLS-1$
-                          + t + " compared to the " + f_min + //$NON-NLS-1$
-                          " in the log.");//$NON-NLS-1$
-                }
-                if (!Double.isFinite(f_min)) {
-                  throw new IllegalArgumentException(
-                      ("Best-f value in state must be finite, but is "//$NON-NLS-1$
-                          + t) + '.');
-                }
-                break;
-              }
+            if (state_setup == 1) {
+              // ok, we are in the setup section
 
-              default: {
+              final int colon =
+                  line.indexOf(LogFormat.MAP_SEPARATOR_CHAR);
+              if ((colon <= 0)
+                  || (colon >= (line.length() - 1))) {
                 throw new IllegalArgumentException(
-                    "Invalid state key: " + key);//$NON-NLS-1$
+                    "Invalid setup line '" //$NON-NLS-1$
+                        + line + "'.");//$NON-NLS-1$
               }
+
+              final String key = line.substring(0, colon).trim();
+              final String value =
+                  line.substring(colon + 1).trim();
+
+              if (key.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Invalid setup line '" //$NON-NLS-1$
+                        + line
+                        + "': neither key nor value must be empty.");//$NON-NLS-1$
+              }
+
+              if (!setupKeys.add(key)) {
+                throw new IllegalArgumentException(
+                    "Invalid setup line '" //$NON-NLS-1$
+                        + line + "': key '" + //$NON-NLS-1$
+                        key + "' already appeared.");//$NON-NLS-1$
+              }
+
+              final boolean isStandard =
+                  LogParser.STANDARD_SETUP_KEYS.contains(key);
+
+              if (isStandard) {
+                switch (key) {
+                  case LogFormat.MAX_FES: {
+                    final long fes = Long.parseLong(value);
+                    if (fes <= 0L) {
+                      throw new IllegalArgumentException(
+                          "FEs budget must be positive, but is " //$NON-NLS-1$
+                              + fes);
+                    }
+                    budgetFEs = fes;
+                    break;
+                  }
+                  case LogFormat.MAX_TIME: {
+                    final long time = Long.parseLong(value);
+                    if (time <= 0L) {
+                      throw new IllegalArgumentException(
+                          "Time budget must be positive, but is " //$NON-NLS-1$
+                              + time);
+                    }
+                    budgetTime = time;
+                    break;
+                  }
+                  case LogFormat.GOAL_F: {
+                    final double f = Double.parseDouble(value);
+                    if (Double.isNaN(f)
+                        || (f >= Double.POSITIVE_INFINITY)) {
+                      throw new IllegalArgumentException(
+                          "Goal objective value must be finite or negative infinite, but is " //$NON-NLS-1$
+                              + f);
+                    }
+                    goalF = f;
+                    break;
+                  }
+                  case LogFormat.RANDOM_SEED: {
+                    randSeedString = value;
+                    if ((!value.startsWith(
+                        LogFormat.RANDOM_SEED_PREFIX))
+                        || (value.length() < 3)) {
+                      throw new IllegalArgumentException(
+                          "Random seed must start with '" //$NON-NLS-1$
+                              + LogFormat.RANDOM_SEED_PREFIX
+                              + "' and contain at least one hexadecimal digit, but is "//$NON-NLS-1$
+                              + value);
+                    }
+                    randSeedLong = Long.parseUnsignedLong(
+                        value.substring(2), 16);
+                    break;
+                  }
+                  default: {
+                    throw new IllegalStateException(
+                        "Invalid standard setup key: "//$NON-NLS-1$
+                            + key);
+                  }
+                }
+              }
+
+              if (setupConsumer != null) {
+                setupConsumer.accept(key, value, isStandard);
+              }
+              // end setup section
             }
 
-            // end state section
+            if (state_state == 1) {
+              // inside state section
+
+              final int colon =
+                  line.indexOf(LogFormat.MAP_SEPARATOR_CHAR);
+              if ((colon <= 0)
+                  || (colon >= (line.length() - 1))) {
+                throw new IllegalArgumentException(
+                    "Invalid state line '" //$NON-NLS-1$
+                        + line + "'.");//$NON-NLS-1$
+              }
+
+              final String key = line.substring(0, colon).trim();
+              final String value =
+                  line.substring(colon + 1).trim();
+
+              if (key.isEmpty() || value.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Invalid state line '" //$NON-NLS-1$
+                        + line
+                        + "': neither key nor value must be empty.");//$NON-NLS-1$
+              }
+
+              if (!stateKeys.add(key)) {
+                throw new IllegalArgumentException(
+                    "Invalid state line '" //$NON-NLS-1$
+                        + line + "': key '" + //$NON-NLS-1$
+                        key + "' already appeared.");//$NON-NLS-1$
+              }
+
+              switch (key) {
+
+                case LogFormat.CONSUMED_FES: {
+                  final long t = Long.parseLong(value);
+                  if (t <= 0L) {
+                    throw new IllegalArgumentException(
+                        "Consumed FEs in state must be positive, but are "//$NON-NLS-1$
+                            + t);
+                  }
+                  if (t < fe_max) {
+                    throw new IllegalArgumentException(
+                        "Consumed FEs in state must be at least as much as in log, but are "//$NON-NLS-1$
+                            + t + " compared to the " + fe_max + //$NON-NLS-1$
+                            " in the log.");//$NON-NLS-1$
+                  }
+                  if (t > fe_max) {
+                    fe_max = t;
+                    invokeLogAfterState = true;
+                  }
+                  break;
+                }
+
+                case LogFormat.LAST_IMPROVEMENT_FE: {
+                  final long t = Long.parseLong(value);
+                  if (t != fe_last_improvement) {
+                    throw new IllegalArgumentException(
+                        "Last improvement FEs in state must be same as in log, but are "//$NON-NLS-1$
+                            + t + " compared to the " //$NON-NLS-1$
+                            + fe_last_improvement
+                            + " in the log.");//$NON-NLS-1$
+                  }
+                  if (t > fe_max) {
+                    throw new IllegalArgumentException(
+                        "Last improvement FEs in state must be less than max FEs, but are "//$NON-NLS-1$
+                            + t + " compared to the " + fe_max + //$NON-NLS-1$
+                            " in the log.");//$NON-NLS-1$
+                  }
+                  break;
+                }
+
+                case LogFormat.CONSUMED_TIME: {
+                  final long t = Long.parseLong(value);
+                  if (t < 0L) {
+                    throw new IllegalArgumentException(
+                        "Consumed time in state must be 0 or positive, but is "//$NON-NLS-1$
+                            + t);
+                  }
+                  if (t < time_max) {
+                    throw new IllegalArgumentException(
+                        "Consumed time in state must be at least as much as in log, but is "//$NON-NLS-1$
+                            + t + " compared to the " + time_max //$NON-NLS-1$
+                            + " in the log.");//$NON-NLS-1$
+                  }
+                  if (t > time_max) {
+                    time_max = t;
+                    invokeLogAfterState = true;
+                  }
+                  break;
+                }
+
+                case LogFormat.LAST_IMPROVEMENT_TIME: {
+                  final long t = Long.parseLong(value);
+                  if (t != time_last_improvement) {
+                    throw new IllegalArgumentException(
+                        "Last improvement time in state must be same as in log, but is "//$NON-NLS-1$
+                            + t + " compared to the " //$NON-NLS-1$
+                            + time_last_improvement
+                            + " in the log.");//$NON-NLS-1$
+                  }
+                  if (t > time_max) {
+                    throw new IllegalArgumentException(
+                        "Last improvement time in state must be less than max time, but is "//$NON-NLS-1$
+                            + t + " compared to the " + time_max //$NON-NLS-1$
+                            + " in the log.");//$NON-NLS-1$
+                  }
+                  break;
+                }
+
+                case LogFormat.BEST_F: {
+                  final double t = Double.parseDouble(value);
+                  if (t != f_min) {
+                    throw new IllegalArgumentException(
+                        "Best-f value in state must be same as in log, but is "//$NON-NLS-1$
+                            + t + " compared to the " + f_min + //$NON-NLS-1$
+                            " in the log.");//$NON-NLS-1$
+                  }
+                  if (!Double.isFinite(f_min)) {
+                    throw new IllegalArgumentException(
+                        ("Best-f value in state must be finite, but is "//$NON-NLS-1$
+                            + t) + '.');
+                  }
+                  break;
+                }
+
+                default: {
+                  throw new IllegalArgumentException(
+                      "Invalid state key: " + key);//$NON-NLS-1$
+                }
+              }
+
+              // end state section
+            }
+
+            continue;
           }
 
-          continue;
-        }
+          // ok, no comment or tag
+          if (state_log == 1) {
+            final int semi_1 =
+                line.indexOf(LogFormat.CSV_SEPARATOR_CHAR);
+            final int semi_2 =
+                line.lastIndexOf(LogFormat.CSV_SEPARATOR_CHAR);
+            if ((semi_1 <= 0) || (semi_2 <= semi_1)
+                || (semi_2 >= (line.length() - 1))) {
+              throw new IllegalArgumentException(//
+                  "Invalid log point '" + //$NON-NLS-1$
+                      line + "', must contain '" + //$NON-NLS-1$
+                      LogFormat.CSV_SEPARATOR_CHAR + "' twice."); //$NON-NLS-1$
+            }
 
-        // ok, no comment or tag
-        if (state_log == 1) {
-          final int semi_1 =
-              line.indexOf(LogFormat.CSV_SEPARATOR_CHAR);
-          final int semi_2 =
-              line.lastIndexOf(LogFormat.CSV_SEPARATOR_CHAR);
-          if ((semi_1 <= 0) || (semi_2 <= semi_1)
-              || (semi_2 >= (line.length() - 1))) {
-            throw new IllegalArgumentException(//
-                "Invalid log point '" + //$NON-NLS-1$
-                    line + "', must contain '" + //$NON-NLS-1$
-                    LogFormat.CSV_SEPARATOR_CHAR + "' twice."); //$NON-NLS-1$
+            try {
+              final double f = Double
+                  .parseDouble(line.substring(0, semi_1).trim());
+              if (!(Double.isFinite(f))) {
+                throw new IllegalArgumentException(
+                    "Objective values must be finite, but encountered: " //$NON-NLS-1$
+                        + f);
+              }
+              if (f > f_min) {
+                throw new IllegalArgumentException(
+                    "Obj        ective values must be monotonously decreasing, but encountered: " //$NON-NLS-1$
+                        + f + " after " + f_min); //$NON-NLS-1$
+              }
+
+              final long fes = Long.parseLong(
+                  line.substring(semi_1 + 1, semi_2).trim());
+              if (fes < 1L) {
+                throw new IllegalArgumentException(
+                    "FEs must be positive, but encountered: " //$NON-NLS-1$
+                        + fes);
+              }
+              if (fes < fe_max) {
+                throw new IllegalArgumentException(
+                    "Function evaluations must be monotonously increasing, but encountered: " //$NON-NLS-1$
+                        + fes + " after " + fe_max); //$NON-NLS-1$
+              }
+              if ((fes == fe_max) && (f != f_min)) {
+                throw new IllegalArgumentException(
+                    "If function evaluations don't increase, best.f cannot decrease, but found: " //$NON-NLS-1$
+                        + fes + " after " + fe_max + //$NON-NLS-1$
+                        " and " + f + //$NON-NLS-1$
+                        " after " + f_min);//$NON-NLS-1$
+              }
+              if (fes > budgetFEs) {
+                throw new IllegalArgumentException(
+                    "Function evaluations " + fes + //$NON-NLS-1$
+                        " exceed budget of " + budgetFEs); //$NON-NLS-1$
+              }
+
+              final long time = Long
+                  .parseLong(line.substring(semi_2 + 1).trim());
+              if (time < 0L) {
+                throw new IllegalArgumentException(
+                    "Times must be 0 or positive, but encountered: " //$NON-NLS-1$
+                        + time);
+              }
+              if (time < time_max) {
+                throw new IllegalArgumentException(
+                    "Times must be monotonously increasing, but encountered: " //$NON-NLS-1$
+                        + time + " after " //$NON-NLS-1$
+                        + time_max);
+              }
+              LogParser._checkTime(time, budgetTime);
+
+              boolean invokeLog = (logConsumer != null);
+              final boolean is_improvement = (f < f_min);
+              if (is_improvement) {
+                f_min = f;
+                ++improvements;
+                time_last_improvement = time;
+                fe_last_improvement = fes;
+              } else {
+                invokeLog &=
+                    ((time > time_max) || (fes > fe_max));
+              }
+              time_max = time;
+              fe_max = fes;
+
+              if (invokeLog) {
+                logConsumer.accept(fe_last_improvement, fe_max,
+                    time_last_improvement, time_max,
+                    improvements, f_min, is_improvement);
+              }
+            } catch (final Throwable error2) {
+              throw new IllegalArgumentException(//
+                  "Invalid log point '" + line//$NON-NLS-1$
+                      + "', parse- or validation error.", //$NON-NLS-1$
+                  error2);
+            }
+
+            // end log state
+            continue;
           }
 
-          try {
-            final double f = Double
-                .parseDouble(line.substring(0, semi_1).trim());
-            if (!(Double.isFinite(f))) {
-              throw new IllegalArgumentException(
-                  "Objective values must be finite, but encountered: " //$NON-NLS-1$
-                      + f);
-            }
-            if (f > f_min) {
-              throw new IllegalArgumentException(
-                  "Objective values must be monotonously decreasing, but encountered: " //$NON-NLS-1$
-                      + f + " after " + f_min); //$NON-NLS-1$
-            }
-
-            final long fes = Long.parseLong(
-                line.substring(semi_1 + 1, semi_2).trim());
-            if (fes < 1L) {
-              throw new IllegalArgumentException(
-                  "FEs must be positive, but encountered: " //$NON-NLS-1$
-                      + fes);
-            }
-            if (fes < fe_max) {
-              throw new IllegalArgumentException(
-                  "Function evaluations must be monotonously increasing, but encountered: " //$NON-NLS-1$
-                      + fes + " after " + fe_max); //$NON-NLS-1$
-            }
-            if ((fes == fe_max) && (f != f_min)) {
-              throw new IllegalArgumentException(
-                  "If function evaluations don't increase, best.f cannot decrease, but found: " //$NON-NLS-1$
-                      + fes + " after " + fe_max + //$NON-NLS-1$
-                      " and " + f + //$NON-NLS-1$
-                      " after " + f_min);//$NON-NLS-1$
-            }
-            if (fes > budgetFEs) {
-              throw new IllegalArgumentException(
-                  "Function evaluations " + fes + //$NON-NLS-1$
-                      " exceed budget of " + budgetFEs); //$NON-NLS-1$
-            }
-
-            final long time = Long
-                .parseLong(line.substring(semi_2 + 1).trim());
-            if (time < 0L) {
-              throw new IllegalArgumentException(
-                  "Times must be 0 or positive, but encountered: " //$NON-NLS-1$
-                      + time);
-            }
-            if (time < time_max) {
-              throw new IllegalArgumentException(
-                  "Times must be monotonously increasing, but encountered: " //$NON-NLS-1$
-                      + time + " after " //$NON-NLS-1$
-                      + time_max);
-            }
-            LogParser._checkTime(time, budgetTime);
-
-            boolean invokeLog = (logConsumer != null);
-            final boolean is_improvement = (f < f_min);
-            if (is_improvement) {
-              f_min = f;
-              ++improvements;
-              time_last_improvement = time;
-              fe_last_improvement = fes;
-            } else {
-              invokeLog &= ((time > time_max) || (fes > fe_max));
-            }
-            time_max = time;
-            fe_max = fes;
-
-            if (invokeLog) {
-              logConsumer.accept(fe_last_improvement, fe_max,
-                  time_last_improvement, time_max, improvements,
-                  f_min, is_improvement);
-            }
-          } catch (final Throwable error2) {
-            throw new IllegalArgumentException(//
-                "Invalid log point '" + line//$NON-NLS-1$
-                    + "', parse- or validation error.", //$NON-NLS-1$
-                error2);
-          }
-
-          // end log state
-          continue;
+        } catch (final Throwable error2) {
+          throw new IOException(//
+              "Line " + lineIndex //$NON-NLS-1$
+                  + " is invalid: '" //$NON-NLS-1$
+                  + line2 + "'.", //$NON-NLS-1$
+              error2);
         }
       }
 

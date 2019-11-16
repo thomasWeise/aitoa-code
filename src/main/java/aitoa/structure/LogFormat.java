@@ -17,6 +17,9 @@ public final class LogFormat {
   /** the map separator char */
   public static final char MAP_SEPARATOR_CHAR = ':';
 
+  /** the suffix to be used for all log and data files */
+  public static final String FILE_SUFFIX = ".txt";//$NON-NLS-1$
+
   /** the log begin */
   public static final String BEGIN_LOG = "BEGIN_LOG"; //$NON-NLS-1$
 

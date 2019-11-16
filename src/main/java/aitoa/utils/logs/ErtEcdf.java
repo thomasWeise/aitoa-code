@@ -1,5 +1,6 @@
 package aitoa.utils.logs;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -14,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.regex.Pattern;
@@ -21,25 +23,33 @@ import java.util.regex.Pattern;
 import aitoa.structure.LogFormat;
 import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
-import aitoa.utils.Experiment;
 import aitoa.utils.IOUtils;
 
-/** Create data for Ert-EcdF diagrams. */
+/**
+ * Create data for Ert-EcdF diagrams.
+ * <p>
+ * Warning: This class assumes that the goals are somehow the
+ * global optima. In other words, it is not possible to make
+ * improvements after the goals are reached. If this assumption
+ * does not hold, then we need another approach and this class
+ * cannot be used. If the assumption holds, then the ert-ecdf can
+ * directly be created from the end results statistics file.
+ */
 public final class ErtEcdf {
   /** the base folder name for ert ecdf files */
   public static final String ERT_ECDF_FOLDER = "ertEcdf"; //$NON-NLS-1$
   /** the name for time column */
-  public static final String COL_TIME = "ertTime";//$NON-NLS-1$
+  public static final String COL_TIME = "ert.time";//$NON-NLS-1$
   /** the name for fes columns */
-  public static final String COL_FES = "ertFEs";//$NON-NLS-1$
+  public static final String COL_FES = "ert.FEs";//$NON-NLS-1$
   /** the relative ECDF value, always between 0 and 1 */
-  public static final String COL_ECDF_REL = "ecdfRel";//$NON-NLS-1$
+  public static final String COL_ECDF_REL = "ecdf.rel";//$NON-NLS-1$
   /** the absolute ecdf value, always an integer */
-  public static final String COL_ECDF_ABS = "ecdfAbs";//$NON-NLS-1$
+  public static final String COL_ECDF_ABS = "ecdf.abs";//$NON-NLS-1$
   /** the name for time sub-folders */
-  public static final String USE_TIME_FOLDER = ErtEcdf.COL_TIME;
+  public static final String USE_TIME_FOLDER = "ertTime";//$NON-NLS-1$
   /** the name for fes sub-folders */
-  public static final String USE_FES_FOLDER = ErtEcdf.COL_FES;
+  public static final String USE_FES_FOLDER = "ertFEs";//$NON-NLS-1$
 
   /**
    * write an ecdf line
@@ -67,7 +77,8 @@ public final class ErtEcdf {
   }
 
   /**
-   * Create the end result statistics table.
+   * Create a folder with ERT-ECDF diagram data files. For each
+   * selected algorithm, one file will be generated.
    *
    * @param endResultStatistics
    *          the path to the end results statistics file
@@ -90,7 +101,9 @@ public final class ErtEcdf {
    * @param logProgressToConsole
    *          should logging information be printed?
    * @return a map associating algorithm ids with the generated
-   *         ert-ecdf data files
+   *         ert-ecdf data files, which additionally contains the
+   *         path to the generated directory under key
+   *         {@code null}
    * @throws IOException
    *           if i/o fails
    */
@@ -128,21 +141,14 @@ public final class ErtEcdf {
       ertName = ErtEcdf.USE_TIME_FOLDER;
     }
 
-    final String baseName;
     final Path endFolder;
     if ((selectionID == null) || (selectionID.isEmpty())) {
-      baseName = Experiment
-          .nameStringsMerge(ErtEcdf.ERT_ECDF_FOLDER, ertName);
-      endFolder = IOUtils.canonicalizePath(out
-          .resolve(ErtEcdf.ERT_ECDF_FOLDER).resolve(baseName));
+      endFolder = IOUtils.canonicalizePath(
+          out.resolve(ErtEcdf.ERT_ECDF_FOLDER).resolve(ertName));
     } else {
-      baseName = Experiment.nameStringsMerge(
-          ErtEcdf.ERT_ECDF_FOLDER, ertName, selectionID);
       endFolder = IOUtils
           .canonicalizePath(out.resolve(ErtEcdf.ERT_ECDF_FOLDER)
-              .resolve(Experiment.nameStringsMerge(
-                  ErtEcdf.ERT_ECDF_FOLDER, ertName))
-              .resolve(baseName));
+              .resolve(ertName).resolve(selectionID));
     }
 
     if (Files.exists(endFolder)) {
@@ -211,8 +217,7 @@ public final class ErtEcdf {
 
     for (final __Algorithm algo : result.algorithms) {
       final Path path = IOUtils.canonicalizePath(
-          endFolder.resolve(Experiment.nameStringsMerge(baseName,
-              algo.algorithm) + ".txt"));//$NON-NLS-1$
+          endFolder.resolve(algo.algorithm + ".txt"));//$NON-NLS-1$
 
       try (final BufferedWriter bw =
           Files.newBufferedWriter(path)) {
@@ -248,6 +253,10 @@ public final class ErtEcdf {
     if (logProgressToConsole) {
       ConsoleIO.stdout("Done writing to '"//$NON-NLS-1$
           + endFolder + "'.");//$NON-NLS-1$
+    }
+
+    if (output.put(null, endFolder) != null) {
+      throw new ConcurrentModificationException();
     }
 
     return Collections.unmodifiableMap(output);
@@ -469,6 +478,233 @@ public final class ErtEcdf {
         return i;
       }
       return this.instance.compareTo(o.instance);
+    }
+  }
+
+  /**
+   * Read and verify an ert-ecdf file.
+   *
+   * @param path
+   *          the path to end results table
+   * @param consumer
+   *          the consumer for the data
+   * @param logProgressToConsole
+   *          should logging information be printed?
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void parseErtEcdfFile(final Path path,
+      final Consumer<ErtEcdfPoint> consumer,
+      final boolean logProgressToConsole) throws IOException {
+
+    final Path p = IOUtils.canonicalizePath(path);
+    if (!(Files.exists(p) && Files.isRegularFile(p)
+        && Files.isReadable(p))) {
+      throw new IOException("Path " + p + //$NON-NLS-1$
+          " is not a readable file.");//$NON-NLS-1$
+    }
+
+    if (consumer == null) {
+      throw new NullPointerException(//
+          "null end result consumer");//$NON-NLS-1$
+    }
+
+    if (logProgressToConsole) {
+      ConsoleIO.stdout(//
+          "Now parsing ert-ecdf file '"//$NON-NLS-1$
+              + p + "'.");//$NON-NLS-1$
+    }
+
+    try (final BufferedReader br = Files.newBufferedReader(p)) {
+      ErtEcdfPoint e1 = new ErtEcdfPoint();
+      ErtEcdfPoint e2 = new ErtEcdfPoint();
+      ErtEcdfPoint etemp;
+      String line2;
+      int lineIndex = 0;
+      boolean hasLine = false;
+      boolean mustBeLast = false;
+
+      while ((line2 = br.readLine()) != null) {
+        ++lineIndex;
+        if (line2.isEmpty()) {
+          continue;
+        }
+        final String line = line2.trim();
+        if (line.isEmpty()) {
+          continue;
+        }
+        if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
+          continue;
+        }
+
+        if (mustBeLast) {
+          throw new IllegalStateException(
+              "Line comes after last permitted one."); //$NON-NLS-1$
+        }
+
+        try {
+          int lastSemi = -1;
+          int nextSemi =
+              line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                  ++lastSemi);
+          e1.ert = Double.parseDouble(
+              line.substring(lastSemi, nextSemi).trim());
+          if ((!Double.isFinite(e1.ert)) || (e1.ert < 0d)) {
+            throw new IllegalArgumentException(
+                "ERT values must be >=0 and finite, but encountered " //$NON-NLS-1$
+                    + e1.ert);
+          }
+          if (hasLine) {
+            if ((e1.ert <= e2.ert) && (e1.ert != 0d)) {
+              throw new IllegalStateException(
+                  "ERT values must be increasing, with the only possible exception at time 0. But encountered " //$NON-NLS-1$
+                      + e1.ert + " after " + e2.ert); //$NON-NLS-1$
+            }
+          }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e1.ecdfRel = Double.parseDouble(
+              line.substring(lastSemi, nextSemi).trim());
+          if ((!Double.isFinite(e1.ecdfRel)) || (e1.ecdfRel < 0d)
+              || (e1.ecdfRel > 1d)) {
+            throw new IllegalArgumentException(
+                "Relative ECDF must be in [0,1], but encountered " //$NON-NLS-1$
+                    + e1.ecdfRel);
+          }
+          lastSemi = nextSemi;
+          if (hasLine) {
+            if (e1.ecdfRel < e2.ecdfRel) {
+              throw new IllegalStateException(
+                  "ECDF values must be increasing, but encountered " //$NON-NLS-1$
+                      + e1.ecdfRel + " after " + e2.ecdfRel); //$NON-NLS-1$
+            }
+            if (e1.ecdfRel <= e2.ecdfRel) {
+              mustBeLast = true;
+            }
+          }
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          if (nextSemi >= 0) {
+            throw new IllegalStateException("too many columns"); //$NON-NLS-1$
+          }
+          nextSemi = line.length();
+
+          e1.ecdfAbs = Integer.parseInt(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e1.ecdfAbs < 0) {
+            throw new IllegalArgumentException(
+                "There cannot be " + e1.ecdfAbs//$NON-NLS-1$
+                    + " successful runs."); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+          if (hasLine) {
+            if (e1.ecdfAbs < e2.ecdfAbs) {
+              throw new IllegalStateException(
+                  "ECDF values must be increasing, but encountered " //$NON-NLS-1$
+                      + e1.ecdfAbs + " after " + e2.ecdfAbs); //$NON-NLS-1$
+            }
+            if (e1.ecdfAbs <= e2.ecdfAbs) {
+              if (!mustBeLast) {
+                throw new IllegalStateException(
+                    "If last ecdf.rel is "//$NON-NLS-1$
+                        + e2.ecdfRel
+                        + " and current ecdf.rel is " + //$NON-NLS-1$
+                        e1.ecdfRel
+                        + ", then current ecdf.abs cannot be " + //$NON-NLS-1$
+                        e1.ecdfAbs + " if last ecdf.abs was " //$NON-NLS-1$
+                        + e2.ecdfAbs);
+              }
+            }
+          }
+
+          consumer.accept(e1);
+
+          hasLine = true;
+          etemp = e1;
+          e1 = e2;
+          e2 = etemp;
+        } catch (final Throwable error2) {
+          throw new IOException(//
+              "Line " + lineIndex //$NON-NLS-1$
+                  + " is invalid: '" //$NON-NLS-1$
+                  + line2 + "'.", //$NON-NLS-1$
+              error2);
+        }
+      }
+
+      if (!hasLine) {
+        throw new IOException("no ert-ecdf data found");//$NON-NLS-1$
+      }
+    } catch (final Throwable error) {
+      throw new IOException("Error when parsing ertEcdf file '"//$NON-NLS-1$
+          + p + "'.", error);//$NON-NLS-1$
+    }
+  }
+
+  /**
+   * Read and verify a directory of ert-ecdf files.
+   *
+   * @param path
+   *          the path to end results table
+   * @param consumers
+   *          a function which provides consumers for algorithm
+   *          files. The input is the algorithm id, the output
+   *          must be the consumer to parse the file.
+   * @param logProgressToConsole
+   *          should logging information be printed?
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void parseErtEcdfFiles(final Path path,
+      final Function<String, Consumer<ErtEcdfPoint>> consumers,
+      final boolean logProgressToConsole) throws IOException {
+
+    if (consumers == null) {
+      throw new NullPointerException(//
+          "null end result consumers");//$NON-NLS-1$
+    }
+
+    final Path in = IOUtils.canonicalizePath(path);
+    if (!(Files.exists(in) && Files.isDirectory(in))) {
+      throw new IOException(path + " is not a directory."); //$NON-NLS-1$
+    }
+
+    if (logProgressToConsole) {
+      ConsoleIO.stdout(//
+          "Now parsing all files in ert-ecdf directory '"//$NON-NLS-1$
+              + in + "'.");//$NON-NLS-1$
+    }
+
+    boolean hasFile = false;
+    for (final Path file : IOUtils.files(in)) {
+      final String name = file.getFileName().toString();
+      if (name.endsWith(LogFormat.FILE_SUFFIX)) {
+        final String algo = name
+            .substring(0,
+                name.length() - LogFormat.FILE_SUFFIX.length())
+            .trim();
+        if (algo.isEmpty()) {
+          throw new IOException(
+              "Invalid algorithm name for file '"//$NON-NLS-1$
+                  + file + "'.");//$NON-NLS-1$
+        }
+        ErtEcdf.parseErtEcdfFile(file, consumers.apply(algo),
+            logProgressToConsole);
+        hasFile = true;
+      } else {
+        throw new IllegalStateException("File '" + //$NON-NLS-1$
+            file + "' not permitted, must end with '"//$NON-NLS-1$
+            + LogFormat.FILE_SUFFIX + "'.");//$NON-NLS-1$
+      }
+    }
+
+    if (!hasFile) {
+      throw new IOException(//
+          "Ert-Ecdf directory '" + path + //$NON-NLS-1$
+              "' does not contain any file!");//$NON-NLS-1$
     }
   }
 

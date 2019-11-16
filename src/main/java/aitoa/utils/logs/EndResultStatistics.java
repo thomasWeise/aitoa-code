@@ -22,13 +22,19 @@ import aitoa.utils.Statistics;
 
 /**
  * With this class we create a CSV file with end result
- * statistics
+ * statistics.
+ * <p>
+ * Warning: This class assumes that the goals used to compute the
+ * ERTs are somehow the global optima. In other words, it is not
+ * possible to make improvements after the goals are reached. If
+ * this assumption does not hold, then the ERTs computed here
+ * cannot be used and will be wrong.
  */
 public class EndResultStatistics {
 
   /** the file name used for end result statistics tables */
-  public static final String FILE_NAME =
-      "endResultStatistics.txt"; //$NON-NLS-1$
+  public static final String FILE_NAME = "endResultStatistics" //$NON-NLS-1$
+      + LogFormat.FILE_SUFFIX;
 
   /** the column with the number of successes */
   public static final String COL_RUNS = "n.runs";//$NON-NLS-1$
@@ -416,13 +422,15 @@ public class EndResultStatistics {
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
       final EndResultStatistic e = new EndResultStatistic();
-      String line;
+      String line2;
+      int lineIndex = 0;
 
-      while ((line = br.readLine()) != null) {
-        if (line.isEmpty()) {
+      while ((line2 = br.readLine()) != null) {
+        ++lineIndex;
+        if (line2.isEmpty()) {
           continue;
         }
-        line = line.trim();
+        final String line = line2.trim();
         if (line.isEmpty()) {
           continue;
         }
@@ -1827,11 +1835,18 @@ public class EndResultStatistics {
 
           consumer.accept(e);
         } catch (final Throwable error) {
-          throw new IOException("Invalid line '" + line + //$NON-NLS-1$
-              "' in end results file '" + //$NON-NLS-1$
-              p + "'.", error);//$NON-NLS-1$
+          throw new IOException(//
+              "Line " + lineIndex //$NON-NLS-1$
+                  + " is invalid: '" //$NON-NLS-1$
+                  + line2 + "'.", //$NON-NLS-1$
+              error);
         }
       }
+    } catch (final Throwable error) {
+      throw new IOException(
+          "Error when parsing end result statistics file '"//$NON-NLS-1$
+              + p + "'.", //$NON-NLS-1$
+          error);
     }
   }
 

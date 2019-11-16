@@ -6,6 +6,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import aitoa.structure.LogFormat;
+
 /** A class for processing and executing experiments */
 public class Experiment {
 
@@ -337,7 +339,8 @@ public class Experiment {
 
     final Path filePath = IOUtils.canonicalizePath(
         instPath.resolve(Experiment.nameStringsMerge(algo, inst,
-            RandomUtils.randSeedToString(randSeed)) + ".txt")); //$NON-NLS-1$
+            RandomUtils.randSeedToString(randSeed))
+            + LogFormat.FILE_SUFFIX));
 
     try {
       Files.createDirectories(instPath);

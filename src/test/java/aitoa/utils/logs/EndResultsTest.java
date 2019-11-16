@@ -3,6 +3,7 @@ package aitoa.utils.logs;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import aitoa.TempDir;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
+import aitoa.structure.LogFormat;
 
 /** test the end results table generator */
 public class EndResultsTest {
@@ -48,7 +50,7 @@ public class EndResultsTest {
 
             final Path logFile = instDir.resolve(
                 ((((Character.toString(algo) + '_') + inst)
-                    + '_') + r) + ".txt"); //$NON-NLS-1$
+                    + '_') + r) + LogFormat.FILE_SUFFIX);
             builder.setLogPath(logFile);
             builder.setRandomRandSeed();
             try (final IBlackBoxProcess<boolean[], boolean[]> p =
@@ -78,9 +80,16 @@ public class EndResultsTest {
             a.hashCode();
           }, false);
 
-      Assert.assertEquals(('d' - 'a') + 1,
+      final Map<String, Path> ertEcdf =
           ErtEcdf.makeErtEcdf(endResultStatistics, evalDir, true,
-              null, null, null, false).size());
+              null, null, null, false);
+
+      Assert.assertEquals(('d' - 'a') + 2, ertEcdf.size());
+      final Path ertEcdfDir = ertEcdf.get(null);
+      Assert.assertNotNull(ertEcdfDir);
+
+      ErtEcdf.parseErtEcdfFiles(ertEcdfDir, (s) -> ((a) -> {
+        /* */ }), false);
     }
   }
 }

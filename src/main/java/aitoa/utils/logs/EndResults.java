@@ -21,7 +21,8 @@ import aitoa.utils.IOUtils;
 public final class EndResults {
 
   /** the file name used for end results tables */
-  public static final String FILE_NAME = "endResults.txt"; //$NON-NLS-1$
+  public static final String FILE_NAME = "endResults" //$NON-NLS-1$
+      + LogFormat.FILE_SUFFIX;
   /** the column with the algorithm id */
   public static final String COL_ALGORITHM = "algorithm";//$NON-NLS-1$
   /** the column with the instance id */
@@ -353,13 +354,15 @@ public final class EndResults {
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
       final EndResult e = new EndResult();
-      String line;
+      String line2;
+      int lineIndex = 0;
 
-      while ((line = br.readLine()) != null) {
-        if (line.isEmpty()) {
+      while ((line2 = br.readLine()) != null) {
+        ++lineIndex;
+        if (line2.isEmpty()) {
           continue;
         }
-        line = line.trim();
+        final String line = line2.trim();
         if (line.isEmpty()) {
           continue;
         }
@@ -534,12 +537,19 @@ public final class EndResults {
 
           consumer.accept(e);
 
-        } catch (final Throwable error) {
-          throw new IOException("Invalid line '" + line + //$NON-NLS-1$
-              "' in end results file '" + //$NON-NLS-1$
-              p + "'.", error);//$NON-NLS-1$
+        } catch (final Throwable error2) {
+          throw new IOException(//
+              "Line " + lineIndex //$NON-NLS-1$
+                  + " is invalid: '" //$NON-NLS-1$
+                  + line2 + "'.", //$NON-NLS-1$
+              error2);
         }
       }
+    } catch (final Throwable error) {
+      throw new IOException(
+          "Error when parsing end results  file '"//$NON-NLS-1$
+              + p + "'.", //$NON-NLS-1$
+          error);
     }
   }
 
