@@ -22,3 +22,6 @@ hs_err_pid*
 /out
 /.gradle
 /dependency-reduced-pom.xml
+
+/.settings
+

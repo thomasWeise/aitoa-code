@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>aitoa-code</name>
-	<comment></comment>
+	<comment>Example Source Codes from the Book "Introduction to Optimization Algorithms"</comment>
 	<projects>
 	</projects>
 	<buildSpec>
