@@ -8,11 +8,11 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import aitoa.TempDir;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.LogFormat;
+import aitoa.utils.TempDir;
 
 /** test the end results table generator */
 public class EndResultsTest {

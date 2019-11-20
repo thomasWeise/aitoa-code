@@ -1,7 +1,11 @@
 package aitoa.utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,6 +86,94 @@ public final class IOUtils {
   }
 
   /**
+   * Require that a given path identifies a file.
+   *
+   * @param file
+   *          the file path
+   * @return the canonicalized path
+   * @throws IOException
+   *           if {@code file} does not identify a, existing,
+   *           readable, non-empty, regular file
+   */
+  public static final Path requireFile(final Path file)
+      throws IOException {
+    final Path ret = IOUtils.canonicalizePath(//
+        Objects.requireNonNull(file));
+    if (!Files.exists(ret)) {
+      throw new IOException("File '" + ret + //$NON-NLS-1$
+          "' does not exist.");//$NON-NLS-1$
+    }
+    if (!Files.isRegularFile(ret)) {
+      throw new IOException("Path '" + ret + //$NON-NLS-1$
+          "' does not identify a regular file.");//$NON-NLS-1$
+    }
+    if (!Files.isReadable(ret)) {
+      throw new IOException("File '" + ret + //$NON-NLS-1$
+          "' is not readable.");//$NON-NLS-1$
+    }
+    final long size = Files.size(ret);
+    if (size <= 0L) {
+      throw new IOException(("File '" + ret + //$NON-NLS-1$
+          "' has size " + size)//$NON-NLS-1$
+          + '.');
+    }
+    return ret;
+  }
+
+  /**
+   * Require that a given path identifies a directory.
+   *
+   * @param dir
+   *          the directory path
+   * @return the canonicalized path
+   * @throws IOException
+   *           if {@code file} does not identify an existing
+   *           directory
+   */
+  public static final Path requireDirectory(final Path dir)
+      throws IOException {
+    return IOUtils.requireDirectory(dir, false);
+  }
+
+  /**
+   * Require that a given path identifies a directory.
+   *
+   * @param dir
+   *          the directory path
+   * @param createIfNotExists
+   *          If {@code true}, the directory will be created if
+   *          it does not exist. If {@code false}, an error is
+   *          thrown if the directory does not exist.
+   * @return the canonicalized path
+   * @throws IOException
+   *           if {@code file} does not identify an existing
+   *           directory
+   */
+  public static final Path requireDirectory(final Path dir,
+      final boolean createIfNotExists) throws IOException {
+    final Path ret = IOUtils.canonicalizePath(//
+        Objects.requireNonNull(dir));
+
+    boolean dirExists = Files.exists(ret);
+    if (!dirExists) {
+      if (createIfNotExists) {
+        Files.createDirectories(ret);
+        dirExists = Files.exists(ret);
+      }
+    }
+    if (!dirExists) {
+      throw new IOException(//
+          "Directory '" + ret + //$NON-NLS-1$
+              "' does not exist.");//$NON-NLS-1$
+    }
+    if (!Files.isDirectory(ret)) {
+      throw new IOException("Path '" + ret + //$NON-NLS-1$
+          "' does not identify a directory.");//$NON-NLS-1$
+    }
+    return ret;
+  }
+
+  /**
    * Create an array of (sorted) paths from a given stream
    *
    * @param stream
@@ -139,7 +231,7 @@ public final class IOUtils {
    */
   public static final Stream<Path>
       subDirectoriesStream(final Path dir) throws IOException {
-    final Path p = IOUtils.canonicalizePath(dir);
+    final Path p = IOUtils.requireDirectory(dir);
     return Files.list(p)//
         .filter(Files::exists)//
         .filter(Files::isDirectory)//
@@ -159,8 +251,8 @@ public final class IOUtils {
    */
   public static final Path[] subDirectories(final Path dir)
       throws IOException {
-    return (IOUtils
-        .pathArray(IOUtils.subDirectoriesStream(dir)));
+    return (IOUtils.pathArray(//
+        IOUtils.subDirectoriesStream(dir)));
   }
 
   /**
@@ -199,7 +291,7 @@ public final class IOUtils {
    */
   public static final Stream<Path> filesStream(final Path dir)
       throws IOException {
-    final Path p = IOUtils.canonicalizePath(dir);
+    final Path p = IOUtils.requireDirectory(dir);
     return Files.list(p)//
         .filter(Files::exists)//
         .filter(Files::isRegularFile)//
@@ -251,4 +343,55 @@ public final class IOUtils {
           + "' still exists after trying to delete it.");//$NON-NLS-1$
     }
   }
+
+  /**
+   * Copy the data from a text resource to the given output
+   * writer
+   *
+   * @param clazz
+   *          the class
+   * @param name
+   *          the resource name
+   * @param out
+   *          the output writer
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void copyResource(final Class<?> clazz,
+      final String name, final BufferedWriter out)
+      throws IOException {
+    final InputStream is = clazz.getResourceAsStream(name);
+    if (is == null) {
+      throw new IOException(//
+          "Resource '" + name //$NON-NLS-1$
+              + "' of class '" + //$NON-NLS-1$
+              ReflectionUtils.className(clazz) + "' not found."); //$NON-NLS-1$
+    }
+    try (final InputStream q = is;
+        final InputStreamReader isr = new InputStreamReader(q);
+        final BufferedReader br = new BufferedReader(isr)) {
+      IOUtils.copy(br, out);
+    }
+  }
+
+  /**
+   * Copy the contents of a buffered reader to a buffered writer
+   *
+   * @param in
+   *          the input reader
+   * @param out
+   *          the output writer
+   * @throws IOException
+   *           if i/o fails
+   */
+  public static final void copy(final BufferedReader in,
+      final BufferedWriter out) throws IOException {
+    String line;
+
+    while ((line = in.readLine()) != null) {
+      out.write(line);
+      out.newLine();
+    }
+  }
+
 }

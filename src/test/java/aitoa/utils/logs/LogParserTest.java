@@ -5,10 +5,10 @@ import java.nio.file.Path;
 
 import org.junit.Test;
 
-import aitoa.TempDir;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
+import aitoa.utils.TempDir;
 
 /** test the log parser */
 public class LogParserTest {

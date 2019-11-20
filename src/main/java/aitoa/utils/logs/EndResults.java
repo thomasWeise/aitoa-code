@@ -124,21 +124,10 @@ public final class EndResults {
       final boolean keepExisting,
       final boolean logProgressToConsole) throws IOException {
 
-    final Path in = IOUtils.canonicalizePath(inputFolder);
-    if (!(Files.exists(in) && Files.isDirectory(in))) {
-      throw new IOException(
-          inputFolder + " is not a directory."); //$NON-NLS-1$
-    }
+    final Path in = IOUtils.requireDirectory(inputFolder);
 
-    final Path out = IOUtils.canonicalizePath(outputFolder);
-    if (Files.exists(out)) {
-      if (!Files.isDirectory(out)) {
-        throw new IOException(
-            outputFolder + " is not a directory."); //$NON-NLS-1$
-      }
-    } else {
-      Files.createDirectories(out);
-    }
+    final Path out =
+        IOUtils.requireDirectory(outputFolder, true);
 
     final Path end = IOUtils
         .canonicalizePath(out.resolve(EndResults.FILE_NAME));
@@ -242,7 +231,7 @@ public final class EndResults {
       ConsoleIO.stdout("Finished creating end result table '" + //$NON-NLS-1$
           end + "'.");//$NON-NLS-1$
     }
-    return end;
+    return IOUtils.requireFile(end);
   }
 
   /**
@@ -340,12 +329,7 @@ public final class EndResults {
       final Consumer<EndResult> consumer,
       final boolean logProgressToConsole) throws IOException {
 
-    final Path p = IOUtils.canonicalizePath(path);
-    if (!(Files.exists(p) && Files.isRegularFile(p)
-        && Files.isReadable(p))) {
-      throw new IOException("Path " + p + //$NON-NLS-1$
-          " is not a readable file.");//$NON-NLS-1$
-    }
+    final Path p = IOUtils.requireFile(path);
 
     if (consumer == null) {
       throw new NullPointerException(//

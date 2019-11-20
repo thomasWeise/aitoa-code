@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import aitoa.structure.LogFormat;
+import aitoa.utils.IOUtils;
 
 /**
  * This class allows for efficient parsing of the log files
@@ -165,7 +166,9 @@ public final class LogParser {
       final ILogPointConsumer logConsumer,
       final ISetupConsumer setupConsumer) throws IOException {
 
-    final String name = file.getFileName().toString();
+    final Path pth = IOUtils.requireFile(file);
+
+    final String name = pth.getFileName().toString();
     if (!name.endsWith(LogFormat.FILE_SUFFIX)) {
       throw new IllegalArgumentException(//
           "Invalid file name '" + file //$NON-NLS-1$
@@ -173,8 +176,8 @@ public final class LogParser {
               LogFormat.FILE_SUFFIX + "'.");//$NON-NLS-1$
     }
 
-    try (final BufferedReader in =
-        Files.newBufferedReader(file)) {
+    try (
+        final BufferedReader in = Files.newBufferedReader(pth)) {
 
       // statistics
       long fe_max = 0L;
@@ -831,7 +834,7 @@ public final class LogParser {
 
     } catch (final Throwable error) {
       throw new IOException(//
-          "Error while parsing log file '" + file //$NON-NLS-1$
+          "Error while parsing log file '" + pth //$NON-NLS-1$
               + "'.", //$NON-NLS-1$
           error);
     }

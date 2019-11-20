@@ -38,6 +38,9 @@ import aitoa.utils.IOUtils;
 public final class ErtEcdf {
   /** the base folder name for ert ecdf files */
   public static final String ERT_ECDF_FOLDER = "ertEcdf"; //$NON-NLS-1$
+  /** the base base name for ert ecdf diagrams */
+  public static final String ERT_ECDF_DIAGRAM_BASE_NAME =
+      ErtEcdf.ERT_ECDF_FOLDER;
   /** the name for time column */
   public static final String COL_TIME = "ert.time";//$NON-NLS-1$
   /** the name for fes columns */
@@ -114,22 +117,9 @@ public final class ErtEcdf {
       final String selectionID,
       final boolean logProgressToConsole) throws IOException {
 
-    final Path in =
-        IOUtils.canonicalizePath(endResultStatistics);
-    if (!(Files.exists(in) && Files.isRegularFile(in)
-        && Files.isReadable(in))) {
-      throw new IOException(in + " is not a readable file."); //$NON-NLS-1$
-    }
-
-    final Path out = IOUtils.canonicalizePath(outputFolder);
-    if (Files.exists(out)) {
-      if (!Files.isDirectory(out)) {
-        throw new IOException(
-            outputFolder + " is not a directory."); //$NON-NLS-1$
-      }
-    } else {
-      Files.createDirectories(out);
-    }
+    final Path in = IOUtils.requireFile(endResultStatistics);
+    final Path out =
+        IOUtils.requireDirectory(outputFolder, true);
 
     final ToDoubleFunction<EndResultStatistic> timeGetter;
     final String ertName;
@@ -244,7 +234,8 @@ public final class ErtEcdf {
         }
       }
 
-      if (output.put(algo.algorithm, path) != null) {
+      if (output.put(algo.algorithm,
+          IOUtils.requireFile(path)) != null) {
         throw new ConcurrentModificationException(
             algo.algorithm);
       }
@@ -255,7 +246,8 @@ public final class ErtEcdf {
           + endFolder + "'.");//$NON-NLS-1$
     }
 
-    if (output.put(null, endFolder) != null) {
+    if (output.put(null,
+        IOUtils.requireDirectory(endFolder)) != null) {
       throw new ConcurrentModificationException();
     }
 
@@ -497,11 +489,14 @@ public final class ErtEcdf {
       final Consumer<ErtEcdfPoint> consumer,
       final boolean logProgressToConsole) throws IOException {
 
-    final Path p = IOUtils.canonicalizePath(path);
-    if (!(Files.exists(p) && Files.isRegularFile(p)
-        && Files.isReadable(p))) {
-      throw new IOException("Path " + p + //$NON-NLS-1$
-          " is not a readable file.");//$NON-NLS-1$
+    final Path p = IOUtils.requireFile(path);
+
+    if (!(p.getFileName().toString()
+        .endsWith(LogFormat.FILE_SUFFIX))) {
+      throw new IllegalArgumentException(//
+          "File '" + p + //$NON-NLS-1$
+              "' is not a valid ert-ecdf file, must end with '" //$NON-NLS-1$
+              + LogFormat.FILE_SUFFIX + "'.");//$NON-NLS-1$
     }
 
     if (consumer == null) {
@@ -667,10 +662,7 @@ public final class ErtEcdf {
           "null end result consumers");//$NON-NLS-1$
     }
 
-    final Path in = IOUtils.canonicalizePath(path);
-    if (!(Files.exists(in) && Files.isDirectory(in))) {
-      throw new IOException(path + " is not a directory."); //$NON-NLS-1$
-    }
+    final Path in = IOUtils.requireDirectory(path);
 
     if (logProgressToConsole) {
       ConsoleIO.stdout(//
@@ -682,9 +674,8 @@ public final class ErtEcdf {
     for (final Path file : IOUtils.files(in)) {
       final String name = file.getFileName().toString();
       if (name.endsWith(LogFormat.FILE_SUFFIX)) {
-        final String algo = name
-            .substring(0,
-                name.length() - LogFormat.FILE_SUFFIX.length())
+        final String algo = name.substring(0, //
+            name.length() - LogFormat.FILE_SUFFIX.length())
             .trim();
         if (algo.isEmpty()) {
           throw new IOException(
@@ -695,9 +686,7 @@ public final class ErtEcdf {
             logProgressToConsole);
         hasFile = true;
       } else {
-        throw new IllegalStateException("File '" + //$NON-NLS-1$
-            file + "' not permitted, must end with '"//$NON-NLS-1$
-            + LogFormat.FILE_SUFFIX + "'.");//$NON-NLS-1$
+        continue;
       }
     }
 

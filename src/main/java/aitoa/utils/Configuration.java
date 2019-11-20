@@ -1,7 +1,11 @@
 package aitoa.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -258,7 +262,7 @@ public final class Configuration {
   }
 
   /**
-   * Get a value from the configuration
+   * Get an integer value from the configuration
    *
    * @param key
    *          the key
@@ -298,7 +302,7 @@ public final class Configuration {
   }
 
   /**
-   * Get a value from the configuration
+   * Get a double value from the configuration
    *
    * @param key
    *          the key
@@ -335,6 +339,79 @@ public final class Configuration {
   }
 
   /**
+   * parse an enum string
+   *
+   * @param <E>
+   *          the enum type
+   * @param s
+   *          the string
+   * @param clazz
+   *          the enum class
+   * @return the enum constant
+   */
+  private static final <E extends Enum<E>> E
+      __parseEnum(final String s, final Class<E> clazz) {
+    try {
+      return Enum.valueOf(clazz, s);
+    } catch (final IllegalArgumentException eee) {
+
+      try {
+        return Enum.valueOf(clazz, s.toUpperCase());
+      } catch (@SuppressWarnings("unused") final IllegalArgumentException ee) {
+        try {
+          return Enum.valueOf(clazz, s.toLowerCase());
+        } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
+          for (final E tt : clazz.getEnumConstants()) {
+            if (tt.name().equalsIgnoreCase(s)) {
+              return tt;
+            }
+            if (tt.toString().equalsIgnoreCase(s)) {
+              return tt;
+            }
+          }
+          throw eee;
+        }
+      }
+    }
+  }
+
+  /**
+   * Get an integer value from the configuration
+   *
+   * @param key
+   *          the key
+   * @param clazz
+   *          the enum class
+   * @return the enum value
+   */
+  public static final <E extends Enum<E>> E
+      getEnum(final String key, final Class<E> clazz) {
+    final String k = Objects.requireNonNull(key);
+    final Object res;
+    synchronized (Configuration.CONFIGURATION) {
+      res = Configuration.CONFIGURATION.get(k);
+      if (res == null) {
+        return null;
+      }
+      if (clazz.isInstance(res)) {
+        return clazz.cast(res);
+      }
+
+      if (res instanceof String) {
+        final E x = Configuration
+            .__parseEnum(((String) res).trim(), clazz);
+        Configuration.CONFIGURATION.put(k, x);
+        return x;
+      }
+    }
+    throw new IllegalStateException("config key '"//$NON-NLS-1$
+        + key + "' is not an enum constance of type " //$NON-NLS-1$
+        + ReflectionUtils.className(clazz)
+        + ", but an incompatible instance of "//$NON-NLS-1$
+        + res.getClass());
+  }
+
+  /**
    * Put a path value from the configuration
    *
    * @param key
@@ -345,10 +422,101 @@ public final class Configuration {
   public static final void putPath(final String key,
       final Path value) {
     final String k = Objects.requireNonNull(key);
-    final Path p = value.normalize();
+    final Path p = IOUtils.canonicalizePath(value);
     synchronized (Configuration.CONFIGURATION) {
       Configuration.CONFIGURATION.put(k, p);
     }
+  }
+
+  /**
+   * Get the path to the specified executable.
+   *
+   * @param name
+   *          the executable name
+   * @return the path
+   */
+  public static Path getExecutable(final String name) {
+    String stdout = null;
+    String stderr = null;
+    Path path = null;
+    Object res;
+
+    synch: synchronized (Configuration.CONFIGURATION) {
+      res = Configuration.CONFIGURATION.get(name);
+      if (res != null) {
+        if (res instanceof Path) {
+          path = ((Path) res);
+          if (Files.isExecutable(path)) {
+            break synch;
+          }
+          throw new IllegalStateException("config key '"//$NON-NLS-1$
+              + name + "' is path '" + path + //$NON-NLS-1$
+              "', but it is not executable");//$NON-NLS-1$
+        }
+        if (res instanceof String) {
+          path = IOUtils.canonicalizePath((String) res);
+          if (Files.isExecutable(path)) {
+            stdout = (name + " executable configured as "//$NON-NLS-1$
+                + path);
+            Configuration.CONFIGURATION.put(name, path);
+            break synch;
+          }
+          path = null;
+          stderr = ("Configured file '" + //$NON-NLS-1$
+              res + "' is not executable.");//$NON-NLS-1$
+        }
+        throw new IllegalStateException("config key '"//$NON-NLS-1$
+            + name
+            + "' does not reference an executable path, but is an instance of"//$NON-NLS-1$
+            + res.getClass());
+      }
+
+      for (final String dirname : System.getenv("PATH") //$NON-NLS-1$
+          .split(File.pathSeparator)) {
+        for (final String ext : new String[] { "", //$NON-NLS-1$
+            ".exe" }) { //$NON-NLS-1$
+          path = IOUtils.canonicalizePath(dirname, name + ext);
+          if (Files.isExecutable(path)) {
+            stdout = (name + " executable detected in PATH as " //$NON-NLS-1$
+                + path);
+            Configuration.CONFIGURATION.put(name, path);
+            break synch;
+          }
+        }
+      }
+      path = null;
+
+      try {
+        final Process process =
+            Runtime.getRuntime().exec("which " + name); //$NON-NLS-1$
+        try (BufferedReader in = new BufferedReader(
+            new InputStreamReader(process.getInputStream()))) {
+          path =
+              IOUtils.canonicalizePath(Paths.get(in.readLine()));
+          if (Files.isExecutable(path)) {
+            stdout = (name + " executable found via which as " //$NON-NLS-1$
+                + path);
+            Configuration.CONFIGURATION.put(name, path);
+            break synch;
+          }
+        }
+      } catch (@SuppressWarnings("unused") final Throwable ignore) {
+        // ignored
+      }
+      path = null;
+    }
+
+    if (stderr != null) {
+      ConsoleIO.stderr(stderr, null);
+    }
+    if (stdout != null) {
+      ConsoleIO.stdout(stdout);
+    }
+    if (path == null) {
+      ConsoleIO.stdout("no " + name + //$NON-NLS-1$
+          " executable detected."); //$NON-NLS-1$
+    }
+    return path;
   }
 
   /** Print the whole configuration to stdout */

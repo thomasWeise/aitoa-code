@@ -1,11 +1,9 @@
-package aitoa;
+package aitoa.utils;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import aitoa.utils.IOUtils;
 
 /**
  * A temporary directory which can be wrapped into a
