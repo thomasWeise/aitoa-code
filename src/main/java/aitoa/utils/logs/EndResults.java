@@ -314,12 +314,7 @@ public final class EndResults {
    * @param path
    *          the path to end results table
    * @param consumer
-   *          the consumer for the data. Notice: The instance of
-   *          {@link EndResult} passed to this consumers
-   *          {@link java.util.function.Consumer#accept(Object)}
-   *          method will be re-used and modified in each call.
-   *          If you need to preserve it, you must make a copy of
-   *          it.
+   *          the consumer for the data.
    * @param logProgressToConsole
    *          should logging information be printed?
    * @throws IOException

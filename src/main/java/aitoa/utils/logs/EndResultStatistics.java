@@ -380,7 +380,8 @@ public class EndResultStatistics {
   }
 
   /**
-   * Read and verify the end result statistics table.
+   * Read (and, while doing so, also verify) the end result
+   * statistics table.
    *
    * @param path
    *          the path to end results table
@@ -404,9 +405,91 @@ public class EndResultStatistics {
     }
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
-      final EndResultStatistic e = new EndResultStatistic();
+
       String line2;
       int lineIndex = 0;
+      String algorithm = null;
+      String instance = null;
+      int runs = -1;
+      double bestF_min = Double.NaN;
+      double bestF_q050 = Double.NaN;
+      double bestF_q159 = Double.NaN;
+      double bestF_q250 = Double.NaN;
+      double bestF_median = Double.NaN;
+      double bestF_q750 = Double.NaN;
+      double bestF_q841 = Double.NaN;
+      double bestF_q950 = Double.NaN;
+      double bestF_max = Double.NaN;
+      double bestF_mean = Double.NaN;
+      double bestF_sd = Double.NaN;
+      long totalTime_min = -1L;
+      double totalTime_q050 = Double.NaN;
+      double totalTime_q159 = Double.NaN;
+      double totalTime_q250 = Double.NaN;
+      double totalTime_median = Double.NaN;
+      double totalTime_q750 = Double.NaN;
+      double totalTime_q841 = Double.NaN;
+      double totalTime_q950 = Double.NaN;
+      long totalTime_max = -1L;
+      double totalTime_mean = Double.NaN;
+      double totalTime_sd = Double.NaN;
+      long totalFEs_min = -1L;
+      double totalFEs_q050 = Double.NaN;
+      double totalFEs_q159 = Double.NaN;
+      double totalFEs_q250 = Double.NaN;
+      double totalFEs_median = Double.NaN;
+      double totalFEs_q750 = Double.NaN;
+      double totalFEs_q841 = Double.NaN;
+      double totalFEs_q950 = Double.NaN;
+      long totalFEs_max = -1L;
+      double totalFEs_mean = Double.NaN;
+      double totalFEs_sd = Double.NaN;
+      long lastImprovementTime_min = -1L;
+      double lastImprovementTime_q050 = Double.NaN;
+      double lastImprovementTime_q159 = Double.NaN;
+      double lastImprovementTime_q250 = Double.NaN;
+      double lastImprovementTime_median = Double.NaN;
+      double lastImprovementTime_q750 = Double.NaN;
+      double lastImprovementTime_q841 = Double.NaN;
+      double lastImprovementTime_q950 = Double.NaN;
+      long lastImprovementTime_max = -1L;
+      double lastImprovementTime_mean = Double.NaN;
+      double lastImprovementTime_sd = Double.NaN;
+      long lastImprovementFE_min = -1L;
+      double lastImprovementFE_q050 = Double.NaN;
+      double lastImprovementFE_q159 = Double.NaN;
+      double lastImprovementFE_q250 = Double.NaN;
+      double lastImprovementFE_median = Double.NaN;
+      double lastImprovementFE_q750 = Double.NaN;
+      double lastImprovementFE_q841 = Double.NaN;
+      double lastImprovementFE_q950 = Double.NaN;
+      long lastImprovementFE_max = -1L;
+      double lastImprovementFE_mean = Double.NaN;
+      double lastImprovementFE_sd = Double.NaN;
+      long numberOfImprovements_min = -1L;
+      double numberOfImprovements_q050 = Double.NaN;
+      double numberOfImprovements_q159 = Double.NaN;
+      double numberOfImprovements_q250 = Double.NaN;
+      double numberOfImprovements_median = Double.NaN;
+      double numberOfImprovements_q750 = Double.NaN;
+      double numberOfImprovements_q841 = Double.NaN;
+      double numberOfImprovements_q950 = Double.NaN;
+      long numberOfImprovements_max = -1L;
+      double numberOfImprovements_mean = Double.NaN;
+      double numberOfImprovements_sd = Double.NaN;
+      long budgetTime_min = -1L;
+      double budgetTime_median = Double.NaN;
+      long budgetTime_max = -1L;
+      double budgetTime_mean = Double.NaN;
+      double budgetTime_sd = Double.NaN;
+      long budgetFEs_min = -1L;
+      double budgetFEs_median = Double.NaN;
+      long budgetFEs_max = -1L;
+      double budgetFEs_mean = Double.NaN;
+      double budgetFEs_sd = Double.NaN;
+      int successes = -1;
+      double ertTime = Double.NaN;
+      double ertFEs = Double.NaN;
 
       while ((line2 = br.readLine()) != null) {
         ++lineIndex;
@@ -426,9 +509,8 @@ public class EndResultStatistics {
           int nextSemi =
               line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
                   ++lastSemi);
-          e.algorithm =
-              line.substring(lastSemi, nextSemi).trim();
-          if (e.algorithm.isEmpty()) {
+          algorithm = line.substring(lastSemi, nextSemi).trim();
+          if (algorithm.isEmpty()) {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
@@ -436,8 +518,8 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.instance = line.substring(lastSemi, nextSemi).trim();
-          if (e.instance.isEmpty()) {
+          instance = line.substring(lastSemi, nextSemi).trim();
+          if (instance.isEmpty()) {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
@@ -445,1351 +527,1349 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.runs = Integer.parseInt(
+          runs = Integer.parseInt(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.runs <= 0) {
+          if (runs <= 0) {
             throw new IllegalArgumentException(
-                "There cannot be " + e.runs //$NON-NLS-1$
+                "There cannot be " + runs //$NON-NLS-1$
                     + " runs."); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.min = Double.parseDouble(
+          bestF_min = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.min)) {
+          if (!Double.isFinite(bestF_min)) {
             throw new IllegalArgumentException(
                 "bestF.min must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.min);
+                    + bestF_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q050 = Double.parseDouble(
+          bestF_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q050)) {
+          if (!Double.isFinite(bestF_q050)) {
             throw new IllegalArgumentException(
                 "bestF.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q050);
+                    + bestF_q050);
           }
-          if (e.bestF.q050 < e.bestF.min) {
+          if (bestF_q050 < bestF_min) {
             throw new IllegalArgumentException(
-                "bestF.q050 (" + e.bestF.q050 + //$NON-NLS-1$
+                "bestF.q050 (" + bestF_q050 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.min ("//$NON-NLS-1$
-                    + e.bestF.min + ").");//$NON-NLS-1$
+                    + bestF_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q159 = Double.parseDouble(
+          bestF_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q159)) {
+          if (!Double.isFinite(bestF_q159)) {
             throw new IllegalArgumentException(
                 "bestF.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q159);
+                    + bestF_q159);
           }
-          if (e.bestF.q159 < e.bestF.min) {
+          if (bestF_q159 < bestF_min) {
             throw new IllegalArgumentException(
-                "bestF.q159 (" + e.bestF.q159 + //$NON-NLS-1$
+                "bestF.q159 (" + bestF_q159 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q050 ("//$NON-NLS-1$
-                    + e.bestF.q050 + ").");//$NON-NLS-1$
+                    + bestF_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q250 = Double.parseDouble(
+          bestF_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q250)) {
+          if (!Double.isFinite(bestF_q250)) {
             throw new IllegalArgumentException(
                 "bestF.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q250);
+                    + bestF_q250);
           }
-          if (e.bestF.q250 < e.bestF.q050) {
+          if (bestF_q250 < bestF_q050) {
             throw new IllegalArgumentException(
-                "bestF.q250 (" + e.bestF.q250 + //$NON-NLS-1$
+                "bestF.q250 (" + bestF_q250 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q159 ("//$NON-NLS-1$
-                    + e.bestF.q159 + ").");//$NON-NLS-1$
+                    + bestF_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.median = Double.parseDouble(
+          bestF_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.median)) {
+          if (!Double.isFinite(bestF_median)) {
             throw new IllegalArgumentException(
                 "bestF.median must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.median);
+                    + bestF_median);
           }
-          if (e.bestF.median < e.bestF.q250) {
+          if (bestF_median < bestF_q250) {
             throw new IllegalArgumentException(
-                "bestF.median (" + e.bestF.median + //$NON-NLS-1$
+                "bestF.median (" + bestF_median + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q250 ("//$NON-NLS-1$
-                    + e.bestF.q250 + ").");//$NON-NLS-1$
+                    + bestF_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q750 = Double.parseDouble(
+          bestF_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q750)) {
+          if (!Double.isFinite(bestF_q750)) {
             throw new IllegalArgumentException(
                 "bestF.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q750);
+                    + bestF_q750);
           }
-          if (e.bestF.q750 < e.bestF.median) {
+          if (bestF_q750 < bestF_median) {
             throw new IllegalArgumentException(
-                "bestF.q750 (" + e.bestF.q750 + //$NON-NLS-1$
+                "bestF.q750 (" + bestF_q750 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.median ("//$NON-NLS-1$
-                    + e.bestF.median + ").");//$NON-NLS-1$
+                    + bestF_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q841 = Double.parseDouble(
+          bestF_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q841)) {
+          if (!Double.isFinite(bestF_q841)) {
             throw new IllegalArgumentException(
                 "bestF.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q841);
+                    + bestF_q841);
           }
-          if (e.bestF.q841 < e.bestF.q750) {
+          if (bestF_q841 < bestF_q750) {
             throw new IllegalArgumentException(
-                "bestF.q841 (" + e.bestF.q841 + //$NON-NLS-1$
+                "bestF.q841 (" + bestF_q841 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q750 ("//$NON-NLS-1$
-                    + e.bestF.q750 + ").");//$NON-NLS-1$
+                    + bestF_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.q950 = Double.parseDouble(
+          bestF_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.q950)) {
+          if (!Double.isFinite(bestF_q950)) {
             throw new IllegalArgumentException(
                 "bestF.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.q950);
+                    + bestF_q950);
           }
-          if (e.bestF.q950 < e.bestF.q841) {
+          if (bestF_q950 < bestF_q841) {
             throw new IllegalArgumentException(
-                "bestF.q950 (" + e.bestF.q950 + //$NON-NLS-1$
+                "bestF.q950 (" + bestF_q950 + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q841 ("//$NON-NLS-1$
-                    + e.bestF.q841 + ").");//$NON-NLS-1$
+                    + bestF_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.max = Double.parseDouble(
+          bestF_max = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.max)) {
+          if (!Double.isFinite(bestF_max)) {
             throw new IllegalArgumentException(
                 "bestF.max must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.max);
+                    + bestF_max);
           }
-          if (e.bestF.max < e.bestF.q950) {
+          if (bestF_max < bestF_q950) {
             throw new IllegalArgumentException(
-                "bestF.max (" + e.bestF.max + //$NON-NLS-1$
+                "bestF.max (" + bestF_max + //$NON-NLS-1$
                     ") must be greater or equal to bestF.q950 ("//$NON-NLS-1$
-                    + e.bestF.q950 + ").");//$NON-NLS-1$
+                    + bestF_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.mean = Double.parseDouble(
+          bestF_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.mean)) {
+          if (!Double.isFinite(bestF_mean)) {
             throw new IllegalArgumentException(
                 "bestF.mean must be finite, but is " //$NON-NLS-1$
-                    + e.bestF.mean);
+                    + bestF_mean);
           }
-          if ((e.bestF.max < e.bestF.mean)
-              || (e.bestF.min > e.bestF.mean)) {
+          if ((bestF_max < bestF_mean)
+              || (bestF_min > bestF_mean)) {
             throw new IllegalArgumentException(
-                (("bestF.mean (" + e.bestF.mean + //$NON-NLS-1$
+                (("bestF.mean (" + bestF_mean + //$NON-NLS-1$
                     ") must be inside [bestF.min, bestF.max], i.e., ("//$NON-NLS-1$
-                    + e.bestF.min) + ',') + e.bestF.max + ").");//$NON-NLS-1$
+                    + bestF_min) + ',') + bestF_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF.sd = Double.parseDouble(
+          bestF_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF.sd)
-              || (e.bestF.sd < 0d)) {
+          if (!Double.isFinite(bestF_sd) || (bestF_sd < 0d)) {
             throw new IllegalArgumentException(
                 "bestF.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.bestF.sd);
+                    + bestF_sd);
           }
-          if ((e.bestF.max > e.bestF.min) == (e.bestF.sd <= 0d)) {
+          if ((bestF_max > bestF_min) == (bestF_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "bestF.sd=" + e.bestF.sd + //$NON-NLS-1$
+                "bestF.sd=" + bestF_sd + //$NON-NLS-1$
                     " impossible for bestF.min=" + //$NON-NLS-1$
-                    e.bestF.min + " and bestF.max="//$NON-NLS-1$
-                    + e.bestF.max + ").");//$NON-NLS-1$
+                    bestF_min + " and bestF.max="//$NON-NLS-1$
+                    + bestF_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.min = Long.parseLong(
+          totalTime_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalTime.min < 0L) {
+          if (totalTime_min < 0L) {
             throw new IllegalArgumentException(
                 "totalTime.min must be >=0, but is " //$NON-NLS-1$
-                    + e.totalTime.min);
+                    + totalTime_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q050 = Double.parseDouble(
+          totalTime_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q050)) {
+          if (!Double.isFinite(totalTime_q050)) {
             throw new IllegalArgumentException(
                 "totalTime.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q050);
+                    + totalTime_q050);
           }
-          if (e.totalTime.q050 < e.totalTime.min) {
+          if (totalTime_q050 < totalTime_min) {
             throw new IllegalArgumentException(
-                "totalTime.q050 (" + e.totalTime.q050 + //$NON-NLS-1$
+                "totalTime.q050 (" + totalTime_q050 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.min ("//$NON-NLS-1$
-                    + e.totalTime.min + ").");//$NON-NLS-1$
+                    + totalTime_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q159 = Double.parseDouble(
+          totalTime_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q159)) {
+          if (!Double.isFinite(totalTime_q159)) {
             throw new IllegalArgumentException(
                 "totalTime.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q159);
+                    + totalTime_q159);
           }
-          if (e.totalTime.q159 < e.totalTime.q050) {
+          if (totalTime_q159 < totalTime_q050) {
             throw new IllegalArgumentException(
-                "totalTime.q159 (" + e.totalTime.q159 + //$NON-NLS-1$
+                "totalTime.q159 (" + totalTime_q159 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q050 ("//$NON-NLS-1$
-                    + e.totalTime.q050 + ").");//$NON-NLS-1$
+                    + totalTime_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q250 = Double.parseDouble(
+          totalTime_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q250)) {
+          if (!Double.isFinite(totalTime_q250)) {
             throw new IllegalArgumentException(
                 "totalTime.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q250);
+                    + totalTime_q250);
           }
-          if (e.totalTime.q250 < e.totalTime.q159) {
+          if (totalTime_q250 < totalTime_q159) {
             throw new IllegalArgumentException(
-                "totalTime.q250 (" + e.totalTime.q250 + //$NON-NLS-1$
+                "totalTime.q250 (" + totalTime_q250 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q159 ("//$NON-NLS-1$
-                    + e.totalTime.q159 + ").");//$NON-NLS-1$
+                    + totalTime_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.median = Double.parseDouble(
+          totalTime_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.median)) {
+          if (!Double.isFinite(totalTime_median)) {
             throw new IllegalArgumentException(
                 "totalTime.median must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.median);
+                    + totalTime_median);
           }
-          if (e.totalTime.median < e.totalTime.q250) {
+          if (totalTime_median < totalTime_q250) {
             throw new IllegalArgumentException(
-                "totalTime.median (" + e.totalTime.median + //$NON-NLS-1$
+                "totalTime.median (" + totalTime_median + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q250 ("//$NON-NLS-1$
-                    + e.totalTime.q250 + ").");//$NON-NLS-1$
+                    + totalTime_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q750 = Double.parseDouble(
+          totalTime_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q750)) {
+          if (!Double.isFinite(totalTime_q750)) {
             throw new IllegalArgumentException(
                 "totalTime.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q750);
+                    + totalTime_q750);
           }
-          if (e.totalTime.q750 < e.totalTime.median) {
+          if (totalTime_q750 < totalTime_median) {
             throw new IllegalArgumentException(
-                "totalTime.q750 (" + e.totalTime.q750 + //$NON-NLS-1$
+                "totalTime.q750 (" + totalTime_q750 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.median ("//$NON-NLS-1$
-                    + e.totalTime.median + ").");//$NON-NLS-1$
+                    + totalTime_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q841 = Double.parseDouble(
+          totalTime_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q841)) {
+          if (!Double.isFinite(totalTime_q841)) {
             throw new IllegalArgumentException(
                 "totalTime.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q841);
+                    + totalTime_q841);
           }
-          if (e.totalTime.q841 < e.totalTime.q750) {
+          if (totalTime_q841 < totalTime_q750) {
             throw new IllegalArgumentException(
-                "totalTime.q841 (" + e.totalTime.q841 + //$NON-NLS-1$
+                "totalTime.q841 (" + totalTime_q841 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q750 ("//$NON-NLS-1$
-                    + e.totalTime.q750 + ").");//$NON-NLS-1$
+                    + totalTime_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.q950 = Double.parseDouble(
+          totalTime_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.q950)) {
+          if (!Double.isFinite(totalTime_q950)) {
             throw new IllegalArgumentException(
                 "totalTime.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.q950);
+                    + totalTime_q950);
           }
-          if (e.totalTime.q950 < e.totalTime.q841) {
+          if (totalTime_q950 < totalTime_q841) {
             throw new IllegalArgumentException(
-                "totalTime.q950 (" + e.totalTime.q950 + //$NON-NLS-1$
+                "totalTime.q950 (" + totalTime_q950 + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q841 ("//$NON-NLS-1$
-                    + e.totalTime.q841 + ").");//$NON-NLS-1$
+                    + totalTime_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.max = Long.parseLong(
+          totalTime_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalTime.max < 0L) {
+          if (totalTime_max < 0L) {
             throw new IllegalArgumentException(
                 "totalTime.max must be >=0, but is " //$NON-NLS-1$
-                    + e.totalTime.max);
+                    + totalTime_max);
           }
-          if (e.totalTime.max < e.totalTime.q950) {
+          if (totalTime_max < totalTime_q950) {
             throw new IllegalArgumentException(
-                "totalTime.max (" + e.totalTime.max + //$NON-NLS-1$
+                "totalTime.max (" + totalTime_max + //$NON-NLS-1$
                     ") must be greater or equal to totalTime.q950 ("//$NON-NLS-1$
-                    + e.totalTime.q950 + ").");//$NON-NLS-1$
+                    + totalTime_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.mean = Double.parseDouble(
+          totalTime_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.mean)) {
+          if (!Double.isFinite(totalTime_mean)) {
             throw new IllegalArgumentException(
                 "totalTime.mean must be finite, but is " //$NON-NLS-1$
-                    + e.totalTime.mean);
+                    + totalTime_mean);
           }
-          if ((e.totalTime.max < e.totalTime.mean)
-              || (e.totalTime.min > e.totalTime.mean)) {
+          if ((totalTime_max < totalTime_mean)
+              || (totalTime_min > totalTime_mean)) {
             throw new IllegalArgumentException(
-                (("totalTime.mean (" + e.totalTime.mean + //$NON-NLS-1$
+                (("totalTime.mean (" + totalTime_mean + //$NON-NLS-1$
                     ") must be inside [totalTime.min, totalTime.max], i.e., ("//$NON-NLS-1$
-                    + e.totalTime.min) + ',') + e.totalTime.max
+                    + totalTime_min) + ',') + totalTime_max
                     + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime.sd = Double.parseDouble(
+          totalTime_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalTime.sd)
-              || (e.totalTime.sd < 0d)) {
+          if (!Double.isFinite(totalTime_sd)
+              || (totalTime_sd < 0d)) {
             throw new IllegalArgumentException(
                 "totalTime.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.totalTime.sd);
+                    + totalTime_sd);
           }
-          if ((e.totalTime.max > e.totalTime.min) == (e.totalTime.sd <= 0d)) {
+          if ((totalTime_max > totalTime_min) == (totalTime_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "totalTime.sd=" + e.totalTime.sd + //$NON-NLS-1$
+                "totalTime.sd=" + totalTime_sd + //$NON-NLS-1$
                     " impossible for totalTime.min=" + //$NON-NLS-1$
-                    e.totalTime.min + " and totalTime.max="//$NON-NLS-1$
-                    + e.totalTime.max + ").");//$NON-NLS-1$
+                    totalTime_min + " and totalTime.max="//$NON-NLS-1$
+                    + totalTime_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.min = Long.parseLong(
+          totalFEs_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalFEs.min <= 0L) {
+          if (totalFEs_min <= 0L) {
             throw new IllegalArgumentException(
                 "totalFEs.min must be >0, but is " //$NON-NLS-1$
-                    + e.totalFEs.min);
+                    + totalFEs_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q050 = Double.parseDouble(
+          totalFEs_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q050)) {
+          if (!Double.isFinite(totalFEs_q050)) {
             throw new IllegalArgumentException(
                 "totalFEs.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q050);
+                    + totalFEs_q050);
           }
-          if (e.totalFEs.q050 < e.totalFEs.min) {
+          if (totalFEs_q050 < totalFEs_min) {
             throw new IllegalArgumentException(
-                "totalFEs.q050 (" + e.totalFEs.q050 + //$NON-NLS-1$
+                "totalFEs.q050 (" + totalFEs_q050 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.min ("//$NON-NLS-1$
-                    + e.totalFEs.min + ").");//$NON-NLS-1$
+                    + totalFEs_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q159 = Double.parseDouble(
+          totalFEs_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q159)) {
+          if (!Double.isFinite(totalFEs_q159)) {
             throw new IllegalArgumentException(
                 "totalFEs.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q159);
+                    + totalFEs_q159);
           }
-          if (e.totalFEs.q159 < e.totalFEs.q050) {
+          if (totalFEs_q159 < totalFEs_q050) {
             throw new IllegalArgumentException(
-                "totalFEs.q159 (" + e.totalFEs.q159 + //$NON-NLS-1$
+                "totalFEs.q159 (" + totalFEs_q159 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q050 ("//$NON-NLS-1$
-                    + e.totalFEs.q050 + ").");//$NON-NLS-1$
+                    + totalFEs_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q250 = Double.parseDouble(
+          totalFEs_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q250)) {
+          if (!Double.isFinite(totalFEs_q250)) {
             throw new IllegalArgumentException(
                 "totalFEs.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q250);
+                    + totalFEs_q250);
           }
-          if (e.totalFEs.q250 < e.totalFEs.q159) {
+          if (totalFEs_q250 < totalFEs_q159) {
             throw new IllegalArgumentException(
-                "totalFEs.q250 (" + e.totalFEs.q250 + //$NON-NLS-1$
+                "totalFEs.q250 (" + totalFEs_q250 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q159 ("//$NON-NLS-1$
-                    + e.totalFEs.q159 + ").");//$NON-NLS-1$
+                    + totalFEs_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.median = Double.parseDouble(
+          totalFEs_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.median)) {
+          if (!Double.isFinite(totalFEs_median)) {
             throw new IllegalArgumentException(
                 "totalFEs.median must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.median);
+                    + totalFEs_median);
           }
-          if (e.totalFEs.median < e.totalFEs.q250) {
+          if (totalFEs_median < totalFEs_q250) {
             throw new IllegalArgumentException(
-                "totalFEs.median (" + e.totalFEs.median + //$NON-NLS-1$
+                "totalFEs.median (" + totalFEs_median + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q250 ("//$NON-NLS-1$
-                    + e.totalFEs.q250 + ").");//$NON-NLS-1$
+                    + totalFEs_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q750 = Double.parseDouble(
+          totalFEs_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q750)) {
+          if (!Double.isFinite(totalFEs_q750)) {
             throw new IllegalArgumentException(
                 "totalFEs.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q750);
+                    + totalFEs_q750);
           }
-          if (e.totalFEs.q750 < e.totalFEs.median) {
+          if (totalFEs_q750 < totalFEs_median) {
             throw new IllegalArgumentException(
-                "totalFEs.q750 (" + e.totalFEs.q750 + //$NON-NLS-1$
+                "totalFEs.q750 (" + totalFEs_q750 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.median ("//$NON-NLS-1$
-                    + e.totalFEs.median + ").");//$NON-NLS-1$
+                    + totalFEs_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q841 = Double.parseDouble(
+          totalFEs_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q841)) {
+          if (!Double.isFinite(totalFEs_q841)) {
             throw new IllegalArgumentException(
                 "totalFEs.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q841);
+                    + totalFEs_q841);
           }
-          if (e.totalFEs.q841 < e.totalFEs.q750) {
+          if (totalFEs_q841 < totalFEs_q750) {
             throw new IllegalArgumentException(
-                "totalFEs.q841 (" + e.totalFEs.q841 + //$NON-NLS-1$
+                "totalFEs.q841 (" + totalFEs_q841 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q750 ("//$NON-NLS-1$
-                    + e.totalFEs.q750 + ").");//$NON-NLS-1$
+                    + totalFEs_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.q950 = Double.parseDouble(
+          totalFEs_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.q950)) {
+          if (!Double.isFinite(totalFEs_q950)) {
             throw new IllegalArgumentException(
                 "totalFEs.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.q950);
+                    + totalFEs_q950);
           }
-          if (e.totalFEs.q950 < e.totalFEs.q841) {
+          if (totalFEs_q950 < totalFEs_q841) {
             throw new IllegalArgumentException(
-                "totalFEs.q950 (" + e.totalFEs.q950 + //$NON-NLS-1$
+                "totalFEs.q950 (" + totalFEs_q950 + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q841 ("//$NON-NLS-1$
-                    + e.totalFEs.q841 + ").");//$NON-NLS-1$
+                    + totalFEs_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.max = Long.parseLong(
+          totalFEs_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalFEs.max <= 0L) {
+          if (totalFEs_max <= 0L) {
             throw new IllegalArgumentException(
                 "totalFEs.max must be >0, but is " //$NON-NLS-1$
-                    + e.totalFEs.max);
+                    + totalFEs_max);
           }
-          if (e.totalFEs.max < e.totalFEs.q950) {
+          if (totalFEs_max < totalFEs_q950) {
             throw new IllegalArgumentException(
-                "totalFEs.max (" + e.totalFEs.max + //$NON-NLS-1$
+                "totalFEs.max (" + totalFEs_max + //$NON-NLS-1$
                     ") must be greater or equal to totalFEs.q950 ("//$NON-NLS-1$
-                    + e.totalFEs.q950 + ").");//$NON-NLS-1$
+                    + totalFEs_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.mean = Double.parseDouble(
+          totalFEs_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.mean)) {
+          if (!Double.isFinite(totalFEs_mean)) {
             throw new IllegalArgumentException(
                 "totalFEs.mean must be finite, but is " //$NON-NLS-1$
-                    + e.totalFEs.mean);
+                    + totalFEs_mean);
           }
-          if ((e.totalFEs.max < e.totalFEs.mean)
-              || (e.totalFEs.min > e.totalFEs.mean)) {
+          if ((totalFEs_max < totalFEs_mean)
+              || (totalFEs_min > totalFEs_mean)) {
             throw new IllegalArgumentException(
-                (("totalFEs.mean (" + e.totalFEs.mean + //$NON-NLS-1$
+                (("totalFEs.mean (" + totalFEs_mean + //$NON-NLS-1$
                     ") must be inside [totalFEs.min, totalFEs.max], i.e., ("//$NON-NLS-1$
-                    + e.totalFEs.min) + ',') + e.totalFEs.max
+                    + totalFEs_min) + ',') + totalFEs_max
                     + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs.sd = Double.parseDouble(
+          totalFEs_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.totalFEs.sd)
-              || (e.totalFEs.sd < 0d)) {
+          if (!Double.isFinite(totalFEs_sd)
+              || (totalFEs_sd < 0d)) {
             throw new IllegalArgumentException(
                 "totalFEs.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.totalFEs.sd);
+                    + totalFEs_sd);
           }
-          if ((e.totalFEs.max > e.totalFEs.min) == (e.totalFEs.sd <= 0d)) {
+          if ((totalFEs_max > totalFEs_min) == (totalFEs_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "totalFEs.sd=" + e.totalFEs.sd + //$NON-NLS-1$
+                "totalFEs.sd=" + totalFEs_sd + //$NON-NLS-1$
                     " impossible for totalFEs.min=" + //$NON-NLS-1$
-                    e.totalFEs.min + " and totalFEs.max="//$NON-NLS-1$
-                    + e.totalFEs.max + ").");//$NON-NLS-1$
+                    totalFEs_min + " and totalFEs.max="//$NON-NLS-1$
+                    + totalFEs_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.min = Long.parseLong(
+          lastImprovementTime_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementTime.min < 0L) {
+          if (lastImprovementTime_min < 0L) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.min must be >=0, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.min);
+                    + lastImprovementTime_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q050 = Double.parseDouble(
+          lastImprovementTime_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q050)) {
+          if (!Double.isFinite(lastImprovementTime_q050)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q050);
+                    + lastImprovementTime_q050);
           }
-          if (e.lastImprovementTime.q050 < e.lastImprovementTime.min) {
+          if (lastImprovementTime_q050 < lastImprovementTime_min) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q050 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q050
+                    + lastImprovementTime_q050
                     + ") must be greater or equal to lastImprovementTime.min ("//$NON-NLS-1$
-                    + e.lastImprovementTime.min + ").");//$NON-NLS-1$
+                    + lastImprovementTime_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q159 = Double.parseDouble(
+          lastImprovementTime_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q159)) {
+          if (!Double.isFinite(lastImprovementTime_q159)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q159);
+                    + lastImprovementTime_q159);
           }
-          if (e.lastImprovementTime.q159 < e.lastImprovementTime.q050) {
+          if (lastImprovementTime_q159 < lastImprovementTime_q050) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q159 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q159
+                    + lastImprovementTime_q159
                     + ") must be greater or equal to lastImprovementTime.q050 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q050 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q250 = Double.parseDouble(
+          lastImprovementTime_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q250)) {
+          if (!Double.isFinite(lastImprovementTime_q250)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q250);
+                    + lastImprovementTime_q250);
           }
-          if (e.lastImprovementTime.q250 < e.lastImprovementTime.q159) {
+          if (lastImprovementTime_q250 < lastImprovementTime_q159) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q250 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q250
+                    + lastImprovementTime_q250
                     + ") must be greater or equal to lastImprovementTime.q159 ("//$NON-NLS-1$
-                    + e.lastImprovementTime.q159 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.median = Double.parseDouble(
+          lastImprovementTime_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.median)) {
+          if (!Double.isFinite(lastImprovementTime_median)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.median must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.median);
+                    + lastImprovementTime_median);
           }
-          if (e.lastImprovementTime.median < e.lastImprovementTime.q250) {
+          if (lastImprovementTime_median < lastImprovementTime_q250) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.median (" //$NON-NLS-1$
-                    + e.lastImprovementTime.median
+                    + lastImprovementTime_median
                     + ") must be greater or equal to lastImprovementTime.q250 ("//$NON-NLS-1$
-                    + e.lastImprovementTime.q250 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q750 = Double.parseDouble(
+          lastImprovementTime_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q750)) {
+          if (!Double.isFinite(lastImprovementTime_q750)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q750);
+                    + lastImprovementTime_q750);
           }
-          if (e.lastImprovementTime.q750 < e.lastImprovementTime.median) {
+          if (lastImprovementTime_q750 < lastImprovementTime_median) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q750 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q750
+                    + lastImprovementTime_q750
                     + ") must be greater or equal to lastImprovementTime.median ("//$NON-NLS-1$
-                    + e.lastImprovementTime.median + ").");//$NON-NLS-1$
+                    + lastImprovementTime_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q841 = Double.parseDouble(
+          lastImprovementTime_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q841)) {
+          if (!Double.isFinite(lastImprovementTime_q841)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q841);
+                    + lastImprovementTime_q841);
           }
-          if (e.lastImprovementTime.q841 < e.lastImprovementTime.q750) {
+          if (lastImprovementTime_q841 < lastImprovementTime_q750) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q841 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q841
+                    + lastImprovementTime_q841
                     + ") must be greater or equal to lastImprovementTime.q750 ("//$NON-NLS-1$
-                    + e.lastImprovementTime.q750 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.q950 = Double.parseDouble(
+          lastImprovementTime_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.q950)) {
+          if (!Double.isFinite(lastImprovementTime_q950)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.q950);
+                    + lastImprovementTime_q950);
           }
-          if (e.lastImprovementTime.q950 < e.lastImprovementTime.q841) {
+          if (lastImprovementTime_q950 < lastImprovementTime_q841) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.q950 (" //$NON-NLS-1$
-                    + e.lastImprovementTime.q950
+                    + lastImprovementTime_q950
                     + ") must be greater or equal to lastImprovementTime.q841 ("//$NON-NLS-1$
-                    + e.lastImprovementTime.q841 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.max = Long.parseLong(
+          lastImprovementTime_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementTime.max < 0L) {
+          if (lastImprovementTime_max < 0L) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.max must be >=0, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.max);
+                    + lastImprovementTime_max);
           }
-          if (e.lastImprovementTime.max < e.lastImprovementTime.q950) {
+          if (lastImprovementTime_max < lastImprovementTime_q950) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.max (" //$NON-NLS-1$
-                    + e.lastImprovementTime.max
+                    + lastImprovementTime_max
                     + ") must be greater or equal to lastImprovementTime.q950 ("//$NON-NLS-1$
-                    + e.lastImprovementTime.q950 + ").");//$NON-NLS-1$
+                    + lastImprovementTime_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.mean = Double.parseDouble(
+          lastImprovementTime_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.mean)) {
+          if (!Double.isFinite(lastImprovementTime_mean)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.mean must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.mean);
+                    + lastImprovementTime_mean);
           }
-          if ((e.lastImprovementTime.max < e.lastImprovementTime.mean)
-              || (e.lastImprovementTime.min > e.lastImprovementTime.mean)) {
+          if ((lastImprovementTime_max < lastImprovementTime_mean)
+              || (lastImprovementTime_min > lastImprovementTime_mean)) {
             throw new IllegalArgumentException(
                 (("lastImprovementTime.mean (" //$NON-NLS-1$
-                    + e.lastImprovementTime.mean
+                    + lastImprovementTime_mean
                     + ") must be inside [lastImprovementTime.min, lastImprovementTime.max], i.e., ("//$NON-NLS-1$
-                    + e.lastImprovementTime.min) + ',')
-                    + e.lastImprovementTime.max + ").");//$NON-NLS-1$
+                    + lastImprovementTime_min) + ',')
+                    + lastImprovementTime_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime.sd = Double.parseDouble(
+          lastImprovementTime_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementTime.sd)
-              || (e.lastImprovementTime.sd < 0d)) {
+          if (!Double.isFinite(lastImprovementTime_sd)
+              || (lastImprovementTime_sd < 0d)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.lastImprovementTime.sd);
+                    + lastImprovementTime_sd);
           }
-          if ((e.lastImprovementTime.max > e.lastImprovementTime.min) == (e.lastImprovementTime.sd <= 0d)) {
+          if ((lastImprovementTime_max > lastImprovementTime_min) == (lastImprovementTime_sd <= 0d)) {
             throw new IllegalArgumentException(
                 "lastImprovementTime.sd=" //$NON-NLS-1$
-                    + e.lastImprovementTime.sd
+                    + lastImprovementTime_sd
                     + " impossible for lastImprovementTime.min="//$NON-NLS-1$
-                    + e.lastImprovementTime.min
+                    + lastImprovementTime_min
                     + " and lastImprovementTime.max="//$NON-NLS-1$
-                    + e.lastImprovementTime.max + ").");//$NON-NLS-1$
+                    + lastImprovementTime_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.min = Long.parseLong(
+          lastImprovementFE_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementFE.min <= 0L) {
+          if (lastImprovementFE_min <= 0L) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.min must be >0, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.min);
+                    + lastImprovementFE_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q050 = Double.parseDouble(
+          lastImprovementFE_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q050)) {
+          if (!Double.isFinite(lastImprovementFE_q050)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q050);
+                    + lastImprovementFE_q050);
           }
-          if (e.lastImprovementFE.q050 < e.lastImprovementFE.min) {
+          if (lastImprovementFE_q050 < lastImprovementFE_min) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q050 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q050
+                    + lastImprovementFE_q050
                     + ") must be greater or equal to lastImprovementFE.min ("//$NON-NLS-1$
-                    + e.lastImprovementFE.min + ").");//$NON-NLS-1$
+                    + lastImprovementFE_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q159 = Double.parseDouble(
+          lastImprovementFE_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q159)) {
+          if (!Double.isFinite(lastImprovementFE_q159)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q159);
+                    + lastImprovementFE_q159);
           }
-          if (e.lastImprovementFE.q159 < e.lastImprovementFE.q050) {
+          if (lastImprovementFE_q159 < lastImprovementFE_q050) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q159 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q159
+                    + lastImprovementFE_q159
                     + ") must be greater or equal to lastImprovementFE.q050 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q050 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q250 = Double.parseDouble(
+          lastImprovementFE_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q250)) {
+          if (!Double.isFinite(lastImprovementFE_q250)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q250);
+                    + lastImprovementFE_q250);
           }
-          if (e.lastImprovementFE.q250 < e.lastImprovementFE.q159) {
+          if (lastImprovementFE_q250 < lastImprovementFE_q159) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q250 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q250
+                    + lastImprovementFE_q250
                     + ") must be greater or equal to lastImprovementFE.q159 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q159 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.median = Double.parseDouble(
+          lastImprovementFE_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.median)) {
+          if (!Double.isFinite(lastImprovementFE_median)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.median must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.median);
+                    + lastImprovementFE_median);
           }
-          if (e.lastImprovementFE.median < e.lastImprovementFE.q250) {
+          if (lastImprovementFE_median < lastImprovementFE_q250) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.median (" //$NON-NLS-1$
-                    + e.lastImprovementFE.median
+                    + lastImprovementFE_median
                     + ") must be greater or equal to lastImprovementFE.q250 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q250 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q750 = Double.parseDouble(
+          lastImprovementFE_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q750)) {
+          if (!Double.isFinite(lastImprovementFE_q750)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q750);
+                    + lastImprovementFE_q750);
           }
-          if (e.lastImprovementFE.q750 < e.lastImprovementFE.median) {
+          if (lastImprovementFE_q750 < lastImprovementFE_median) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q750 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q750
+                    + lastImprovementFE_q750
                     + ") must be greater or equal to lastImprovementFE.median ("//$NON-NLS-1$
-                    + e.lastImprovementFE.median + ").");//$NON-NLS-1$
+                    + lastImprovementFE_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q841 = Double.parseDouble(
+          lastImprovementFE_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q841)) {
+          if (!Double.isFinite(lastImprovementFE_q841)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q841);
+                    + lastImprovementFE_q841);
           }
-          if (e.lastImprovementFE.q841 < e.lastImprovementFE.q750) {
+          if (lastImprovementFE_q841 < lastImprovementFE_q750) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q841 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q841
+                    + lastImprovementFE_q841
                     + ") must be greater or equal to lastImprovementFE.q750 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q750 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.q950 = Double.parseDouble(
+          lastImprovementFE_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.q950)) {
+          if (!Double.isFinite(lastImprovementFE_q950)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.q950);
+                    + lastImprovementFE_q950);
           }
-          if (e.lastImprovementFE.q950 < e.lastImprovementFE.q841) {
+          if (lastImprovementFE_q950 < lastImprovementFE_q841) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.q950 (" //$NON-NLS-1$
-                    + e.lastImprovementFE.q950
+                    + lastImprovementFE_q950
                     + ") must be greater or equal to lastImprovementFE.q841 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q841 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.max = Long.parseLong(
+          lastImprovementFE_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementFE.max <= 0L) {
+          if (lastImprovementFE_max <= 0L) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.max must be >0, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.max);
+                    + lastImprovementFE_max);
           }
-          if (e.lastImprovementFE.max < e.lastImprovementFE.q950) {
+          if (lastImprovementFE_max < lastImprovementFE_q950) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.max (" //$NON-NLS-1$
-                    + e.lastImprovementFE.max
+                    + lastImprovementFE_max
                     + ") must be greater or equal to lastImprovementFE.q950 ("//$NON-NLS-1$
-                    + e.lastImprovementFE.q950 + ").");//$NON-NLS-1$
+                    + lastImprovementFE_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.mean = Double.parseDouble(
+          lastImprovementFE_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.mean)) {
+          if (!Double.isFinite(lastImprovementFE_mean)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.mean must be finite, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.mean);
+                    + lastImprovementFE_mean);
           }
-          if ((e.lastImprovementFE.max < e.lastImprovementFE.mean)
-              || (e.lastImprovementFE.min > e.lastImprovementFE.mean)) {
+          if ((lastImprovementFE_max < lastImprovementFE_mean)
+              || (lastImprovementFE_min > lastImprovementFE_mean)) {
             throw new IllegalArgumentException(
                 (("lastImprovementFE.mean (" //$NON-NLS-1$
-                    + e.lastImprovementFE.mean
+                    + lastImprovementFE_mean
                     + ") must be inside [lastImprovementFE.min, lastImprovementFE.max], i.e., ("//$NON-NLS-1$
-                    + e.lastImprovementFE.min) + ',')
-                    + e.lastImprovementFE.max + ").");//$NON-NLS-1$
+                    + lastImprovementFE_min) + ',')
+                    + lastImprovementFE_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE.sd = Double.parseDouble(
+          lastImprovementFE_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.lastImprovementFE.sd)
-              || (e.lastImprovementFE.sd < 0d)) {
+          if (!Double.isFinite(lastImprovementFE_sd)
+              || (lastImprovementFE_sd < 0d)) {
             throw new IllegalArgumentException(
                 "lastImprovementFE.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.lastImprovementFE.sd);
+                    + lastImprovementFE_sd);
           }
-          if ((e.lastImprovementFE.max > e.lastImprovementFE.min) == (e.lastImprovementFE.sd <= 0d)) {
+          if ((lastImprovementFE_max > lastImprovementFE_min) == (lastImprovementFE_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "lastImprovementFE.sd=" + e.lastImprovementFE.sd //$NON-NLS-1$
+                "lastImprovementFE.sd=" + lastImprovementFE_sd //$NON-NLS-1$
                     + " impossible for lastImprovementFE.min="//$NON-NLS-1$
-                    + e.lastImprovementFE.min
+                    + lastImprovementFE_min
                     + " and lastImprovementFE.max="//$NON-NLS-1$
-                    + e.lastImprovementFE.max + ").");//$NON-NLS-1$
+                    + lastImprovementFE_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.min = Long.parseLong(
+          numberOfImprovements_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.numberOfImprovements.min <= 0L) {
+          if (numberOfImprovements_min <= 0L) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.min must be >0, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.min);
+                    + numberOfImprovements_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q050 = Double.parseDouble(
+          numberOfImprovements_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q050)) {
+          if (!Double.isFinite(numberOfImprovements_q050)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q050 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q050);
+                    + numberOfImprovements_q050);
           }
-          if (e.numberOfImprovements.q050 < e.numberOfImprovements.min) {
+          if (numberOfImprovements_q050 < numberOfImprovements_min) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q050 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q050
+                    + numberOfImprovements_q050
                     + ") must be greater or equal to numberOfImprovements.min ("//$NON-NLS-1$
-                    + e.numberOfImprovements.min + ").");//$NON-NLS-1$
+                    + numberOfImprovements_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q159 = Double.parseDouble(
+          numberOfImprovements_q159 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q159)) {
+          if (!Double.isFinite(numberOfImprovements_q159)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q159 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q159);
+                    + numberOfImprovements_q159);
           }
-          if (e.numberOfImprovements.q159 < e.numberOfImprovements.q050) {
+          if (numberOfImprovements_q159 < numberOfImprovements_q050) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q159 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q159
+                    + numberOfImprovements_q159
                     + ") must be greater or equal to numberOfImprovements.q050 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q050 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q050 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q250 = Double.parseDouble(
+          numberOfImprovements_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q250)) {
+          if (!Double.isFinite(numberOfImprovements_q250)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q250 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q250);
+                    + numberOfImprovements_q250);
           }
-          if (e.numberOfImprovements.q250 < e.numberOfImprovements.q159) {
+          if (numberOfImprovements_q250 < numberOfImprovements_q159) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q250 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q250
+                    + numberOfImprovements_q250
                     + ") must be greater or equal to numberOfImprovements.q159 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q159 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q159 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.median = Double.parseDouble(
+          numberOfImprovements_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.median)) {
+          if (!Double.isFinite(numberOfImprovements_median)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.median must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.median);
+                    + numberOfImprovements_median);
           }
-          if (e.numberOfImprovements.median < e.numberOfImprovements.q250) {
+          if (numberOfImprovements_median < numberOfImprovements_q250) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.median (" //$NON-NLS-1$
-                    + e.numberOfImprovements.median
+                    + numberOfImprovements_median
                     + ") must be greater or equal to numberOfImprovements.q250 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q250 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q250 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q750 = Double.parseDouble(
+          numberOfImprovements_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q750)) {
+          if (!Double.isFinite(numberOfImprovements_q750)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q750 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q750);
+                    + numberOfImprovements_q750);
           }
-          if (e.numberOfImprovements.q750 < e.numberOfImprovements.median) {
+          if (numberOfImprovements_q750 < numberOfImprovements_median) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q750 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q750
+                    + numberOfImprovements_q750
                     + ") must be greater or equal to numberOfImprovements.median ("//$NON-NLS-1$
-                    + e.numberOfImprovements.median + ").");//$NON-NLS-1$
+                    + numberOfImprovements_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q841 = Double.parseDouble(
+          numberOfImprovements_q841 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q841)) {
+          if (!Double.isFinite(numberOfImprovements_q841)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q841 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q841);
+                    + numberOfImprovements_q841);
           }
-          if (e.numberOfImprovements.q841 < e.numberOfImprovements.q750) {
+          if (numberOfImprovements_q841 < numberOfImprovements_q750) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q841 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q841
+                    + numberOfImprovements_q841
                     + ") must be greater or equal to numberOfImprovements.q750 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q750 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q750 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.q950 = Double.parseDouble(
+          numberOfImprovements_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.q950)) {
+          if (!Double.isFinite(numberOfImprovements_q950)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q950 must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.q950);
+                    + numberOfImprovements_q950);
           }
-          if (e.numberOfImprovements.q950 < e.numberOfImprovements.q841) {
+          if (numberOfImprovements_q950 < numberOfImprovements_q841) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.q950 (" //$NON-NLS-1$
-                    + e.numberOfImprovements.q950
+                    + numberOfImprovements_q950
                     + ") must be greater or equal to numberOfImprovements.q841 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q841 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q841 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.max = Long.parseLong(
+          numberOfImprovements_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.numberOfImprovements.max <= 0L) {
+          if (numberOfImprovements_max <= 0L) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.max must be >0, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.max);
+                    + numberOfImprovements_max);
           }
-          if (e.numberOfImprovements.max < e.numberOfImprovements.q950) {
+          if (numberOfImprovements_max < numberOfImprovements_q950) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.max (" //$NON-NLS-1$
-                    + e.numberOfImprovements.max
+                    + numberOfImprovements_max
                     + ") must be greater or equal to numberOfImprovements.q950 ("//$NON-NLS-1$
-                    + e.numberOfImprovements.q950 + ").");//$NON-NLS-1$
+                    + numberOfImprovements_q950 + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.mean = Double.parseDouble(
+          numberOfImprovements_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.mean)) {
+          if (!Double.isFinite(numberOfImprovements_mean)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.mean must be finite, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.mean);
+                    + numberOfImprovements_mean);
           }
-          if ((e.numberOfImprovements.max < e.numberOfImprovements.mean)
-              || (e.numberOfImprovements.min > e.numberOfImprovements.mean)) {
+          if ((numberOfImprovements_max < numberOfImprovements_mean)
+              || (numberOfImprovements_min > numberOfImprovements_mean)) {
             throw new IllegalArgumentException(
                 (("numberOfImprovements.mean (" //$NON-NLS-1$
-                    + e.numberOfImprovements.mean
+                    + numberOfImprovements_mean
                     + ") must be inside [numberOfImprovements.min, numberOfImprovements.max], i.e., ("//$NON-NLS-1$
-                    + e.numberOfImprovements.min) + ',')
-                    + e.numberOfImprovements.max + ").");//$NON-NLS-1$
+                    + numberOfImprovements_min) + ',')
+                    + numberOfImprovements_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements.sd = Double.parseDouble(
+          numberOfImprovements_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.numberOfImprovements.sd)
-              || (e.numberOfImprovements.sd < 0d)) {
+          if (!Double.isFinite(numberOfImprovements_sd)
+              || (numberOfImprovements_sd < 0d)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.numberOfImprovements.sd);
+                    + numberOfImprovements_sd);
           }
-          if ((e.numberOfImprovements.max > e.numberOfImprovements.min) == (e.numberOfImprovements.sd <= 0d)) {
+          if ((numberOfImprovements_max > numberOfImprovements_min) == (numberOfImprovements_sd <= 0d)) {
             throw new IllegalArgumentException(
                 "numberOfImprovements.sd=" //$NON-NLS-1$
-                    + e.numberOfImprovements.sd
+                    + numberOfImprovements_sd
                     + " impossible for numberOfImprovements.min="//$NON-NLS-1$
-                    + e.numberOfImprovements.min
+                    + numberOfImprovements_min
                     + " and numberOfImprovements.max="//$NON-NLS-1$
-                    + e.numberOfImprovements.max + ").");//$NON-NLS-1$
+                    + numberOfImprovements_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime.min = Long.parseLong(
+          budgetTime_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetTime.min < 0L) {
+          if (budgetTime_min < 0L) {
             throw new IllegalArgumentException(
                 "budgetTime.min must be >=0, but is " //$NON-NLS-1$
-                    + e.budgetTime.min);
+                    + budgetTime_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime.median = Double.parseDouble(
+          budgetTime_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetTime.median)) {
+          if (!Double.isFinite(budgetTime_median)) {
             throw new IllegalArgumentException(
                 "budgetTime.median must be finite, but is " //$NON-NLS-1$
-                    + e.budgetTime.median);
+                    + budgetTime_median);
           }
-          if (e.budgetTime.median < e.budgetTime.min) {
+          if (budgetTime_median < budgetTime_min) {
             throw new IllegalArgumentException(
-                "budgetTime.median (" + e.budgetTime.median + //$NON-NLS-1$
+                "budgetTime.median (" + budgetTime_median + //$NON-NLS-1$
                     ") must be greater or equal to budgetTime.min ("//$NON-NLS-1$
-                    + e.budgetTime.min + ").");//$NON-NLS-1$
+                    + budgetTime_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime.max = Long.parseLong(
+          budgetTime_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetTime.max < 0L) {
+          if (budgetTime_max < 0L) {
             throw new IllegalArgumentException(
                 "budgetTime.max must be >=0, but is " //$NON-NLS-1$
-                    + e.budgetTime.max);
+                    + budgetTime_max);
           }
-          if (e.budgetTime.max < e.budgetTime.median) {
+          if (budgetTime_max < budgetTime_median) {
             throw new IllegalArgumentException(
-                "budgetTime.max (" + e.budgetTime.max + //$NON-NLS-1$
+                "budgetTime.max (" + budgetTime_max + //$NON-NLS-1$
                     ") must be greater or equal to budgetTime.median ("//$NON-NLS-1$
-                    + e.budgetTime.median + ").");//$NON-NLS-1$
+                    + budgetTime_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime.mean = Double.parseDouble(
+          budgetTime_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetTime.mean)) {
+          if (!Double.isFinite(budgetTime_mean)) {
             throw new IllegalArgumentException(
                 "budgetTime.mean must be finite, but is " //$NON-NLS-1$
-                    + e.budgetTime.mean);
+                    + budgetTime_mean);
           }
-          if ((e.budgetTime.max < e.budgetTime.mean)
-              || (e.budgetTime.min > e.budgetTime.mean)) {
+          if ((budgetTime_max < budgetTime_mean)
+              || (budgetTime_min > budgetTime_mean)) {
             throw new IllegalArgumentException(
-                (("budgetTime.mean (" + e.budgetTime.mean + //$NON-NLS-1$
+                (("budgetTime.mean (" + budgetTime_mean + //$NON-NLS-1$
                     ") must be inside [budgetTime.min, budgetTime.max], i.e., ("//$NON-NLS-1$
-                    + e.budgetTime.min) + ',') + e.budgetTime.max
+                    + budgetTime_min) + ',') + budgetTime_max
                     + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime.sd = Double.parseDouble(
+          budgetTime_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetTime.sd)
-              || (e.budgetTime.sd < 0d)) {
+          if (!Double.isFinite(budgetTime_sd)
+              || (budgetTime_sd < 0d)) {
             throw new IllegalArgumentException(
                 "budgetTime.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.budgetTime.sd);
+                    + budgetTime_sd);
           }
-          if ((e.budgetTime.max > e.budgetTime.min) == (e.budgetTime.sd <= 0d)) {
+          if ((budgetTime_max > budgetTime_min) == (budgetTime_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "budgetTime.sd=" + e.budgetTime.sd + //$NON-NLS-1$
+                "budgetTime.sd=" + budgetTime_sd + //$NON-NLS-1$
                     " impossible for budgetTime.min=" + //$NON-NLS-1$
-                    e.budgetTime.min + " and budgetTime.max="//$NON-NLS-1$
-                    + e.budgetTime.max + ").");//$NON-NLS-1$
+                    budgetTime_min + " and budgetTime.max="//$NON-NLS-1$
+                    + budgetTime_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs.min = Long.parseLong(
+          budgetFEs_min = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetFEs.min <= 0L) {
+          if (budgetFEs_min <= 0L) {
             throw new IllegalArgumentException(
                 "budgetFEs.min must be >0, but is " //$NON-NLS-1$
-                    + e.budgetFEs.min);
+                    + budgetFEs_min);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs.median = Double.parseDouble(
+          budgetFEs_median = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetFEs.median)) {
+          if (!Double.isFinite(budgetFEs_median)) {
             throw new IllegalArgumentException(
                 "budgetFEs.median must be finite, but is " //$NON-NLS-1$
-                    + e.budgetFEs.median);
+                    + budgetFEs_median);
           }
-          if (e.budgetFEs.median < e.budgetFEs.min) {
+          if (budgetFEs_median < budgetFEs_min) {
             throw new IllegalArgumentException(
-                "budgetFEs.median (" + e.budgetFEs.median + //$NON-NLS-1$
+                "budgetFEs.median (" + budgetFEs_median + //$NON-NLS-1$
                     ") must be greater or equal to budgetFEs.min ("//$NON-NLS-1$
-                    + e.budgetFEs.min + ").");//$NON-NLS-1$
+                    + budgetFEs_min + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs.max = Long.parseLong(
+          budgetFEs_max = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetFEs.max <= 0L) {
+          if (budgetFEs_max <= 0L) {
             throw new IllegalArgumentException(
                 "budgetFEs.max must be >0, but is " //$NON-NLS-1$
-                    + e.budgetFEs.max);
+                    + budgetFEs_max);
           }
-          if (e.budgetFEs.max < e.budgetFEs.median) {
+          if (budgetFEs_max < budgetFEs_median) {
             throw new IllegalArgumentException(
-                "budgetFEs.max (" + e.budgetFEs.max + //$NON-NLS-1$
+                "budgetFEs.max (" + budgetFEs_max + //$NON-NLS-1$
                     ") must be greater or equal to budgetFEs.median ("//$NON-NLS-1$
-                    + e.budgetFEs.median + ").");//$NON-NLS-1$
+                    + budgetFEs_median + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs.mean = Double.parseDouble(
+          budgetFEs_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetFEs.mean)) {
+          if (!Double.isFinite(budgetFEs_mean)) {
             throw new IllegalArgumentException(
                 "budgetFEs.mean must be finite, but is " //$NON-NLS-1$
-                    + e.budgetFEs.mean);
+                    + budgetFEs_mean);
           }
-          if ((e.budgetFEs.max < e.budgetFEs.mean)
-              || (e.budgetFEs.min > e.budgetFEs.mean)) {
+          if ((budgetFEs_max < budgetFEs_mean)
+              || (budgetFEs_min > budgetFEs_mean)) {
             throw new IllegalArgumentException(
-                (("budgetFEs.mean (" + e.budgetFEs.mean + //$NON-NLS-1$
+                (("budgetFEs.mean (" + budgetFEs_mean + //$NON-NLS-1$
                     ") must be inside [budgetFEs.min, budgetFEs.max], i.e., ("//$NON-NLS-1$
-                    + e.budgetFEs.min) + ',') + e.budgetFEs.max
+                    + budgetFEs_min) + ',') + budgetFEs_max
                     + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs.sd = Double.parseDouble(
+          budgetFEs_sd = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.budgetFEs.sd)
-              || (e.budgetFEs.sd < 0d)) {
+          if (!Double.isFinite(budgetFEs_sd)
+              || (budgetFEs_sd < 0d)) {
             throw new IllegalArgumentException(
                 "budgetFEs.sd must be finite and >=0, but is " //$NON-NLS-1$
-                    + e.budgetFEs.sd);
+                    + budgetFEs_sd);
           }
-          if ((e.budgetFEs.max > e.budgetFEs.min) == (e.budgetFEs.sd <= 0d)) {
+          if ((budgetFEs_max > budgetFEs_min) == (budgetFEs_sd <= 0d)) {
             throw new IllegalArgumentException(
-                "budgetFEs.sd=" + e.budgetFEs.sd + //$NON-NLS-1$
+                "budgetFEs.sd=" + budgetFEs_sd + //$NON-NLS-1$
                     " impossible for budgetFEs.min=" + //$NON-NLS-1$
-                    e.budgetFEs.min + " and budgetFEs.max="//$NON-NLS-1$
-                    + e.budgetFEs.max + ").");//$NON-NLS-1$
+                    budgetFEs_min + " and budgetFEs.max="//$NON-NLS-1$
+                    + budgetFEs_max + ").");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.successes = Integer.parseInt(
+          successes = Integer.parseInt(
               line.substring(lastSemi, nextSemi).trim());
-          if ((e.successes < 0) || (e.successes > e.runs)) {
+          if ((successes < 0) || (successes > runs)) {
             throw new IllegalArgumentException(
                 "There cannot be " + //$NON-NLS-1$
-                    e.successes + " successes in " + //$NON-NLS-1$
-                    e.runs + " runs."); //$NON-NLS-1$
+                    successes + " successes in " + //$NON-NLS-1$
+                    runs + " runs."); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.ertTime = Double.parseDouble(
+          ertTime = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (((!Double.isFinite(e.ertTime))
-              && (e.ertTime != Double.POSITIVE_INFINITY))
-              || (e.ertTime < 0d)) {
+          if (((!Double.isFinite(ertTime))
+              && (ertTime != Double.POSITIVE_INFINITY))
+              || (ertTime < 0d)) {
             throw new IllegalArgumentException(
                 "ertTime cannot be " + //$NON-NLS-1$
-                    e.ertTime);
+                    ertTime);
           }
-          if ((e.successes > 0)
-              && (!Double.isFinite(e.ertTime))) {
+          if ((successes > 0) && (!Double.isFinite(ertTime))) {
             throw new IllegalArgumentException(
                 "ertTime cannot be " + //$NON-NLS-1$
-                    e.ertTime + " if there are " //$NON-NLS-1$
-                    + e.successes + " successes."); //$NON-NLS-1$
+                    ertTime + " if there are " //$NON-NLS-1$
+                    + successes + " successes."); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
@@ -1799,24 +1879,81 @@ public class EndResultStatistics {
             throw new IllegalStateException("too many columns!");//$NON-NLS-1$
           }
           nextSemi = line.length();
-          e.ertFEs = Double.parseDouble(
+          ertFEs = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (((!Double.isFinite(e.ertFEs))
-              && (e.ertFEs != Double.POSITIVE_INFINITY))
-              || (e.ertFEs <= 0d)) {
+          if (((!Double.isFinite(ertFEs))
+              && (ertFEs != Double.POSITIVE_INFINITY))
+              || (ertFEs <= 0d)) {
             throw new IllegalArgumentException(
                 "ertFEs cannot be " + //$NON-NLS-1$
-                    e.ertFEs);
+                    ertFEs);
           }
-          if ((e.successes > 0)
-              && (!Double.isFinite(e.ertFEs))) {
+          if ((successes > 0) && (!Double.isFinite(ertFEs))) {
             throw new IllegalArgumentException(
                 "ertFEs cannot be " + //$NON-NLS-1$
-                    e.ertFEs + " if there are " //$NON-NLS-1$
-                    + e.successes + " successes."); //$NON-NLS-1$
+                    ertFEs + " if there are " //$NON-NLS-1$
+                    + successes + " successes."); //$NON-NLS-1$
           }
 
-          consumer.accept(e);
+          consumer.accept(new EndResultStatistic(algorithm, //
+              instance, //
+              runs, //
+              new EndResultStatistic.DoubleStatisticsBig(
+                  bestF_min, bestF_q050, bestF_q159, bestF_q250,
+                  bestF_median, bestF_q750, bestF_q841,
+                  bestF_q950, bestF_max, bestF_mean, bestF_sd), //
+              new EndResultStatistic.IntStatisticsBig(
+                  totalTime_min, totalTime_q050, totalTime_q159,
+                  totalTime_q250, totalTime_median,
+                  totalTime_q750, totalTime_q841, totalTime_q950,
+                  totalTime_max, totalTime_mean, totalTime_sd), //
+              new EndResultStatistic.IntStatisticsBig(
+                  totalFEs_min, totalFEs_q050, totalFEs_q159,
+                  totalFEs_q250, totalFEs_median, totalFEs_q750,
+                  totalFEs_q841, totalFEs_q950, totalFEs_max,
+                  totalFEs_mean, totalFEs_sd), //
+              new EndResultStatistic.IntStatisticsBig(
+                  lastImprovementTime_min,
+                  lastImprovementTime_q050,
+                  lastImprovementTime_q159,
+                  lastImprovementTime_q250,
+                  lastImprovementTime_median,
+                  lastImprovementTime_q750,
+                  lastImprovementTime_q841,
+                  lastImprovementTime_q950,
+                  lastImprovementTime_max,
+                  lastImprovementTime_mean,
+                  lastImprovementTime_sd), //
+              new EndResultStatistic.IntStatisticsBig(
+                  lastImprovementFE_min, lastImprovementFE_q050,
+                  lastImprovementFE_q159, lastImprovementFE_q250,
+                  lastImprovementFE_median,
+                  lastImprovementFE_q750, lastImprovementFE_q841,
+                  lastImprovementFE_q950, lastImprovementFE_max,
+                  lastImprovementFE_mean, lastImprovementFE_sd), //
+              new EndResultStatistic.IntStatisticsBig(
+                  numberOfImprovements_min,
+                  numberOfImprovements_q050,
+                  numberOfImprovements_q159,
+                  numberOfImprovements_q250,
+                  numberOfImprovements_median,
+                  numberOfImprovements_q750,
+                  numberOfImprovements_q841,
+                  numberOfImprovements_q950,
+                  numberOfImprovements_max,
+                  numberOfImprovements_mean,
+                  numberOfImprovements_sd), //
+              new EndResultStatistic.IntStatisticsSmall(
+                  budgetTime_min, budgetTime_median,
+                  budgetTime_max, budgetTime_mean,
+                  budgetTime_sd), //
+              new EndResultStatistic.IntStatisticsSmall(
+                  budgetFEs_min, budgetFEs_median, budgetFEs_max,
+                  budgetFEs_mean, budgetFEs_sd), //
+              successes, //
+              ertTime, //
+              ertFEs//
+          ));
         } catch (final Throwable error) {
           throw new IOException(//
               "Line " + lineIndex //$NON-NLS-1$

@@ -6,12 +6,7 @@ import aitoa.structure.LogFormat;
 
 /**
  * A line of the end results table, as created by
- * {@link EndResults}. Notice: Instances of this class, as passed
- * to the consumers by the
- * {@link EndResults#parseEndResultsTable(java.nio.file.Path, java.util.function.Consumer, boolean)},
- * are generally mutable and will be re-used by the parser. If
- * you want to store them, you should {@linkplain #clone() copy}
- * them first.
+ * {@link EndResults}.
  */
 public final class EndResult implements Comparable<EndResult> {
 
@@ -115,67 +110,72 @@ public final class EndResult implements Comparable<EndResult> {
           error);
     }
 
-    if (!Double.isFinite(_bestF)) {
-      throw new IllegalArgumentException(
-          "Invalid f.best: " + _bestF);//$NON-NLS-1$
-    }
     this.bestF = _bestF;
-
-    if ((_totalTime < 0L) || (_totalTime > 315360000000000L)) {
+    if (!Double.isFinite(this.bestF)) {
       throw new IllegalArgumentException(
-          "Invalid total time: " + _totalTime);//$NON-NLS-1$
+          "Invalid f.best: " + this.bestF);//$NON-NLS-1$
     }
+
     this.totalTime = _totalTime;
-
-    if ((_totalFEs < 1L) || (_totalFEs > 315360000000000L)) {
+    if ((this.totalTime < 0L)
+        || (this.totalTime > 315360000000000L)) {
       throw new IllegalArgumentException(
-          "Invalid total FEs: " + _totalFEs);//$NON-NLS-1$
+          "Invalid total time: " + this.totalTime);//$NON-NLS-1$
     }
-    this.totalFEs = _totalFEs;
 
-    if ((_lastImprovementTime < 0L)
-        || (_lastImprovementTime > _totalTime)) {
+    this.totalFEs = _totalFEs;
+    if ((this.totalFEs < 1L)
+        || (this.totalFEs > 315360000000000L)) {
+      throw new IllegalArgumentException(
+          "Invalid total FEs: " + this.totalFEs);//$NON-NLS-1$
+    }
+
+    this.lastImprovementTime = _lastImprovementTime;
+    if ((this.lastImprovementTime < 0L)
+        || (this.lastImprovementTime > this.totalTime)) {
       throw new IllegalArgumentException(
           "Invalid last improvement time: " //$NON-NLS-1$
-              + _lastImprovementTime);
+              + this.lastImprovementTime + " for total time " //$NON-NLS-1$
+              + this.totalTime);
     }
-    this.lastImprovementTime = _lastImprovementTime;
 
-    if ((_lastImprovementFE <= 0L)
-        || (_lastImprovementFE > _totalFEs)) {
-      throw new IllegalArgumentException(
-          "Invalid last improvement FE: " + _lastImprovementFE);//$NON-NLS-1$
-    }
     this.lastImprovementFE = _lastImprovementFE;
-
-    if (_budgetTime < 0L) {
+    if ((this.lastImprovementFE <= 0L)
+        || (this.lastImprovementFE > this.totalFEs)) {
       throw new IllegalArgumentException(
-          "Invalid time budget: " + _budgetTime);//$NON-NLS-1$
+          "Invalid last improvement FE: " //$NON-NLS-1$
+              + this.lastImprovementFE + " for total FEs " //$NON-NLS-1$
+              + this.totalFEs);
     }
-    LogParser._checkTime(this.totalTime, _budgetTime);
+
     this.budgetTime = _budgetTime;
-
-    if ((_budgetFEs < 1L) || (_budgetFEs < _totalFEs)) {
+    if (this.budgetTime < 0L) {
       throw new IllegalArgumentException(
-          "Invalid budget FEs: " + _budgetFEs + //$NON-NLS-1$
-              " for total FEs: " + _totalFEs);//$NON-NLS-1$
+          "Invalid time budget: " + this.budgetTime);//$NON-NLS-1$
     }
-    this.budgetFEs = _budgetFEs;
+    LogParser._checkTime(this.totalTime, this.budgetTime);
 
-    if ((_numberOfImprovements <= 0)
-        || (_numberOfImprovements > _lastImprovementFE)) {
+    this.budgetFEs = _budgetFEs;
+    if ((this.budgetFEs < 1L)
+        || (this.budgetFEs < this.totalFEs)) {
+      throw new IllegalArgumentException(
+          "Invalid budget FEs: " + this.budgetFEs + //$NON-NLS-1$
+              " for total FEs: " + this.totalFEs);//$NON-NLS-1$
+    }
+
+    this.numberOfImprovements = _numberOfImprovements;
+    if ((this.numberOfImprovements <= 0)
+        || (this.numberOfImprovements > this.lastImprovementFE)) {
       throw new IllegalArgumentException(
           "Invalid number of improvements " //$NON-NLS-1$
-              + _numberOfImprovements
+              + this.numberOfImprovements
               + " for last improvement FE " + //$NON-NLS-1$
-              _lastImprovementFE);
+              this.lastImprovementFE);
     }
-    this.numberOfImprovements = _numberOfImprovements;
 
-    if (Double.isFinite(_goalF)
-        || (_goalF <= Double.NEGATIVE_INFINITY)) {
-      this.goalF = _goalF;
-    } else {
+    this.goalF = _goalF;
+    if ((!Double.isFinite(this.goalF))
+        && (!(this.goalF <= Double.NEGATIVE_INFINITY))) {
       throw new IllegalArgumentException(
           "Invalid goal objective value: "//$NON-NLS-1$
               + _goalF);

@@ -4,20 +4,15 @@ import java.util.Objects;
 
 /**
  * A line of the end result statistics table, as created by
- * {@link EndResultStatistics}. Notice: Instances of this class,
- * as passed to the consumers by the
- * {@link EndResultStatistics#parseEndResultStatisticsTable(java.nio.file.Path, java.util.function.Consumer, boolean)},
- * are generally mutable and will be re-used by the parser. If
- * you want to store them, you should {@linkplain #clone() copy}
- * them first.
+ * {@link EndResultStatistics}.
  */
-public final class EndResultStatistic implements Cloneable {
+public final class EndResultStatistic {
   /** the algorithm id */
-  public String algorithm;
+  public final String algorithm;
   /** the instance id */
-  public String instance;
+  public final String instance;
   /** the number of runs whose data was collected */
-  public int runs;
+  public final int runs;
   /**
    * the best objective value achieved by the run
    */
@@ -42,15 +37,21 @@ public final class EndResultStatistic implements Cloneable {
   public final IntStatisticsSmall budgetFEs;
 
   /** the number of runs which were "successful" */
-  public int successes;
+  public final int successes;
   /** the empirical expected time to success */
-  public double ertTime;
+  public final double ertTime;
   /** the empirical expected FEs to success */
-  public double ertFEs;
+  public final double ertFEs;
 
   /**
    * create
    *
+   * @param _algorithm
+   *          the algorithm name
+   * @param _instance
+   *          the instance name
+   * @param _runs
+   *          the number of runs
    * @param _bestF
    *          the best f record
    * @param _totalTime
@@ -67,16 +68,47 @@ public final class EndResultStatistic implements Cloneable {
    *          the budget time record
    * @param _budgetFEs
    *          the budget fes record
+   * @param _successes
+   *          the number of successes
+   * @param _ertTime
+   *          the expected running time in ms
+   * @param _ertFEs
+   *          the expected running time in FEs
    */
-  EndResultStatistic(final DoubleStatisticsBig _bestF,
+  public EndResultStatistic(final String _algorithm,
+      final String _instance, final int _runs,
+      final DoubleStatisticsBig _bestF,
       final IntStatisticsBig _totalTime,
       final IntStatisticsBig _totalFEs,
       final IntStatisticsBig _lastImprovementTime,
       final IntStatisticsBig _lastImprovementFE,
       final IntStatisticsBig _numberOfImprovements,
       final IntStatisticsSmall _budgetTime,
-      final IntStatisticsSmall _budgetFEs) {
+      final IntStatisticsSmall _budgetFEs, final int _successes,
+      final double _ertTime, final double _ertFEs) {
     super();
+
+    this.algorithm = _algorithm.trim();
+    if (this.algorithm.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Cannot have '" + _algorithm + //$NON-NLS-1$
+              "' as algorithm name.");//$NON-NLS-1$
+    }
+
+    this.instance = _instance.trim();
+    if (this.instance.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Cannot have '" + _instance + //$NON-NLS-1$
+              "' as instance name.");//$NON-NLS-1$
+    }
+
+    this.runs = _runs;
+    if (this.runs <= 0) {
+      throw new IllegalArgumentException(
+          "Number of runs must be positive, but is "//$NON-NLS-1$
+              + this.runs);
+    }
+
     this.bestF = Objects.requireNonNull(_bestF);
     this.totalTime = Objects.requireNonNull(_totalTime);
     this.totalFEs = Objects.requireNonNull(_totalFEs);
@@ -88,32 +120,39 @@ public final class EndResultStatistic implements Cloneable {
         Objects.requireNonNull(_numberOfImprovements);
     this.budgetTime = Objects.requireNonNull(_budgetTime);
     this.budgetFEs = Objects.requireNonNull(_budgetFEs);
-  }
 
-  /** create */
-  EndResultStatistic() {
-    this(new DoubleStatisticsBig(), new IntStatisticsBig(),
-        new IntStatisticsBig(), new IntStatisticsBig(),
-        new IntStatisticsBig(), new IntStatisticsBig(),
-        new IntStatisticsSmall(), new IntStatisticsSmall());
-  }
+    this.successes = _successes;
+    if ((this.successes < 0) || (this.successes > this.runs)) {
+      throw new IllegalArgumentException(
+          "Invalid number of successes " + this.successes //$NON-NLS-1$
+              + " for number of runs " + this.runs);//$NON-NLS-1$
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final EndResultStatistic clone() {
-    final EndResultStatistic n = new EndResultStatistic(
-        this.bestF.clone(), this.totalTime.clone(),
-        this.totalFEs.clone(), this.lastImprovementTime.clone(),
-        this.lastImprovementFE.clone(),
-        this.numberOfImprovements.clone(),
-        this.budgetTime.clone(), this.budgetFEs.clone());
-    n.algorithm = this.algorithm;
-    n.instance = this.instance;
-    n.runs = this.runs;
-    n.successes = this.successes;
-    n.ertTime = this.ertTime;
-    n.ertFEs = this.ertFEs;
-    return n;
+    this.ertTime = _ertTime;
+    if ((Double.isFinite(this.ertTime)
+        ^ (this.ertTime < Double.POSITIVE_INFINITY))
+        || (this.ertTime < 0d)) {
+      throw new IllegalArgumentException(
+          "Invalid time ERT: " + this.ertTime); //$NON-NLS-1$
+    }
+    if ((this.successes == 0) != (this.ertTime >= Double.POSITIVE_INFINITY)) {
+      throw new IllegalArgumentException(
+          "Invalid time ERT " + this.ertTime //$NON-NLS-1$
+              + " for number of successes " + this.successes); //$NON-NLS-1$
+    }
+
+    this.ertFEs = _ertFEs;
+    if ((Double.isFinite(this.ertFEs)
+        ^ (this.ertFEs < Double.POSITIVE_INFINITY))
+        || (this.ertFEs < 1d)) {
+      throw new IllegalArgumentException(
+          "Invalid FE ERT: " + this.ertFEs); //$NON-NLS-1$
+    }
+    if ((this.successes == 0) != (this.ertFEs >= Double.POSITIVE_INFINITY)) {
+      throw new IllegalArgumentException(
+          "Invalid FE ERT " + this.ertFEs //$NON-NLS-1$
+              + " for number of successes " + this.successes); //$NON-NLS-1$
+    }
   }
 
   /** {@inheritDoc} */
@@ -181,15 +220,54 @@ public final class EndResultStatistic implements Cloneable {
   /** the statistic base */
   private static class __StatBase {
     /** the arithmetic mean */
-    public double mean;
+    public final double mean;
     /** the standard deviation */
-    public double sd;
+    public final double sd;
     /** the median */
-    public double median;
+    public final double median;
 
-    /** create */
-    __StatBase() {
+    /**
+     * create
+     *
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     * @param _median
+     *          the median
+     */
+    __StatBase(final double _mean, final double _sd,
+        final double _median) {
       super();
+
+      this.sd = _sd;
+      this.median = _median;
+      this.mean = ((this.sd != 0d) ? _mean : this.median);
+
+      if (!Double.isFinite(this.mean)) {
+        throw new IllegalArgumentException(
+            "Invalid mean: " + this.mean); //$NON-NLS-1$
+      }
+
+      if ((!Double.isFinite(this.sd)) || (_sd < 0d)) {
+        throw new IllegalArgumentException(
+            "Invalid standard deviation: " + this.sd); //$NON-NLS-1$
+      }
+
+      if (!Double.isFinite(this.median)) {
+        throw new IllegalArgumentException(
+            "Invalid median: " + this.median); //$NON-NLS-1$
+      }
+
+      if (this.sd <= 0d) {
+        if (_mean != _median) {
+          throw new IllegalArgumentException(//
+              "If sd=0, then mean "//$NON-NLS-1$
+                  + _mean + " should equal median "//$NON-NLS-1$
+                  + _median + "; difference " + //$NON-NLS-1$
+                  (_mean - _median));
+        }
+      }
     }
 
     /** {@inheritDoc} */
@@ -234,9 +312,93 @@ public final class EndResultStatistic implements Cloneable {
     /** the 95% quantile */
     public double q950;
 
-    /** create */
-    __StatQuantiles() {
-      super();
+    /**
+     * create
+     *
+     * @param _q050
+     *          the 5% quantile
+     * @param _q159
+     *          the 15.9% quantile
+     * @param _q250
+     *          the 25% quantile
+     * @param _q750
+     *          the 75% quantile
+     * @param _q841
+     *          the 84.1% quantile
+     * @param _q950
+     *          the 95% quantile
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     * @param _median
+     *          the median
+     */
+    __StatQuantiles(final double _q050, final double _q159,
+        final double _q250, final double _median,
+        final double _q750, final double _q841,
+        final double _q950, final double _mean,
+        final double _sd) {
+      super(_mean, _sd, _median);
+
+      this.q050 = _q050;
+      if (!Double.isFinite(_q050)) {
+        throw new IllegalArgumentException(
+            "Invalid q050: " + this.q050); //$NON-NLS-1$
+      }
+
+      this.q159 = _q159;
+      if ((!Double.isFinite(this.q159))
+          || (this.q159 < this.q050)) {
+        throw new IllegalArgumentException(
+            "Invalid q159: " + this.q159 //$NON-NLS-1$
+                + " for q050: " + this.q050);//$NON-NLS-1$
+      }
+
+      this.q250 = _q250;
+      if ((!Double.isFinite(this.q250))
+          || (this.q250 < this.q159)) {
+        throw new IllegalArgumentException(
+            "Invalid q250: " + this.q250 //$NON-NLS-1$
+                + " for q159: " + this.q159);//$NON-NLS-1$
+      }
+
+      if (this.median < this.q250) {
+        throw new IllegalArgumentException(
+            "Invalid median: " + this.median //$NON-NLS-1$
+                + " for q250: " + this.q250);//$NON-NLS-1$
+      }
+
+      this.q750 = _q750;
+      if ((!Double.isFinite(this.q750))
+          || (this.q750 < this.median)) {
+        throw new IllegalArgumentException(
+            "Invalid q750: " + this.q750 //$NON-NLS-1$
+                + " for median: " + this.median);//$NON-NLS-1$
+      }
+
+      this.q841 = _q841;
+      if ((!Double.isFinite(this.q841))
+          || (this.q841 < this.q159)) {
+        throw new IllegalArgumentException(
+            "Invalid q841: " + this.q841 //$NON-NLS-1$
+                + " for q750: " + this.q750);//$NON-NLS-1$
+      }
+
+      this.q950 = _q950;
+      if ((!Double.isFinite(this.q950))
+          || (this.q950 < this.q841)) {
+        throw new IllegalArgumentException(
+            "Invalid q950: " + this.q950 //$NON-NLS-1$
+                + " for q841: " + this.q841);//$NON-NLS-1$
+      }
+
+      if ((this.sd <= 0d) && (this.q950 != this.q050)) {
+        throw new IllegalArgumentException(//
+            "If sd=0, then q050 "//$NON-NLS-1$
+                + this.q050 + " should equal q950 "//$NON-NLS-1$
+                + this.q950);
+      }
     }
 
     /** {@inheritDoc} */
@@ -278,22 +440,62 @@ public final class EndResultStatistic implements Cloneable {
   public static final class IntStatisticsBig
       extends __StatQuantiles {
     /** the minimum */
-    public long min;
+    public final long min;
     /** the maximum */
-    public long max;
+    public final long max;
 
-    /** create */
-    IntStatisticsBig() {
-      super();
-    }
+    /**
+     * create
+     *
+     * @param _min
+     *          the minimum
+     * @param _q050
+     *          the 5% quantile
+     * @param _q159
+     *          the 15.9% quantile
+     * @param _q250
+     *          the 25% quantile
+     * @param _q750
+     *          the 75% quantile
+     * @param _q841
+     *          the 84.1% quantile
+     * @param _q950
+     *          the 95% quantile
+     * @param _max
+     *          the maximum
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     * @param _median
+     *          the median
+     */
+    public IntStatisticsBig(final long _min, final double _q050,
+        final double _q159, final double _q250,
+        final double _median, final double _q750,
+        final double _q841, final double _q950, final long _max,
+        final double _mean, final double _sd) {
+      super(_q050, _q159, _q250, _median, _q750, _q841, _q950,
+          _mean, _sd);
 
-    /** {@inheritDoc} */
-    @Override
-    public final IntStatisticsBig clone() {
-      try {
-        return ((IntStatisticsBig) (super.clone()));
-      } catch (final Throwable error) {
-        throw new RuntimeException(error);
+      this.min = _min;
+      if (this.min > this.q050) {
+        throw new IllegalArgumentException(
+            "Invalid minimum: " + this.min //$NON-NLS-1$
+                + " for q050: " + this.q050);//$NON-NLS-1$
+      }
+
+      this.max = _max;
+      if (this.max < this.q950) {
+        throw new IllegalArgumentException(
+            "Invalid maximum: " + this.max //$NON-NLS-1$
+                + " for q950: " + this.q950);//$NON-NLS-1$
+      }
+
+      if ((this.sd <= 0d) != (this.max <= this.min)) {
+        throw new IllegalArgumentException(
+            (((("Invalid min/max/sd: "//$NON-NLS-1$
+                + this.min) + '/') + this.max) + '/') + this.sd);
       }
     }
 
@@ -338,24 +540,68 @@ public final class EndResultStatistic implements Cloneable {
 
   /** the double statistics */
   public static final class DoubleStatisticsBig
-      extends __StatQuantiles implements Cloneable {
+      extends __StatQuantiles {
+
     /** the minimum */
-    public double min;
+    public final double min;
     /** the maximum */
-    public double max;
+    public final double max;
 
-    /** create */
-    DoubleStatisticsBig() {
-      super();
-    }
+    /**
+     * create
+     *
+     * @param _min
+     *          the minimum
+     * @param _q050
+     *          the 5% quantile
+     * @param _q159
+     *          the 15.9% quantile
+     * @param _q250
+     *          the 25% quantile
+     * @param _q750
+     *          the 75% quantile
+     * @param _q841
+     *          the 84.1% quantile
+     * @param _q950
+     *          the 95% quantile
+     * @param _max
+     *          the maximum
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     * @param _median
+     *          the median
+     */
+    public DoubleStatisticsBig(final double _min,
+        final double _q050, final double _q159,
+        final double _q250, final double _median,
+        final double _q750, final double _q841,
+        final double _q950, final double _max,
+        final double _mean, final double _sd) {
+      super(_q050, _q159, _q250, _median, _q750, _q841, _q950,
+          _mean, _sd);
 
-    /** {@inheritDoc} */
-    @Override
-    public final DoubleStatisticsBig clone() {
-      try {
-        return ((DoubleStatisticsBig) (super.clone()));
-      } catch (final Throwable error) {
-        throw new RuntimeException(error);
+      this.min = _min;
+      if ((!Double.isFinite(this.min))
+          || (this.min > this.q050)) {
+        throw new IllegalArgumentException(
+            "Invalid minimum: " + this.min //$NON-NLS-1$
+                + " for q050: " + this.q050);//$NON-NLS-1$
+      }
+
+      this.max = _max;
+      if ((!Double.isFinite(this.max))
+          || (this.max < this.q950)) {
+        throw new IllegalArgumentException(
+            "Invalid maximum: " + this.max //$NON-NLS-1$
+                + " for q950: " + this.q950);//$NON-NLS-1$
+      }
+
+      if ((this.sd <= 0d) != (this.max <= this.min)) {
+        throw new IllegalArgumentException(
+            (((("Invalid min/max/sd: "//$NON-NLS-1$
+                + this.min) + '/') + this.max) + '/') + this.sd);
       }
     }
 
@@ -404,22 +650,47 @@ public final class EndResultStatistic implements Cloneable {
   public static final class IntStatisticsSmall
       extends __StatBase {
     /** the minimum */
-    public long min;
+    public final long min;
     /** the maximum */
-    public long max;
+    public final long max;
 
-    /** create */
-    IntStatisticsSmall() {
-      super();
-    }
+    /**
+     * create
+     *
+     * @param _min
+     *          the minimum
+     * @param _median
+     *          the median
+     * @param _max
+     *          the maximum
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     */
+    public IntStatisticsSmall(final long _min,
+        final double _median, final long _max,
+        final double _mean, final double _sd) {
+      super(_mean, _sd, _median);
 
-    /** {@inheritDoc} */
-    @Override
-    public final IntStatisticsSmall clone() {
-      try {
-        return ((IntStatisticsSmall) (super.clone()));
-      } catch (final Throwable error) {
-        throw new RuntimeException(error);
+      this.min = _min;
+      if (this.min > this.median) {
+        throw new IllegalArgumentException(
+            "Invalid minimum: " + this.min //$NON-NLS-1$
+                + " for median: " + this.median);//$NON-NLS-1$
+      }
+
+      this.max = _max;
+      if (this.max < this.median) {
+        throw new IllegalArgumentException(
+            "Invalid maximum: " + this.max //$NON-NLS-1$
+                + " for median: " + this.median);//$NON-NLS-1$
+      }
+
+      if ((this.sd <= 0d) != (this.max <= this.min)) {
+        throw new IllegalArgumentException(
+            (((("Invalid min/max/sd: "//$NON-NLS-1$
+                + this.min) + '/') + this.max) + '/') + this.sd);
       }
     }
 
