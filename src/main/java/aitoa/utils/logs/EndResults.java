@@ -337,7 +337,19 @@ public final class EndResults {
     }
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
-      final EndResult e = new EndResult();
+      String algorithm = null;
+      String instance = null;
+      String seed = null;
+      double bestF = Double.POSITIVE_INFINITY;
+      long totalTime = -1L;
+      long totalFEs = -1L;
+      long lastImprovementTime = -1L;
+      long lastImprovementFE = -1L;
+      long numberOfImprovements = -1L;
+      long budgetTime = -1L;
+      long budgetFEs = -1L;
+      double goalF = Double.POSITIVE_INFINITY;
+
       String line2;
       int lineIndex = 0;
 
@@ -359,9 +371,8 @@ public final class EndResults {
           int nextSemi =
               line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
                   ++lastSemi);
-          e.algorithm =
-              line.substring(lastSemi, nextSemi).trim();
-          if (e.algorithm.isEmpty()) {
+          algorithm = line.substring(lastSemi, nextSemi).trim();
+          if (algorithm.isEmpty()) {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
@@ -369,8 +380,8 @@ public final class EndResults {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.instance = line.substring(lastSemi, nextSemi).trim();
-          if (e.instance.isEmpty()) {
+          instance = line.substring(lastSemi, nextSemi).trim();
+          if (instance.isEmpty()) {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
@@ -378,18 +389,18 @@ public final class EndResults {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.seed = line.substring(lastSemi, nextSemi).trim();
-          if ((e.seed.length() < 3) || (!e.seed
+          seed = line.substring(lastSemi, nextSemi).trim();
+          if ((seed.length() < 3) || (!seed
               .startsWith(LogFormat.RANDOM_SEED_PREFIX))) {
             throw new IllegalArgumentException(
                 "Random seed invalid, must start with " + //$NON-NLS-1$
                     LogFormat.RANDOM_SEED_PREFIX);
           }
           try {
-            Long.parseUnsignedLong(e.seed.substring(2), 16);
+            Long.parseUnsignedLong(seed.substring(2), 16);
           } catch (final Throwable error2) {
             throw new IllegalArgumentException(
-                "Invalid random seed: '" + e.seed + //$NON-NLS-1$
+                "Invalid random seed: '" + seed + //$NON-NLS-1$
                     "'.", //$NON-NLS-1$
                 error2);
           }
@@ -397,109 +408,108 @@ public final class EndResults {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.bestF = Double.parseDouble(
+          bestF = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if (!Double.isFinite(e.bestF)) {
+          if (!Double.isFinite(bestF)) {
             throw new IllegalArgumentException(
-                "Invalid best-F value: " + e.bestF); //$NON-NLS-1$
+                "Invalid best-F value: " + bestF); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalTime = Long.parseLong(
+          totalTime = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalTime < 0L) {
+          if (totalTime < 0L) {
             throw new IllegalArgumentException(
-                "Invalid total time: " + e.totalTime); //$NON-NLS-1$
+                "Invalid total time: " + totalTime); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.totalFEs = Long.parseLong(
+          totalFEs = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.totalFEs < 1L) {
+          if (totalFEs < 1L) {
             throw new IllegalArgumentException(
-                "Invalid total FEs: " + e.totalFEs); //$NON-NLS-1$
+                "Invalid total FEs: " + totalFEs); //$NON-NLS-1$
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementTime = Long.parseLong(
+          lastImprovementTime = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementTime < 0L) {
+          if (lastImprovementTime < 0L) {
             throw new IllegalArgumentException(
                 "Invalid last improvement time: " //$NON-NLS-1$
-                    + e.lastImprovementTime);
+                    + lastImprovementTime);
           }
-          if (e.lastImprovementTime > e.totalTime) {
+          if (lastImprovementTime > totalTime) {
             throw new IllegalArgumentException(
                 "Last last improvement time " //$NON-NLS-1$
-                    + e.lastImprovementTime
+                    + lastImprovementTime
                     + " cannot be bigger than total time "//$NON-NLS-1$
-                    + e.totalTime);
+                    + totalTime);
 
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.lastImprovementFE = Long.parseLong(
+          lastImprovementFE = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.lastImprovementFE < 1L) {
+          if (lastImprovementFE < 1L) {
             throw new IllegalArgumentException(
                 "Invalid last improvement FEs: " //$NON-NLS-1$
-                    + e.lastImprovementFE);
+                    + lastImprovementFE);
           }
-          if (e.lastImprovementFE > e.totalFEs) {
+          if (lastImprovementFE > totalFEs) {
             throw new IllegalArgumentException(
                 "Last last improvement FEs " //$NON-NLS-1$
-                    + e.lastImprovementFE
+                    + lastImprovementFE
                     + " cannot be bigger than total FEs "//$NON-NLS-1$
-                    + e.totalFEs);
+                    + totalFEs);
 
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.numberOfImprovements = Long.parseLong(
+          numberOfImprovements = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.numberOfImprovements < 1L) {
+          if (numberOfImprovements < 1L) {
             throw new IllegalArgumentException(
                 "Invalid number of improvements: " //$NON-NLS-1$
-                    + e.numberOfImprovements);
+                    + numberOfImprovements);
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetTime = Long.parseLong(
+          budgetTime = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetTime < 0L) {
+          if (budgetTime < 0L) {
             throw new IllegalArgumentException(
                 "Invalid time budget: " //$NON-NLS-1$
-                    + e.budgetTime);
+                    + budgetTime);
           }
-          LogParser._checkTime(e.totalTime, e.budgetTime);
+          LogParser._checkTime(totalTime, budgetTime);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e.budgetFEs = Long.parseLong(
+          budgetFEs = Long.parseLong(
               line.substring(lastSemi, nextSemi).trim());
-          if (e.budgetFEs < 1L) {
+          if (budgetFEs < 1L) {
             throw new IllegalArgumentException(
                 "Invalid last FE budget: " //$NON-NLS-1$
-                    + e.budgetFEs);
+                    + budgetFEs);
           }
-          if (e.totalFEs > e.budgetFEs) {
+          if (totalFEs > budgetFEs) {
             throw new IllegalArgumentException("Last total FEs " //$NON-NLS-1$
-                + e.totalFEs
-                + " cannot be bigger than FEs budget "//$NON-NLS-1$
-                + e.budgetFEs);
+                + totalFEs + " cannot be bigger than FEs budget "//$NON-NLS-1$
+                + budgetFEs);
 
           }
           lastSemi = nextSemi;
@@ -511,15 +521,19 @@ public final class EndResults {
                 "line has too many columns");//$NON-NLS-1$
           }
           nextSemi = line.length();
-          e.goalF = Double.parseDouble(
+          goalF = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if ((!Double.isFinite(e.goalF))
-              && (!(e.goalF == Double.NEGATIVE_INFINITY))) {
+          if ((!Double.isFinite(goalF))
+              && (!(goalF == Double.NEGATIVE_INFINITY))) {
             throw new IllegalArgumentException(
-                "Invalid goal-F value: " + e.goalF); //$NON-NLS-1$
+                "Invalid goal-F value: " + goalF); //$NON-NLS-1$
           }
 
-          consumer.accept(e);
+          consumer.accept(
+              new EndResult(algorithm, instance, seed, bestF,
+                  totalTime, totalFEs, lastImprovementTime,
+                  lastImprovementFE, numberOfImprovements,
+                  budgetTime, budgetFEs, goalF));
 
         } catch (final Throwable error2) {
           throw new IOException(//
