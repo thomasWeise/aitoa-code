@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import aitoa.structure.LogFormat;
@@ -195,7 +196,8 @@ public final class EndResults {
               )) {
 
             final __Line line = new __Line();
-            LogParser.parseLogFile(file, line, line);
+            LogParser.parseLogFile(file, line,
+                (s) -> line._acceptSetup(s));
 
             bw.write(algoName);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
@@ -203,18 +205,20 @@ public final class EndResults {
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(line.m_seed);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResults.__str(line.m_f_min));
+            bw.write(EndResults.__str(line.m_lastLine.f_min));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_time_max));
+            bw.write(Long.toString(line.m_lastLine.time_max));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_fe_max));
+            bw.write(Long.toString(line.m_lastLine.fe_max));
+            bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+            bw.write(Long.toString(
+                line.m_lastLine.time_last_improvement));
+            bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+            bw.write(Long
+                .toString(line.m_lastLine.fe_last_improvement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(
-                Long.toString(line.m_time_last_improvement));
-            bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_fe_last_improvement));
-            bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_improvements));
+                Long.toString(line.m_lastLine.improvements));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long.toString(line.m_budgetTime));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
@@ -250,23 +254,13 @@ public final class EndResults {
   }
 
   /** the holder for a line */
-  private static final class __Line implements
-      LogParser.ILogPointConsumer, LogParser.ISetupConsumer {
+  private static final class __Line
+      implements Consumer<LogLine> {
 
     /** the random seed */
     String m_seed;
-    /** the last improvement fe */
-    long m_fe_last_improvement;
-    /** the max fes */
-    long m_fe_max;
-    /** the last improvement time */
-    long m_time_last_improvement;
-    /** the max time */
-    long m_time_max;
-    /** the number of improvements */
-    long m_improvements;
-    /** the best f min */
-    double m_f_min;
+    /** the last log line */
+    LogLine m_lastLine;
     /** the FEs budget */
     long m_budgetFEs;
     /** the time budget */
@@ -279,32 +273,24 @@ public final class EndResults {
       super();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public final void acceptStandard(//
-        final String randSeedString, //
-        final long randSeedLong, //
-        final long budgetFEs, //
-        final long budgetTime, //
-        final double goalF) {
-      this.m_budgetFEs = budgetFEs;
-      this.m_seed = randSeedString;
-      this.m_budgetTime = budgetTime;
-      this.m_goalF = goalF;
+    /**
+     * accept setup data
+     *
+     * @param setup
+     *          the setup
+     */
+    final void _acceptSetup(//
+        final SetupData setup) {
+      this.m_budgetFEs = setup.budgetFEs;
+      this.m_seed = setup.randSeedString;
+      this.m_budgetTime = setup.budgetTime;
+      this.m_goalF = setup.goalF;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final long fe_last_improvement,
-        final long fe_max, final long time_last_improvement,
-        final long time_max, final long improvements,
-        final double f_min, final boolean is_improvement) {
-      this.m_fe_last_improvement = fe_last_improvement;
-      this.m_fe_max = fe_max;
-      this.m_time_last_improvement = time_last_improvement;
-      this.m_time_max = time_max;
-      this.m_improvements = improvements;
-      this.m_f_min = f_min;
+    public final void accept(final LogLine t) {
+      this.m_lastLine = Objects.requireNonNull(t);
     }
   }
 

@@ -6,7 +6,8 @@ import java.util.Objects;
  * A line of the end result statistics table, as created by
  * {@link EndResultStatistics}.
  */
-public final class EndResultStatistic {
+public final class EndResultStatistic
+    implements Comparable<EndResultStatistic> {
   /** the algorithm id */
   public final String algorithm;
   /** the instance id */
@@ -153,6 +154,75 @@ public final class EndResultStatistic {
           "Invalid FE ERT " + this.ertFEs //$NON-NLS-1$
               + " for number of successes " + this.successes); //$NON-NLS-1$
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int compareTo(final EndResultStatistic o) {
+    if (o == this) {
+      return 0;
+    }
+
+    int res = this.algorithm.compareTo(o.algorithm);
+    if (res != 0) {
+      return res;
+    }
+    res = this.instance.compareTo(o.algorithm);
+    if (res != 0) {
+      return res;
+    }
+    res = this.bestF.compareTo(o.bestF);
+    if (res != 0) {
+      return res;
+    }
+    res = this.totalFEs.compareTo(o.totalFEs);
+    if (res != 0) {
+      return res;
+    }
+    res = this.totalTime.compareTo(o.totalTime);
+    if (res != 0) {
+      return res;
+    }
+    res = this.lastImprovementFE.compareTo(o.lastImprovementFE);
+    if (res != 0) {
+      return res;
+    }
+    res = this.lastImprovementTime
+        .compareTo(o.lastImprovementTime);
+    if (res != 0) {
+      return res;
+    }
+    res = this.budgetFEs.compareTo(o.budgetFEs);
+    if (res != 0) {
+      return res;
+    }
+    res = this.budgetTime.compareTo(o.budgetTime);
+    if (res != 0) {
+      return res;
+    }
+    res = Double.compare(this.ertFEs, o.ertFEs);
+    if (res != 0) {
+      return res;
+    }
+    res = Double.compare(this.ertTime, o.ertTime);
+    if (res != 0) {
+      return res;
+    }
+    res = o.numberOfImprovements
+        .compareTo(this.numberOfImprovements);
+    if (res != 0) {
+      return res;
+    }
+    res = Double.compare(((o.successes) / ((double) o.runs)),
+        this.successes / ((double) this.runs));
+    if (res != 0) {
+      return res;
+    }
+    res = Integer.compare(this.successes, o.successes);
+    if (res != 0) {
+      return res;
+    }
+    return Integer.compare(o.runs, this.runs);
   }
 
   /** {@inheritDoc} */
@@ -437,8 +507,8 @@ public final class EndResultStatistic {
   }
 
   /** the integer statistics */
-  public static final class IntStatisticsBig
-      extends __StatQuantiles {
+  public static final class IntStatisticsBig extends
+      __StatQuantiles implements Comparable<IntStatisticsBig> {
     /** the minimum */
     public final long min;
     /** the maximum */
@@ -508,6 +578,55 @@ public final class EndResultStatistic {
       return hc;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public final int compareTo(final IntStatisticsBig o) {
+      if (o == this) {
+        return 0;
+      }
+      int res = Double.compare(this.median, o.median);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.mean, o.mean);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q750, o.q750);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q841, o.q841);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q950, o.q950);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q250, o.q250);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q159, o.q159);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q050, o.q050);
+      if (res != 0) {
+        return res;
+      }
+      res = Long.compare(this.max, o.max);
+      if (res != 0) {
+        return res;
+      }
+      res = Long.compare(this.min, o.min);
+      if (res != 0) {
+        return res;
+      }
+      return Double.compare(this.sd, o.sd);
+    }
+
     /**
      * check for equality
      *
@@ -540,7 +659,8 @@ public final class EndResultStatistic {
 
   /** the double statistics */
   public static final class DoubleStatisticsBig
-      extends __StatQuantiles {
+      extends __StatQuantiles
+      implements Comparable<DoubleStatisticsBig> {
 
     /** the minimum */
     public final double min;
@@ -644,11 +764,60 @@ public final class EndResultStatistic {
       }
       return false;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public final int compareTo(final DoubleStatisticsBig o) {
+      if (o == this) {
+        return 0;
+      }
+      int res = Double.compare(this.median, o.median);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.mean, o.mean);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q750, o.q750);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q841, o.q841);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q950, o.q950);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q250, o.q250);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q159, o.q159);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.q050, o.q050);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.max, o.max);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.min, o.min);
+      if (res != 0) {
+        return res;
+      }
+      return Double.compare(this.sd, o.sd);
+    }
   }
 
   /** the integer statistics */
-  public static final class IntStatisticsSmall
-      extends __StatBase {
+  public static final class IntStatisticsSmall extends __StatBase
+      implements Comparable<IntStatisticsSmall> {
     /** the minimum */
     public final long min;
     /** the maximum */
@@ -703,6 +872,32 @@ public final class EndResultStatistic {
       return hc;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public final int compareTo(final IntStatisticsSmall o) {
+      if (o == this) {
+        return 0;
+      }
+      int res = Double.compare(this.median, o.median);
+      if (res != 0) {
+        return res;
+      }
+      res = Double.compare(this.mean, o.mean);
+      if (res != 0) {
+        return res;
+      }
+
+      res = Long.compare(this.max, o.max);
+      if (res != 0) {
+        return res;
+      }
+      res = Long.compare(this.min, o.min);
+      if (res != 0) {
+        return res;
+      }
+      return Double.compare(this.sd, o.sd);
+    }
+
     /**
      * check for equality
      *
@@ -732,4 +927,5 @@ public final class EndResultStatistic {
       return false;
     }
   }
+
 }

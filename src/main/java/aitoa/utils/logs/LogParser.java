@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.IOUtils;
@@ -16,86 +18,6 @@ import aitoa.utils.IOUtils;
  * produced by our experimenter.
  */
 public final class LogParser {
-
-  /** the interface for consumers of log points */
-  public static interface ILogPointConsumer {
-    /**
-     * accept a log point
-     *
-     * @param fe_last_improvement
-     *          the FE where the last improvement took place
-     *          (will be this one, if {@code is_improvement} is
-     *          {@code true})
-     * @param fe_max
-     *          the total consumed function evaluations
-     * @param time_last_improvement
-     *          the time where the last improvement took place
-     *          (will be this one, if {@code is_improvement} is
-     *          {@code true})
-     * @param time_max
-     *          the total consumed runtime
-     * @param improvements
-     *          the total number of improvements (including this
-     *          one, if {@code is_improvement} is {@code true})
-     * @param f_min
-     *          the best-so-far objective value
-     * @param is_improvement
-     *          {@code true} if this log point has a better
-     *          {@code f_min} value than the one before,
-     *          {@code false} otherwise
-     */
-    public abstract void accept(final long fe_last_improvement,
-        final long fe_max, final long time_last_improvement,
-        final long time_max, final long improvements,
-        final double f_min, final boolean is_improvement);
-  }
-
-  /** consume the setup items from the log file */
-  public static interface ISetupConsumer {
-    /**
-     * this method accepts a setup point from the log file
-     *
-     * @param key
-     *          the setup key
-     * @param value
-     *          the setup value
-     * @param isStandard
-     *          {@code true} if and only if this is a standard
-     *          parameter that will also be passed to
-     *          {@link #acceptStandard(String, long, long, long, double)},
-     *          {@code false} if it is a different parameter that
-     *          will not be passed to
-     *          {@link #acceptStandard(String, long, long, long, double)}
-     */
-    public default void accept(final String key,
-        final String value, final boolean isStandard) {
-      //
-    }
-
-    /**
-     * Accept the standard parameters, which define the random
-     * seed and the termination criterion
-     *
-     * @param randSeedString
-     *          the random seed as {@link String}
-     * @param randSeedLong
-     *          the random seed as {@code long}
-     * @param budgetFEs
-     *          the budget of function evaluations
-     * @param budgetTime
-     *          the budget of runtime (in milliseconds)
-     * @param goalF
-     *          the goal objective value
-     */
-    public default void acceptStandard(//
-        final String randSeedString, //
-        final long randSeedLong, //
-        final long budgetFEs, //
-        final long budgetTime, //
-        final double goalF) {
-      //
-    }
-  }
 
   /** the set of standard setup keys */
   private static final List<String> STANDARD_SETUP_KEYS =
@@ -163,8 +85,9 @@ public final class LogParser {
    */
   @SuppressWarnings("null")
   public static final void parseLogFile(final Path file,
-      final ILogPointConsumer logConsumer,
-      final ISetupConsumer setupConsumer) throws IOException {
+      final Consumer<LogLine> logConsumer,
+      final Consumer<SetupData> setupConsumer)
+      throws IOException {
 
     final Path pth = IOUtils.requireFile(file);
 
@@ -197,7 +120,7 @@ public final class LogParser {
       int state_log = 0;
       int state_setup = 0;
       int state_state = 0;
-      HashSet<String> setupKeys = null;
+      HashMap<String, String> setup = null;
       HashSet<String> stateKeys = null;
 
       boolean invokeLogAfterState = false;
@@ -290,7 +213,7 @@ public final class LogParser {
                         "Cannot begin setup section inside state section.");//$NON-NLS-1$
                   }
                   state_setup = 1;
-                  setupKeys = new HashSet<>();
+                  setup = new HashMap<>();
                   continue;
                 }
                 case 1: {
@@ -382,9 +305,10 @@ public final class LogParser {
 
                   if (invokeLogAfterState
                       && (logConsumer != null)) {
-                    logConsumer.accept(fe_last_improvement,
-                        fe_max, time_last_improvement, time_max,
-                        improvements, f_min, false);
+                    logConsumer.accept(
+                        new LogLine(fe_last_improvement, fe_max,
+                            time_last_improvement, time_max,
+                            improvements, f_min, false));
                   }
 
                   continue;
@@ -419,7 +343,7 @@ public final class LogParser {
                         + "': neither key nor value must be empty.");//$NON-NLS-1$
               }
 
-              if (!setupKeys.add(key)) {
+              if (setup.put(key, value) != null) {
                 throw new IllegalArgumentException(
                     "Invalid setup line '" //$NON-NLS-1$
                         + line + "': key '" + //$NON-NLS-1$
@@ -485,9 +409,6 @@ public final class LogParser {
                 }
               }
 
-              if (setupConsumer != null) {
-                setupConsumer.accept(key, value, isStandard);
-              }
               // end setup section
             }
 
@@ -710,9 +631,10 @@ public final class LogParser {
               fe_max = fes;
 
               if (invokeLog) {
-                logConsumer.accept(fe_last_improvement, fe_max,
+                logConsumer.accept(new LogLine(//
+                    fe_last_improvement, fe_max,
                     time_last_improvement, time_max,
-                    improvements, f_min, is_improvement);
+                    improvements, f_min, is_improvement));
               }
             } catch (final Throwable error2) {
               throw new IllegalArgumentException(//
@@ -794,18 +716,18 @@ public final class LogParser {
             "Impossible: There were improvements, best.f is " //$NON-NLS-1$
                 + f_min);
       }
-      if (setupKeys.isEmpty()) {
+      if (setup.isEmpty()) {
         throw new IllegalStateException(
             "Setup section is empty?"); //$NON-NLS-1$
       }
-      if (!setupKeys
+      if (!setup.keySet()
           .containsAll(LogParser.STANDARD_SETUP_KEYS)) {
         throw new IllegalStateException(
             "Setup section must have at least the keys " + //$NON-NLS-1$
                 LogParser.STANDARD_SETUP_KEYS + " but has " + //$NON-NLS-1$
-                setupKeys.toString() + ", i.e., lacks " + //$NON-NLS-1$
+                setup.keySet().toString() + ", i.e., lacks " + //$NON-NLS-1$
                 new HashSet<>(LogParser.STANDARD_SETUP_KEYS)
-                    .removeAll(setupKeys));
+                    .removeAll(setup.keySet()));
       }
       if ((stateKeys.size() != LogParser.STATE_KEYS.size())
           || (!stateKeys.containsAll(LogParser.STATE_KEYS))) {
@@ -828,8 +750,8 @@ public final class LogParser {
       }
 
       if (setupConsumer != null) {
-        setupConsumer.acceptStandard(randSeedString,
-            randSeedLong, budgetFEs, budgetTime, goalF);
+        setupConsumer.accept(new SetupData(randSeedString,
+            randSeedLong, budgetFEs, budgetTime, goalF, setup));
       }
 
     } catch (final Throwable error) {
