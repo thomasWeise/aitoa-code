@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
-import aitoa.utils.Experiment;
 import aitoa.utils.IOUtils;
 import aitoa.utils.Statistics;
 
@@ -161,8 +161,16 @@ public class EndResultStatistics {
    *          run is considered successful if it's best-F value
    *          has reached or surpassed the goal-F value
    *          (downward-wise)
-   * @param successID
-   *          the id of the success predicate, can be
+   * @param instanceNameMapper
+   *          a function mapping instance names; an instance
+   *          mapped to {@code null} will be skipped; instances
+   *          mapped to the same name will be treated as the same
+   * @param algorithmNameMapper
+   *          a function mapping algorithm names; an algorithm
+   *          mapped to {@code null} will be skipped; algorithms
+   *          mapped to the same name will be treated as the same
+   * @param statFileName
+   *          the name to be used for this file, can be
    *          {@code null} or empty to use default file name
    * @param keepExisting
    *          if the end result statistics table exists, should
@@ -175,8 +183,10 @@ public class EndResultStatistics {
    */
   public static final Path makeEndResultStatisticsTable(
       final Path endResults, final Path outputFolder,
-      final Predicate<EndResult> success, final String successID,
-      final boolean keepExisting,
+      final Predicate<EndResult> success,
+      final Function<String, String> instanceNameMapper,
+      final Function<String, String> algorithmNameMapper,
+      final String statFileName, final boolean keepExisting,
       final boolean logProgressToConsole) throws IOException {
 
     final Path in = IOUtils.requireFile(endResults);
@@ -184,11 +194,12 @@ public class EndResultStatistics {
         IOUtils.requireDirectory(outputFolder, true);
 
     final String baseName;
-    if ((successID == null) || (successID.isEmpty())) {
+    final String sfn =
+        ((statFileName == null) ? null : statFileName.trim());
+    if ((sfn == null) || (sfn.isEmpty())) {
       baseName = EndResultStatistics.FILE_NAME;
     } else {
-      baseName = Experiment.nameStringsMerge(
-          EndResultStatistics.FILE_NAME, successID);
+      baseName = sfn + LogFormat.FILE_SUFFIX;
     }
 
     final Path end =
@@ -220,8 +231,11 @@ public class EndResultStatistics {
 
     // compute the data
     __Parser p = new __Parser((success == null)
-        ? (x) -> Double.compare(x.bestF, x.goalF) <= 0
-        : success);
+        ? (x) -> Double.compare(x.bestF, x.goalF) <= 0 : success,
+        (instanceNameMapper != null) ? instanceNameMapper
+            : Function.identity(),
+        (algorithmNameMapper != null) ? algorithmNameMapper
+            : Function.identity());
     EndResults.parseEndResultsTable(in, p, logProgressToConsole);
     final __Holder[] results = p._finalize();
     p = null;
@@ -1977,35 +1991,60 @@ public class EndResultStatistics {
     private HashMap<String, HashMap<String, __Holder>> m_holders;
     /** the success predicate */
     private Predicate<EndResult> m_success;
+    /** the instance name mapper */
+    private final Function<String, String> m_instanceNameMapper;
+    /** the algorithm name mapper */
+    private final Function<String, String> m_algorithmNameMapper;
 
     /**
      * create
      *
      * @param success
      *          the success predicate
+     * @param instanceNameMapper
+     *          the instance name mapper
+     * @param algorithmNameMapper
+     *          he algorithm name mapper
      */
-    __Parser(final Predicate<EndResult> success) {
+    __Parser(final Predicate<EndResult> success,
+        final Function<String, String> instanceNameMapper,
+        final Function<String, String> algorithmNameMapper) {
       super();
       this.m_holders = new HashMap<>();
       this.m_success = Objects.requireNonNull(success);
+      this.m_instanceNameMapper =
+          Objects.requireNonNull(instanceNameMapper);
+      this.m_algorithmNameMapper =
+          Objects.requireNonNull(algorithmNameMapper);
     }
 
     /** {@inheritDoc} */
     @Override
     public final void accept(final EndResult t) {
+      final String useAlgo =
+          this.m_algorithmNameMapper.apply(t.algorithm);
+      if (useAlgo == null) {
+        return;
+      }
+      final String useInst =
+          this.m_instanceNameMapper.apply(t.instance);
+      if (useInst == null) {
+        return;
+      }
+
       HashMap<String, __Holder> ifa =
-          this.m_holders.get(t.algorithm);
+          this.m_holders.get(useAlgo);
       if (ifa == null) {
         ifa = new HashMap<>();
-        if (this.m_holders.put(t.algorithm, ifa) != null) {
+        if (this.m_holders.put(useAlgo, ifa) != null) {
           throw new ConcurrentModificationException();
         }
       }
-      __Holder h = ifa.get(t.instance);
+
+      __Holder h = ifa.get(useInst);
       if (h == null) {
-        h = new __Holder(t.algorithm, t.instance,
-            this.m_success);
-        if (ifa.put(t.instance, h) != null) {
+        h = new __Holder(useAlgo, useInst, this.m_success);
+        if (ifa.put(useInst, h) != null) {
           throw new ConcurrentModificationException();
         }
       }
@@ -2121,7 +2160,9 @@ public class EndResultStatistics {
     /** {@inheritDoc} */
     @Override
     public final void accept(final EndResult t) {
-      if (!this.m_seeds.add(t.seed)) {
+      final boolean newSeed = this.m_seeds.add(t.seed);
+      if ((!newSeed) && t.instance.equals(this.instance)
+          && t.algorithm.equals(this.algorithm)) {
         throw new IllegalStateException("Seed '" + //$NON-NLS-1$
             t.seed + "' appears twice for algorithm '"//$NON-NLS-1$
             + t.algorithm + "' on instance '"//$NON-NLS-1$
@@ -2169,9 +2210,6 @@ public class EndResultStatistics {
     }
   }
 
-  /** the goal function value */
-  private static final String PARAM_GOAL = "goal"; //$NON-NLS-1$
-
   /**
    * print the arguments
    *
@@ -2180,24 +2218,10 @@ public class EndResultStatistics {
    */
   static final void _printArgs(final PrintStream s) {
     EndResults._printArgs(s);
-    s.println(' ' + EndResultStatistics.PARAM_GOAL
-        + "=value: is the objective value at which a run is considered as success (if not provided, goalF will be taken).");//$NON-NLS-1$
-
-  }
-
-  /**
-   * get the success predicate
-   *
-   * @return the success predicate
-   */
-  static final Predicate<EndResult> _argSuccess() {
-    final Double goal =
-        Configuration.getDouble(EndResultStatistics.PARAM_GOAL);
-    if (goal != null) {
-      final double threshold = goal.doubleValue();
-      return (x) -> (x.bestF <= threshold);
-    }
-    return null;
+    _CommandLineArgs._printEndResultsStatFile(s);
+    _CommandLineArgs._printSuccess(s);
+    _CommandLineArgs._printAlgorithmNameMapper(s);
+    _CommandLineArgs._printInstanceNameMapper(s);
   }
 
   /**
@@ -2218,18 +2242,26 @@ public class EndResultStatistics {
 
     Configuration.putCommandLine(args);
 
-    final Predicate<EndResult> pred =
-        EndResultStatistics._argSuccess();
-
-    final Path in = EndResults._argIn();
-    final Path out = EndResults._argOut();
+    final Path in = _CommandLineArgs._getSourceDir();
+    final Path out = _CommandLineArgs._getDestDir();
+    final String name =
+        _CommandLineArgs._getEndResultsStatFile();
+    final Function<String, String> algoNameMap =
+        _CommandLineArgs._getAlgorithmNameMapper();
+    final Function<String, String> instNameMap =
+        _CommandLineArgs._getInstanceNameMapper();
+    final Predicate<EndResult> success =
+        _CommandLineArgs._getSuccess();
     Configuration.print();
 
     try {
       final Path endResults =
           EndResults.makeEndResultsTable(in, out, true);
+
       EndResultStatistics.makeEndResultStatisticsTable(
-          endResults, out, pred, null, false, true);
+          endResults, out, success, instNameMap, algoNameMap,
+          name, false, true);
+
     } catch (final Throwable error) {
       ConsoleIO.stderr(
           "An error occured while creating the end result statistics tables.", //$NON-NLS-1$

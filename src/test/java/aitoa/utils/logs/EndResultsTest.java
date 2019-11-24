@@ -71,9 +71,9 @@ public class EndResultsTest {
         a.hashCode();
       }, false);
 
-      final Path endResultStatistics =
-          EndResultStatistics.makeEndResultStatisticsTable(
-              endResults, evalDir, null, null, false, false);
+      final Path endResultStatistics = EndResultStatistics
+          .makeEndResultStatisticsTable(endResults, evalDir,
+              null, null, null, null, false, false);
 
       EndResultStatistics.parseEndResultStatisticsTable(
           endResultStatistics, (a) -> {

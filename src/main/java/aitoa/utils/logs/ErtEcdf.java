@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
-import java.util.regex.Pattern;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.Configuration;
@@ -697,17 +696,6 @@ public final class ErtEcdf {
     }
   }
 
-  /** use time? */
-  private static final String PARAM_USE_TIME = "time"; //$NON-NLS-1$
-  /** use FEs? */
-  private static final String PARAM_USE_FES = "fes"; //$NON-NLS-1$
-  /** the regular expression for algorithms */
-  private static final String PARAM_ALGO_REGEX = "algoRegEx"; //$NON-NLS-1$
-  /** the regular expression for instances */
-  private static final String PARAM_INST_REGEX = "instRegEx"; //$NON-NLS-1$
-  /** the name for the diagram */
-  private static final String PARAM_NAME = "name"; //$NON-NLS-1$
-
   /**
    * print the arguments
    *
@@ -716,74 +704,8 @@ public final class ErtEcdf {
    */
   static final void _printArgs(final PrintStream s) {
     EndResultStatistics._printArgs(s);
-    s.println(' ' + ErtEcdf.PARAM_USE_FES
-        + ": use FEs as time measure (default).");//$NON-NLS-1$
-    s.println(' ' + ErtEcdf.PARAM_USE_TIME
-        + ": use runtime as time measure.");//$NON-NLS-1$
-    s.println(' ' + ErtEcdf.PARAM_ALGO_REGEX
-        + "=regex: an optional regular expression for selecting algorithms");//$NON-NLS-1$
-    s.println(' ' + ErtEcdf.PARAM_INST_REGEX
-        + "=regex: an optional regular expression for selecting instances");//$NON-NLS-1$
-    s.println(' ' + ErtEcdf.PARAM_NAME
-        + "=name: a name for the diagram");//$NON-NLS-1$
-  }
-
-  /**
-   * get whether FEs should be used
-   *
-   * @return the whether FEs should be used
-   */
-  static final boolean _argUseFEs() {
-    if (Configuration.getBoolean(ErtEcdf.PARAM_USE_FES)) {
-      return true;
-    }
-    if (Configuration.getBoolean(ErtEcdf.PARAM_USE_TIME)) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * get a predicate
-   *
-   * @param key
-   *          the key
-   * @return the predicate
-   */
-  private static final Predicate<String>
-      __predicate(final String key) {
-    final String s = Configuration.getString(key);
-    if (s == null) {
-      return null;
-    }
-    return Pattern.compile(s).asPredicate();
-  }
-
-  /**
-   * the algorithm selector
-   *
-   * @return the algorithm selector
-   */
-  static final Predicate<String> _argAlgoSelect() {
-    return ErtEcdf.__predicate(ErtEcdf.PARAM_ALGO_REGEX);
-  }
-
-  /**
-   * the instance selector
-   *
-   * @return the instance selector
-   */
-  static final Predicate<String> _argInstSelect() {
-    return ErtEcdf.__predicate(ErtEcdf.PARAM_INST_REGEX);
-  }
-
-  /**
-   * get the name
-   *
-   * @return the name
-   */
-  static final String _argName() {
-    return Configuration.getString(ErtEcdf.PARAM_NAME);
+    _CommandLineArgs._printUseFEs(s);
+    _CommandLineArgs._printErtEcdfFileName(s);
   }
 
   /**
@@ -803,31 +725,34 @@ public final class ErtEcdf {
 
     Configuration.putCommandLine(args);
 
-    final Predicate<EndResult> pred =
-        EndResultStatistics._argSuccess();
-
-    final Path in = EndResults._argIn();
-    final Path out = EndResults._argOut();
-
-    final boolean useFEs = ErtEcdf._argUseFEs();
-
-    final Predicate<String> algoSelect =
-        ErtEcdf._argAlgoSelect();
-    final Predicate<String> instSelect =
-        ErtEcdf._argInstSelect();
-    final String name = ErtEcdf._argName();
+    final Path in = _CommandLineArgs._getSourceDir();
+    final Path out = _CommandLineArgs._getDestDir();
+    final String endname =
+        _CommandLineArgs._getEndResultsStatFile();
+    final Function<String, String> algoNameMap =
+        _CommandLineArgs._getAlgorithmNameMapper();
+    final Function<String, String> instNameMap =
+        _CommandLineArgs._getInstanceNameMapper();
+    final Predicate<EndResult> success =
+        _CommandLineArgs._getSuccess();
+    final boolean useFEs = _CommandLineArgs._getUseFEs();
+    final String ertname =
+        _CommandLineArgs._getErtEcdfFileName();
 
     Configuration.print();
 
     try {
       final Path endResults =
           EndResults.makeEndResultsTable(in, out, true);
-      final Path endResultStatistics =
-          EndResultStatistics.makeEndResultStatisticsTable(
-              endResults, out, pred, null, pred == null, true);
 
-      ErtEcdf.makeErtEcdf(endResultStatistics, out, useFEs,
-          instSelect, algoSelect, name, true);
+      final Path endResultStatistics = EndResultStatistics
+          .makeEndResultStatisticsTable(endResults, out, success,
+              instNameMap, algoNameMap, endname, true, true);
+
+      ErtEcdf.makeErtEcdf(endResultStatistics, out, useFEs, //
+          (s) -> (instNameMap.apply(s) != null), //
+          (s) -> (algoNameMap.apply(s) != null), //
+          ertname, true);
 
     } catch (final Throwable error) {
       ConsoleIO.stderr(

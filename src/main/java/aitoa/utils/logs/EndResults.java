@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -532,11 +531,6 @@ public final class EndResults {
     }
   }
 
-  /** the source directory parameter */
-  private static final String PARAM_SRC_DIR = "src"; //$NON-NLS-1$
-  /** the destination directory parameter */
-  private static final String PARAM_DST_DIR = "dest";//$NON-NLS-1$
-
   /**
    * print the arguments
    *
@@ -544,30 +538,8 @@ public final class EndResults {
    *          the print stream
    */
   static final void _printArgs(final PrintStream s) {
-    s.println(' ' + EndResults.PARAM_SRC_DIR
-        + "=sourceDir: is the directory with the recorded experiment results (log file root dir).");//$NON-NLS-1$
-    s.println(' ' + EndResults.PARAM_DST_DIR
-        + "=destDir: is the directory where the table should be written to.");//$NON-NLS-1$
-  }
-
-  /**
-   * get the input path
-   *
-   * @return the input path
-   */
-  static final Path _argIn() {
-    return Configuration.getPath(EndResults.PARAM_SRC_DIR,
-        () -> Paths.get("results"));//$NON-NLS-1$ ;
-  }
-
-  /**
-   * get the output path
-   *
-   * @return the output path
-   */
-  static final Path _argOut() {
-    return Configuration.getPath(EndResults.PARAM_DST_DIR,
-        () -> Paths.get("evaluation"));//$NON-NLS-1$ ;
+    _CommandLineArgs._printSourceDir(s);
+    _CommandLineArgs._printDestDir(s);
   }
 
   /**
@@ -587,8 +559,8 @@ public final class EndResults {
 
     Configuration.putCommandLine(args);
 
-    final Path in = EndResults._argIn();
-    final Path out = EndResults._argOut();
+    final Path in = _CommandLineArgs._getSourceDir();
+    final Path out = _CommandLineArgs._getDestDir();
 
     Configuration.print();
 
