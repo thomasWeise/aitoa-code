@@ -48,6 +48,8 @@ public final class ErtEcdf {
   public static final String COL_ECDF_REL = "ecdf.rel";//$NON-NLS-1$
   /** the absolute ecdf value, always an integer */
   public static final String COL_ECDF_ABS = "ecdf.abs";//$NON-NLS-1$
+  /** the number of instances over which we aggregated */
+  public static final String COL_INSTANCES = "instances";//$NON-NLS-1$
   /** the name for time sub-folders */
   public static final String USE_TIME_FOLDER = "ertTime";//$NON-NLS-1$
   /** the name for fes sub-folders */
@@ -58,23 +60,26 @@ public final class ErtEcdf {
    *
    * @param time
    *          the time
-   * @param ecdfR
-   *          the relative ecdf
    * @param ecdfA
    *          the absolute ecdf
+   * @param instances
+   *          the instances
    * @param bw
    *          the buffered writer
    * @throws IOException
    *           if i/o fails
    */
   private static final void __line(final double time,
-      final double ecdfR, final int ecdfA,
+      final int ecdfA, final int instances,
       final BufferedWriter bw) throws IOException {
     bw.write(LogFormat.doubleToStringForLog(time));
     bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-    bw.write(LogFormat.doubleToStringForLog(ecdfR));
+    bw.write(LogFormat
+        .doubleToStringForLog(ecdfA / ((double) instances)));
     bw.write(LogFormat.CSV_SEPARATOR_CHAR);
     bw.write(Integer.toString(ecdfA));
+    bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+    bw.write(Integer.toString(instances));
     bw.newLine();
   }
 
@@ -197,12 +202,9 @@ public final class ErtEcdf {
 
     final LinkedHashMap<String, Path> output =
         new LinkedHashMap<>();
-    final char[] header = LogFormat
-        .asComment(LogFormat.joinLogLine(ertName,
-            ErtEcdf.COL_ECDF_REL, ErtEcdf.COL_ECDF_ABS))
-        .toCharArray();
-
-    final double div = result.instances;
+    final String header = LogFormat.joinLogLine(//
+        ertName, ErtEcdf.COL_ECDF_REL, ErtEcdf.COL_ECDF_ABS,
+        ErtEcdf.COL_INSTANCES);
 
     for (final __Algorithm algo : result.algorithms) {
       final Path path = IOUtils.canonicalizePath(
@@ -217,14 +219,14 @@ public final class ErtEcdf {
         int ecdf = 0;
         for (final double d : algo.solutions) {
           if (d > time) {
-            ErtEcdf.__line(time, ecdf / div, ecdf, bw);
+            ErtEcdf.__line(time, ecdf, result.instances, bw);
           }
           ++ecdf;
           time = d;
         }
-        ErtEcdf.__line(time, ecdf / div, ecdf, bw);
+        ErtEcdf.__line(time, ecdf, result.instances, bw);
         if (time < maxErt) {
-          ErtEcdf.__line(maxErt, ecdf / div, ecdf, bw);
+          ErtEcdf.__line(maxErt, ecdf, result.instances, bw);
         } else {
           if (time > maxErt) {
             throw new IllegalStateException(//
@@ -509,13 +511,21 @@ public final class ErtEcdf {
               + p + "'.");//$NON-NLS-1$
     }
 
+    final String header_1 = LogFormat.joinLogLine(//
+        ErtEcdf.USE_FES_FOLDER, ErtEcdf.COL_ECDF_REL,
+        ErtEcdf.COL_ECDF_ABS, ErtEcdf.COL_INSTANCES);
+    final String header_2 = LogFormat.joinLogLine(//
+        ErtEcdf.USE_TIME_FOLDER, ErtEcdf.COL_ECDF_REL,
+        ErtEcdf.COL_ECDF_ABS, ErtEcdf.COL_INSTANCES);
+
     try (final BufferedReader br = Files.newBufferedReader(p)) {
-      ErtEcdfPoint e1 = new ErtEcdfPoint();
-      ErtEcdfPoint e2 = new ErtEcdfPoint();
-      ErtEcdfPoint etemp;
+      double e1_ert = Double.NEGATIVE_INFINITY;
+      double e1_ecdfRel = Double.NaN;
+      int e1_ecdfAbs = -1;
+      int e1_instances = -1;
+      ErtEcdfPoint e2 = null;
       String line2;
       int lineIndex = 0;
-      boolean hasLine = false;
       boolean mustBeLast = false;
 
       while ((line2 = br.readLine()) != null) {
@@ -530,6 +540,13 @@ public final class ErtEcdf {
         if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
           continue;
         }
+        if ((header_1.equals(line)) || (header_2.equals(line))) {
+          if (e2 == null) {
+            continue;
+          }
+          throw new IllegalArgumentException(
+              "Header occurs twice?"); //$NON-NLS-1$
+        }
 
         if (mustBeLast) {
           throw new IllegalStateException(
@@ -541,41 +558,71 @@ public final class ErtEcdf {
           int nextSemi =
               line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
                   ++lastSemi);
-          e1.ert = Double.parseDouble(
+          e1_ert = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if ((!Double.isFinite(e1.ert)) || (e1.ert < 0d)) {
+          if ((!Double.isFinite(e1_ert)) || (e1_ert < 0d)) {
             throw new IllegalArgumentException(
                 "ERT values must be >=0 and finite, but encountered " //$NON-NLS-1$
-                    + e1.ert);
+                    + e1_ert);
           }
-          if (hasLine) {
-            if ((e1.ert <= e2.ert) && (e1.ert != 0d)) {
+          if (e2 != null) {
+            if ((e1_ert <= e2.ert) && (e1_ert != 0d)) {
               throw new IllegalStateException(
                   "ERT values must be increasing, with the only possible exception at time 0. But encountered " //$NON-NLS-1$
-                      + e1.ert + " after " + e2.ert); //$NON-NLS-1$
+                      + e1_ert + " after " + e2.ert); //$NON-NLS-1$
             }
           }
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          e1.ecdfRel = Double.parseDouble(
+          e1_ecdfRel = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
-          if ((!Double.isFinite(e1.ecdfRel)) || (e1.ecdfRel < 0d)
-              || (e1.ecdfRel > 1d)) {
+          if ((!Double.isFinite(e1_ecdfRel)) || (e1_ecdfRel < 0d)
+              || (e1_ecdfRel > 1d)) {
             throw new IllegalArgumentException(
                 "Relative ECDF must be in [0,1], but encountered " //$NON-NLS-1$
-                    + e1.ecdfRel);
+                    + e1_ecdfRel);
           }
           lastSemi = nextSemi;
-          if (hasLine) {
-            if (e1.ecdfRel < e2.ecdfRel) {
+          if (e2 != null) {
+            if (e1_ecdfRel < e2.ecdfRel) {
               throw new IllegalStateException(
                   "ECDF values must be increasing, but encountered " //$NON-NLS-1$
-                      + e1.ecdfRel + " after " + e2.ecdfRel); //$NON-NLS-1$
+                      + e1_ecdfRel + " after " + e2.ecdfRel); //$NON-NLS-1$
             }
-            if (e1.ecdfRel <= e2.ecdfRel) {
+            if (e1_ecdfRel <= e2.ecdfRel) {
               mustBeLast = true;
+            }
+          }
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          e1_ecdfAbs = Integer.parseInt(
+              line.substring(lastSemi, nextSemi).trim());
+          if (e1_ecdfAbs < 0) {
+            throw new IllegalArgumentException(
+                "There cannot be " + e1_ecdfAbs//$NON-NLS-1$
+                    + " successful runs."); //$NON-NLS-1$
+          }
+          lastSemi = nextSemi;
+          if (e2 != null) {
+            if (e1_ecdfAbs < e2.ecdfAbs) {
+              throw new IllegalStateException(
+                  "ECDF values must be increasing, but encountered " //$NON-NLS-1$
+                      + e1_ecdfAbs + " after " + e2.ecdfAbs); //$NON-NLS-1$
+            }
+            if (e1_ecdfAbs <= e2.ecdfAbs) {
+              if (!mustBeLast) {
+                throw new IllegalStateException(
+                    "If last ecdf.rel is "//$NON-NLS-1$
+                        + e2.ecdfRel
+                        + " and current ecdf.rel is " + //$NON-NLS-1$
+                        e1_ecdfRel
+                        + ", then current ecdf.abs cannot be " + //$NON-NLS-1$
+                        e1_ecdfAbs + " if last ecdf.abs was " //$NON-NLS-1$
+                        + e2.ecdfAbs);
+              }
             }
           }
 
@@ -586,40 +633,31 @@ public final class ErtEcdf {
           }
           nextSemi = line.length();
 
-          e1.ecdfAbs = Integer.parseInt(
+          e1_instances = Integer.parseInt(
               line.substring(lastSemi, nextSemi).trim());
-          if (e1.ecdfAbs < 0) {
+          if (e1_instances < 0) {
             throw new IllegalArgumentException(
-                "There cannot be " + e1.ecdfAbs//$NON-NLS-1$
-                    + " successful runs."); //$NON-NLS-1$
+                "There cannot be " + e1_instances//$NON-NLS-1$
+                    + " instances."); //$NON-NLS-1$
+          }
+          if (e1_instances < e1_ecdfAbs) {
+            throw new IllegalArgumentException(
+                "There cannot be " + e1_instances//$NON-NLS-1$
+                    + " instances but " //$NON-NLS-1$
+                    + e1_ecdfAbs + " successes.");//$NON-NLS-1$
           }
           lastSemi = nextSemi;
-          if (hasLine) {
-            if (e1.ecdfAbs < e2.ecdfAbs) {
+          if (e2 != null) {
+            if (e1_instances != e2.instances) {
               throw new IllegalStateException(
-                  "ECDF values must be increasing, but encountered " //$NON-NLS-1$
-                      + e1.ecdfAbs + " after " + e2.ecdfAbs); //$NON-NLS-1$
-            }
-            if (e1.ecdfAbs <= e2.ecdfAbs) {
-              if (!mustBeLast) {
-                throw new IllegalStateException(
-                    "If last ecdf.rel is "//$NON-NLS-1$
-                        + e2.ecdfRel
-                        + " and current ecdf.rel is " + //$NON-NLS-1$
-                        e1.ecdfRel
-                        + ", then current ecdf.abs cannot be " + //$NON-NLS-1$
-                        e1.ecdfAbs + " if last ecdf.abs was " //$NON-NLS-1$
-                        + e2.ecdfAbs);
-              }
+                  "Instance number must be constant, but encountered " //$NON-NLS-1$
+                      + e1_instances + " after " + e2.instances); //$NON-NLS-1$
             }
           }
 
-          consumer.accept(e1);
-
-          hasLine = true;
-          etemp = e1;
-          e1 = e2;
-          e2 = etemp;
+          e2 = new ErtEcdfPoint(e1_ert, e1_ecdfRel, e1_ecdfAbs,
+              e1_instances);
+          consumer.accept(e2);
         } catch (final Throwable error2) {
           throw new IOException(//
               "Line " + lineIndex //$NON-NLS-1$
@@ -629,7 +667,7 @@ public final class ErtEcdf {
         }
       }
 
-      if (!hasLine) {
+      if (e2 == null) {
         throw new IOException("no ert-ecdf data found");//$NON-NLS-1$
       }
     } catch (final Throwable error) {

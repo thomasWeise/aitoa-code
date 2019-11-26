@@ -52,17 +52,15 @@ public final class EndResults {
   public static final String COL_GOAL_F = "goal.f";//$NON-NLS-1$
 
   /** the internal header */
-  private static final char[] HEADER = LogFormat
-      .asComment(LogFormat.joinLogLine(EndResults.COL_ALGORITHM,
-          EndResults.COL_INSTANCE, EndResults.COL_SEED,
-          EndResults.COL_BEST_F, EndResults.COL_TOTAL_TIME,
-          EndResults.COL_TOTAL_FES,
-          EndResults.COL_LAST_IMPROVEMENT_TIME,
-          EndResults.COL_LAST_IMPROVEMENT_FES,
-          EndResults.COL_NUMBER_OF_IMPROVEMENTS,
-          EndResults.COL_BUDGET_TIME, EndResults.COL_BUDGET_FES,
-          EndResults.COL_GOAL_F))
-      .toCharArray();
+  private static final String HEADER = LogFormat.joinLogLine(//
+      EndResults.COL_ALGORITHM, EndResults.COL_INSTANCE,
+      EndResults.COL_SEED, EndResults.COL_BEST_F,
+      EndResults.COL_TOTAL_TIME, EndResults.COL_TOTAL_FES,
+      EndResults.COL_LAST_IMPROVEMENT_TIME,
+      EndResults.COL_LAST_IMPROVEMENT_FES,
+      EndResults.COL_NUMBER_OF_IMPROVEMENTS,
+      EndResults.COL_BUDGET_TIME, EndResults.COL_BUDGET_FES,
+      EndResults.COL_GOAL_F);
 
   /**
    * Create the end results table.
@@ -344,6 +342,13 @@ public final class EndResults {
         }
         if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
           continue;
+        }
+        if (EndResults.HEADER.equals(line)) {
+          if (algorithm == null) {
+            continue;
+          }
+          throw new IllegalArgumentException(
+              "Header occurs twice?"); //$NON-NLS-1$
         }
 
         try {

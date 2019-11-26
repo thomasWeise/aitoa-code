@@ -123,31 +123,29 @@ public class EndResultStatistics {
   }
 
   /** the internal header */
-  private static final char[] HEADER =
-      LogFormat.asComment(LogFormat.joinLogLine(//
-          EndResults.COL_ALGORITHM, //
-          EndResults.COL_INSTANCE, //
-          EndResultStatistics.COL_RUNS,
-          EndResultStatistics
-              .__makeHeaderBig(EndResults.COL_BEST_F), //
-          EndResultStatistics
-              .__makeHeaderBig(EndResults.COL_TOTAL_TIME), //
-          EndResultStatistics
-              .__makeHeaderBig(EndResults.COL_TOTAL_FES), //
-          EndResultStatistics.__makeHeaderBig(
-              EndResults.COL_LAST_IMPROVEMENT_TIME), //
-          EndResultStatistics.__makeHeaderBig(
-              EndResults.COL_LAST_IMPROVEMENT_FES), //
-          EndResultStatistics.__makeHeaderBig(
-              EndResults.COL_NUMBER_OF_IMPROVEMENTS), //
-          EndResultStatistics
-              .__makeHeaderSmall(EndResults.COL_BUDGET_TIME), //
-          EndResultStatistics
-              .__makeHeaderSmall(EndResults.COL_BUDGET_FES), //
-          EndResultStatistics.COL_SUCCESSES, //
-          EndResultStatistics.COL_ERT_TIME, //
-          EndResultStatistics.COL_ERT_FES//
-      )).toCharArray();
+  private static final String HEADER = LogFormat.joinLogLine(//
+      EndResults.COL_ALGORITHM, //
+      EndResults.COL_INSTANCE, //
+      EndResultStatistics.COL_RUNS,
+      EndResultStatistics.__makeHeaderBig(EndResults.COL_BEST_F), //
+      EndResultStatistics
+          .__makeHeaderBig(EndResults.COL_TOTAL_TIME), //
+      EndResultStatistics
+          .__makeHeaderBig(EndResults.COL_TOTAL_FES), //
+      EndResultStatistics
+          .__makeHeaderBig(EndResults.COL_LAST_IMPROVEMENT_TIME), //
+      EndResultStatistics
+          .__makeHeaderBig(EndResults.COL_LAST_IMPROVEMENT_FES), //
+      EndResultStatistics.__makeHeaderBig(
+          EndResults.COL_NUMBER_OF_IMPROVEMENTS), //
+      EndResultStatistics
+          .__makeHeaderSmall(EndResults.COL_BUDGET_TIME), //
+      EndResultStatistics
+          .__makeHeaderSmall(EndResults.COL_BUDGET_FES), //
+      EndResultStatistics.COL_SUCCESSES, //
+      EndResultStatistics.COL_ERT_TIME, //
+      EndResultStatistics.COL_ERT_FES//
+  );
 
   /**
    * Create the end result statistics table.
@@ -516,6 +514,13 @@ public class EndResultStatistics {
         }
         if (line.charAt(0) == LogFormat.COMMENT_CHAR) {
           continue;
+        }
+        if (EndResultStatistics.HEADER.equals(line)) {
+          if (algorithm == null) {
+            continue;
+          }
+          throw new IllegalArgumentException(
+              "Header occurs twice?"); //$NON-NLS-1$
         }
 
         try {

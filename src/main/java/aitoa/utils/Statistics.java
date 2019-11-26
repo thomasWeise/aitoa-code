@@ -189,6 +189,16 @@ public final class Statistics {
       return Long.valueOf(data[length - 1]);
     }
 
+    long min = Long.MAX_VALUE;
+    long max = Long.MIN_VALUE;
+    for (final long d : data) {
+      min = Math.min(d, min);
+      max = Math.max(d, max);
+    }
+    if (min >= max) {
+      return Long.valueOf(min);
+    }
+
     final double fpos = Math.floor(pos);
     final int intPos = (int) fpos;
     final double dif = (pos - fpos);
@@ -198,13 +208,14 @@ public final class Statistics {
     }
 
     if ((fpos == pos) || (dif <= 0d)) {
-      return Long.valueOf(data[intPos - 1]);
+      return Long.valueOf(
+          Math.max(min, Math.min(max, data[intPos - 1])));
     }
 
     final long lower = data[intPos - 1];
     final long upper = data[intPos];
     if (lower == upper) {
-      return Long.valueOf(lower);
+      return Long.valueOf(Math.max(min, Math.min(max, lower)));
     }
 
     // for accurate computation, we try to stay in the realm of
@@ -224,7 +235,8 @@ public final class Statistics {
         final long ll = ((long) ldifmul);
         if (ll == ldifmul) {
           try {
-            return Long.valueOf(Math.addExact(ll, lower));
+            return Long.valueOf(Math.max(min,
+                Math.min(max, Math.addExact(ll, lower))));
           } catch (@SuppressWarnings("unused") //
           final ArithmeticException ignore) {
             //
@@ -232,11 +244,12 @@ public final class Statistics {
         }
       }
 
-      return Statistics.__doubleToNumber(lower + ldifmul);
+      return Statistics.__doubleToNumber(
+          Math.max(min, Math.min(max, lower + ldifmul)));
     }
 
-    return Statistics.__doubleToNumber(
-        lower + (dif * (((double) upper) - lower)));
+    return Statistics.__doubleToNumber(Math.max(min, Math
+        .min(max, lower + (dif * (((double) upper) - lower)))));
   }
 
   /**
@@ -271,6 +284,22 @@ public final class Statistics {
       return Statistics.__doubleToNumber(data[length - 1]);
     }
 
+    double min = Double.POSITIVE_INFINITY;
+    double max = Double.NEGATIVE_INFINITY;
+    for (final double d : data) {
+      min = Math.min(d, min);
+      max = Math.max(d, max);
+    }
+    if (Double.isFinite(min) && Double.isFinite(max)) {
+      if (min >= max) {
+        return Statistics.__doubleToNumber(min);
+      }
+    } else {
+      throw new IllegalArgumentException("Minimum " + min //$NON-NLS-1$
+          + " and maximumg " + max //$NON-NLS-1$
+          + " must both be finite."); //$NON-NLS-1$
+    }
+
     final double fpos = Math.floor(pos);
     final int intPos = (int) fpos;
     final double dif = (pos - fpos);
@@ -280,17 +309,20 @@ public final class Statistics {
     }
 
     if ((fpos == pos) || (dif <= 0d)) {
-      return Statistics.__doubleToNumber(data[intPos - 1]);
+      return Statistics.__doubleToNumber(
+          Math.max(min, Math.min(max, data[intPos - 1])));
     }
 
     final double lower = data[intPos - 1];
     final double upper = data[intPos];
     if (lower == upper) {
-      return Statistics.__doubleToNumber(lower);
+      return Statistics
+          .__doubleToNumber(Math.max(min, Math.min(max, lower)));
     }
 
     return Statistics.__doubleToNumber(//
-        lower + (dif * (upper - lower)));
+        Math.max(min, Math.min(max, //
+            lower + (dif * (upper - lower)))));
   }
 
   /**
@@ -591,7 +623,7 @@ public final class Statistics {
    * </p>
    * <p>
    * Based on the source (https://www.python.org/getit/source/)
-   * of Python 3.5.1rc1 - 2015-11-23, a stable sum of {@code n}
+   * of Python 3.5.1rc1 - 2015-11-23,) a stable sum of {@code n}
    * numbers can be computed as:
    * </p>
    *
