@@ -181,39 +181,9 @@ abstract class _BlackBoxProcessData<X, Y> {
     out.append(System.lineSeparator());
     out.append(LogFormat.asComment(LogFormat.END_SETUP));
     out.append(System.lineSeparator());
-    out.append(LogFormat.asComment(LogFormat.BEGIN_SYSTEM));
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_VERSION,
-        System.getProperty("java.version")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_VENDOR,
-        System.getProperty("java.vendor")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_VERSION,
-        System.getProperty("java.vm.version")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_VENDOR,
-        System.getProperty("java.vm.vendor")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_VM_NAME,
-        System.getProperty("java.vm.name")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(
-        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_VERSION,
-            System.getProperty("java.specification.version")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(
-        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_VENDOR,
-            System.getProperty("java.specification.vendor")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(
-        LogFormat.mapEntry(LogFormat.JAVA_SPECIFICATION_NAME,
-            System.getProperty("java.specification.name")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.JAVA_COMPILER,
-        System.getProperty("java.compiler")));//$NON-NLS-1$
-    out.append(System.lineSeparator());
-    out.append(LogFormat.asComment(LogFormat.END_SYSTEM));
+
+    // print the system information
+    out.append(_SystemData._getSystemData());
   }
 
   /** {@inheritDoc} */

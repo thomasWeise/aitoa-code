@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>aitoa</groupId>
 	<artifactId>aitoa-code</artifactId>
-	<version>0.8.7</version>
+	<version>0.8.8</version>
 	<packaging>jar</packaging>
 	<name>aitoa-code</name>
 	<description>Example Source Codes from the Book "Introduction to Optimization Algorithms"</description>
@@ -62,6 +63,16 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.7.29</version>
 		</dependency>
 	</dependencies>
 
@@ -133,7 +144,7 @@
 					<detectLinks>true</detectLinks>
 					<detectJavaApiLink>true</detectJavaApiLink>
 					<quiet>true</quiet>
-                	<failOnError>false</failOnError>
+					<failOnError>false</failOnError>
 				</configuration>
 				<executions>
 					<execution>

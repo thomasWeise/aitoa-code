@@ -46,6 +46,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.LogFormat;
 import aitoa.utils.ConsoleIO;
 import aitoa.utils.Experiment;
 import aitoa.utils.IOUtils;
@@ -439,8 +440,8 @@ public class JSSPExperiment {
         try (final IBlackBoxProcess<Node[],
             JSSPCandidateSolution> process = builder.get()) {
           algorithm.solve(process);
-          process.printLogSection("ALGORITHM_SETUP", //$NON-NLS-1$
-              (bw) -> {
+          process.printLogSection(
+              LogFormat.ALGORITHM_SETUP_LOG_SECTION, (bw) -> {
                 try {
                   algorithm.printSetup(bw);
                 } catch (final IOException ioe) {

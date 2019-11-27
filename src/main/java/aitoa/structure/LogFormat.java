@@ -88,28 +88,124 @@ public final class LogFormat {
   /** the key BEGIN_SYSTEM */
   public static final String BEGIN_SYSTEM = "BEGIN_SYSTEM"; //$NON-NLS-1$
   /** the key JAVA_VERSION */
-  public static final String JAVA_VERSION = "JAVA_VERSION"; //$NON-NLS-1$
+  public static final String SYSTEM_INFO_JAVA_VERSION =
+      "JAVA_VERSION"; //$NON-NLS-1$
   /** the key JAVA_VENDOR */
-  public static final String JAVA_VENDOR = "JAVA_VENDOR"; //$NON-NLS-1$
+  public static final String SYSTEM_INFO_JAVA_VENDOR =
+      "JAVA_VENDOR"; //$NON-NLS-1$
   /** the key JAVA_VM_VERSION */
-  public static final String JAVA_VM_VERSION = "JAVA_VM_VERSION"; //$NON-NLS-1$
+  public static final String SYSTEM_INFO_JAVA_VM_VERSION =
+      "JAVA_VM_VERSION"; //$NON-NLS-1$
   /** the key JAVA_VM_VENDOR */
-  public static final String JAVA_VM_VENDOR = "JAVA_VM_VENDOR"; //$NON-NLS-1$
+  public static final String SYSTEM_INFO_JAVA_VM_VENDOR =
+      "JAVA_VM_VENDOR"; //$NON-NLS-1$
   /** the key JAVA_VM_NAME */
-  public static final String JAVA_VM_NAME = "JAVA_VM_NAME"; //$NON-NLS-1$
-  /** the key JAVA_SPECIFICATION_VERSION */
-  public static final String JAVA_SPECIFICATION_VERSION =
+  public static final String SYSTEM_INFO_JAVA_VM_NAME =
+      "JAVA_VM_NAME"; //$NON-NLS-1$
+  /** the key SJAVA_SPECIFICATION_VERSION */
+  public static final String SYSTEM_INFO_JAVA_SPECIFICATION_VERSION =
       "JAVA_SPECIFICATION_VERSION"; //$NON-NLS-1$
   /** the key JAVA_SPECIFICATION_VENDOR */
-  public static final String JAVA_SPECIFICATION_VENDOR =
+  public static final String SYSTEM_INFO_JAVA_SPECIFICATION_VENDOR =
       "JAVA_SPECIFICATION_VENDOR"; //$NON-NLS-1$
   /** the key JAVA_SPECIFICATION_NAME */
-  public static final String JAVA_SPECIFICATION_NAME =
+  public static final String SYSTEM_INFO_JAVA_SPECIFICATION_NAME =
       "JAVA_SPECIFICATION_NAME"; //$NON-NLS-1$
   /** the key JAVA_COMPILER */
-  public static final String JAVA_COMPILER = "JAVA_COMPILER"; //$NON-NLS-1$
+  public static final String SYSTEM_INFO_JAVA_COMPILER =
+      "JAVA_COMPILER"; //$NON-NLS-1$
+
+  /** the CPU name */
+  public static final String SYSTEM_INFO_CPU_NAME = "CPU_NAME"; //$NON-NLS-1$
+  /** the CPU family name */
+  public static final String SYSTEM_INFO_CPU_FAMILY =
+      "CPU_FAMILY"; //$NON-NLS-1$
+  /** the CPU identifier name */
+  public static final String SYSTEM_INFO_CPU_IDENTIFIER =
+      "CPU_IDENTIFIER"; //$NON-NLS-1$
+  /** the CPU model */
+  public static final String SYSTEM_INFO_CPU_MODEL = "CPU_MODEL"; //$NON-NLS-1$
+  /** the CPU ID */
+  public static final String SYSTEM_INFO_CPU_ID = "CPU_ID"; //$NON-NLS-1$
+  /** the CPU vendor */
+  public static final String SYSTEM_INFO_CPU_VENDOR =
+      "CPU_VENDOR"; //$NON-NLS-1$
+  /** is this a 64 bit CPU? */
+  public static final String SYSTEM_INFO_CPU_IS_64_BIT =
+      "CPU_IS_64_BIT"; //$NON-NLS-1$
+  /** the CPU frequency in hz */
+  public static final String SYSTEM_INFO_CPU_FREQUENCY =
+      "CPU_FREQUENCY_HZ"; //$NON-NLS-1$
+  /** the number of physical cores */
+  public static final String SYSTEM_INFO_CPU_PHYSICAL_CORES =
+      "CPU_PHYSICAL_CORES"; //$NON-NLS-1$
+  /** the number of logical cores */
+  public static final String SYSTEM_INFO_CPU_LOGICAL_CORES =
+      "CPU_LOGICAL_CORES"; //$NON-NLS-1$
+  /** the physical slots into which CPUs can be packaged */
+  public static final String SYSTEM_INFO_CPU_PHYSICAL_SLOTS =
+      "CPU_PHYSICAL_SLOTS"; //$NON-NLS-1$
+  /** the total size of the memory in bytes */
+  public static final String SYSTEM_INFO_MEM_TOTAL =
+      "MEMORY_TOTAL_BYTES"; //$NON-NLS-1$
+  /** the page size of the memory in bytes */
+  public static final String SYSTEM_INFO_MEM_PAGE_SIZE =
+      "MEMORY_PAGE_SIZE"; //$NON-NLS-1$
+  /** the computer model */
+  public static final String SYSTEM_INFO_COMPUTER_MODEL =
+      "COMPUTER_MODEL"; //$NON-NLS-1$
+  /** the computer manufacturer */
+  public static final String SYSTEM_INFO_COMPUTER_MANUFACTURER =
+      "COMPUTER_MANUFACTURER"; //$NON-NLS-1$
+  /** the mainboard manufacturer */
+  public static final String SYSTEM_INFO_MAINBOARD_MANUFACTURER =
+      "MAINBOARD_MANUFACTURER"; //$NON-NLS-1$
+  /** the mainboard model */
+  public static final String SYSTEM_INFO_MAINBOARD_MODEL =
+      "MAINBOARD_MODEL"; //$NON-NLS-1$
+  /** the mainboard version */
+  public static final String SYSTEM_INFO_MAINBOARD_VERSION =
+      "MAINBOARD_VERSION"; //$NON-NLS-1$
+  /** the mainboard serial number */
+  public static final String SYSTEM_INFO_MAINBOARD_SERIAL_NUMBER =
+      "MAINBOARD_SERIAL_NUMBER"; //$NON-NLS-1$
+  /** the os family */
+  public static final String SYSTEM_INFO_OS_FAMILY = "OS_FAMILY"; //$NON-NLS-1$
+  /** the os bits */
+  public static final String SYSTEM_INFO_OS_BITS = "OS_BITS"; //$NON-NLS-1$
+  /** the os manufacturer */
+  public static final String SYSTEM_INFO_OS_MANUFACTURER =
+      "OS_MANUFACTURER"; //$NON-NLS-1$
+  /** the os version */
+  public static final String SYSTEM_INFO_OS_VERSION =
+      "OS_VERSION"; //$NON-NLS-1$
+  /** the os build */
+  public static final String SYSTEM_INFO_OS_BUILD = "OS_BUILD"; //$NON-NLS-1$
+  /** the os code name */
+  public static final String SYSTEM_INFO_OS_CODENAME =
+      "OS_CODENAME"; //$NON-NLS-1$
+  /** the domain name */
+  public static final String SYSTEM_INFO_NET_DOMAIN_NAME =
+      "NET_DOMAIN_NAME"; //$NON-NLS-1$
+  /** the host name */
+  public static final String SYSTEM_INFO_NET_HOST_NAME =
+      "NET_HOST_NAME"; //$NON-NLS-1$
+  /** the current process id */
+  public static final String SYSTEM_INFO_PROCESS_ID =
+      "PROCESS_ID"; //$NON-NLS-1$
+  /** the command line of the current process */
+  public static final String SYSTEM_INFO_PROCESS_COMMAND_LINE =
+      "PROCESS_COMMAND_LINE"; //$NON-NLS-1$
+
   /** the key END_SYSTEM */
   public static final String END_SYSTEM = "END_SYSTEM"; //$NON-NLS-1$
+
+  /**
+   * a log section where you can dump in any algorithm setup
+   * information
+   */
+  public static final String ALGORITHM_SETUP_LOG_SECTION =
+      "ALGORITHM_SETUP";//$NON-NLS-1$
   /** the null value */
   public static final String NULL = "null"; //$NON-NLS-1$
 
