@@ -103,18 +103,20 @@ public final class LogParser {
         final BufferedReader in = Files.newBufferedReader(pth)) {
 
       // statistics
-      long fe_max = 0L;
-      long fe_last_improvement = 0L;
-      long time_max = 0L;
-      long time_last_improvement = 0L;
-      double f_min = Double.POSITIVE_INFINITY;
+      long fe_max = -1L;
+      long fe_last_improvement = -1L;
+      long time_max = -1L;
+      long time_last_improvement = -1L;
+      double f_min = Double.NaN;
       long improvements = 0L;
 
       long budgetFEs = Long.MAX_VALUE;
       long budgetTime = Long.MAX_VALUE;
       String randSeedString = null;
       long randSeedLong = 0L;
-      double goalF = Double.NEGATIVE_INFINITY;
+      double goalF = Double.NaN;
+
+      boolean has_log_line = false;
 
       // states: 0=before, 1=in, 2=after
       int state_log = 0;
@@ -192,6 +194,10 @@ public final class LogParser {
                         "Log section must end before state section??");//$NON-NLS-1$
                   }
                   state_log = 2;
+                  if (!has_log_line) {
+                    throw new IllegalStateException(
+                        "Log does not contain any data?");//$NON-NLS-1$
+                  }
                   continue;
                 }
                 default: {
@@ -303,12 +309,12 @@ public final class LogParser {
                   }
                   state_state = 2;
 
-                  if (invokeLogAfterState
+                  if (invokeLogAfterState && has_log_line
                       && (logConsumer != null)) {
-                    logConsumer.accept(
-                        new LogLine(fe_last_improvement, fe_max,
-                            time_last_improvement, time_max,
-                            improvements, f_min, false));
+                    logConsumer.accept(new LogLine(//
+                        fe_last_improvement, fe_max,
+                        time_last_improvement, time_max,
+                        improvements, f_min, false, false));
                   }
 
                   continue;
@@ -563,8 +569,8 @@ public final class LogParser {
             }
 
             try {
-              final double f = Double
-                  .parseDouble(line.substring(0, semi_1).trim());
+              final double f = Double.parseDouble(//
+                  line.substring(0, semi_1).trim());
               if (!(Double.isFinite(f))) {
                 throw new IllegalArgumentException(
                     "Objective values must be finite, but encountered: " //$NON-NLS-1$
@@ -601,8 +607,8 @@ public final class LogParser {
                         " exceed budget of " + budgetFEs); //$NON-NLS-1$
               }
 
-              final long time = Long
-                  .parseLong(line.substring(semi_2 + 1).trim());
+              final long time = Long.parseLong(//
+                  line.substring(semi_2 + 1).trim());
               if (time < 0L) {
                 throw new IllegalArgumentException(
                     "Times must be 0 or positive, but encountered: " //$NON-NLS-1$
@@ -617,12 +623,14 @@ public final class LogParser {
               LogParser._checkTime(time, budgetTime);
 
               boolean invokeLog = (logConsumer != null);
-              final boolean is_improvement = (f < f_min);
-              if (is_improvement) {
+              final boolean is_improvement =
+                  ((f < f_min) || (fes <= 1L));
+              if (is_improvement || (!has_log_line)) {
                 f_min = f;
                 ++improvements;
                 time_last_improvement = time;
                 fe_last_improvement = fes;
+                has_log_line = true;
               } else {
                 invokeLog &=
                     ((time > time_max) || (fes > fe_max));

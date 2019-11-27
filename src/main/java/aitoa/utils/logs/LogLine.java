@@ -49,6 +49,43 @@ public final class LogLine implements Comparable<LogLine> {
       final long _fe_max, final long _time_last_improvement,
       final long _time_max, final long _improvements,
       final double _f_min, final boolean _is_improvement) {
+    this(_fe_last_improvement, _fe_max, _time_last_improvement,
+        _time_max, _improvements, _f_min, _is_improvement, true);
+  }
+
+  /**
+   * create
+   *
+   * @param _fe_last_improvement
+   *          the FE where the last improvement took place (will
+   *          be this one, if {@code is_improvement} is
+   *          {@code true})
+   * @param _fe_max
+   *          the total consumed function evaluations
+   * @param _time_last_improvement
+   *          the time where the last improvement took place
+   *          (will be this one, if {@code is_improvement} is
+   *          {@code true})
+   * @param _time_max
+   *          the total consumed runtime
+   * @param _improvements
+   *          the total number of improvements (including this
+   *          one, if {@code is_improvement} is {@code true})
+   * @param _f_min
+   *          the best-so-far objective value
+   * @param _is_improvement
+   *          {@code true} if this log point has a better
+   *          {@code f_min} value than the one before,
+   *          {@code false} otherwise
+   * @param enforce_first_must_be_improvement
+   *          must we enforce that the first FE must be an
+   *          improvement?
+   */
+  LogLine(final long _fe_last_improvement, final long _fe_max,
+      final long _time_last_improvement, final long _time_max,
+      final long _improvements, final double _f_min,
+      final boolean _is_improvement,
+      final boolean enforce_first_must_be_improvement) {
     super();
 
     this.f_min = _f_min;
@@ -95,7 +132,8 @@ public final class LogLine implements Comparable<LogLine> {
     }
 
     this.is_improvement = _is_improvement;
-    if ((this.fe_max == 1L) && (!this.is_improvement)) {
+    if (enforce_first_must_be_improvement && (this.fe_max == 1L)
+        && (!this.is_improvement)) {
       throw new IllegalArgumentException(
           "First FE must be an improvement.");//$NON-NLS-1$
     }
