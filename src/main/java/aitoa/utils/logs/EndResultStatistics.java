@@ -33,8 +33,7 @@ import aitoa.utils.Statistics;
 public class EndResultStatistics {
 
   /** the file name used for end result statistics tables */
-  public static final String FILE_NAME = "endResultStatistics" //$NON-NLS-1$
-      + LogFormat.FILE_SUFFIX;
+  public static final String FILE_NAME = "endResultStatistics"; //$NON-NLS-1$
 
   /** the column with the number of successes */
   public static final String COL_RUNS = "n.runs";//$NON-NLS-1$
@@ -195,7 +194,8 @@ public class EndResultStatistics {
     final String sfn =
         ((statFileName == null) ? null : statFileName.trim());
     if ((sfn == null) || (sfn.isEmpty())) {
-      baseName = EndResultStatistics.FILE_NAME;
+      baseName =
+          EndResultStatistics.FILE_NAME + LogFormat.FILE_SUFFIX;
     } else {
       baseName = sfn + LogFormat.FILE_SUFFIX;
     }
