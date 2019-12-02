@@ -1,5 +1,6 @@
 package aitoa.structure;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -170,6 +171,10 @@ final class _SystemData {
       __Holder.__add(data, LogFormat.SYSTEM_INFO_JAVA_COMPILER,
           System.getProperty("java.compiler"));//$NON-NLS-1$
 
+      __Holder.__add(data,
+          LogFormat.SYSTEM_INFO_COMPLETION_DATE_TIME,
+          Instant.now().toString());
+
       try {
         final SystemInfo sys = new SystemInfo();
 
@@ -298,9 +303,9 @@ final class _SystemData {
                 final String cmd = po.getCommandLine();
                 if (cmd != null) {
                   final String usecmd =
-                      cmd.replaceAll("\\p{Cntrl}", "?") //$NON-NLS-1$ //$NON-NLS-2$
-                          .replaceAll("[^\\p{Print}]", "?")//$NON-NLS-1$ //$NON-NLS-2$
-                          .replaceAll("\\p{C}", "?")//$NON-NLS-1$ //$NON-NLS-2$
+                      cmd.replaceAll("\\p{Cntrl}", " ") //$NON-NLS-1$ //$NON-NLS-2$
+                          .replaceAll("[^\\p{Print}]", " ")//$NON-NLS-1$ //$NON-NLS-2$
+                          .replaceAll("\\p{C}", " ")//$NON-NLS-1$ //$NON-NLS-2$
                           .replaceAll("[\\p{C}\\p{Z}]", " ") //$NON-NLS-1$ //$NON-NLS-2$
                           .trim();
                   __Holder.__add(data,
