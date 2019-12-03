@@ -115,9 +115,9 @@ public final class LogFormat {
   public static final String SYSTEM_INFO_JAVA_COMPILER =
       "JAVA_COMPILER"; //$NON-NLS-1$
 
-  /** the time at which the logging information was printed */
-  public static final String SYSTEM_INFO_COMPLETION_DATE_TIME =
-      "COMPLETION_DATE_TIME"; //$NON-NLS-1$
+  /** the time at which the session has started */
+  public static final String SYSTEM_INFO_SESSION_START_DATE_TIME =
+      "SESSION_START_DATE_TIME"; //$NON-NLS-1$
 
   /** the CPU name */
   public static final String SYSTEM_INFO_CPU_NAME = "CPU_NAME"; //$NON-NLS-1$

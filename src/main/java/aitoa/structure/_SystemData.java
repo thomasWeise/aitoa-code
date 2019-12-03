@@ -1,6 +1,5 @@
 package aitoa.structure;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -172,8 +171,8 @@ final class _SystemData {
           System.getProperty("java.compiler"));//$NON-NLS-1$
 
       __Holder.__add(data,
-          LogFormat.SYSTEM_INFO_COMPLETION_DATE_TIME,
-          Instant.now().toString());
+          LogFormat.SYSTEM_INFO_SESSION_START_DATE_TIME,
+          _BlackBoxProcessData._getSessionStart().toString());
 
       try {
         final SystemInfo sys = new SystemInfo();

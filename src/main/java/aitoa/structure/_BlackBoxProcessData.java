@@ -1,6 +1,7 @@
 package aitoa.structure;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Objects;
 
 import aitoa.utils.RandomUtils;
@@ -14,6 +15,13 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 abstract class _BlackBoxProcessData<X, Y> {
+  /** the session start */
+  private static final Instant __SESSION_START;
+
+  static {
+    __SESSION_START = Instant.now();
+  }
+
   /** the random number generator seed */
   long m_randSeed;
   /** the search space */
@@ -299,4 +307,12 @@ abstract class _BlackBoxProcessData<X, Y> {
     return this.m_solutionSpace;
   }
 
+  /**
+   * get the session start in milliseconds
+   *
+   * @return the session start time in milliseconds
+   */
+  static final Instant _getSessionStart() {
+    return _BlackBoxProcessData.__SESSION_START;
+  }
 }
