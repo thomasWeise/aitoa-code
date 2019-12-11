@@ -72,9 +72,12 @@ public class JSSPExperiment {
    *
    * @param args
    *          only first element considered: the destination path
+   * @throws IOException
+   *           if I/O fails
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static final void main(final String[] args) {
+  public static final void main(final String[] args)
+      throws IOException {
     final Path out = IOUtils.canonicalizePath(
         (args.length > 0) ? args[0] : "results");//$NON-NLS-1$
 
@@ -285,13 +288,16 @@ public class JSSPExperiment {
    *          the instance
    * @param baseDir
    *          the base directory
+   * @throws IOException
+   *           if I/O fails
    */
   public static final void
       run(final IMetaheuristic<int[],
           JSSPCandidateSolution> algorithm,
           final IUnarySearchOperator<int[]> unary,
           final IBinarySearchOperator<int[]> binary,
-          final JSSPInstance inst, final Path baseDir) {
+          final JSSPInstance inst, final Path baseDir)
+          throws IOException {
 
     // create the process builder
     final BlackBoxProcessBuilder<int[],
@@ -368,12 +374,14 @@ public class JSSPExperiment {
    *          the maximum depth
    * @param baseDir
    *          the base directory
+   * @throws IOException
+   *           if I/O fails
    */
   private static final void __runGP(
       final IMetaheuristic<Node[],
           JSSPCandidateSolution> algorithm,
       final int maxDepth, final JSSPInstance inst,
-      final Path baseDir) {
+      final Path baseDir) throws IOException {
 
     // create the process builder
     final BlackBoxProcessBuilder<Node[],

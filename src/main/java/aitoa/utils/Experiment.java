@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import aitoa.structure.LogFormat;
 
@@ -290,6 +292,33 @@ public class Experiment {
    * experimental run if that log file does not yet exist. This
    * method allows for both parallel execution and for restarting
    * of experiments.
+   *
+   * @param root
+   *          the root path
+   * @param instance
+   *          the instance name
+   * @param algorithm
+   *          the algorithm setup
+   * @param randSeed
+   *          the random seed
+   * @return the path, or {@code null} if the run should not be
+   *         performed
+   * @throws IOException
+   *           if I/O fails
+   * @see #logFile(Path, String, String, long, Predicate)
+   */
+  public static final Path logFile(final Path root,
+      final String algorithm, final String instance,
+      final long randSeed) throws IOException {
+    return Experiment.logFile(root, algorithm, instance,
+        randSeed, Objects::nonNull);
+  }
+
+  /**
+   * Get the path to a suitable log file for the given
+   * experimental run if that log file does not yet exist. This
+   * method allows for both parallel execution and for restarting
+   * of experiments.
    * <p>
    * The idea is that we allow for running several instances of
    * the JVM in parallel, each executing the same kind of
@@ -323,11 +352,20 @@ public class Experiment {
    *          the algorithm setup
    * @param randSeed
    *          the random seed
-   * @return the path
+   * @param shouldDo
+   *          a predicate checking whether we should really do
+   *          that path; This could be a check with side-effects,
+   *          say, accessing a hash set of already done
+   *          experimental runs
+   * @return the path, or {@code null} if the run should not be
+   *         performed
+   * @throws IOException
+   *           if I/O fails
    */
   public static final Path logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed) {
+      final long randSeed, final Predicate<Path> shouldDo)
+      throws IOException {
     final Path r = IOUtils.canonicalizePath(root);
     final String algo = Experiment.nameStringPrepare(algorithm);
     final Path algoPath =
@@ -342,10 +380,14 @@ public class Experiment {
             RandomUtils.randSeedToString(randSeed))
             + LogFormat.FILE_SUFFIX));
 
+    if (!shouldDo.test(filePath)) {
+      return null;
+    }
+
     try {
       Files.createDirectories(instPath);
     } catch (final IOException error) {
-      throw new RuntimeException(
+      throw new IOException(
           "Could not create instance directory '" + //$NON-NLS-1$
               instPath + '\'',
           error);
@@ -360,7 +402,7 @@ public class Experiment {
     } catch (@SuppressWarnings("unused") final FileAlreadyExistsException error) {
       return null;
     } catch (final IOException error) {
-      throw new RuntimeException("Could not create log file '" + //$NON-NLS-1$
+      throw new IOException("Could not create log file '" + //$NON-NLS-1$
           filePath + '\'', error);
     }
 
