@@ -5,9 +5,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import aitoa.algorithms.EA1p1;
+import aitoa.algorithms.RandomSampling;
+import aitoa.examples.bitstrings.BitStringObjectiveFunction;
+import aitoa.examples.bitstrings.LeadingOnesObjectiveFunction;
+import aitoa.examples.bitstrings.OneMaxObjectiveFunction;
+import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
+import aitoa.searchSpaces.bitstrings.BitStringUnaryOperatorMOverNFlip;
+import aitoa.structure.BlackBoxProcessBuilder;
+import aitoa.structure.IMetaheuristic;
+import aitoa.utils.Experiment.IExperimentStage;
+import aitoa.utils.logs.EndResults;
 
 /** Test the utilities for the experimenting */
 public class ExperimentTest {
@@ -175,4 +189,130 @@ public class ExperimentTest {
     Assert.assertFalse(Files.exists(dir));
   }
 
+  /**
+   * test the experiment execution
+   *
+   * @throws IOException
+   *           if i/o fails
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 1000000)
+  public void testExecuteExperiment() throws IOException {
+    try (final TempDir dir = new TempDir()) {
+
+      final IExperimentStage<boolean[], boolean[],
+          BitStringObjectiveFunction,
+          IMetaheuristic<boolean[], boolean[]>> stage_1 =
+              new IExperimentStage<boolean[], boolean[],
+                  BitStringObjectiveFunction,
+                  IMetaheuristic<boolean[], boolean[]>>() {
+                @Override
+                public
+                    Stream<Supplier<BitStringObjectiveFunction>>
+                    getProblems() {
+                  return Stream
+                      .of(() -> new OneMaxObjectiveFunction(8));
+                }
+
+                @Override
+                public int getRuns(
+                    final BitStringObjectiveFunction problem) {
+                  return 3;
+                }
+
+                @Override
+                public
+                    Stream<Supplier<
+                        IMetaheuristic<boolean[], boolean[]>>>
+                    getAlgorithms(
+                        final BitStringObjectiveFunction problem) {
+                  return Stream.of(() -> new EA1p1<>(),
+                      () -> new RandomSampling<>());
+                }
+
+                @Override
+                public void configureBuilder(
+                    final BlackBoxProcessBuilder<boolean[],
+                        boolean[]> builder) {
+                  builder.setGoalF(0);
+                  builder.setMaxFEs(100);
+                  builder.setNullarySearchOperator(
+                      new BitStringNullaryOperator());
+                  builder.setUnarySearchOperator(
+                      new BitStringUnaryOperatorMOverNFlip(1));
+                }
+
+                @Override
+                public void configureBuilderForProblem(
+                    final BlackBoxProcessBuilder<boolean[],
+                        boolean[]> builder,
+                    final BitStringObjectiveFunction problem) {
+                  builder.setSearchSpace(problem.createSpace());
+                }
+              };
+
+      final IExperimentStage<boolean[], boolean[],
+          BitStringObjectiveFunction,
+          IMetaheuristic<boolean[], boolean[]>> stage_2 =
+              new IExperimentStage<boolean[], boolean[],
+                  BitStringObjectiveFunction,
+                  IMetaheuristic<boolean[], boolean[]>>() {
+                @Override
+                public
+                    Stream<Supplier<BitStringObjectiveFunction>>
+                    getProblems() {
+                  return Stream.of(
+                      () -> new OneMaxObjectiveFunction(8),
+                      () -> new LeadingOnesObjectiveFunction(8));
+                }
+
+                @Override
+                public int getRuns(
+                    final BitStringObjectiveFunction problem) {
+                  return 4;
+                }
+
+                @Override
+                public
+                    Stream<Supplier<
+                        IMetaheuristic<boolean[], boolean[]>>>
+                    getAlgorithms(
+                        final BitStringObjectiveFunction problem) {
+                  return Stream.of(() -> new EA1p1<>(),
+                      () -> new RandomSampling<>());
+                }
+
+                @Override
+                public void configureBuilder(
+                    final BlackBoxProcessBuilder<boolean[],
+                        boolean[]> builder) {
+                  builder.setGoalF(0);
+                  builder.setMaxFEs(100);
+                  builder.setNullarySearchOperator(
+                      new BitStringNullaryOperator());
+                  builder.setUnarySearchOperator(
+                      new BitStringUnaryOperatorMOverNFlip(1));
+                }
+
+                @Override
+                public void configureBuilderForProblem(
+                    final BlackBoxProcessBuilder<boolean[],
+                        boolean[]> builder,
+                    final BitStringObjectiveFunction problem) {
+                  builder.setSearchSpace(problem.createSpace());
+                }
+              };
+
+      Experiment.executeExperiment(
+          Stream.of(() -> stage_1, () -> stage_2), dir.getPath(),
+          false, false, false, false);
+
+      try (TempDir dir2 = new TempDir()) {
+        final Path endResults = EndResults.makeEndResultsTable(
+            dir.getPath(), dir2.getPath(), false, false);
+        Assert.assertNotNull(endResults);
+        Assert.assertTrue(Files.size(endResults) > 10L);
+      }
+    }
+  }
 }

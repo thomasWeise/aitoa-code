@@ -180,16 +180,42 @@ public final class RandomUtils {
   public static final void shuffle(final Random random,
       final java.lang.Object[] array, final int start,
       final int count) {
-    final int n;
-    java.lang.Object t;
-    int i, j, k;
-
     if (count > 0) {
-      n = array.length;
-      for (i = count; i > 1;) {
-        j = ((start + random.nextInt(i--)) % n);
-        k = ((start + i) % n);
-        t = array[k];
+      final int n = array.length;
+      for (int i = count; i > 1;) {
+        final int j = ((start + random.nextInt(i--)) % n);
+        final int k = ((start + i) % n);
+        final Object t = array[k];
+        array[k] = array[j];
+        array[j] = t;
+      }
+    }
+  }
+
+  /**
+   * Randomize a sub-sequence of an array or permutation of
+   * {@code java.lang.Objects}. After this procedure, the
+   * {@code count} elements of the array beginning at index
+   * {@code start} are uniformly randomly distributed.
+   *
+   * @param array
+   *          the array of {@code java.lang.Object}s whose
+   *          sub-sequence to be randomized
+   * @param start
+   *          the start index
+   * @param count
+   *          the number of elements to be randomized
+   * @param random
+   *          the randomizer
+   */
+  public static final void shuffle(final Random random,
+      final long[] array, final int start, final int count) {
+    if (count > 0) {
+      final int n = array.length;
+      for (int i = count; i > 1;) {
+        final int j = ((start + random.nextInt(i--)) % n);
+        final int k = ((start + i) % n);
+        final long t = array[k];
         array[k] = array[j];
         array[j] = t;
       }
@@ -214,15 +240,12 @@ public final class RandomUtils {
    */
   public static final void shuffle(final Random random,
       final int[] array, final int start, final int count) {
-    final int n;
-    int i, j, k, t;
-
     if (count > 0) {
-      n = array.length;
-      for (i = count; i > 1;) {
-        j = ((start + random.nextInt(i--)) % n);
-        k = ((start + i) % n);
-        t = array[k];
+      final int n = array.length;
+      for (int i = count; i > 1;) {
+        final int j = ((start + random.nextInt(i--)) % n);
+        final int k = ((start + i) % n);
+        final int t = array[k];
         array[k] = array[j];
         array[j] = t;
       }

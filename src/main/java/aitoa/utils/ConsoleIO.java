@@ -2,12 +2,22 @@ package aitoa.utils;
 
 import java.io.PrintStream;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import oshi.SystemInfo;
+
 /**
  * With this class, we can write stuff to the console in a
- * thread-safe way.
+ * thread-safe way. Using the {@link #stderr(Consumer)} or
+ * {@link #stdout(Consumer)}-based methods will automatically
+ * prepend a process-thread ID tuple(is
+ * base-{@value java.lang.Character#MAX_RADIX}), which should
+ * unique identify the calling thread on the local computer,
+ * followed by the date to the output. Via
+ * {@link #setIDSuffix(String)}, you can add more ID elements to
+ * be prepended on every log output.
  */
 public final class ConsoleIO {
 
@@ -43,13 +53,14 @@ public final class ConsoleIO {
   public static final void
       stdout(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
-      ConsoleIO.__printDate(u);
+      ConsoleIO.__printIDandDate(u);
       out.accept(u);
     });
   }
 
   /**
-   * Print to stdout
+   * Print to stdout, by prepending the process and thread ID as
+   * well as the current data.
    *
    * @param line
    *          the line
@@ -59,18 +70,21 @@ public final class ConsoleIO {
   }
 
   /**
-   * print the data
+   * print the date and process ID
    *
    * @param ps
    *          the stream
    */
-  private static final void __printDate(final PrintStream ps) {
+  private static final void
+      __printIDandDate(final PrintStream ps) {
+    ps.print(ConsoleIO.__IDS.get());
     ps.print(new Date());
     ps.print('\t');
   }
 
   /**
-   * Print to stderr
+   * Print to stderr, by prepending the process and thread ID as
+   * well as the current data.
    *
    * @param out
    *          the output
@@ -78,13 +92,14 @@ public final class ConsoleIO {
   public static final void
       stderr(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
-      ConsoleIO.__printDate(v);
+      ConsoleIO.__printIDandDate(v);
       out.accept(v);
     });
   }
 
   /**
-   * Print to stderr
+   * Print to stderr, by prepending the process and thread ID as
+   * well as the current data.
    *
    * @param out
    *          the output
@@ -109,7 +124,8 @@ public final class ConsoleIO {
   }
 
   /**
-   * Print to stderr
+   * Print to stderr, by prepending the process and thread ID as
+   * well as the current data.
    *
    * @param message
    *          the message
@@ -123,5 +139,79 @@ public final class ConsoleIO {
         stderr.println(message);
       }
     }, error);
+  }
+
+  /**
+   * Set the ID suffix. Normally, each log line is prepended with
+   * the process ID and the thread ID. This should uniquely
+   * identify the calling thread on the computer. The two IDs are
+   * printed in base-{@value java.lang.Character#MAX_RADIX} for
+   * brevity and separated by {@code :}. With this method, you
+   * can set another element to be included into this prefix. It
+   * will then be separated again by {@code :} and appended at
+   * the end of the ID. This element will be included in all log
+   * output until you call {@link #setIDSuffix} again.
+   *
+   * @param suffix
+   *          the ID suffix to set
+   * @see #clearIDSuffix()
+   */
+  public static final void setIDSuffix(final String suffix) {
+    ConsoleIO.__IDS.set(ConsoleIO.__computeID(suffix));
+  }
+
+  /**
+   * Remove the ID suffix.
+   *
+   * @see #setIDSuffix(String)
+   */
+  public static final void clearIDSuffix() {
+    ConsoleIO.setIDSuffix("");//$NON-NLS-1$
+  }
+
+  /** get the ID of the current thread */
+  private static final ThreadLocal<char[]> __IDS =
+      ThreadLocal.withInitial(() -> ConsoleIO.__computeID("")); //$NON-NLS-1$
+
+  /**
+   * compute the ID based on a suffix
+   *
+   * @param suffix
+   *          the suffix
+   * @return the ID
+   */
+  private static final char[] __computeID(final String suffix) {
+    final String t = suffix.trim();
+    String a =
+        ((Integer.toUnsignedString(__ID.ID, Character.MAX_RADIX)
+            + ':')
+            + Long.toUnsignedString(
+                Thread.currentThread().getId(),
+                Character.MAX_RADIX));
+    if (t.length() > 0) {
+      a = a + ':' + t;
+    }
+    return (a + ' ').toCharArray();
+  }
+
+  /** the ID holder */
+  private static final class __ID {
+
+    /** the internal id */
+    static final int ID = __ID.__getID();
+
+    /**
+     * get the prefix to be used for log entries
+     *
+     * @return the prefix
+     */
+    private static final int __getID() {
+      try {
+        return new SystemInfo().getOperatingSystem()
+            .getProcessId();
+      } catch (@SuppressWarnings("unused") final Throwable error) {
+        return ThreadLocalRandom.current().nextInt();
+      }
+    }
   }
 }

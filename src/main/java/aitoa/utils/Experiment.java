@@ -1,13 +1,23 @@
 package aitoa.utils;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import aitoa.algorithms.RandomSampling;
+import aitoa.structure.BlackBoxProcessBuilder;
+import aitoa.structure.IBlackBoxProcess;
+import aitoa.structure.IMetaheuristic;
+import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.LogFormat;
 
 /** A class for processing and executing experiments */
@@ -467,5 +477,600 @@ public class Experiment {
     }
 
     return s;
+  }
+
+  /**
+   * An experiment stage.
+   *
+   * @param <X>
+   *          the search space type
+   * @param <Y>
+   *          the solution space type
+   * @param <P>
+   *          the problem type
+   * @param <M>
+   *          the metaheuristic type
+   */
+  public static interface IExperimentStage<X, Y,
+      P extends IObjectiveFunction<Y>,
+      M extends IMetaheuristic<X, Y>> {
+    /**
+     * Get a stream of objective function suppliers to be solved
+     * in this state.
+     *
+     * @return the stream of suppliers, each of which can return
+     *         one problem instance
+     */
+    public abstract Stream<Supplier<P>> getProblems();
+
+    /**
+     * Get the number of runs to be executed for a given problem.
+     *
+     * @param problem
+     *          the problem
+     * @return the number of runs to be executed
+     */
+    public default int getRuns(final P problem) {
+      return 21;
+    }
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @SuppressWarnings("unchecked")
+    public default Stream<Supplier<M>>
+        getAlgorithms(final P problem) {
+      return Stream.of(() -> ((M) (new RandomSampling<>())));
+    }
+
+    /**
+     * Configure the black box process builder.
+     *
+     * @param builder
+     *          the builder to configure
+     */
+    public default void configureBuilder(
+        final BlackBoxProcessBuilder<X, Y> builder) {
+      //
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    public default void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<X, Y> builder,
+        final P problem) {
+      //
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem and algorithm
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     * @param algorithm
+     *          the algorithm
+     */
+    public default void configureBuilderForProblemAndAlgorithm(
+        final BlackBoxProcessBuilder<X, Y> builder,
+        final P problem, final M algorithm) {
+      //
+    }
+  }
+
+  /**
+   * sleep for a random time interval
+   *
+   * @param min
+   *          the minimum time
+   * @param random
+   *          the randomizer
+   */
+  private static final void __sleep(final long min,
+      final ThreadLocalRandom random) {
+    Thread.yield();
+    try {
+      final long l = Math.max(1L, min);
+      Thread.sleep(random.nextLong(l, 10L * l));
+    } catch (@SuppressWarnings("unused") final InterruptedException ie) {
+      // ignore
+    }
+    Thread.yield();
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages}.
+   * <p>
+   * How can we run experiments with optimization algorithms over
+   * many runs on different problem instances? We would surely
+   * like to execute the runs in parallel. With this procedure,
+   * we provide a very simple mechanism to achieve that. The idea
+   * is that we simply start several instances of the same
+   * program, each of which calls this method with exactly the
+   * same parameters. Each run, being a combination of a problem
+   * instance (objective function), algorithm setup, and random
+   * seed, uniquely fits to one log file in a sub folder of
+   * {@code outputDir} will produce output in that one log file
+   * (via the {@link aitoa.structure.IBlackBoxProcess}). Before
+   * beginning to execute the run, we try to create the log file.
+   * This is an atomic operation of the file system which fails
+   * if the log file already exists. This way, we can tell
+   * whether any parallel process is already doing that run. If
+   * so, we just skip it in the current process. If not, we
+   * execute it and, after it ends, write its output into the log
+   * file. This simple concept of parallelism will also work with
+   * shared folders. In other words, you can also use it to
+   * execute bigger experiments in a cluster.
+   * <p>
+   * Experiments can proceed in (what I call)
+   * "{@linkplain IExperimentStage stages}". Each stage consists
+   * of a set of problem instances, a set of algorithms, and a
+   * number of runs for the algorithm-instance combinations. A
+   * stage is completed when all runs for it have been finished.
+   * This allows for some form of batch processing of
+   * sub-experiments. But you can also have stages of increasing
+   * numbers of runs. For example, you could first want to have
+   * 11 runs for each algorithm on each instance in "stage 1".
+   * Then you can set the number of runs to 21 in "stage 2".
+   * Since our random seeds are generated deterministically, this
+   * will keep the existing runs and add ten more. The advantage
+   * is that you will, at some point, already have results for
+   * each problem instance and algorithm that you can interpret
+   * and analyze. While you are doing that, the experiment
+   * executer will tirelessly add more results. If you have a
+   * scalable problem, say
+   * {@linkplain aitoa.examples.bitstrings.OneMaxObjectiveFunction
+   * OneMax}, you could also solve scales up to, say 40 in the
+   * first stage and then go to 100 in the second and to 200 in
+   * third. Or you could also apply more algorithm setups in the
+   * later stages. Or any combination of that. The point and goal
+   * of this staging approach is that you can first do some
+   * exploration of the results, which would allow you to, e.g.,
+   * begin to write a report, while more results are appearing
+   * during this time which can then help you to gain more
+   * statistical confidence.
+   * <p>
+   * In order to not waste too many resources, the problem
+   * instances and algorithms are instantiated as lazily as
+   * possible, via instances of
+   * {@link java.util.function.Supplier}s provided by
+   * {@link java.util.stream.Stream}s.
+   * <p>
+   * If you run the experiment with many processes on many
+   * computers via a shared folder, then this allows for a large
+   * amount of parallelism. It can also lead to network trouble,
+   * if too many processes try to check for file creation at
+   * once. In order to alleviate this, this function here makes
+   * as few calls to the file creation routine as possible. Also,
+   * it will sometimes wait for a short time before issuing the
+   * next file creation request. This would hopefully reduce the
+   * load on the server a little bit. If we still get I/O errors,
+   * then we will try to wait a longer time and then restart the
+   * experiment (of course, skipping all already performed runs).
+   * We will then also increase the waiting time between file
+   * operation. The goal is to complete the experiment, no matter
+   * what. However, all exceptions different from
+   * {@link java.io.IOException} will and should lead to a
+   * termination of the experiment.
+   * <p>
+   * This method will write a short note to the console whenever
+   * a new run or a new stage starts. The log lines are prepended
+   * by a prefix of: {@code processId:threadId:trial:stage date},
+   * where {@code processId} is the process ID in
+   * base-{@value java.lang.Character#MAX_RADIX} and
+   * {@code threadId} is the ID of the current thread in
+   * base-{@value java.lang.Character#MAX_RADIX}. These two
+   * numbers should uniquely identify a strand of execution on
+   * the current computer. {@code trialId} is the number of the
+   * trial of the experiment in decimal. Normally, this will be
+   * 1. However, every time we have restart due to an
+   * {@link java.io.IOException}, which hopefully never happens,
+   * then it will be increased. {@code stage} is the index of the
+   * current stage (in decimal) and, finally, {@code date} is
+   * current date and time.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @see #executeExperiment(Stream, Path, boolean, boolean,
+   *      boolean, boolean)
+   */
+  public static final void executeExperiment(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir) {
+    Experiment.executeExperiment(stages, outputDir, true, true,
+        true, true);
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages}.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param writeLogInfos
+   *          should we print log information?
+   * @param waitAfterManySkippedRuns
+   *          If this is {@code true}, then sometimes the
+   *          experiment execution will wait for a very short
+   *          time before it continues. This can be useful if we
+   *          are working on a shared network drive and may
+   *          processes run the same experiment. Then, these
+   *          short delays may reduce the stress on the central
+   *          server and, thus, may make I/O errors less likely.
+   * @param waitAfterWorkWasDone
+   *          should we add some short wait time after
+   *          significant work was done?
+   * @param waitAfterIOError
+   *          should we wait for a longer time period if an I/O
+   *          error occurs? This also can help to reduce the load
+   *          on the server hosting a shared drive and may make
+   *          it more likely that we can continue successfully
+   *          after the wait
+   * @see #executeExperiment(Stream, Path)
+   */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static final void executeExperiment(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir, final boolean writeLogInfos,
+      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterWorkWasDone,
+      final boolean waitAfterIOError) {
+
+    try {
+      final Supplier<IExperimentStage>[] stageList =
+          stages.toArray((i) -> new Supplier[i]);
+      if ((stageList == null) || (stageList.length <= 0)) {
+        throw new IllegalStateException(
+            "Stage stream cannot be empty."); //$NON-NLS-1$
+      }
+
+      final Path useDir = IOUtils.canonicalizePath(//
+          Objects.requireNonNull(outputDir));
+      final ThreadLocalRandom random =
+          ThreadLocalRandom.current();
+
+      final HashSet<Path> done = new HashSet<>();
+      final HashSet<Path> reallyDone = new HashSet<>();
+      final boolean[] doRun = { false };
+
+      long tryIndex = 0L;
+      long baseDelay = 2L;
+
+      for (;;) {
+        long skippedRuns = 0L;
+        // We will try iterating and performing all stages. If an
+        // I/O error occurs, we just try again and begin from the
+        // front.
+
+        // We skip runs that we have already conducted and
+        // finished successfully.
+        done.retainAll(reallyDone);
+        ++tryIndex;
+
+        try {
+          // Catch I/O exceptions: Here the real trial begins.
+
+          // We now iterate over the stage suppliers.
+          for (int stageIndex = 0; stageIndex < stageList.length;
+              stageIndex++) {
+
+            // Let's take the supplier. If it is null, then the
+            // stage does not need to be performed. We already
+            // cleared it before.
+            final Supplier<IExperimentStage> stageSupplier =
+                stageList[stageIndex];
+            if (stageSupplier == null) {
+              continue;
+            }
+
+            final String stageString =
+                Integer.toString(1 + stageIndex);
+            if (writeLogInfos) {
+              ConsoleIO.setIDSuffix(
+                  Long.toString(tryIndex) + ':' + stageString);
+              ConsoleIO.stdout("Beginning Stage " + stageString); //$NON-NLS-1$
+            }
+
+            // If the supplier is there, then it must return a
+            // non-null stage.
+            final IExperimentStage stage =
+                Objects.requireNonNull(stageSupplier.get());
+
+            // We create a new black-box process builder and
+            // configure it.
+            final BlackBoxProcessBuilder builder =
+                new BlackBoxProcessBuilder<>();
+            stage.configureBuilder(builder);
+
+            // Now we take the problem stream and flatten it.
+            final Supplier<IObjectiveFunction>[] problems =
+                ((Stream<Supplier>) (stage.getProblems()))
+                    .toArray((i) -> new Supplier[i]);
+            if ((problems == null) || (problems.length <= 0)) {
+              throw new IllegalStateException(
+                  "Experiment stage " + stageString + //$NON-NLS-1$
+                      " must provide at least one problem."); //$NON-NLS-1$
+            }
+
+            // We want to process the problems in a random order.
+            // If we have launched multiple processes doing the
+            // same experiment in the same folder, this will make
+            // it more likely that one process can work on one
+            // problem until it is completed, because everyone
+            // starts at a different problem. This also means we
+            // get data from different problems earlier.
+            RandomUtils.shuffle(random, problems, 0,
+                problems.length);
+
+            for (final Supplier<
+                IObjectiveFunction> problemSupplier : problems) {
+
+              // instantiate the objective function
+              final IObjectiveFunction f =
+                  Objects.requireNonNull(problemSupplier.get());
+
+              // how many runs should we do?
+              final int runs = stage.getRuns(f);
+              if (runs <= 0) {
+                continue;
+              }
+
+              // Now it is time to get the list of algorithms.
+              final Supplier<IMetaheuristic>[] algorithms =
+                  ((Stream<Supplier>) (stage.getAlgorithms(f)))
+                      .toArray((i) -> new Supplier[i]);
+              if ((algorithms == null)
+                  || (algorithms.length <= 0)) {
+                continue;
+              }
+              // And we will process them again in a random
+              // order.
+              RandomUtils.shuffle(random, algorithms, 0,
+                  algorithms.length);
+
+              // Get the problem instance name.
+              final String instName =
+                  Objects.requireNonNull(f.toString());
+
+              // We generate one random seed for each run. All
+              // algorithms use the same random seeds.
+              final long[] seeds =
+                  RandomUtils.uniqueRandomSeeds(instName, runs);
+              if (seeds.length != runs) {
+                throw new IllegalStateException(
+                    "Invalid number of seeds: should never happen."); //$NON-NLS-1$
+              }
+
+              // If we get here, we definitely will do some runs
+              // with the problem, so we adjust the builder to
+              // it.
+              stage.configureBuilderForProblem(builder, f);
+              builder.setObjectiveFunction(f);
+
+              // Now we iterate over the algorithms, in their
+              // random order.
+              for (final Supplier<
+                  IMetaheuristic> algorithmSupplier : algorithms) {
+                final IMetaheuristic algorithm = Objects
+                    .requireNonNull(algorithmSupplier.get());
+
+                // Get the algorithm name.
+                final String algoName =
+                    Objects.requireNonNull(algorithm.toString());
+                // And configure the builder for using the
+                // algorithm
+                stage.configureBuilderForProblemAndAlgorithm(
+                    builder, f, algorithm);
+
+                // For each algorithm, we will process the random
+                // seeds again in a random order.
+                RandomUtils.shuffle(random, seeds, 0,
+                    seeds.length);
+
+                for (final long seed : seeds) {
+
+                  // We create the log file for this run of the
+                  // current algorithm on the current problem
+                  // with the current seed.
+                  // We remember a hash set of all runs we
+                  // already did.
+                  // This allows for different experimental
+                  // stages to raise the number of runs
+                  // step-by-step without us needed to access the
+                  // file system for runs that we already
+                  // performed in the past.
+                  final Path logFile = Experiment.logFile(useDir,
+                      algoName, instName, seed,
+                      (p) -> (doRun[0] = done.add(p)));
+
+                  // If the logFile is null, then we do not need
+                  // to do the run.
+                  if (logFile == null) {
+                    if (doRun[0] && waitAfterManySkippedRuns) {
+                      ++skippedRuns;
+                      // If doRun is true, then the predicate had
+                      // suggested to do the run, but the log
+                      // file already existed. We found this by
+                      // querying the file system. If we do this
+                      // very often a shared drive, this may
+                      // annoy the file server.
+                      // In this case, we may want to wait a bit
+                      // to relief the file system.
+                      Experiment.__sleep(
+                          ((skippedRuns <= 100L) ? 2L : 20L)
+                              * baseDelay,
+                          random);
+                    }
+                    // nothing to do here
+                    continue;
+                  }
+
+                  // If we get here, we have created the log file
+                  // which uniquely identifies this run. So we
+                  // can actually execute it.
+                  try {
+                    if (writeLogInfos) {
+                      ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
+                          + logFile + "'."); //$NON-NLS-1$
+                    }
+
+                    // Set the seed and log path.
+                    builder.setRandSeed(seed);
+                    builder.setLogPath(logFile);
+
+                    // Create the process, apply the algorithm,
+                    // and write the log information.
+                    try (final IBlackBoxProcess process =
+                        builder.get()) {
+                      algorithm.solve(process);
+                      process.printLogSection(
+                          LogFormat.ALGORITHM_SETUP_LOG_SECTION,
+                          (bw) -> {
+                            try {
+                              algorithm.printSetup(//
+                                  (BufferedWriter) (bw));
+                            } catch (final IOException ioe) {
+                              // channel out a potential I/O
+                              // exception
+                              throw new __IOExceptionWrapper(
+                                  ioe);
+                            }
+                          });
+                    } catch (final __IOExceptionWrapper ioe) {
+                      // i/o failed: re-throw the channeled
+                      // exception
+                      throw ((IOException) (ioe.getCause()));
+                    }
+
+                    // If we get here without an error, then this
+                    // means that everything went well. We
+                    // completed the run successfully and stored
+                    // all the log information in the log file.
+                    reallyDone.add(logFile);
+                  } catch (final IOException ioe) {
+                    if (writeLogInfos) {
+                      ConsoleIO.stderr(
+                          "We got an I/O error in the experimental run '" //$NON-NLS-1$
+                              + logFile
+                              + "'. We will try to delete the log file and then continue.", //$NON-NLS-1$
+                          ioe);
+                    }
+                    if (waitAfterIOError) {
+                      Experiment.__sleep(80_000L * baseDelay,
+                          random);
+                    }
+                    // If we got here, there must have been an
+                    // error when writing out the result.
+                    // This means the data of the run was lost.
+                    // But the log file had been created empty,
+                    // so no other process would try to repeat
+                    // the run.
+                    // We therefore try to delete that log file,
+                    // while will probably fail, but let's try.
+                    try {
+                      Files.delete(logFile);
+                    } catch (final Throwable error2) {
+                      if (writeLogInfos) {
+                        ConsoleIO.stderr(
+                            "We got an error when trying to delete file '" //$NON-NLS-1$
+                                + logFile + "'.", //$NON-NLS-1$
+                            error2);
+                      }
+                    }
+                    throw ioe;
+                  }
+
+                  Thread.yield();
+                } // run
+
+                if (waitAfterWorkWasDone) {
+                  Experiment.__sleep(baseDelay, random);
+                }
+              } // end of the algorithm
+
+              if (waitAfterWorkWasDone) {
+                Experiment.__sleep(baseDelay, random);
+              }
+            } // end of the problem
+
+            Thread.yield();
+            if (writeLogInfos) {
+              ConsoleIO.stdout(
+                  "Successfully Finished Stage " + stageString); //$NON-NLS-1$
+            }
+            stageList[stageIndex] = null; // stage is clear
+            Thread.yield();
+            System.gc();
+            Thread.yield();
+          } // end of the stage
+
+          if (writeLogInfos) {
+            ConsoleIO
+                .stdout("Successfully Finished Experiment."); //$NON-NLS-1$
+          }
+          return; // successful end of the trial
+        } catch (final IOException ioError) {
+          // failure in trial due to I/O error
+          if (writeLogInfos) {
+            ConsoleIO.stderr(waitAfterIOError
+                ? "Got an I/O Error in the experiment, will now wait an retry." //$NON-NLS-1$
+                : "Got an I/O Error in the experiment, will now continue without waiting.", //$NON-NLS-1$
+                ioError);
+          }
+          baseDelay += Math.max(1L, baseDelay / 16L);
+          if (waitAfterIOError) {
+            Experiment.__sleep(150_000L * baseDelay, random);
+          }
+        }
+      } // end trial
+    } catch (final Throwable error) {
+      if (writeLogInfos) {
+        ConsoleIO.stderr(
+            "An unrecoverable error has appeared during the experiment.", //$NON-NLS-1$
+            error);
+      }
+      throw new RuntimeException(error);
+    } finally {
+      if (writeLogInfos) {
+        ConsoleIO.clearIDSuffix();
+      }
+    }
+  }
+
+  /** the io exception wrapper */
+  private static final class __IOExceptionWrapper
+      extends RuntimeException {
+    /** the serial version uid */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * create
+     *
+     * @param cause
+     *          the cause
+     */
+    __IOExceptionWrapper(final IOException cause) {
+      super(cause);
+    }
   }
 }
