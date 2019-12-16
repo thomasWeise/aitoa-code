@@ -421,15 +421,33 @@ public class Experiment {
         }
       }
 
-      if (Files.exists(filePath)) {
-        return null;
-      }
-
+      // We try to create the log file. If that succeeds, then
+      // the no such log file existed before, meaning that we
+      // have to do the run and return the file.
+      // If it fails, there are two possible reasons:
+      // 1) The file already exists. That is OK, because then the
+      // run is either already in progress or already completed.
+      // 2) The file does not exist but we could not create it
+      // either. Or it cannot be determined whether it exists or
+      // not and it also connot be created. In this case, we need
+      // to throw an I/O exception.
       try {
         Files.createFile(filePath);
       } catch (@SuppressWarnings("unused") final FileAlreadyExistsException error) {
+        // The file exists: We do not need to do the run.
         return null;
       } catch (final IOException error) {
+        // Since FileAlreadyExistsException is optional, we need
+        // to double-check if the file really exist.
+        if (Files.exists(filePath)) {
+          // Ok, it did exist, so we are done here, everything is
+          // good.
+          return null;
+        }
+        // OK, if we get here, it was either not possible to
+        // determine whether the file exists or not or it does
+        // not exist but also could not be created.
+        // In this case, we give up and throw an I/O exception
         throw new IOException("Could not create log file '" + //$NON-NLS-1$
             filePath + '\'', error);
       }
