@@ -30,7 +30,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public final class EA1p1WithFitness<X, Y>
+public class EA1p1WithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
   /** the fitness assignment process */
   public final FitnessAssignmentProcess<? super X> fitness;
