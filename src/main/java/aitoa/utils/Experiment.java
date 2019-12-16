@@ -7,10 +7,12 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import aitoa.algorithms.RandomSampling;
@@ -324,6 +326,9 @@ public class Experiment {
         randSeed, Objects::nonNull);
   }
 
+  /** the internal experiment synchronizer */
+  private static final Object EXPERIMENT_SYNCH = new Object();
+
   /**
    * Get the path to a suitable log file for the given
    * experimental run if that log file does not yet exist. This
@@ -376,47 +381,50 @@ public class Experiment {
       final String algorithm, final String instance,
       final long randSeed, final Predicate<Path> shouldDo)
       throws IOException {
-    final Path r = IOUtils.canonicalizePath(root);
-    final String algo = Experiment.nameStringPrepare(algorithm);
-    final Path algoPath =
-        IOUtils.canonicalizePath(r.resolve(algo));
+    synchronized (Experiment.EXPERIMENT_SYNCH) {
+      final Path r = IOUtils.canonicalizePath(root);
+      final String algo =
+          Experiment.nameStringPrepare(algorithm);
+      final Path algoPath =
+          IOUtils.canonicalizePath(r.resolve(algo));
 
-    final String inst = Experiment.nameStringPrepare(instance);
-    final Path instPath =
-        IOUtils.canonicalizePath(algoPath.resolve(inst));
+      final String inst = Experiment.nameStringPrepare(instance);
+      final Path instPath =
+          IOUtils.canonicalizePath(algoPath.resolve(inst));
 
-    final Path filePath = IOUtils.canonicalizePath(
-        instPath.resolve(Experiment.nameStringsMerge(algo, inst,
-            RandomUtils.randSeedToString(randSeed))
-            + LogFormat.FILE_SUFFIX));
+      final Path filePath = IOUtils.canonicalizePath(
+          instPath.resolve(Experiment.nameStringsMerge(algo,
+              inst, RandomUtils.randSeedToString(randSeed))
+              + LogFormat.FILE_SUFFIX));
 
-    if (!shouldDo.test(filePath)) {
-      return null;
+      if (!shouldDo.test(filePath)) {
+        return null;
+      }
+
+      try {
+        Files.createDirectories(instPath);
+      } catch (final IOException error) {
+        throw new IOException(
+            "Could not create instance directory '" + //$NON-NLS-1$
+                instPath + '\'',
+            error);
+      }
+
+      if (Files.exists(filePath)) {
+        return null;
+      }
+
+      try {
+        Files.createFile(filePath);
+      } catch (@SuppressWarnings("unused") final FileAlreadyExistsException error) {
+        return null;
+      } catch (final IOException error) {
+        throw new IOException("Could not create log file '" + //$NON-NLS-1$
+            filePath + '\'', error);
+      }
+
+      return filePath;
     }
-
-    try {
-      Files.createDirectories(instPath);
-    } catch (final IOException error) {
-      throw new IOException(
-          "Could not create instance directory '" + //$NON-NLS-1$
-              instPath + '\'',
-          error);
-    }
-
-    if (Files.exists(filePath)) {
-      return null;
-    }
-
-    try {
-      Files.createFile(filePath);
-    } catch (@SuppressWarnings("unused") final FileAlreadyExistsException error) {
-      return null;
-    } catch (final IOException error) {
-      throw new IOException("Could not create log file '" + //$NON-NLS-1$
-          filePath + '\'', error);
-    }
-
-    return filePath;
   }
 
   /**
@@ -480,7 +488,12 @@ public class Experiment {
   }
 
   /**
-   * An experiment stage.
+   * An experiment stage is a step in a bigger experiment.
+   * Experiment stages select algorithms to be executed on
+   * selected instances as well as the number of runs to do for a
+   * given setup. They also set up the black box processes.
+   * Experiment stages must be stateless and all their method
+   * calls should idempotent.
    *
    * @param <X>
    *          the search space type
@@ -650,6 +663,15 @@ public class Experiment {
    * {@link java.util.function.Supplier}s provided by
    * {@link java.util.stream.Stream}s.
    * <p>
+   * While this method runs a single experiment in a single
+   * thread, you can use
+   * {@link #executeExperimentInParallel(Stream, Path)} and its
+   * variants to launch multiple threads in parallel. This has
+   * the advantage that these threads will share information
+   * about which runs have already been conducted, which speeds
+   * up the experiment execution and reduces the access to the
+   * underlying file system-
+   * <p>
    * If you run the experiment with many processes on many
    * computers via a shared folder, then this allows for a large
    * amount of parallelism. It can also lead to network trouble,
@@ -727,7 +749,6 @@ public class Experiment {
    *          after the wait
    * @see #executeExperiment(Stream, Path)
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static final void executeExperiment(
       final Stream<
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
@@ -735,6 +756,54 @@ public class Experiment {
       final boolean waitAfterManySkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError) {
+    Experiment._executeExperiment(stages, outputDir,
+        writeLogInfos, waitAfterManySkippedRuns,
+        waitAfterWorkWasDone, waitAfterIOError, new HashSet<>(),
+        new HashSet<>());
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages}.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param writeLogInfos
+   *          should we print log information?
+   * @param waitAfterManySkippedRuns
+   *          If this is {@code true}, then sometimes the
+   *          experiment execution will wait for a very short
+   *          time before it continues. This can be useful if we
+   *          are working on a shared network drive and may
+   *          processes run the same experiment. Then, these
+   *          short delays may reduce the stress on the central
+   *          server and, thus, may make I/O errors less likely.
+   * @param waitAfterWorkWasDone
+   *          should we add some short wait time after
+   *          significant work was done?
+   * @param waitAfterIOError
+   *          should we wait for a longer time period if an I/O
+   *          error occurs? This also can help to reduce the load
+   *          on the server hosting a shared drive and may make
+   *          it more likely that we can continue successfully
+   *          after the wait
+   * @param done
+   *          the hash set for the runs that are done
+   * @param reallyDone
+   *          the hash set for those that are really done
+   * @see #executeExperiment(Stream, Path)
+   */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  static final void _executeExperiment(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir, final boolean writeLogInfos,
+      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterWorkWasDone,
+      final boolean waitAfterIOError, final HashSet<Path> done,
+      final HashSet<Path> reallyDone) {
 
     try {
       final Supplier<IExperimentStage>[] stageList =
@@ -749,8 +818,6 @@ public class Experiment {
       final ThreadLocalRandom random =
           ThreadLocalRandom.current();
 
-      final HashSet<Path> done = new HashSet<>();
-      final HashSet<Path> reallyDone = new HashSet<>();
       final boolean[] doRun = { false };
 
       long tryIndex = 0L;
@@ -764,7 +831,11 @@ public class Experiment {
 
         // We skip runs that we have already conducted and
         // finished successfully.
-        done.retainAll(reallyDone);
+        synchronized (done) {
+          synchronized (reallyDone) {
+            done.retainAll(reallyDone);
+          }
+        }
         ++tryIndex;
 
         try {
@@ -899,9 +970,14 @@ public class Experiment {
                   // step-by-step without us needed to access the
                   // file system for runs that we already
                   // performed in the past.
-                  final Path logFile = Experiment.logFile(useDir,
-                      algoName, instName, seed,
-                      (p) -> (doRun[0] = done.add(p)));
+                  final Path logFile;
+                  synchronized (done) {
+                    synchronized (reallyDone) {
+                      logFile = Experiment.logFile(useDir,
+                          algoName, instName, seed,
+                          (p) -> (doRun[0] = done.add(p)));
+                    }
+                  }
 
                   // If the logFile is null, then we do not need
                   // to do the run.
@@ -966,7 +1042,11 @@ public class Experiment {
                     // means that everything went well. We
                     // completed the run successfully and stored
                     // all the log information in the log file.
-                    reallyDone.add(logFile);
+                    synchronized (done) {
+                      synchronized (reallyDone) {
+                        reallyDone.add(logFile);
+                      }
+                    }
                   } catch (final IOException ioe) {
                     if (writeLogInfos) {
                       ConsoleIO.stderr(
@@ -1025,8 +1105,8 @@ public class Experiment {
           } // end of the stage
 
           if (writeLogInfos) {
-            ConsoleIO
-                .stdout("Successfully Finished Experiment."); //$NON-NLS-1$
+            ConsoleIO.stdout(//
+                "Successfully Finished Experiment."); //$NON-NLS-1$
           }
           return; // successful end of the trial
         } catch (final IOException ioError) {
@@ -1054,6 +1134,166 @@ public class Experiment {
       if (writeLogInfos) {
         ConsoleIO.clearIDSuffix();
       }
+    }
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages} and on several
+   * {@code cores}.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param cores
+   *          the number of cores to use
+   * @see #executeExperiment(Stream, Path)
+   */
+  public static final void executeExperimentInParallel(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir, final int cores) {
+    Experiment.executeExperimentInParallel(stages, outputDir,
+        cores, true, true, true, true);
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages} and on all available
+   * cores.
+   * <p>
+   * The advantage of this routine over others is that it can
+   * synchronize the file existence checks between the different
+   * runs at least somewhat. For example, if one thread detects
+   * that a run with a given setup has already been performed
+   * (i.e., that the corresponding file already exists), the
+   * other threads will not test that again. This may
+   * significantly reduce the file system operations. Again, with
+   * the goal to relief the central, shared file server. This may
+   * increase both the performance and the reliability.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @see #executeExperimentInParallel(Stream, Path, int)
+   * @see #executeExperiment(Stream, Path)
+   */
+  public static final void executeExperimentInParallel(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir) {
+    Experiment.executeExperimentInParallel(stages, outputDir,
+        Runtime.getRuntime().availableProcessors());
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages} and on several
+   * {@code cores}.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param cores
+   *          the number of cores to use
+   * @param writeLogInfos
+   *          should we print log information?
+   * @param waitAfterManySkippedRuns
+   *          If this is {@code true}, then sometimes the
+   *          experiment execution will wait for a very short
+   *          time before it continues. This can be useful if we
+   *          are working on a shared network drive and may
+   *          processes run the same experiment. Then, these
+   *          short delays may reduce the stress on the central
+   *          server and, thus, may make I/O errors less likely.
+   * @param waitAfterWorkWasDone
+   *          should we add some short wait time after
+   *          significant work was done?
+   * @param waitAfterIOError
+   *          should we wait for a longer time period if an I/O
+   *          error occurs? This also can help to reduce the load
+   *          on the server hosting a shared drive and may make
+   *          it more likely that we can continue successfully
+   *          after the wait
+   * @see #executeExperiment(Stream, Path, boolean, boolean,
+   *      boolean, boolean)
+   */
+  public static final void executeExperimentInParallel(
+      final Stream<
+          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+      final Path outputDir, final int cores,
+      final boolean writeLogInfos,
+      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterWorkWasDone,
+      final boolean waitAfterIOError) {
+
+    if (cores <= 0) {
+      throw new IllegalArgumentException(
+          "Number of cores must be >= 1, but is "//$NON-NLS-1$
+              + cores);
+    }
+    Objects.requireNonNull(outputDir);
+    Objects.requireNonNull(stages);
+
+    final List<
+        Supplier<IExperimentStage<?, ?, ?, ?>>> stageList =
+            stages.collect(Collectors.toList());
+    if (stageList.size() <= 0) {
+      throw new IllegalArgumentException(
+          "There must be at least one stage.");//$NON-NLS-1$
+    }
+
+    final Thread[] threads = new Thread[cores];
+
+    if (writeLogInfos) {
+      ConsoleIO.stdout("Now launching "//$NON-NLS-1$
+          + cores + " worker threads.");//$NON-NLS-1$
+    }
+
+    final HashSet<Path> done = new HashSet<>();
+    final HashSet<Path> reallyDone = new HashSet<>();
+
+    for (int i = threads.length; (--i) >= 0;) {
+      final Thread t =
+          threads[i] = new Thread(
+              () -> Experiment._executeExperiment(
+                  stageList.stream(), outputDir, writeLogInfos,
+                  waitAfterManySkippedRuns, waitAfterWorkWasDone,
+                  waitAfterIOError, done, reallyDone),
+              "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
+      t.setDaemon(true);
+      t.setPriority(Thread.MIN_PRIORITY);
+      t.start();
+    }
+
+    if (writeLogInfos) {
+      ConsoleIO.stdout("Finished launching "//$NON-NLS-1$
+          + cores + //
+          " worker threads, now waiting for experiment to complete.");//$NON-NLS-1$
+    }
+
+    outer: for (;;) {
+      for (final Thread t : threads) {
+        try {
+          t.join();
+        } catch (final InterruptedException ie) {
+          if (writeLogInfos) {
+            ConsoleIO.stderr("Error while waiting for thread "//$NON-NLS-1$
+                + t.getName(), ie);
+          }
+          continue outer;
+        }
+      }
+      break outer;
+    }
+
+    if (writeLogInfos) {
+      ConsoleIO.stdout("Finished waiting for " + //$NON-NLS-1$
+          cores
+          + " worker threads, the experiment is complete.");//$NON-NLS-1$
     }
   }
 
