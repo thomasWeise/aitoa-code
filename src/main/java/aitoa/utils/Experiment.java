@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -317,13 +316,12 @@ public class Experiment {
    *         performed
    * @throws IOException
    *           if I/O fails
-   * @see #logFile(Path, String, String, long, Predicate)
    */
   public static final Path logFile(final Path root,
       final String algorithm, final String instance,
       final long randSeed) throws IOException {
-    return Experiment.logFile(root, algorithm, instance,
-        randSeed, Objects::nonNull);
+    return Experiment.__logFile(root, algorithm, instance,
+        randSeed, null, null);
   }
 
   /** the internal experiment synchronizer */
@@ -367,21 +365,24 @@ public class Experiment {
    *          the algorithm setup
    * @param randSeed
    *          the random seed
-   * @param shouldDo
-   *          a predicate checking whether we should really do
-   *          that path; This could be a check with side-effects,
-   *          say, accessing a hash set of already done
-   *          experimental runs
+   * @param done
+   *          a hash set to receive and remember the attempted
+   *          runs and existing directories
+   * @param reallyDone
+   *          a hash set to receive and remember the completed
+   *          runs and existing directories
    * @return the path, or {@code null} if the run should not be
    *         performed
    * @throws IOException
    *           if I/O fails
    */
-  public static final Path logFile(final Path root,
+  private static final Path __logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed, final Predicate<Path> shouldDo)
-      throws IOException {
+      final long randSeed, final HashSet<Path> done,
+      final HashSet<Path> reallyDone) throws IOException {
+
     synchronized (Experiment.EXPERIMENT_SYNCH) {
+
       final Path r = IOUtils.canonicalizePath(root);
       final String algo =
           Experiment.nameStringPrepare(algorithm);
@@ -397,17 +398,27 @@ public class Experiment {
               inst, RandomUtils.randSeedToString(randSeed))
               + LogFormat.FILE_SUFFIX));
 
-      if (!shouldDo.test(filePath)) {
+      if ((done != null) && (!done.add(filePath))) {
         return null;
       }
 
-      try {
-        Files.createDirectories(instPath);
-      } catch (final IOException error) {
-        throw new IOException(
-            "Could not create instance directory '" + //$NON-NLS-1$
-                instPath + '\'',
-            error);
+      // Check if the instance directory exists and, if it does,
+      // remember that it does.
+      if ((done == null) || (!done.contains(instPath))) {
+        try {
+          Files.createDirectories(instPath);
+          if (done != null) {
+            done.add(instPath);
+          }
+          if (reallyDone != null) {
+            reallyDone.add(instPath);
+          }
+        } catch (final IOException error) {
+          throw new IOException(
+              (("Could not create instance directory '" + //$NON-NLS-1$
+                  instPath) + '\'') + '.',
+              error);
+        }
       }
 
       if (Files.exists(filePath)) {
@@ -818,8 +829,6 @@ public class Experiment {
       final ThreadLocalRandom random =
           ThreadLocalRandom.current();
 
-      final boolean[] doRun = { false };
-
       long tryIndex = 0L;
       long baseDelay = 2L;
 
@@ -971,18 +980,23 @@ public class Experiment {
                   // file system for runs that we already
                   // performed in the past.
                   final Path logFile;
+                  final boolean runNotLocallyDone;
                   synchronized (done) {
                     synchronized (reallyDone) {
-                      logFile = Experiment.logFile(useDir,
-                          algoName, instName, seed,
-                          (p) -> (doRun[0] = done.add(p)));
+                      final int currentSize = done.size();
+                      logFile =
+                          Experiment.__logFile(useDir, algoName,
+                              instName, seed, done, reallyDone);
+                      runNotLocallyDone =
+                          (done.size() > currentSize);
                     }
                   }
 
                   // If the logFile is null, then we do not need
                   // to do the run.
                   if (logFile == null) {
-                    if (doRun[0] && waitAfterManySkippedRuns) {
+                    if (runNotLocallyDone
+                        && waitAfterManySkippedRuns) {
                       ++skippedRuns;
                       // If doRun is true, then the predicate had
                       // suggested to do the run, but the log
@@ -1113,7 +1127,7 @@ public class Experiment {
           // failure in trial due to I/O error
           if (writeLogInfos) {
             ConsoleIO.stderr(waitAfterIOError
-                ? "Got an I/O Error in the experiment, will now wait an retry." //$NON-NLS-1$
+                ? "Got an I/O Error in the experiment, will now wait before retrying." //$NON-NLS-1$
                 : "Got an I/O Error in the experiment, will now continue without waiting.", //$NON-NLS-1$
                 ioError);
           }
@@ -1124,12 +1138,18 @@ public class Experiment {
         }
       } // end trial
     } catch (final Throwable error) {
+      final String message =
+          "An unrecoverable error has appeared during the experiment."; //$NON-NLS-1$
       if (writeLogInfos) {
-        ConsoleIO.stderr(
-            "An unrecoverable error has appeared during the experiment.", //$NON-NLS-1$
-            error);
+        ConsoleIO.stderr(message, error);
       }
-      throw new RuntimeException(error);
+      if (error instanceof Error) {
+        throw ((Error) error);
+      }
+      if (error instanceof RuntimeException) {
+        throw ((RuntimeException) error);
+      }
+      throw new RuntimeException(message, error);
     } finally {
       if (writeLogInfos) {
         ConsoleIO.clearIDSuffix();
