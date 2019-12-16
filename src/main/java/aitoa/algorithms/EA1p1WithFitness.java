@@ -92,7 +92,7 @@ public class EA1p1WithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "(1+1)-EA_" + //$NON-NLS-1$
         this.fitness.toString();
   }
