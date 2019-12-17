@@ -321,7 +321,7 @@ public class Experiment {
       final String algorithm, final String instance,
       final long randSeed) throws IOException {
     return Experiment.__logFile(root, algorithm, instance,
-        randSeed, null, null);
+        randSeed, null);
   }
 
   /** the internal experiment synchronizer */
@@ -368,9 +368,6 @@ public class Experiment {
    * @param done
    *          a hash set to receive and remember the attempted
    *          runs and existing directories
-   * @param reallyDone
-   *          a hash set to receive and remember the completed
-   *          runs and existing directories
    * @return the path, or {@code null} if the run should not be
    *         performed
    * @throws IOException
@@ -378,8 +375,8 @@ public class Experiment {
    */
   private static final Path __logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed, final HashSet<Path> done,
-      final HashSet<Path> reallyDone) throws IOException {
+      final long randSeed, final HashSet<Path> done)
+      throws IOException {
 
     synchronized (Experiment.EXPERIMENT_SYNCH) {
 
@@ -409,9 +406,6 @@ public class Experiment {
           Files.createDirectories(instPath);
           if (done != null) {
             done.add(instPath);
-          }
-          if (reallyDone != null) {
-            reallyDone.add(instPath);
           }
         } catch (final IOException error) {
           throw new IOException(
@@ -787,8 +781,7 @@ public class Experiment {
       final boolean waitAfterIOError) {
     Experiment._executeExperiment(stages, outputDir,
         writeLogInfos, waitAfterManySkippedRuns,
-        waitAfterWorkWasDone, waitAfterIOError, new HashSet<>(),
-        new HashSet<>());
+        waitAfterWorkWasDone, waitAfterIOError, new HashSet<>());
   }
 
   /**
@@ -820,8 +813,6 @@ public class Experiment {
    *          after the wait
    * @param done
    *          the hash set for the runs that are done
-   * @param reallyDone
-   *          the hash set for those that are really done
    * @see #executeExperiment(Stream, Path)
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -831,8 +822,7 @@ public class Experiment {
       final Path outputDir, final boolean writeLogInfos,
       final boolean waitAfterManySkippedRuns,
       final boolean waitAfterWorkWasDone,
-      final boolean waitAfterIOError, final HashSet<Path> done,
-      final HashSet<Path> reallyDone) {
+      final boolean waitAfterIOError, final HashSet<Path> done) {
 
     try {
       final Supplier<IExperimentStage>[] stageList =
@@ -855,14 +845,6 @@ public class Experiment {
         // We will try iterating and performing all stages. If an
         // I/O error occurs, we just try again and begin from the
         // front.
-
-        // We skip runs that we have already conducted and
-        // finished successfully.
-        synchronized (done) {
-          synchronized (reallyDone) {
-            done.retainAll(reallyDone);
-          }
-        }
         ++tryIndex;
 
         try {
@@ -1000,14 +982,11 @@ public class Experiment {
                   final Path logFile;
                   final boolean runNotLocallyDone;
                   synchronized (done) {
-                    synchronized (reallyDone) {
-                      final int currentSize = done.size();
-                      logFile =
-                          Experiment.__logFile(useDir, algoName,
-                              instName, seed, done, reallyDone);
-                      runNotLocallyDone =
-                          (done.size() > currentSize);
-                    }
+                    final int currentSize = done.size();
+                    logFile = Experiment.__logFile(useDir,
+                        algoName, instName, seed, done);
+                    runNotLocallyDone =
+                        (done.size() > currentSize);
                   }
 
                   // If the logFile is null, then we do not need
@@ -1069,17 +1048,10 @@ public class Experiment {
                       // exception
                       throw ((IOException) (ioe.getCause()));
                     }
-
-                    // If we get here without an error, then this
-                    // means that everything went well. We
-                    // completed the run successfully and stored
-                    // all the log information in the log file.
-                    synchronized (done) {
-                      synchronized (reallyDone) {
-                        reallyDone.add(logFile);
-                      }
-                    }
                   } catch (final IOException ioe) {
+                    synchronized (done) {
+                      done.remove(logFile);
+                    }
                     if (writeLogInfos) {
                       ConsoleIO.stderr(
                           "We got an I/O error in the experimental run '" //$NON-NLS-1$
@@ -1292,16 +1264,13 @@ public class Experiment {
     }
 
     final HashSet<Path> done = new HashSet<>();
-    final HashSet<Path> reallyDone = new HashSet<>();
 
     for (int i = threads.length; (--i) >= 0;) {
-      final Thread t =
-          threads[i] = new Thread(
-              () -> Experiment._executeExperiment(
-                  stageList.stream(), outputDir, writeLogInfos,
-                  waitAfterManySkippedRuns, waitAfterWorkWasDone,
-                  waitAfterIOError, done, reallyDone),
-              "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
+      final Thread t = threads[i] = new Thread(
+          () -> Experiment._executeExperiment(stageList.stream(),
+              outputDir, writeLogInfos, waitAfterManySkippedRuns,
+              waitAfterWorkWasDone, waitAfterIOError, done),
+          "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
       t.setDaemon(true);
       t.setPriority(Thread.MIN_PRIORITY);
       t.start();
