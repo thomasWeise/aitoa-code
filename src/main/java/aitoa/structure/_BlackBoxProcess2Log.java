@@ -2,7 +2,9 @@ package aitoa.structure;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.function.Consumer;
+
+import aitoa.utils.IOUtils;
+import aitoa.utils.IOUtils.IOConsumer;
 
 /**
  * the black-box problem class for black box problems where the
@@ -51,29 +53,27 @@ final class _BlackBoxProcess2Log<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void close() {
+  public final void close() throws IOException {
     // make sure we are dequeued from terminator
     this._terminate();
 
     // write the log information and then close log
-    try (final BufferedWriter out = this.m_logWriter) {
-      _BlackBoxProcessBase._writeLog(this.m_log, this.m_logSize,
-          this.m_startTime, out);
-      this.m_log = null;
-      out.write('\n');
-      this._printInfos(out);
-      if (this.m_consumedFEs > 0L) {
-        out.write("\n# BEST_X\n"); //$NON-NLS-1$
-        this.m_searchSpace.print(this.m_bestX, out);
-        out.write("\n# END_BEST_X\n# BEST_Y\n"); //$NON-NLS-1$
-        this.m_solutionSpace.print(this.m_bestY, out);
-        out.write("\n# END_BEST_Y"); //$NON-NLS-1$
+    IOUtils.synchronizedIO(() -> {
+      try (final BufferedWriter out = this.m_logWriter) {
+        _BlackBoxProcessBase._writeLog(this.m_log,
+            this.m_logSize, this.m_startTime, out);
+        this.m_log = null;
+        out.write('\n');
+        this._printInfos(out);
+        if (this.m_consumedFEs > 0L) {
+          out.write("\n# BEST_X\n"); //$NON-NLS-1$
+          this.m_searchSpace.print(this.m_bestX, out);
+          out.write("\n# END_BEST_X\n# BEST_Y\n"); //$NON-NLS-1$
+          this.m_solutionSpace.print(this.m_bestY, out);
+          out.write("\n# END_BEST_Y"); //$NON-NLS-1$
+        }
       }
-    } catch (final IOException ioe) {
-      throw new RuntimeException(//
-          "Error when writing log.", //$NON-NLS-1$
-          ioe);
-    }
+    });
 
     // validate result: throw error if invalid
     this.m_searchSpace.check(this.m_bestX);
@@ -144,8 +144,9 @@ final class _BlackBoxProcess2Log<X, Y>
   /** {@inheritDoc} */
   @Override
   public final void printLogSection(final String sectionName,
-      final Consumer<BufferedWriter> printer) {
-    try {
+      final IOConsumer<BufferedWriter> printer)
+      throws IOException {
+    IOUtils.synchronizedIO(() -> {
       this.m_logWriter.newLine();
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(' ');
@@ -157,8 +158,6 @@ final class _BlackBoxProcess2Log<X, Y>
       this.m_logWriter.write(sectionName);
       this.m_logWriter.newLine();
       this.m_logWriter.newLine();
-    } catch (final IOException ioe) {
-      throw new RuntimeException(ioe);
-    }
+    });
   }
 }

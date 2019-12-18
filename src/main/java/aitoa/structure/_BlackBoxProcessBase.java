@@ -135,7 +135,7 @@ abstract class _BlackBoxProcessBase<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public void close() {
+  public void close() throws IOException {
     this._terminate();
   }
 

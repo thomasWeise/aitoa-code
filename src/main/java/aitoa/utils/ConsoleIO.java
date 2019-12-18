@@ -29,16 +29,18 @@ public final class ConsoleIO {
    */
   public static final void
       print(final BiConsumer<PrintStream, PrintStream> print) {
-    synchronized (System.out) {
-      synchronized (System.err) {
-        synchronized (System.in) {
-          System.out.flush();
-          System.err.flush();
+    synchronized (IOUtils._IO_SYNCH) {
+      synchronized (System.out) {
+        synchronized (System.err) {
+          synchronized (System.in) {
+            System.out.flush();
+            System.err.flush();
 
-          print.accept(System.out, System.err);
+            print.accept(System.out, System.err);
 
-          System.out.flush();
-          System.err.flush();
+            System.out.flush();
+            System.err.flush();
+          }
         }
       }
     }

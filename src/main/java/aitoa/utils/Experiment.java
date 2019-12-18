@@ -324,9 +324,6 @@ public class Experiment {
         randSeed, null);
   }
 
-  /** the internal experiment synchronizer */
-  private static final Object EXPERIMENT_SYNCH = new Object();
-
   /**
    * Get the path to a suitable log file for the given
    * experimental run if that log file does not yet exist. This
@@ -378,7 +375,7 @@ public class Experiment {
       final long randSeed, final HashSet<Path> done)
       throws IOException {
 
-    synchronized (Experiment.EXPERIMENT_SYNCH) {
+    synchronized (IOUtils._IO_SYNCH) {
 
       final Path r = IOUtils.canonicalizePath(root);
       final String algo =
@@ -1015,39 +1012,25 @@ public class Experiment {
                   // If we get here, we have created the log file
                   // which uniquely identifies this run. So we
                   // can actually execute it.
-                  try {
-                    if (writeLogInfos) {
-                      ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
-                          + logFile + "'."); //$NON-NLS-1$
-                    }
 
-                    // Set the seed and log path.
-                    builder.setRandSeed(seed);
-                    builder.setLogPath(logFile);
+                  if (writeLogInfos) {
+                    ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
+                        + logFile + "'."); //$NON-NLS-1$
+                  }
 
-                    // Create the process, apply the algorithm,
-                    // and write the log information.
-                    try (final IBlackBoxProcess process =
-                        builder.get()) {
-                      algorithm.solve(process);
-                      process.printLogSection(
-                          LogFormat.ALGORITHM_SETUP_LOG_SECTION,
-                          (bw) -> {
-                            try {
-                              algorithm.printSetup(//
-                                  (BufferedWriter) (bw));
-                            } catch (final IOException ioe) {
-                              // channel out a potential I/O
-                              // exception
-                              throw new __IOExceptionWrapper(
-                                  ioe);
-                            }
-                          });
-                    } catch (final __IOExceptionWrapper ioe) {
-                      // i/o failed: re-throw the channeled
-                      // exception
-                      throw ((IOException) (ioe.getCause()));
-                    }
+                  // Set the seed and log path.
+                  builder.setRandSeed(seed);
+                  builder.setLogPath(logFile);
+
+                  // Create the process, apply the algorithm,
+                  // and write the log information.
+                  try (final IBlackBoxProcess process =
+                      builder.get()) {
+                    algorithm.solve(process);
+                    process.printLogSection(
+                        LogFormat.ALGORITHM_SETUP_LOG_SECTION,
+                        (bw) -> algorithm
+                            .printSetup((BufferedWriter) bw));
                   } catch (final IOException ioe) {
                     synchronized (done) {
                       done.remove(logFile);
@@ -1301,23 +1284,6 @@ public class Experiment {
       ConsoleIO.stdout("Finished waiting for " + //$NON-NLS-1$
           cores
           + " worker threads, the experiment is complete.");//$NON-NLS-1$
-    }
-  }
-
-  /** the io exception wrapper */
-  private static final class __IOExceptionWrapper
-      extends RuntimeException {
-    /** the serial version uid */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * create
-     *
-     * @param cause
-     *          the cause
-     */
-    __IOExceptionWrapper(final IOException cause) {
-      super(cause);
     }
   }
 }

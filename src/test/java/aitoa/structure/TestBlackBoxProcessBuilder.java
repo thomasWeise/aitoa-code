@@ -1,5 +1,6 @@
 package aitoa.structure;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Random;
@@ -305,7 +306,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     }
 
     @Override
-    public final void close() {
+    public final void close() throws IOException {
       if (this.m_knowsThatClosed) {
         Assert.fail("closed process twice?"); //$NON-NLS-1$
       }

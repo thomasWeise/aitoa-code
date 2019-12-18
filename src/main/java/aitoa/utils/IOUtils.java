@@ -394,4 +394,50 @@ public final class IOUtils {
     }
   }
 
+  /** An I/O runnable */
+  public static interface IORunnable {
+    /**
+     * Run the I/O job.
+     *
+     * @throws IOException
+     *           if I/O fails
+     */
+    public abstract void run() throws IOException;
+  }
+
+  /**
+   * An I/O consumer
+   *
+   * @param <T>
+   *          the object type
+   */
+  public static interface IOConsumer<T> {
+    /**
+     * Consume the object
+     *
+     * @param t
+     *          the object
+     * @throws IOException
+     *           if I/O fails
+     */
+    public abstract void accept(final T t) throws IOException;
+  }
+
+  /** the I/O synchronizer */
+  static final Object _IO_SYNCH = new Object();
+
+  /**
+   * Execute a synchronized I/O job
+   *
+   * @param runnable
+   *          the I/O job
+   * @throws IOException
+   *           if I/O fails
+   */
+  public static final void synchronizedIO(
+      final IORunnable runnable) throws IOException {
+    synchronized (IOUtils._IO_SYNCH) {
+      runnable.run();
+    }
+  }
 }

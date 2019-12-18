@@ -2,8 +2,10 @@ package aitoa.structure;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Random;
-import java.util.function.Consumer;
+
+import aitoa.utils.IOUtils.IOConsumer;
 
 /**
  * A black-box single-objective optimization problem encapsulates
@@ -179,9 +181,12 @@ public interface IBlackBoxProcess<X, Y> extends
    * Free all resources allocated to this object. After a call to
    * this method, calls to all other methods of the object are no
    * longer allowed and have undefined behavior.
+   *
+   * @throws IOException
+   *           if some I/O fails
    */
   @Override
-  public abstract void close();
+  public abstract void close() throws IOException;
 
   /**
    * Print a section into the log, if logging is supported
@@ -190,9 +195,12 @@ public interface IBlackBoxProcess<X, Y> extends
    *          the name of the section
    * @param printer
    *          the consumer for the log writer
+   * @throws IOException
+   *           if I/O fails
    */
   public default void printLogSection(final String sectionName,
-      final Consumer<BufferedWriter> printer) {
+      final IOConsumer<BufferedWriter> printer)
+      throws IOException {
     // does nothing
   }
 // start relevant
