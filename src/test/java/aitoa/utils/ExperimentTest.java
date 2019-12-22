@@ -148,7 +148,7 @@ public class ExperimentTest {
     Assert.assertTrue(Files.exists(test));
     Assert.assertTrue(Files.isRegularFile(test));
     Assert.assertEquals(test.getFileName().toString(),
-        "2d3_sdfsfdg_0000000000000001.txt");//$NON-NLS-1$
+        "2d3_sdfsfdg_0x0000000000000001.txt");//$NON-NLS-1$
 
     final Path inst = test.getParent();
     Assert.assertTrue(Files.exists(inst));

@@ -13,6 +13,7 @@ import aitoa.structure.LogFormat;
 import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
 import aitoa.utils.IOUtils;
+import aitoa.utils.RandomUtils;
 
 /**
  * This class allows you to create a (potentially large) csv
@@ -375,20 +376,7 @@ public final class EndResults {
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
           seed = line.substring(lastSemi, nextSemi).trim();
-          if ((seed.length() < 3) || (!seed
-              .startsWith(LogFormat.RANDOM_SEED_PREFIX))) {
-            throw new IllegalArgumentException(
-                "Random seed invalid, must start with " + //$NON-NLS-1$
-                    LogFormat.RANDOM_SEED_PREFIX);
-          }
-          try {
-            Long.parseUnsignedLong(seed.substring(2), 16);
-          } catch (final Throwable error2) {
-            throw new IllegalArgumentException(
-                "Invalid random seed: '" + seed + //$NON-NLS-1$
-                    "'.", //$NON-NLS-1$
-                error2);
-          }
+          RandomUtils.stringToRandSeed(seed);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //

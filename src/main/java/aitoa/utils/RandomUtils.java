@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Random;
 
+import aitoa.structure.LogFormat;
+
 /** Utilities for random number generation */
 public final class RandomUtils {
 
@@ -152,13 +154,44 @@ public final class RandomUtils {
    * @return the string
    */
   public static final String randSeedToString(final long seed) {
-    final char[] str = new char[16];
+    final int l = LogFormat.RANDOM_SEED_PREFIX.length();
+    final char[] str = new char[l + 16];
+    LogFormat.RANDOM_SEED_PREFIX.getChars(0, l, str, 0);
     long cmp = seed;
-    for (int i = 16; (--i) >= 0;) {
+    for (int i = (l + 16); (--i) >= l;) {
       str[i] = RandomUtils.CHOOSE[(int) (cmp & 0xfL)];
       cmp >>>= 4L;
     }
     return String.valueOf(str);
+  }
+
+  /**
+   * Parse a random seed string to a {@code long}
+   *
+   * @param randSeedString
+   *          the random seed string
+   * @return the {@code long} representing the string
+   */
+  public static final long
+      stringToRandSeed(final String randSeedString) {
+    if ((!randSeedString
+        .startsWith(LogFormat.RANDOM_SEED_PREFIX))
+        || (randSeedString.length() < 3)) {
+      throw new IllegalArgumentException(
+          "Random seed must start with '" //$NON-NLS-1$
+              + LogFormat.RANDOM_SEED_PREFIX
+              + "' and contain at least one hexadecimal digit, but is "//$NON-NLS-1$
+              + randSeedString);
+    }
+    try {
+      return Long.parseUnsignedLong(randSeedString
+          .substring(LogFormat.RANDOM_SEED_PREFIX.length()), 16);
+    } catch (final NumberFormatException nfe) {
+      throw new IllegalArgumentException(
+          "Invalid random seed: " + //$NON-NLS-1$
+              randSeedString,
+          nfe);
+    }
   }
 
   /**

@@ -2,7 +2,7 @@ package aitoa.utils.logs;
 
 import java.util.Objects;
 
-import aitoa.structure.LogFormat;
+import aitoa.utils.RandomUtils;
 
 /**
  * A line of the end results table, as created by
@@ -94,21 +94,7 @@ public final class EndResult implements Comparable<EndResult> {
     }
 
     this.seed = _seed.trim();
-    if (this.seed.isEmpty() || (!this.seed
-        .startsWith(LogFormat.RANDOM_SEED_PREFIX))) {
-      throw new IllegalArgumentException(
-          "Cannot have '" + _seed + //$NON-NLS-1$
-              "' as random seed.");//$NON-NLS-1$
-    }
-    try {
-      this.seedVal = Long.parseUnsignedLong(this.seed
-          .substring(LogFormat.RANDOM_SEED_PREFIX.length()), 16);
-    } catch (final Throwable error) {
-      throw new IllegalArgumentException(
-          "Invalid random seed: '" + _seed + //$NON-NLS-1$
-              "'.", //$NON-NLS-1$
-          error);
-    }
+    this.seedVal = RandomUtils.stringToRandSeed(this.seed);
 
     this.bestF = _bestF;
     if (!Double.isFinite(this.bestF)) {

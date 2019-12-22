@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import aitoa.structure.LogFormat;
+import aitoa.utils.RandomUtils;
 
 /** The setup information from a log file */
 public final class SetupData implements Comparable<SetupData> {
@@ -51,8 +51,8 @@ public final class SetupData implements Comparable<SetupData> {
     this.randSeedLong = _randSeedLong;
 
     try {
-      final long l = Long.parseUnsignedLong(this.randSeedString
-          .substring(LogFormat.RANDOM_SEED_PREFIX.length()), 16);
+      final long l =
+          RandomUtils.stringToRandSeed(this.randSeedString);
       if (l != this.randSeedLong) {
         throw new IllegalStateException("Rand seed string (" + //$NON-NLS-1$
             this.randSeedString + '=' + l

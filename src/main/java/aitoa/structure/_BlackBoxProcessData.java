@@ -184,8 +184,7 @@ abstract class _BlackBoxProcessData<X, Y> {
         LogFormat.doubleToStringForLog(this.m_goalF)));
     out.append(System.lineSeparator());
     out.append(LogFormat.mapEntry(LogFormat.RANDOM_SEED,
-        LogFormat.RANDOM_SEED_PREFIX
-            + RandomUtils.randSeedToString(this.m_randSeed)));
+        RandomUtils.randSeedToString(this.m_randSeed)));
     out.append(System.lineSeparator());
     out.append(LogFormat.asComment(LogFormat.END_SETUP));
     out.append(System.lineSeparator());

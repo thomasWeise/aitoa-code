@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.IOUtils;
+import aitoa.utils.RandomUtils;
 
 /**
  * This class allows for efficient parsing of the log files
@@ -394,17 +395,8 @@ public final class LogParser {
                   }
                   case LogFormat.RANDOM_SEED: {
                     randSeedString = value;
-                    if ((!value.startsWith(
-                        LogFormat.RANDOM_SEED_PREFIX))
-                        || (value.length() < 3)) {
-                      throw new IllegalArgumentException(
-                          "Random seed must start with '" //$NON-NLS-1$
-                              + LogFormat.RANDOM_SEED_PREFIX
-                              + "' and contain at least one hexadecimal digit, but is "//$NON-NLS-1$
-                              + value);
-                    }
-                    randSeedLong = Long.parseUnsignedLong(
-                        value.substring(2), 16);
+                    randSeedLong = RandomUtils
+                        .stringToRandSeed(randSeedString);
                     break;
                   }
                   default: {
