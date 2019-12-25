@@ -42,8 +42,10 @@
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+		<java.source.version>1.8</java.source.version>
 		<junit.version>4.12</junit.version>
+		<oshi.version>4.2.1</oshi.version>
+		<slf4j.version>1.7.29</slf4j.version>
 		<project.mainClass>aitoa.examples.jssp.JSSPExperiment</project.mainClass>
 	</properties>
 
@@ -67,12 +69,17 @@
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
-			<version>4.2.1</version>
+			<version>${oshi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
-			<version>1.7.29</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -84,6 +91,7 @@
 			</resource>
 			<resource>
 				<directory>${basedir}/src/main/java</directory>
+				<filtering>false</filtering>
 			</resource>
 		</resources>
 		<!-- Here we manage common configurations for plugins. -->
@@ -119,8 +127,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<source>${java.source.version}</source>
+					<target>${java.source.version}</target>
 					<encoding>${text.encoding}</encoding>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>

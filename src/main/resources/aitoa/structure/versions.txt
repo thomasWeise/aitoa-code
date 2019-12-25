@@ -1,0 +1,6 @@
+version.aitoa=${version}
+version.aitoa.java.build=${java.version}
+version.aitoa.java.source=${java.source.version}
+version.aitoa.junit=${junit.version}
+version.aitoa.oshi=${oshi.version}
+version.aitoa.slf4j=${slf4j.version}

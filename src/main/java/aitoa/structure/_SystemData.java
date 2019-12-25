@@ -1,5 +1,8 @@
 package aitoa.structure;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -353,6 +356,38 @@ final class _SystemData {
       } catch (@SuppressWarnings("unused") final Throwable ignore) {
         // ignore
       } // end system
+
+      try (
+          final InputStream is = _SystemData.class
+              .getResourceAsStream("versions.txt"); //$NON-NLS-1$
+          final InputStreamReader isr =
+              new InputStreamReader(is);
+          final BufferedReader br = new BufferedReader(isr)) {
+
+        String line = null;
+        while ((line = br.readLine()) != null) {
+          line = line.trim();
+          if (line.isEmpty()) {
+            continue;
+          }
+          final int i = line.indexOf('=');
+          if ((i < 1) || (i >= (line.length() - 1))) {
+            continue;
+          }
+          final String a = line.substring(0, i).trim();
+          if (a.isEmpty()) {
+            continue;
+          }
+          final String b = line.substring(i + 1).trim();
+          if (b.isEmpty()) {
+            continue;
+          }
+          __Holder.__add(data, a, b);
+        }
+
+      } catch (@SuppressWarnings("unused") final Throwable ignore) {
+        // ignore
+      }
 
       for (final Map.Entry<String, String> entry : data
           .entrySet()) {
