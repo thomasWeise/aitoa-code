@@ -1,4 +1,4 @@
-package aitoa.utils;
+package aitoa.utils.math;
 
 import java.util.Arrays;
 

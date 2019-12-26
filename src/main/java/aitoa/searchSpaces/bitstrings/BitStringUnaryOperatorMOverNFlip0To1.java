@@ -6,16 +6,15 @@ import aitoa.structure.IUnarySearchOperator;
 
 /**
  * A unary operator for flipping each bit with a certain
- * probability (and repeat this until at least one bit was
- * flipped). This operator, plugged into a
- * {@linkplain aitoa.algorithms.EA1p1 (1+1)-EA} will be
- * equivalent to a {@code (1+1)-EA>0}, as discussed in E.
- * Carvalho Pinto and C. Doerr, "Towards a more practice-aware
- * runtime analysis of evolutionary algorithms," July 2017,
- * arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online]. Available:
- * http://arxiv.org/pdf/1812.00493.pdf.
+ * probability which flips one bit if none was chosen. This
+ * operator, plugged into a {@linkplain aitoa.algorithms.EA1p1
+ * (1+1)-EA} will be equivalent to a {@code (1+1)-EA_0->1}, as
+ * discussed in E. Carvalho Pinto and C. Doerr, "Towards a more
+ * practice-aware runtime analysis of evolutionary algorithms,"
+ * July 2017, arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online].
+ * Available: http://arxiv.org/pdf/1812.00493.pdf.
  */
-public final class BitStringUnaryOperatorMOverNFlip
+public final class BitStringUnaryOperatorMOverNFlip0To1
     implements IUnarySearchOperator<boolean[]> {
 
   /** the multiplier */
@@ -27,7 +26,7 @@ public final class BitStringUnaryOperatorMOverNFlip
    * @param _m
    *          the multiplier
    */
-  public BitStringUnaryOperatorMOverNFlip(final int _m) {
+  public BitStringUnaryOperatorMOverNFlip0To1(final int _m) {
     super();
     if (_m <= 0) {
       throw new IllegalArgumentException(
@@ -41,7 +40,7 @@ public final class BitStringUnaryOperatorMOverNFlip
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return this.m_m + "/n-flip"; //$NON-NLS-1$
+    return this.m_m + "/n-flip_01"; //$NON-NLS-1$
   }
 
   /**
@@ -59,17 +58,19 @@ public final class BitStringUnaryOperatorMOverNFlip
   public final void apply(final boolean[] x,
       final boolean[] dest, final Random random) {
     final int n = x.length;
-    boolean done = false;
+    boolean neeedFlip = true;
 
     System.arraycopy(x, 0, dest, 0, n);
-    do {
-      for (int i = n; (--i) >= 0;) {
-        if (random.nextInt(n) < this.m_m) {
-          dest[i] ^= true;
-          done = true;
-        }
+
+    for (int i = n; (--i) >= 0;) {
+      if (random.nextInt(n) < this.m_m) {
+        dest[i] ^= true;
+        neeedFlip = false;
       }
-    } while (!done);
+    }
+    if (neeedFlip) {
+      dest[random.nextInt(n)] ^= true;
+    }
   }
 
   /** {@inheritDoc} */

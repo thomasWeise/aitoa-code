@@ -18,7 +18,7 @@ import aitoa.structure.LogFormat;
 import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
 import aitoa.utils.IOUtils;
-import aitoa.utils.Statistics;
+import aitoa.utils.math.Statistics;
 
 /**
  * With this class we create a CSV file with end result

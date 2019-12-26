@@ -2,7 +2,7 @@ package aitoa.utils.logs;
 
 import java.util.Arrays;
 
-import aitoa.utils.Statistics;
+import aitoa.utils.math.Statistics;
 
 /** a store of doubles */
 final class _Doubles extends _Statistic {

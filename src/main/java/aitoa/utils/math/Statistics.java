@@ -1,4 +1,4 @@
-package aitoa.utils;
+package aitoa.utils.math;
 
 import java.math.BigInteger;
 import java.util.function.DoubleUnaryOperator;
