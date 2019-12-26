@@ -36,4 +36,26 @@ public final class DiscreteGreaterThanZero
       }
     }
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return this.m_inner.toString() + "_gt0"; //$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int hashCode() {
+    return this.m_inner.hashCode() ^ 0x93245878;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean equals(final Object o) {
+    if (o instanceof DiscreteGreaterThanZero) {
+      return this.m_inner
+          .equals(((DiscreteGreaterThanZero) o).m_inner);
+    }
+    return false;
+  }
 }

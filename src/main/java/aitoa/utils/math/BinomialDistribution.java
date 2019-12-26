@@ -354,4 +354,28 @@ public final class BinomialDistribution
     }
     return (this.p > 0.5d) ? (this.n - K) : K;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return (((("Bin(" + this.n) + ',') + this.p) + ')'); //$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int hashCode() {
+    return (31 * Integer.hashCode(this.n))
+        + Double.hashCode(this.p);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean equals(final Object o) {
+    if (o instanceof BinomialDistribution) {
+      final BinomialDistribution b = ((BinomialDistribution) o);
+      return (this.n == b.n)
+          && (Double.compare(this.p, b.p) == 0);
+    }
+    return false;
+  }
 }

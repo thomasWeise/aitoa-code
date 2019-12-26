@@ -51,7 +51,9 @@ public abstract class BitStringUnaryOperatorFlipWithDist
 
   /** {@inheritDoc} */
   @Override
-  public abstract String toString();
+  public String toString() {
+    return this.m_dist + "_flip"; //$NON-NLS-1$
+  }
 
   /**
    * Flip the bits

@@ -26,4 +26,25 @@ public final class DiscreteConstant
   public final int nextInt(final Random random) {
     return this.m;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return ("C=" + this.m); //$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int hashCode() {
+    return this.m;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean equals(final Object o) {
+    if (o instanceof DiscreteConstant) {
+      return this.m == ((DiscreteConstant) o).m;
+    }
+    return false;
+  }
 }
