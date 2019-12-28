@@ -615,13 +615,14 @@ public class Experiment {
   private static final void __sleep(final long min,
       final ThreadLocalRandom random) {
     Thread.yield();
-    try {
-      final long l = Math.max(1L, min);
-      Thread.sleep(random.nextLong(l, 10L * l));
-    } catch (@SuppressWarnings("unused") final InterruptedException ie) {
-      // ignore
+    if (min > 0L) {
+      try {
+        Thread.sleep(random.nextLong(min, 10L * min));
+      } catch (@SuppressWarnings("unused") final InterruptedException ie) {
+        // ignore
+      }
+      Thread.yield();
     }
-    Thread.yield();
   }
 
   /**
@@ -750,7 +751,7 @@ public class Experiment {
    *          the output directory
    * @param writeLogInfos
    *          should we print log information?
-   * @param waitAfterManySkippedRuns
+   * @param waitAfterSkippedRuns
    *          If this is {@code true}, then sometimes the
    *          experiment execution will wait for a very short
    *          time before it continues. This can be useful if we
@@ -773,11 +774,11 @@ public class Experiment {
       final Stream<
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir, final boolean writeLogInfos,
-      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError) {
     Experiment._executeExperiment(stages, outputDir,
-        writeLogInfos, waitAfterManySkippedRuns,
+        writeLogInfos, waitAfterSkippedRuns,
         waitAfterWorkWasDone, waitAfterIOError, new HashSet<>());
   }
 
@@ -791,7 +792,7 @@ public class Experiment {
    *          the output directory
    * @param writeLogInfos
    *          should we print log information?
-   * @param waitAfterManySkippedRuns
+   * @param waitAfterSkippedRuns
    *          If this is {@code true}, then sometimes the
    *          experiment execution will wait for a very short
    *          time before it continues. This can be useful if we
@@ -817,7 +818,7 @@ public class Experiment {
       final Stream<
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir, final boolean writeLogInfos,
-      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError, final HashSet<Path> done) {
 
@@ -835,10 +836,8 @@ public class Experiment {
           ThreadLocalRandom.current();
 
       long tryIndex = 0L;
-      long baseDelay = 2L;
 
       for (;;) {
-        long skippedRuns = 0L;
         // We will try iterating and performing all stages. If an
         // I/O error occurs, we just try again and begin from the
         // front.
@@ -990,9 +989,9 @@ public class Experiment {
                   // to do the run.
                   if (logFile == null) {
                     if (runNotLocallyDone
-                        && waitAfterManySkippedRuns) {
-                      ++skippedRuns;
-                      // If doRun is true, then the predicate had
+                        && waitAfterSkippedRuns) {
+                      // If runNotLocallyDone is true, then the
+                      // predicate had
                       // suggested to do the run, but the log
                       // file already existed. We found this by
                       // querying the file system. If we do this
@@ -1000,10 +999,7 @@ public class Experiment {
                       // annoy the file server.
                       // In this case, we may want to wait a bit
                       // to relief the file system.
-                      Experiment.__sleep(
-                          ((skippedRuns <= 100L) ? 2L : 20L)
-                              * baseDelay,
-                          random);
+                      Experiment.__sleep(tryIndex - 1L, random);
                     }
                     // nothing to do here
                     continue;
@@ -1043,7 +1039,7 @@ public class Experiment {
                           ioe);
                     }
                     if (waitAfterIOError) {
-                      Experiment.__sleep(80_000L * baseDelay,
+                      Experiment.__sleep(10_000L * tryIndex,
                           random);
                     }
                     // If we got here, there must have been an
@@ -1071,12 +1067,12 @@ public class Experiment {
                 } // run
 
                 if (waitAfterWorkWasDone) {
-                  Experiment.__sleep(baseDelay, random);
+                  Experiment.__sleep(tryIndex - 1L, random);
                 }
               } // end of the algorithm
 
               if (waitAfterWorkWasDone) {
-                Experiment.__sleep(baseDelay, random);
+                Experiment.__sleep(tryIndex - 1L, random);
               }
             } // end of the problem
 
@@ -1104,9 +1100,8 @@ public class Experiment {
                 : "Got an I/O Error in the experiment, will now continue without waiting.", //$NON-NLS-1$
                 ioError);
           }
-          baseDelay += Math.max(1L, baseDelay / 16L);
           if (waitAfterIOError) {
-            Experiment.__sleep(150_000L * baseDelay, random);
+            Experiment.__sleep(10_000L * tryIndex, random);
           }
         }
       } // end trial
@@ -1194,7 +1189,7 @@ public class Experiment {
    *          the number of cores to use
    * @param writeLogInfos
    *          should we print log information?
-   * @param waitAfterManySkippedRuns
+   * @param waitAfterSkippedRuns
    *          If this is {@code true}, then sometimes the
    *          experiment execution will wait for a very short
    *          time before it continues. This can be useful if we
@@ -1219,7 +1214,7 @@ public class Experiment {
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir, final int cores,
       final boolean writeLogInfos,
-      final boolean waitAfterManySkippedRuns,
+      final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError) {
 
@@ -1251,7 +1246,7 @@ public class Experiment {
     for (int i = threads.length; (--i) >= 0;) {
       final Thread t = threads[i] = new Thread(
           () -> Experiment._executeExperiment(stageList.stream(),
-              outputDir, writeLogInfos, waitAfterManySkippedRuns,
+              outputDir, writeLogInfos, waitAfterSkippedRuns,
               waitAfterWorkWasDone, waitAfterIOError, done),
           "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
       t.setDaemon(true);
