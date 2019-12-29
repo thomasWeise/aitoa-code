@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import aitoa.algorithms.EA1p1;
 import aitoa.algorithms.RandomSampling;
+import aitoa.algorithms.bitstrings.Greedy2p1GAmod;
+import aitoa.algorithms.bitstrings.Greedy2p1GAmodFFA;
 import aitoa.examples.bitstrings.BitStringObjectiveFunction;
 import aitoa.examples.bitstrings.LeadingOnesObjectiveFunction;
 import aitoa.examples.bitstrings.OneMaxObjectiveFunction;
@@ -355,7 +357,10 @@ public class ExperimentTest {
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
                   return Stream.of(() -> new EA1p1<>(),
-                      () -> new RandomSampling<>());
+                      () -> new RandomSampling<>(),
+                      () -> new Greedy2p1GAmodFFA<>(1,
+                          ((int) (problem.upperBound()))),
+                      () -> new Greedy2p1GAmod<>(1));
                 }
 
                 @Override
