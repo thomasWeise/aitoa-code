@@ -7,14 +7,15 @@ import java.util.Random;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
+import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 
 /**
  * The Greedy (2+1) GA mod, as defined in Algorithm 6 of E.
- * Carvalho Pinto and C. Doerr, “Towards a more practice-aware
- * runtime analysis of evolutionary algorithms,” July 2017,
+ * Carvalho Pinto and C. Doerr, "Towards a more practice-aware
+ * runtime analysis of evolutionary algorithms," July 2017,
  * arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online]. Available:
  * http://arxiv.org/pdf/1812.00493.pdf
  *
@@ -51,30 +52,34 @@ public class Greedy2p1GAmod<Y>
     final Random random = process.getRandom();// get random gen
     final INullarySearchOperator<boolean[]> nullary =
         process.getNullarySearchOperator();
+    final ISpace<boolean[]> searchSpace =
+        process.getSearchSpace();
 
     // Line 1: sample x and y from the search space
-    boolean[] x = process.getSearchSpace().create();
+    boolean[] x = searchSpace.create();
     nullary.apply(x, random);
     double fx = process.evaluate(x);
     if (process.shouldTerminate()) {
       return;
     }
 
-    boolean[] y = process.getSearchSpace().create();
+    boolean[] y = searchSpace.create();
     nullary.apply(y, random);
     double fy = process.evaluate(x);
 
     // other initialization stuff
-    boolean[] znew = process.getSearchSpace().create();
+    boolean[] znew = searchSpace.create();
 
     final int n = x.length;
 
+    // allocate necessary data structures
     final BinomialDistribution binDist =
         new BinomialDistribution(x.length,
             ((double) (this.m)) / n);
     final DiscreteGreaterThanZero dgtzDist =
         new DiscreteGreaterThanZero(binDist);
 
+    // allocate integer array used in mutation
     final int[] indices = new int[n];
     for (int i = n; (--i) >= 0;) {
       indices[i] = i;

@@ -41,7 +41,7 @@ First, you need to add the following repository, which is a repository that can 
 ```
 
 Than you can add the dependency on our `aitoa-code` repository into your `dependencies` section.
-Here, `0.8.18` is the current version of  `aitoa-code`.
+Here, `0.8.19` is the current version of  `aitoa-code`.
 Notice that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
 
 ```xml
@@ -49,10 +49,9 @@ Notice that you may have more dependencies in your `dependencies` section, say o
   <dependency>
     <groupId>com.github.thomasWeise</groupId>
     <artifactId>aitoa-code</artifactId>
-    <version>0.8.18</version>
+    <version>0.8.19</version>
   </dependency>
 </dependencies>
-
 ```
 
 Finally, in order to include all required external `jar`s into your `jar` upon compilation, you may want to add the following plugin into your `<build><plugins>` section:
