@@ -1,5 +1,6 @@
 package aitoa.bookExamples.jssp;
 
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.examples.jssp.JSSPCandidateSolution;
@@ -52,8 +53,11 @@ public class JSSPRepresentationMappingExample {
    *
    * @param args
    *          ignore
+   * @throws IOException
+   *           should not
    */
-  public static final void main(final String[] args) {
+  public static final void main(final String[] args)
+      throws IOException {
     JSSPRepresentationMappingExample.SOLUTION_SPACE.print(
         JSSPRepresentationMappingExample.SOLUTION, System.out);
     System.out.println();

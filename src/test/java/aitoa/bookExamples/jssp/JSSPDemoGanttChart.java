@@ -1,5 +1,6 @@
 package aitoa.bookExamples.jssp;
 
+import java.io.IOException;
 import java.util.Random;
 
 import aitoa.TestTools;
@@ -19,9 +20,11 @@ public class JSSPDemoGanttChart {
    *
    * @param args
    *          ignore
+   * @throws IOException
+   *           should not
    */
-
-  public static final void main(final String[] args) {
+  public static final void main(final String[] args)
+      throws IOException {
 
     final JSSPInstance instance = new JSSPInstance("demo"); //$NON-NLS-1$
     final JSSPCandidateSolution y =

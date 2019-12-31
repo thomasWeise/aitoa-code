@@ -1,5 +1,6 @@
 package aitoa.structure;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.junit.Assert;
@@ -231,10 +232,13 @@ public abstract class ISpaceTest<X>
   /**
    * test that the {@link ISpace#print(Object, Appendable)}
    * method works with the valid instance
+   *
+   * @throws IOException
+   *           if i/o fails
    */
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
-  public final void testPrintValid() {
+  public final void testPrintValid() throws IOException {
     final StringBuilder sb = new StringBuilder();
     this.getInstance().print(this.createValid(), sb);
     TestTools.assertGreater(sb.length(), 0);

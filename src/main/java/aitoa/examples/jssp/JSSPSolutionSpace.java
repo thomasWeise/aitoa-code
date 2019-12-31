@@ -58,17 +58,11 @@ public final class JSSPSolutionSpace
   /** {@inheritDoc} */
   @Override
   public final void print(final JSSPCandidateSolution z,
-      final Appendable out) {
-    try {
-      JSSPSolutionSpace.__printJava(z, out);
-      out.append('\n');
-      out.append('\n');
-      JSSPSolutionSpace.__printGanttData(z, out);
-    } catch (final IOException ioe) {
-      throw new RuntimeException(
-          "Error when writing Gantt data.", //$NON-NLS-1$
-          ioe);
-    }
+      final Appendable out) throws IOException {
+    JSSPSolutionSpace.__printJava(z, out);
+    out.append('\n');
+    out.append('\n');
+    JSSPSolutionSpace.__printGanttData(z, out);
   }
 
   /**
@@ -260,6 +254,12 @@ public final class JSSPSolutionSpace
     return ((("jssp:gantt:" //$NON-NLS-1$
         + this.instance.toString()) + ':')
         + this.getClass().getCanonicalName());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final double getScale() {
+    return this.instance.getScale();
   }
 
 // start relevant

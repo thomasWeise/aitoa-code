@@ -1,7 +1,8 @@
 package aitoa.searchSpaces.bitstrings;
 
+import java.io.IOException;
+
 import aitoa.structure.ISpace;
-import aitoa.utils.ConsoleIO;
 
 /**
  * The space for bit strings. Of course, the most compact
@@ -60,27 +61,22 @@ public final class BitStringSpace implements ISpace<boolean[]> {
   /** {@inheritDoc} */
   @Override
   public final void print(final boolean[] z,
-      final Appendable out) {
-    try {
-      for (final boolean b : z) {
-        out.append(b ? '1' : '0');
-      }
-      final String s = System.lineSeparator();
-      out.append(s);
-      out.append(s);
-      out.append("new boolean[] ");//$NON-NLS-1$
-      char sep = '{';
-      for (final boolean b : z) {
-        out.append(sep);
-        out.append(' ');
-        sep = ',';
-        out.append(Boolean.toString(b));
-      }
-      out.append('}');
-    } catch (final Throwable error) {
-      ConsoleIO.stderr("error when printing bit string.", //$NON-NLS-1$
-          error);
+      final Appendable out) throws IOException {
+    for (final boolean b : z) {
+      out.append(b ? '1' : '0');
     }
+    final String s = System.lineSeparator();
+    out.append(s);
+    out.append(s);
+    out.append("new boolean[] ");//$NON-NLS-1$
+    char sep = '{';
+    for (final boolean b : z) {
+      out.append(sep);
+      out.append(' ');
+      sep = ',';
+      out.append(Boolean.toString(b));
+    }
+    out.append('}');
   }
 
   /** {@inheritDoc} */
@@ -98,5 +94,11 @@ public final class BitStringSpace implements ISpace<boolean[]> {
   @Override
   public final String toString() {
     return (("boolean[" + this.length) + ']');//$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final double getScale() {
+    return this.length;
   }
 }

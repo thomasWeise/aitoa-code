@@ -1,10 +1,12 @@
 package aitoa.examples.jssp;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
 import aitoa.structure.ISpace;
+import aitoa.utils.math.BigMath;
 
 /**
  * An implementation of the space interface for the search space
@@ -50,22 +52,17 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final int[] z, final Appendable out) {
-    try {
-      out.append("new int[]"); //$NON-NLS-1$
-      char ch = '{';
-      for (final int i : z) {
-        out.append(ch);
-        ch = ',';
-        out.append(' ');
-        out.append(Integer.toString(i));
-      }
-      out.append('}');
-    } catch (final IOException error) {
-      throw new RuntimeException(//
-          "Error when writing int array.", //$NON-NLS-1$
-          error);
+  public final void print(final int[] z, final Appendable out)
+      throws IOException {
+    out.append("new int[]"); //$NON-NLS-1$
+    char ch = '{';
+    for (final int i : z) {
+      out.append(ch);
+      ch = ',';
+      out.append(' ');
+      out.append(Integer.toString(i));
     }
+    out.append('}');
   }
 
   /** {@inheritDoc} */
@@ -85,6 +82,24 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
                 " times."); //$NON-NLS-1$
       }
     }
+  }
+
+  /**
+   * Compute the scale of the search space. This is base-2
+   * logarithm of the size of the search space.
+   *
+   * @return the solution space scale
+   */
+  @Override
+  public final double getScale() {
+    final BigInteger mm = BigInteger.valueOf(this.instance.m);
+    final BigInteger nn = BigInteger.valueOf(this.instance.n);
+
+    final BigInteger upper = BigMath.factorial(mm.multiply(nn));
+    final BigInteger lower =
+        BigMath.factorial(mm).pow(this.instance.n);
+
+    return BigMath.ld(upper.divide(lower));
   }
 
   /** {@inheritDoc} */

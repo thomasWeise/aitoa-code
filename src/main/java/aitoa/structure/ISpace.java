@@ -1,5 +1,8 @@
 package aitoa.structure;
 
+import java.io.IOException;
+import java.util.Objects;
+
 /**
  * An interface for a space, e.g., a search or solution space.
  *
@@ -37,11 +40,13 @@ public interface ISpace<Z> {
    *          the data structure
    * @param out
    *          the output destination
-   * @throws RuntimeException
-   *           if I/O fails, wrapping the
-   *           {@link java.io.IOException}
+   * @throws IOException
+   *           if i/o fails
    */
-  public abstract void print(final Z z, final Appendable out);
+  public default void print(final Z z, final Appendable out)
+      throws IOException {
+    out.append(String.valueOf(z));
+  }
 
   /**
    * Check whether an element {@code z} is valid, throw an
@@ -57,7 +62,20 @@ public interface ISpace<Z> {
    * @throws IllegalArgumentException
    *           if {@code z} is invalid
    */
-  public abstract void check(final Z z);
+  public default void check(final Z z) {
+    Objects.requireNonNull(z);
+  }
+
+  /**
+   * Get an approximate number describing the scale of this
+   * space. This could be the dimension.
+   *
+   * @return the scale of the space
+   */
+  public default double getScale() {
+    throw new UnsupportedOperationException(
+        "Must implement method getScale() of interface ISpace."); //$NON-NLS-1$
+  }
 // start relevant
 }
 // end relevant

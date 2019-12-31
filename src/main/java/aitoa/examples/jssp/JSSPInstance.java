@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+
+import aitoa.utils.math.BigMath;
 
 /**
  * <p>
@@ -238,6 +241,27 @@ public class JSSPInstance {
   @Override
   public final String toString() {
     return this.id;
+  }
+
+  /**
+   * Compute an approximation of the scale of this instance. A
+   * JSSP instance with {@code n} jobs and {@code m} machines
+   * will have a search space containing {@code (n!)^m} possible
+   * solutions, some of which might be deadlocks. Normally, when
+   * looking at the scale of a problem, we will not use the size
+   * of the search space directly. For example, for bit strings
+   * of length {@code n}, we will not say the scale is
+   * {@code 2^n} although this is the size of the search space.
+   * Instead, we will say the scale is {@code n}. So in order to
+   * somehow norm the size of the instances, we here return the
+   * logarithm base 2 of the solution space size.
+   *
+   * @return the logarithm base 2 of the solution space size
+   */
+  public final double getScale() {
+    return Math.max(1, BigMath.ld(//
+        BigMath.factorial(BigInteger.valueOf(this.n))
+            .pow(this.m)));
   }
 
 // start relevant

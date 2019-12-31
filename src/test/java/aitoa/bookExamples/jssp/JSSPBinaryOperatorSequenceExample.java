@@ -1,5 +1,6 @@
 package aitoa.bookExamples.jssp;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -115,8 +116,11 @@ public final class JSSPBinaryOperatorSequenceExample
    *
    * @param args
    *          ignore
+   * @throws IOException
+   *           should not
    */
-  public static final void main(final String[] args) {
+  public static final void main(final String[] args)
+      throws IOException {
     final JSSPInstance inst = new JSSPInstance("demo"); //$NON-NLS-1$
     final JSSPBinaryOperatorSequenceExample op2 =
         new JSSPBinaryOperatorSequenceExample(inst);

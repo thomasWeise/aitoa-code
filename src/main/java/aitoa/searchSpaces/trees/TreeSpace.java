@@ -1,9 +1,9 @@
 package aitoa.searchSpaces.trees;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import aitoa.structure.ISpace;
-import aitoa.utils.ConsoleIO;
 
 /** The space for trees */
 public final class TreeSpace implements ISpace<Node[]> {
@@ -57,21 +57,17 @@ public final class TreeSpace implements ISpace<Node[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final Node[] z, final Appendable out) {
+  public final void print(final Node[] z, final Appendable out)
+      throws IOException {
     final Node n = z[0];
-    try {
-      if (n != null) {
-        n.asText(out);
-        final String s = System.lineSeparator();
-        out.append(s);
-        out.append(s);
-        n.asJavaPrintParameters(out);
-      } else {
-        out.append("null"); //$NON-NLS-1$
-      }
-    } catch (final Throwable error) {
-      ConsoleIO.stderr("error when printing tree.", //$NON-NLS-1$
-          error);
+    if (n != null) {
+      n.asText(out);
+      final String s = System.lineSeparator();
+      out.append(s);
+      out.append(s);
+      n.asJavaPrintParameters(out);
+    } else {
+      out.append("null"); //$NON-NLS-1$
     }
   }
 
@@ -175,5 +171,17 @@ public final class TreeSpace implements ISpace<Node[]> {
               this.m_maxDepth);
     }
     TreeSpace._checkNode(n);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public double getScale() {
+    return this.m_maxDepth;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return "trees:" + this.m_maxDepth;//$NON-NLS-1$
   }
 }
