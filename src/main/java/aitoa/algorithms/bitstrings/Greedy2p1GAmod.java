@@ -260,7 +260,11 @@ public class Greedy2p1GAmod<Y>
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "Greedy(2+1)GAmod" + this.m; //$NON-NLS-1$
+    final String s = "Greedy(2+1)GAmod"; //$NON-NLS-1$
+    if (this.m != 1) {
+      return s + this.m;
+    }
+    return s;
   }
 
   /** {@inheritDoc} */

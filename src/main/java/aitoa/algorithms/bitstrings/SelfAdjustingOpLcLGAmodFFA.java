@@ -302,7 +302,7 @@ public class SelfAdjustingOpLcLGAmodFFA<Y>
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "SelfAdjusting(1+(LcL))GAmod"; //$NON-NLS-1$
+    return "SelfAdjusting(1+(LcL))GAmodFFA"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */

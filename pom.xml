@@ -5,7 +5,7 @@
 
 	<groupId>aitoa</groupId>
 	<artifactId>aitoa-code</artifactId>
-	<version>0.8.20</version>
+	<version>0.8.21</version>
 	<packaging>jar</packaging>
 	<name>aitoa-code</name>
 	<description>Example Source Codes from the Book "Introduction to Optimization Algorithms"</description>
@@ -43,9 +43,9 @@
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 		<java.source.version>1.8</java.source.version>
-		<junit.version>4.12</junit.version>
-		<oshi.version>4.2.1</oshi.version>
-		<slf4j.version>1.7.29</slf4j.version>
+		<junit.version>4.13</junit.version>
+		<oshi.version>4.3.0</oshi.version>
+		<slf4j.version>1.7.30</slf4j.version>
 		<project.mainClass>aitoa.examples.jssp.JSSPExperiment</project.mainClass>
 	</properties>
 
@@ -125,7 +125,7 @@
 				<!-- The Maven Java Compiler plugin. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>${java.source.version}</source>
 					<target>${java.source.version}</target>
@@ -139,14 +139,14 @@
 				<!-- The plugin for running the tests. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>3.0.0-M4</version>
 			</plugin>
 
 			<plugin>
 				<!-- The JavaDoc generating and packaging plugin. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.0 </version>
+				<version>3.1.1 </version>
 				<configuration>
 					<show>private</show>
 					<detectLinks>true</detectLinks>
@@ -168,7 +168,7 @@
 				<!-- A plugin for generating a source jar. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.2.0</version>
 				<configuration>
 					<includePom>true</includePom>
 					<useDefaultExcludes>true</useDefaultExcludes>
@@ -188,7 +188,7 @@
 				<!-- The plugin for generating the actual jar archive. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -203,7 +203,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -262,7 +262,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>3.0.0-M5</version>
 			</plugin>
 		</plugins>
 	</reporting>
