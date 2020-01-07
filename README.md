@@ -1,6 +1,8 @@
 # Example Codes from the Book "An Introduction to Optimization Algorithms"
 
 [<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
+[![Release](https://jitpack.io/v/thomasWeise/aitoa-code.svg)](https://jitpack.io/#thomasWeise/aitoa-code.svg)
+
 
 ## 1. Introduction
 
