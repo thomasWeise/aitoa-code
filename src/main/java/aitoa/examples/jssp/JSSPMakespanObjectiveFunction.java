@@ -15,18 +15,28 @@ public final class JSSPMakespanObjectiveFunction
 
 // end relevant
   /** the JSSP instance */
-  private final JSSPInstance m_instance;
+  public final JSSPInstance instance;
 
   /**
    * create
    *
-   * @param instance
+   * @param _instance
    *          the instance
    */
   public JSSPMakespanObjectiveFunction(
-      final JSSPInstance instance) {
+      final JSSPInstance _instance) {
     super();
-    this.m_instance = Objects.requireNonNull(instance);
+    this.instance = Objects.requireNonNull(_instance);
+  }
+
+  /**
+   * create
+   *
+   * @param _instance
+   *          the instance
+   */
+  public JSSPMakespanObjectiveFunction(final String _instance) {
+    this(new JSSPInstance(_instance));
   }
 
   /** {@inheritDoc} */
@@ -70,7 +80,7 @@ public final class JSSPMakespanObjectiveFunction
    */
   @Override
   public final double lowerBound() {
-    final JSSPInstance inst = this.m_instance;
+    final JSSPInstance inst = this.instance;
 
     final int[] a = new int[inst.m]; // lb inactive time at start
     final int[] b = new int[inst.m]; // lb inactive time at end
@@ -133,7 +143,7 @@ public final class JSSPMakespanObjectiveFunction
   @Override
   public final double upperBound() {
     int sum = 0;
-    for (final int[] job : this.m_instance.jobs) {
+    for (final int[] job : this.instance.jobs) {
       for (int i = job.length - 1; i > 0; i -= 2) {
         sum = Math.addExact(sum, job[i]);
       }

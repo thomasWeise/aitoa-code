@@ -15,6 +15,9 @@ package aitoa.examples.bitstrings;
 public final class TrapObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "Trap_"; //$NON-NLS-1$
+
   /**
    * create
    *
@@ -23,6 +26,33 @@ public final class TrapObjectiveFunction
    */
   public TrapObjectiveFunction(final int _n) {
     super(_n);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public TrapObjectiveFunction(final String s) {
+    this(TrapObjectiveFunction.__n(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} from the
+   * instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int __n(final String name) {
+    if (!name.startsWith(TrapObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return Integer.parseInt(//
+        name.substring(
+            TrapObjectiveFunction.NAME_PREFIX.length()));
   }
 
   /** {@inheritDoc} */
@@ -53,6 +83,6 @@ public final class TrapObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "Trap_" + this.n; //$NON-NLS-1$
+    return TrapObjectiveFunction.NAME_PREFIX + this.n;
   }
 }

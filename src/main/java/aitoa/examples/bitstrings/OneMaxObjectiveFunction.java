@@ -9,6 +9,9 @@ package aitoa.examples.bitstrings;
 public final class OneMaxObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "OneMax_"; //$NON-NLS-1$
+
   /**
    * create
    *
@@ -17,6 +20,33 @@ public final class OneMaxObjectiveFunction
    */
   public OneMaxObjectiveFunction(final int _n) {
     super(_n);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public OneMaxObjectiveFunction(final String s) {
+    this(OneMaxObjectiveFunction.__n(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} from the
+   * instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int __n(final String name) {
+    if (!name.startsWith(OneMaxObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return Integer.parseInt(//
+        name.substring(
+            OneMaxObjectiveFunction.NAME_PREFIX.length()));
   }
 
   /** {@inheritDoc} */
@@ -47,6 +77,6 @@ public final class OneMaxObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "OneMax_" + this.n; //$NON-NLS-1$
+    return OneMaxObjectiveFunction.NAME_PREFIX + this.n;
   }
 }

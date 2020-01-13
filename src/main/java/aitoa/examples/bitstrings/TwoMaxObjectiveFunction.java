@@ -9,6 +9,9 @@ package aitoa.examples.bitstrings;
 public final class TwoMaxObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "TwoMax_"; //$NON-NLS-1$
+
   /**
    * create
    *
@@ -17,6 +20,33 @@ public final class TwoMaxObjectiveFunction
    */
   public TwoMaxObjectiveFunction(final int _n) {
     super(_n);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public TwoMaxObjectiveFunction(final String s) {
+    this(TwoMaxObjectiveFunction.__n(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} from the
+   * instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int __n(final String name) {
+    if (!name.startsWith(TwoMaxObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return Integer.parseInt(//
+        name.substring(
+            TwoMaxObjectiveFunction.NAME_PREFIX.length()));
   }
 
   /** {@inheritDoc} */
@@ -31,7 +61,7 @@ public final class TwoMaxObjectiveFunction
     if (om == this.n) {
       return 0;
     }
-    return 1 + this.n - Math.max(om, this.n - om);
+    return (1 + this.n) - Math.max(om, this.n - om);
   }
 
   /** {@inheritDoc} */
@@ -49,6 +79,6 @@ public final class TwoMaxObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "TwoMax_" + this.n; //$NON-NLS-1$
+    return TwoMaxObjectiveFunction.NAME_PREFIX + this.n;
   }
 }

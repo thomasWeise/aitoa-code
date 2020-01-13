@@ -12,6 +12,9 @@ package aitoa.examples.bitstrings;
 public final class JumpObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "Jump_"; //$NON-NLS-1$
+
   /** the k */
   public final int k;
   /** the n-minus-k */
@@ -34,6 +37,49 @@ public final class JumpObjectiveFunction
     }
     this.k = _k;
     this.nMinusk = (_n - _k);
+  }
+
+  /**
+   * create
+   *
+   * @param args
+   *          the arguments
+   */
+  private JumpObjectiveFunction(final int[] args) {
+    this(args[0], args[1]);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public JumpObjectiveFunction(final String s) {
+    this(JumpObjectiveFunction.__nk(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} and the
+   * {@link #k} from the instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int[] __nk(final String name) {
+    if (!name.startsWith(JumpObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    final int li = name.lastIndexOf('_');
+    if (li <= JumpObjectiveFunction.NAME_PREFIX.length()) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return new int[] { Integer.parseInt(//
+        name.substring(
+            JumpObjectiveFunction.NAME_PREFIX.length(), li)), //
+        Integer.parseInt(//
+            name.substring(li + 1)) };
   }
 
   /** {@inheritDoc} */
@@ -68,6 +114,7 @@ public final class JumpObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("Jump_" + this.n) + '_') + this.k); //$NON-NLS-1$
+    return (((JumpObjectiveFunction.NAME_PREFIX + this.n) + '_')
+        + this.k);
   }
 }

@@ -32,6 +32,16 @@ public final class JSSPSolutionSpace
   }
 
   /**
+   * create
+   *
+   * @param _instance
+   *          the problem instance
+   */
+  public JSSPSolutionSpace(final String _instance) {
+    this(new JSSPInstance(_instance));
+  }
+
+  /**
    * create an empty instance
    *
    * @return the empty instance

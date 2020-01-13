@@ -32,6 +32,16 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
     this.length = (_instance.m * _instance.n);
   }
 
+  /**
+   * Load the space from a given instance name
+   *
+   * @param _instance
+   *          the instance name
+   */
+  public JSSPSearchSpace(final String _instance) {
+    this(new JSSPInstance(_instance));
+  }
+
 // start relevant
   /**
    * create an empty instance

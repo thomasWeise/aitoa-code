@@ -213,6 +213,9 @@ public final class LogFormat {
   /** the null value */
   public static final String NULL = "null"; //$NON-NLS-1$
 
+  /** the class key extension */
+  private static final String CLASS_KEY_EXT = "(class)";//$NON-NLS-1$
+
   /**
    * Join some strings to create a single log line and return it
    *
@@ -248,6 +251,17 @@ public final class LogFormat {
   }
 
   /**
+   * Get the class version of a key
+   *
+   * @param key
+   *          the key
+   * @return the class version of a keyy
+   */
+  public static final String classKey(final String key) {
+    return key + LogFormat.CLASS_KEY_EXT;
+  }
+
+  /**
    * Create a map entry string
    *
    * @param key
@@ -267,7 +281,7 @@ public final class LogFormat {
     }
     return LogFormat.mapEntry(key, value.toString())
         + System.lineSeparator()
-        + LogFormat.mapEntry(key + "(class)", //$NON-NLS-1$
+        + LogFormat.mapEntry(LogFormat.classKey(key),
             ReflectionUtils.className(value));
   }
 

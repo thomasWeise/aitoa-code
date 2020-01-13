@@ -259,7 +259,7 @@ public class JSSPInstance {
    * @return the logarithm base 2 of the solution space size
    */
   public final double getScale() {
-    return Math.max(1, BigMath.ld(//
+    return Math.max(1d, BigMath.ld(//
         BigMath.factorial(BigInteger.valueOf(this.n))
             .pow(this.m)));
   }

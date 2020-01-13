@@ -10,6 +10,9 @@ package aitoa.examples.bitstrings;
 public final class LeadingOnesObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "LeadingOnes_"; //$NON-NLS-1$
+
   /**
    * create
    *
@@ -18,6 +21,34 @@ public final class LeadingOnesObjectiveFunction
    */
   public LeadingOnesObjectiveFunction(final int _n) {
     super(_n);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public LeadingOnesObjectiveFunction(final String s) {
+    this(LeadingOnesObjectiveFunction.__n(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} from the
+   * instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int __n(final String name) {
+    if (!name
+        .startsWith(LeadingOnesObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return Integer.parseInt(//
+        name.substring(
+            LeadingOnesObjectiveFunction.NAME_PREFIX.length()));
   }
 
   /** {@inheritDoc} */
@@ -48,6 +79,6 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return "LeadingOnes_" + this.n; //$NON-NLS-1$
+    return LeadingOnesObjectiveFunction.NAME_PREFIX + this.n;
   }
 }

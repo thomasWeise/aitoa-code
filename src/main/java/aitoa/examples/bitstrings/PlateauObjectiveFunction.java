@@ -8,6 +8,9 @@ package aitoa.examples.bitstrings;
 public final class PlateauObjectiveFunction
     extends BitStringObjectiveFunction {
 
+  /** the name prefix */
+  public static final String NAME_PREFIX = "Plateau_"; //$NON-NLS-1$
+
   /** the k */
   public final int k;
   /** the n-minus-k */
@@ -30,6 +33,49 @@ public final class PlateauObjectiveFunction
     }
     this.k = _k;
     this.nMinusk = (_n - _k);
+  }
+
+  /**
+   * create
+   *
+   * @param args
+   *          the arguments
+   */
+  private PlateauObjectiveFunction(final int[] args) {
+    this(args[0], args[1]);
+  }
+
+  /**
+   * Create the objective function based on the instance name
+   *
+   * @param s
+   *          the name
+   */
+  public PlateauObjectiveFunction(final String s) {
+    this(PlateauObjectiveFunction.__nk(s));
+  }
+
+  /**
+   * get the {@link BitStringObjectiveFunction#n} and the
+   * {@link #k} from the instance name
+   *
+   * @param name
+   *          the name
+   * @return the instance scale
+   */
+  private static final int[] __nk(final String name) {
+    if (!name.startsWith(PlateauObjectiveFunction.NAME_PREFIX)) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    final int li = name.lastIndexOf('_');
+    if (li <= PlateauObjectiveFunction.NAME_PREFIX.length()) {
+      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
+    }
+    return new int[] { Integer.parseInt(//
+        name.substring(
+            PlateauObjectiveFunction.NAME_PREFIX.length(), li)), //
+        Integer.parseInt(//
+            name.substring(li + 1)) };
   }
 
   /** {@inheritDoc} */
@@ -64,6 +110,7 @@ public final class PlateauObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("Plateau_" + this.n) + '_') + this.k); //$NON-NLS-1$
+    return (((PlateauObjectiveFunction.NAME_PREFIX + this.n)
+        + '_') + this.k);
   }
 }

@@ -128,8 +128,8 @@ public final class EndResults {
     final Path out =
         IOUtils.requireDirectory(outputFolder, true);
 
-    final Path end = IOUtils
-        .canonicalizePath(out.resolve(EndResults.FILE_NAME));
+    final Path end = IOUtils.canonicalizePath(//
+        out.resolve(EndResults.FILE_NAME));
     if (Files.exists(end)) {
       if (!Files.isRegularFile(end)) {
         throw new IOException(end + " is not a file."); //$NON-NLS-1$
@@ -150,8 +150,8 @@ public final class EndResults {
     }
 
     if (logProgressToConsole) {
-      ConsoleIO
-          .stdout("Now beginning to create end result table '" + //$NON-NLS-1$
+      ConsoleIO.stdout(//
+          "Now beginning to create end result table '" + //$NON-NLS-1$
               end + "'.");//$NON-NLS-1$
     }
     try (
