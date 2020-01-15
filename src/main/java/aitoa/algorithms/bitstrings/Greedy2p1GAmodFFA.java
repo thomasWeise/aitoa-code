@@ -90,8 +90,7 @@ public class Greedy2p1GAmodFFA<Y>
 
     // allocate necessary data structures
     final BinomialDistribution binDist =
-        new BinomialDistribution(x.length,
-            ((double) (this.m)) / n);
+        new BinomialDistribution(n, ((double) (this.m)) / n);
     final DiscreteGreaterThanZero dgtzDist =
         new DiscreteGreaterThanZero(binDist);
 
@@ -136,7 +135,7 @@ public class Greedy2p1GAmodFFA<Y>
           if (random.nextBoolean()) {
 // if we copy zprime from x, then zprime != y if, well, at least
 // one zprime[i] != y[i]
-            zIsNew = zIsNew | (zprime[i] != y[i]);
+            zIsNew = zIsNew || (zprime[i] != y[i]);
           } else {
 // if we copy zprime from y, then zprime != x if, well, at least
 // one zprime[i] != x[i] (which means it must be different from
@@ -214,25 +213,29 @@ public class Greedy2p1GAmodFFA<Y>
 // No, we are unlucky: The bit sequences toggled now equal either
 // those in x or y, so we need to do a full compare.
           check: {
-            if (!zNEQx) { // maybe (element-wise) z==x, so
-                          // compare
-              for (int i = n; (--i) >= 0;) {
-                if (z[i] != x[i]) {
-                  break; // found mismatch
+            checkX: {
+              if (!zNEQx) {
+// maybe (element-wise) z==x, so compare
+                for (int i = n; (--i) >= 0;) {
+                  if (z[i] != x[i]) {
+                    break checkX; // found mismatch
+                  }
                 }
-              }
 // no mismatch, i.e., (element-wise) z==x, so we can stop here
-              break check;
+                break check;
+              }
             }
 // if we get here, z!=x (otherwise we would have done break)
-            if (!zNEQy) { // maybe z==y
-              for (int i = n; (--i) >= 0;) {
-                if (z[i] != y[i]) {
-                  break; // found mismatch
+            checkY: {
+              if (!zNEQy) { // maybe z==y
+                for (int i = n; (--i) >= 0;) {
+                  if (z[i] != y[i]) {
+                    break checkY; // found mismatch
+                  }
                 }
-              }
 // no mismatch, i.e., (element-wise) z==y, so we can stop here
-              break check;
+                break check;
+              }
             }
 // if we get here, z!=x and z!=y (element-wise)
             zIsNew = true;
