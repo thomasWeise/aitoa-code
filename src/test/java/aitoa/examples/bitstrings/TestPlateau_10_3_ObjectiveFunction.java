@@ -48,15 +48,20 @@ public class TestPlateau_10_3_ObjectiveFunction
           TestPlateau_10_3_ObjectiveFunction.F.evaluate(x);
 
       int exp = 0;
-      if ((i <= (F.n - F.k)) || (i == F.n)) {
+      if ((i <= (TestPlateau_10_3_ObjectiveFunction.F.n
+          - TestPlateau_10_3_ObjectiveFunction.F.k))
+          || (i == TestPlateau_10_3_ObjectiveFunction.F.n)) {
         exp = i;
       } else {
-        exp = F.n - F.k;
+        exp = TestPlateau_10_3_ObjectiveFunction.F.n
+            - TestPlateau_10_3_ObjectiveFunction.F.k;
       }
       exp = x.length - exp;
       Assert.assertEquals(res, exp, 0);
-      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
-      TestTools.assertLessOrEqual(exp, F.upperBound());
+      TestTools.assertGreaterOrEqual(exp,
+          TestPlateau_10_3_ObjectiveFunction.F.lowerBound());
+      TestTools.assertLessOrEqual(exp,
+          TestPlateau_10_3_ObjectiveFunction.F.upperBound());
       if (i >= x.length) {
         break;
       }

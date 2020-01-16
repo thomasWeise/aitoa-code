@@ -48,8 +48,10 @@ public class TestLeadingOnesObjectiveFunction
       Assert.assertEquals(
           TestLeadingOnesObjectiveFunction.F.evaluate(x), exp,
           0);
-      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
-      TestTools.assertLessOrEqual(exp, F.upperBound());
+      TestTools.assertGreaterOrEqual(exp,
+          TestLeadingOnesObjectiveFunction.F.lowerBound());
+      TestTools.assertLessOrEqual(exp,
+          TestLeadingOnesObjectiveFunction.F.upperBound());
       if (i >= x.length) {
         break;
       }

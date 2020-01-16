@@ -45,11 +45,13 @@ public class TestTwoMaxObjectiveFunction
 
     for (int i = 0; i <= x.length; i++) {
       final int exp = (i == x.length) ? 0
-          : (1 + x.length - Math.max(i, x.length - i));
+          : ((1 + x.length) - Math.max(i, x.length - i));
       Assert.assertEquals(
           TestTwoMaxObjectiveFunction.F.evaluate(x), exp, 0);
-      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
-      TestTools.assertLessOrEqual(exp, F.upperBound());
+      TestTools.assertGreaterOrEqual(exp,
+          TestTwoMaxObjectiveFunction.F.lowerBound());
+      TestTools.assertLessOrEqual(exp,
+          TestTwoMaxObjectiveFunction.F.upperBound());
 
       if (i >= x.length) {
         break;

@@ -35,24 +35,8 @@ public final class TrapObjectiveFunction
    *          the name
    */
   public TrapObjectiveFunction(final String s) {
-    this(TrapObjectiveFunction.__n(s));
-  }
-
-  /**
-   * get the {@link BitStringObjectiveFunction#n} from the
-   * instance name
-   *
-   * @param name
-   *          the name
-   * @return the instance scale
-   */
-  private static final int __n(final String name) {
-    if (!name.startsWith(TrapObjectiveFunction.NAME_PREFIX)) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    return Integer.parseInt(//
-        name.substring(
-            TrapObjectiveFunction.NAME_PREFIX.length()));
+    this(BitStringObjectiveFunction
+        ._parse_n(TrapObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */

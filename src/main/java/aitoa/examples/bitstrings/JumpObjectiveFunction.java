@@ -56,30 +56,8 @@ public final class JumpObjectiveFunction
    *          the name
    */
   public JumpObjectiveFunction(final String s) {
-    this(JumpObjectiveFunction.__nk(s));
-  }
-
-  /**
-   * get the {@link BitStringObjectiveFunction#n} and the
-   * {@link #k} from the instance name
-   *
-   * @param name
-   *          the name
-   * @return the instance scale
-   */
-  private static final int[] __nk(final String name) {
-    if (!name.startsWith(JumpObjectiveFunction.NAME_PREFIX)) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    final int li = name.lastIndexOf('_');
-    if (li <= JumpObjectiveFunction.NAME_PREFIX.length()) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    return new int[] { Integer.parseInt(//
-        name.substring(
-            JumpObjectiveFunction.NAME_PREFIX.length(), li)), //
-        Integer.parseInt(//
-            name.substring(li + 1)) };
+    this(BitStringObjectiveFunction
+        ._parse_nk(JumpObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */

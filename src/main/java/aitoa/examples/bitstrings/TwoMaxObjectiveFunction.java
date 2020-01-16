@@ -29,24 +29,8 @@ public final class TwoMaxObjectiveFunction
    *          the name
    */
   public TwoMaxObjectiveFunction(final String s) {
-    this(TwoMaxObjectiveFunction.__n(s));
-  }
-
-  /**
-   * get the {@link BitStringObjectiveFunction#n} from the
-   * instance name
-   *
-   * @param name
-   *          the name
-   * @return the instance scale
-   */
-  private static final int __n(final String name) {
-    if (!name.startsWith(TwoMaxObjectiveFunction.NAME_PREFIX)) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    return Integer.parseInt(//
-        name.substring(
-            TwoMaxObjectiveFunction.NAME_PREFIX.length()));
+    this(BitStringObjectiveFunction
+        ._parse_n(TwoMaxObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */

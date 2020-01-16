@@ -1,17 +1,13 @@
 package aitoa.examples.bitstrings;
 
 /**
- * The well-known LeadingOnes problem: The goal is to maximize
- * the number of {@code true} bits at the beginning of the bit
- * string, which we can transform into a minimization problem by
- * subtracting the value of leadings ones from the total number
- * of bits.
+ * The Ising model on the 1-dimensional Torus.
  */
-public final class LeadingOnesObjectiveFunction
+public final class Ising1DObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "LeadingOnes_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Ising1d_"; //$NON-NLS-1$
 
   /**
    * create
@@ -19,7 +15,7 @@ public final class LeadingOnesObjectiveFunction
    * @param _n
    *          the length of the bit string
    */
-  public LeadingOnesObjectiveFunction(final int _n) {
+  public Ising1DObjectiveFunction(final int _n) {
     super(_n);
   }
 
@@ -29,22 +25,23 @@ public final class LeadingOnesObjectiveFunction
    * @param s
    *          the name
    */
-  public LeadingOnesObjectiveFunction(final String s) {
+  public Ising1DObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(LeadingOnesObjectiveFunction.NAME_PREFIX, s));
+        ._parse_n(Ising1DObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
   @Override
   public final double evaluate(final boolean[] y) {
-    int s = 0;
-    for (final boolean b : y) {
-      if (!b) {
-        break;
+    int last = 0;
+    int s = y.length;
+    for (int i = s; (--i) >= 0;) {
+      if (y[i] == y[last]) {
+        --s;
       }
-      ++s;
+      last = i;
     }
-    return (this.n - s);
+    return s;
   }
 
   /** {@inheritDoc} */
@@ -62,6 +59,6 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return LeadingOnesObjectiveFunction.NAME_PREFIX + this.n;
+    return Ising1DObjectiveFunction.NAME_PREFIX + this.n;
   }
 }

@@ -10,25 +10,25 @@ import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the OneMax Objective Function */
-public class TestOneMaxObjectiveFunction
+/** A Test for the linear harmonicFunction */
+public class TestLinearHarmonicObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
-  /** the onemax */
-  public static final OneMaxObjectiveFunction F =
-      new OneMaxObjectiveFunction(20);
+  /** the linear harmonic problem */
+  public static final LinearHarmonicObjectiveFunction F =
+      new LinearHarmonicObjectiveFunction(20);
 
   /** {@inheritDoc} */
   @Override
   protected IObjectiveFunction<boolean[]> getInstance() {
-    return TestOneMaxObjectiveFunction.F;
+    return TestLinearHarmonicObjectiveFunction.F;
   }
 
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
     final boolean[] x =
-        new boolean[TestOneMaxObjectiveFunction.F.n];
+        new boolean[TestLinearHarmonicObjectiveFunction.F.n];
     final Random r = ThreadLocalRandom.current();
     for (int i = x.length; (--i) >= 0;) {
       x[i] = r.nextBoolean();
@@ -41,16 +41,22 @@ public class TestOneMaxObjectiveFunction
   @Test(timeout = 3600000)
   public final void testCorrectness() {
     final boolean[] x =
-        new boolean[TestOneMaxObjectiveFunction.F.n];
+        new boolean[TestLinearHarmonicObjectiveFunction.F.n];
 
     for (int i = 0; i <= x.length; i++) {
-      final int exp = x.length - i;
+      int exp = 0;
+      for (int j = 0; j < i; j++) {
+        exp += (j + 1);
+      }
+      exp = ((x.length * (x.length + 1)) >>> 1) - exp;
+
       Assert.assertEquals(
-          TestOneMaxObjectiveFunction.F.evaluate(x), exp, 0);
+          TestLinearHarmonicObjectiveFunction.F.evaluate(x), exp,
+          0);
       TestTools.assertGreaterOrEqual(exp,
-          TestOneMaxObjectiveFunction.F.lowerBound());
+          TestLinearHarmonicObjectiveFunction.F.lowerBound());
       TestTools.assertLessOrEqual(exp,
-          TestOneMaxObjectiveFunction.F.upperBound());
+          TestLinearHarmonicObjectiveFunction.F.upperBound());
       if (i >= x.length) {
         break;
       }

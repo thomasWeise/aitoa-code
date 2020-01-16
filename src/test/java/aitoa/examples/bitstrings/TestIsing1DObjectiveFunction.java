@@ -1,5 +1,6 @@
 package aitoa.examples.bitstrings;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -10,25 +11,25 @@ import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the OneMax Objective Function */
-public class TestOneMaxObjectiveFunction
+/** A Test for the linear harmonicFunction */
+public class TestIsing1DObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
-  /** the onemax */
-  public static final OneMaxObjectiveFunction F =
-      new OneMaxObjectiveFunction(20);
+  /** the Ising1D */
+  public static final Ising1DObjectiveFunction F =
+      new Ising1DObjectiveFunction(25);
 
   /** {@inheritDoc} */
   @Override
   protected IObjectiveFunction<boolean[]> getInstance() {
-    return TestOneMaxObjectiveFunction.F;
+    return TestIsing1DObjectiveFunction.F;
   }
 
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
     final boolean[] x =
-        new boolean[TestOneMaxObjectiveFunction.F.n];
+        new boolean[TestIsing1DObjectiveFunction.F.n];
     final Random r = ThreadLocalRandom.current();
     for (int i = x.length; (--i) >= 0;) {
       x[i] = r.nextBoolean();
@@ -41,20 +42,16 @@ public class TestOneMaxObjectiveFunction
   @Test(timeout = 3600000)
   public final void testCorrectness() {
     final boolean[] x =
-        new boolean[TestOneMaxObjectiveFunction.F.n];
+        new boolean[TestIsing1DObjectiveFunction.F.n];
 
-    for (int i = 0; i <= x.length; i++) {
-      final int exp = x.length - i;
-      Assert.assertEquals(
-          TestOneMaxObjectiveFunction.F.evaluate(x), exp, 0);
-      TestTools.assertGreaterOrEqual(exp,
-          TestOneMaxObjectiveFunction.F.lowerBound());
-      TestTools.assertLessOrEqual(exp,
-          TestOneMaxObjectiveFunction.F.upperBound());
-      if (i >= x.length) {
-        break;
-      }
-      x[i] = true;
-    }
+    Assert.assertEquals(
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0, 0);
+    Arrays.fill(x, true);
+    Assert.assertEquals(
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0, 0);
+
+    x[5] ^= true;
+    TestTools.assertGreater(
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
   }
 }

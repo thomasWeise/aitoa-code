@@ -29,24 +29,8 @@ public final class OneMaxObjectiveFunction
    *          the name
    */
   public OneMaxObjectiveFunction(final String s) {
-    this(OneMaxObjectiveFunction.__n(s));
-  }
-
-  /**
-   * get the {@link BitStringObjectiveFunction#n} from the
-   * instance name
-   *
-   * @param name
-   *          the name
-   * @return the instance scale
-   */
-  private static final int __n(final String name) {
-    if (!name.startsWith(OneMaxObjectiveFunction.NAME_PREFIX)) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    return Integer.parseInt(//
-        name.substring(
-            OneMaxObjectiveFunction.NAME_PREFIX.length()));
+    this(BitStringObjectiveFunction
+        ._parse_n(OneMaxObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */

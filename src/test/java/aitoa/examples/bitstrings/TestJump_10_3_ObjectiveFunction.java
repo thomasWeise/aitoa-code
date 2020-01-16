@@ -48,16 +48,21 @@ public class TestJump_10_3_ObjectiveFunction
           TestJump_10_3_ObjectiveFunction.F.evaluate(x);
 
       int exp = 0;
-      if ((i <= (F.n - F.k)) || (i == F.n)) {
-        exp = F.k + i;
+      if ((i <= (TestJump_10_3_ObjectiveFunction.F.n
+          - TestJump_10_3_ObjectiveFunction.F.k))
+          || (i == TestJump_10_3_ObjectiveFunction.F.n)) {
+        exp = TestJump_10_3_ObjectiveFunction.F.k + i;
       } else {
-        exp = F.n - i;
+        exp = TestJump_10_3_ObjectiveFunction.F.n - i;
       }
 
-      exp = F.n + F.k - exp;
+      exp = (TestJump_10_3_ObjectiveFunction.F.n
+          + TestJump_10_3_ObjectiveFunction.F.k) - exp;
       Assert.assertEquals(res, exp, 0);
-      TestTools.assertGreaterOrEqual(exp, F.lowerBound());
-      TestTools.assertLessOrEqual(exp, F.upperBound());
+      TestTools.assertGreaterOrEqual(exp,
+          TestJump_10_3_ObjectiveFunction.F.lowerBound());
+      TestTools.assertLessOrEqual(exp,
+          TestJump_10_3_ObjectiveFunction.F.upperBound());
       if (i >= x.length) {
         break;
       }

@@ -52,30 +52,8 @@ public final class PlateauObjectiveFunction
    *          the name
    */
   public PlateauObjectiveFunction(final String s) {
-    this(PlateauObjectiveFunction.__nk(s));
-  }
-
-  /**
-   * get the {@link BitStringObjectiveFunction#n} and the
-   * {@link #k} from the instance name
-   *
-   * @param name
-   *          the name
-   * @return the instance scale
-   */
-  private static final int[] __nk(final String name) {
-    if (!name.startsWith(PlateauObjectiveFunction.NAME_PREFIX)) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    final int li = name.lastIndexOf('_');
-    if (li <= PlateauObjectiveFunction.NAME_PREFIX.length()) {
-      throw new IllegalArgumentException("Invalid name " + name); //$NON-NLS-1$
-    }
-    return new int[] { Integer.parseInt(//
-        name.substring(
-            PlateauObjectiveFunction.NAME_PREFIX.length(), li)), //
-        Integer.parseInt(//
-            name.substring(li + 1)) };
+    this(BitStringObjectiveFunction
+        ._parse_nk(PlateauObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */

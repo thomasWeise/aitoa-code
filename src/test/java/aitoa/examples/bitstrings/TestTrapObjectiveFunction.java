@@ -14,7 +14,7 @@ import aitoa.structure.IObjectiveFunctionTest;
 public class TestTrapObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
-  /** the onemax */
+  /** the trap */
   public static final TrapObjectiveFunction F =
       new TrapObjectiveFunction(20);
 
