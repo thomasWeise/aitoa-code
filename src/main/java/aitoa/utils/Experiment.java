@@ -782,6 +782,29 @@ public class Experiment {
         waitAfterWorkWasDone, waitAfterIOError, new HashSet<>());
   }
 
+  /** perform garbage collection */
+  private static final void __doGc() {
+    final Runtime runtime = Runtime.getRuntime();
+
+    for (int i = 10; (--i) >= 0;) {
+      long nfm = runtime.freeMemory();
+      inner: for (int j = 256; (--j) >= 0;) {
+        final long fm = nfm;
+        System.gc();
+        nfm = runtime.freeMemory();
+        if (fm <= nfm) {
+          break inner;
+        }
+      }
+
+      try {
+        Thread.sleep(1L);
+      } catch (@SuppressWarnings("unused") final InterruptedException ie) {
+        //
+      }
+    }
+  }
+
   /**
    * Execute an experiment over, potentially, several
    * {@linkplain IExperimentStage stages}.
@@ -838,21 +861,19 @@ public class Experiment {
       long tryIndex = 0L;
 
       for (;;) {
-        // We will try iterating and performing all stages. If an
-        // I/O error occurs, we just try again and begin from the
-        // front.
+// We will try iterating and performing all stages. If an I/O
+// error occurs, we just try again and begin from the front.
         ++tryIndex;
 
         try {
-          // Catch I/O exceptions: Here the real trial begins.
+// Catch I/O exceptions: Here the real trial begins.
 
-          // We now iterate over the stage suppliers.
+// We now iterate over the stage suppliers.
           for (int stageIndex = 0; stageIndex < stageList.length;
               stageIndex++) {
 
-            // Let's take the supplier. If it is null, then the
-            // stage does not need to be performed. We already
-            // cleared it before.
+// Let's take the supplier. If it is null, then the stage does
+// not need to be performed. We already cleared it before.
             final Supplier<IExperimentStage> stageSupplier =
                 stageList[stageIndex];
             if (stageSupplier == null) {
@@ -867,18 +888,17 @@ public class Experiment {
               ConsoleIO.stdout("Beginning Stage " + stageString); //$NON-NLS-1$
             }
 
-            // If the supplier is there, then it must return a
-            // non-null stage.
+// If the supplier is there, then it must return a non-null
+// stage.
             final IExperimentStage stage =
                 Objects.requireNonNull(stageSupplier.get());
 
-            // We create a new black-box process builder and
-            // configure it.
+// We create a new black-box process builder and configure it.
             final BlackBoxProcessBuilder builder =
                 new BlackBoxProcessBuilder<>();
             stage.configureBuilder(builder);
 
-            // Now we take the problem stream and flatten it.
+// Now we take the problem stream and flatten it.
             final Supplier<IObjectiveFunction>[] problems =
                 ((Stream<Supplier>) (stage.getProblems()))
                     .toArray((i) -> new Supplier[i]);
@@ -888,30 +908,29 @@ public class Experiment {
                       " must provide at least one problem."); //$NON-NLS-1$
             }
 
-            // We want to process the problems in a random order.
-            // If we have launched multiple processes doing the
-            // same experiment in the same folder, this will make
-            // it more likely that one process can work on one
-            // problem until it is completed, because everyone
-            // starts at a different problem. This also means we
-            // get data from different problems earlier.
+// We want to process the problems in a random order. If we have
+// launched multiple processes doing the same experiment in the
+// same folder, this will make it more likely that one process
+// can work on one problem until it is completed, because
+// everyone starts at a different problem. This also means we get
+// data from different problems earlier.
             RandomUtils.shuffle(random, problems, 0,
                 problems.length);
 
             for (final Supplier<
                 IObjectiveFunction> problemSupplier : problems) {
 
-              // instantiate the objective function
+// instantiate the objective function
               final IObjectiveFunction f =
                   Objects.requireNonNull(problemSupplier.get());
 
-              // how many runs should we do?
+// how many runs should we do?
               final int runs = stage.getRuns(f);
               if (runs <= 0) {
                 continue;
               }
 
-              // Now it is time to get the list of algorithms.
+// Now it is time to get the list of algorithms.
               final Supplier<IMetaheuristic>[] algorithms =
                   ((Stream<Supplier>) (stage.getAlgorithms(f)))
                       .toArray((i) -> new Supplier[i]);
@@ -919,17 +938,16 @@ public class Experiment {
                   || (algorithms.length <= 0)) {
                 continue;
               }
-              // And we will process them again in a random
-              // order.
+// And we will process them again in a random order.
               RandomUtils.shuffle(random, algorithms, 0,
                   algorithms.length);
 
-              // Get the problem instance name.
+// Get the problem instance name.
               final String instName =
                   Objects.requireNonNull(f.toString());
 
-              // We generate one random seed for each run. All
-              // algorithms use the same random seeds.
+// We generate one random seed for each run. All algorithms use
+// the same random seeds.
               final long[] seeds =
                   RandomUtils.uniqueRandomSeeds(instName, runs);
               if (seeds.length != runs) {
@@ -937,44 +955,37 @@ public class Experiment {
                     "Invalid number of seeds: should never happen."); //$NON-NLS-1$
               }
 
-              // If we get here, we definitely will do some runs
-              // with the problem, so we adjust the builder to
-              // it.
+// If we get here, we definitely will do some runs with the
+// problem, so we adjust the builder to it.
               stage.configureBuilderForProblem(builder, f);
               builder.setObjectiveFunction(f);
 
-              // Now we iterate over the algorithms, in their
-              // random order.
+// Now we iterate over the algorithms, in their random order.
               for (final Supplier<
                   IMetaheuristic> algorithmSupplier : algorithms) {
                 final IMetaheuristic algorithm = Objects
                     .requireNonNull(algorithmSupplier.get());
 
-                // Get the algorithm name.
+// Get the algorithm name.
                 final String algoName =
                     Objects.requireNonNull(algorithm.toString());
-                // And configure the builder for using the
-                // algorithm
+// And configure the builder for using the algorithm
                 stage.configureBuilderForProblemAndAlgorithm(
                     builder, f, algorithm);
 
-                // For each algorithm, we will process the random
-                // seeds again in a random order.
+// For each algorithm, we will process the random seeds again in
+// a random order.
                 RandomUtils.shuffle(random, seeds, 0,
                     seeds.length);
 
                 for (final long seed : seeds) {
 
-                  // We create the log file for this run of the
-                  // current algorithm on the current problem
-                  // with the current seed.
-                  // We remember a hash set of all runs we
-                  // already did.
-                  // This allows for different experimental
-                  // stages to raise the number of runs
-                  // step-by-step without us needed to access the
-                  // file system for runs that we already
-                  // performed in the past.
+// We create the log file for this run of the current algorithm
+// on the current problem with the current seed. We remember a
+// hash set of all runs we already did. This allows for different
+// experimental stages to raise the number of runs step-by-step
+// without us needed to access the file system for runs that we
+// already performed in the past.
                   final Path logFile;
                   final boolean runNotLocallyDone;
                   synchronized (done) {
@@ -985,41 +996,35 @@ public class Experiment {
                         (done.size() > currentSize);
                   }
 
-                  // If the logFile is null, then we do not need
-                  // to do the run.
+// If the logFile is null, then we do not need to do the run.
                   if (logFile == null) {
                     if (runNotLocallyDone
                         && waitAfterSkippedRuns) {
-                      // If runNotLocallyDone is true, then the
-                      // predicate had
-                      // suggested to do the run, but the log
-                      // file already existed. We found this by
-                      // querying the file system. If we do this
-                      // very often a shared drive, this may
-                      // annoy the file server.
-                      // In this case, we may want to wait a bit
-                      // to relief the file system.
+// If runNotLocallyDone is true, then the predicate had suggested
+// to do the run, but the log file already existed. We found this
+// by querying the file system. If we do this very often a shared
+// drive, this may annoy the file server. In this case, we may
+// want to wait a bit to relief the file system.
                       Experiment.__sleep(tryIndex - 1L, random);
                     }
                     // nothing to do here
                     continue;
                   }
 
-                  // If we get here, we have created the log file
-                  // which uniquely identifies this run. So we
-                  // can actually execute it.
+// If we get here, we have created the log file which uniquely
+// identifies this run. So we can actually execute it.
 
                   if (writeLogInfos) {
                     ConsoleIO.stdout("Now performing run '"//$NON-NLS-1$
                         + logFile + "'."); //$NON-NLS-1$
                   }
 
-                  // Set the seed and log path.
+// Set the seed and log path.
                   builder.setRandSeed(seed);
                   builder.setLogPath(logFile);
 
-                  // Create the process, apply the algorithm,
-                  // and write the log information.
+// Create the process, apply the algorithm, and write the log
+// information.
                   try (final IBlackBoxProcess process =
                       builder.get()) {
                     algorithm.solve(process);
@@ -1027,29 +1032,40 @@ public class Experiment {
                         LogFormat.ALGORITHM_SETUP_LOG_SECTION,
                         (bw) -> algorithm
                             .printSetup((BufferedWriter) bw));
-                  } catch (final IOException ioe) {
+                  } catch (final IOException
+                      | OutOfMemoryError error) {
+                    Experiment.__doGc();
+
                     synchronized (done) {
                       done.remove(logFile);
                     }
                     if (writeLogInfos) {
-                      ConsoleIO.stderr(
-                          "We got an I/O error in the experimental run '" //$NON-NLS-1$
-                              + logFile
-                              + "'. We will try to delete the log file and then continue.", //$NON-NLS-1$
-                          ioe);
+                      if (error instanceof OutOfMemoryError) {
+                        ConsoleIO.stderr(
+                            "We ran out of memoryin the experimental run '" //$NON-NLS-1$
+                                + logFile
+                                + "'. We will try to delete the log file and then continue.", //$NON-NLS-1$
+                            error);
+                      } else {
+                        ConsoleIO.stderr(
+                            "We got an I/O error in the experimental run '" //$NON-NLS-1$
+                                + logFile
+                                + "'. We will try to delete the log file and then continue.", //$NON-NLS-1$
+                            error);
+                      }
                     }
                     if (waitAfterIOError) {
                       Experiment.__sleep(10_000L * tryIndex,
                           random);
                     }
-                    // If we got here, there must have been an
-                    // error when writing out the result.
-                    // This means the data of the run was lost.
-                    // But the log file had been created empty,
-                    // so no other process would try to repeat
-                    // the run.
-                    // We therefore try to delete that log file,
-                    // while will probably fail, but let's try.
+
+                    Experiment.__doGc();
+
+// If we got here, there must have been an error when writing out
+// the result. This means the data of the run was lost. But the
+// log file had been created empty, so no other process would try
+// to repeat the run. We therefore try to delete that log file,
+// while will probably fail, but let's try.
                     try {
                       Files.delete(logFile);
                     } catch (final Throwable error2) {
@@ -1060,7 +1076,10 @@ public class Experiment {
                             error2);
                       }
                     }
-                    throw ioe;
+
+                    Experiment.__doGc();
+
+                    throw error;
                   }
 
                   Thread.yield();
@@ -1092,20 +1111,33 @@ public class Experiment {
                 "Successfully Finished Experiment."); //$NON-NLS-1$
           }
           return; // successful end of the trial
-        } catch (final IOException ioError) {
-          // failure in trial due to I/O error
+        } catch (final IOException | OutOfMemoryError error) {
+          Experiment.__doGc();
+
           if (writeLogInfos) {
-            ConsoleIO.stderr(waitAfterIOError
-                ? "Got an I/O Error in the experiment, will now wait before retrying." //$NON-NLS-1$
-                : "Got an I/O Error in the experiment, will now continue without waiting.", //$NON-NLS-1$
-                ioError);
+            if (error instanceof OutOfMemoryError) {
+              // out of memory
+              ConsoleIO.stderr(waitAfterIOError
+                  ? "Ran out of memory in the experiment, will now wait before retrying." //$NON-NLS-1$
+                  : "Ran out of memory in the experiment, will now continue without waiting.", //$NON-NLS-1$
+                  error);
+            } else {
+              // failure in trial due to I/O error
+              ConsoleIO.stderr(waitAfterIOError
+                  ? "Got an I/O Error in the experiment, will now wait before retrying." //$NON-NLS-1$
+                  : "Got an I/O Error in the experiment, will now continue without waiting.", //$NON-NLS-1$
+                  error);
+            }
           }
           if (waitAfterIOError) {
             Experiment.__sleep(10_000L * tryIndex, random);
           }
+          Experiment.__doGc();
         }
       } // end trial
     } catch (final Throwable error) {
+      Experiment.__doGc();
+
       final String message =
           "An unrecoverable error has appeared during the experiment."; //$NON-NLS-1$
       if (writeLogInfos) {
