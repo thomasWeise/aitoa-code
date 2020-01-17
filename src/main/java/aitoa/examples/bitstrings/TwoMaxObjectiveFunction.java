@@ -10,7 +10,7 @@ public final class TwoMaxObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "TwoMax_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "TwoMax"; //$NON-NLS-1$
 
   /**
    * create
@@ -63,6 +63,7 @@ public final class TwoMaxObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return TwoMaxObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        TwoMaxObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

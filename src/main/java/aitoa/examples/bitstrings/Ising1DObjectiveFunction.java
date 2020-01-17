@@ -7,7 +7,7 @@ public final class Ising1DObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "Ising1d_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Ising1d"; //$NON-NLS-1$
 
   /**
    * create
@@ -59,6 +59,7 @@ public final class Ising1DObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return Ising1DObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        Ising1DObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

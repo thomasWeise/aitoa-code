@@ -10,7 +10,7 @@ import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the linear harmonicFunction */
+/** A Test for the linear harmonic function */
 public class TestLinearHarmonicObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 

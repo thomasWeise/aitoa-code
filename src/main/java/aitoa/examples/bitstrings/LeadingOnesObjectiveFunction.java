@@ -11,7 +11,7 @@ public final class LeadingOnesObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "LeadingOnes_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "LeadingOnes"; //$NON-NLS-1$
 
   /**
    * create
@@ -62,6 +62,7 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return LeadingOnesObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        LeadingOnesObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

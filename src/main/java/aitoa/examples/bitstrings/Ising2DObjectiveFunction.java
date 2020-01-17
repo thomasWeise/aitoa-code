@@ -7,7 +7,7 @@ public final class Ising2DObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "Ising2d_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Ising2d"; //$NON-NLS-1$
 
   /** the torus width = sqrt(n) */
   public final int k;
@@ -95,7 +95,8 @@ public final class Ising2DObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return Ising2DObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        Ising2DObjectiveFunction.NAME_PREFIX, this.n);
   }
 
 // Below, we provide code that shows how the pair-generation in

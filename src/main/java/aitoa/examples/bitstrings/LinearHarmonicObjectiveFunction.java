@@ -9,7 +9,7 @@ public final class LinearHarmonicObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "LinearHarmonic_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "LinearHarmonic"; //$NON-NLS-1$
 
   /** the upper bound of the objective value */
   public final long upperBound;
@@ -66,6 +66,7 @@ public final class LinearHarmonicObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return LinearHarmonicObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        LinearHarmonicObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

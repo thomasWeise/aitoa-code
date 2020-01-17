@@ -13,7 +13,7 @@ public final class JumpObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "Jump_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Jump"; //$NON-NLS-1$
 
   /** the k */
   public final int k;
@@ -92,7 +92,7 @@ public final class JumpObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return (((JumpObjectiveFunction.NAME_PREFIX + this.n) + '_')
-        + this.k);
+    return BitStringObjectiveFunction._make_name_nk(
+        JumpObjectiveFunction.NAME_PREFIX, this.n, this.k);
   }
 }

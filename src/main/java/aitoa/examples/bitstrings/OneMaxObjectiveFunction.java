@@ -10,7 +10,7 @@ public final class OneMaxObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "OneMax_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "OneMax"; //$NON-NLS-1$
 
   /**
    * create
@@ -61,6 +61,7 @@ public final class OneMaxObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return OneMaxObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction._make_name_n(
+        OneMaxObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

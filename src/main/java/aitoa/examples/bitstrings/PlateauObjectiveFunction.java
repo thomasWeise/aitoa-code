@@ -9,7 +9,7 @@ public final class PlateauObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "Plateau_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Plateau"; //$NON-NLS-1$
 
   /** the k */
   public final int k;
@@ -88,7 +88,7 @@ public final class PlateauObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return (((PlateauObjectiveFunction.NAME_PREFIX + this.n)
-        + '_') + this.k);
+    return BitStringObjectiveFunction._make_name_nk(
+        PlateauObjectiveFunction.NAME_PREFIX, this.n, this.k);
   }
 }

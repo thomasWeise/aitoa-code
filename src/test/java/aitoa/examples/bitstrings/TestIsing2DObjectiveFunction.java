@@ -11,7 +11,7 @@ import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
-/** A Test for the linear harmonicFunction */
+/** A Test Ising model on a 2D torus */
 public class TestIsing2DObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 

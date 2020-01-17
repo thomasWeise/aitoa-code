@@ -14,11 +14,7 @@ import java.util.function.BiFunction;
 
 import aitoa.examples.bitstrings.BitStringObjectiveFunction;
 import aitoa.examples.bitstrings.JumpObjectiveFunction;
-import aitoa.examples.bitstrings.LeadingOnesObjectiveFunction;
-import aitoa.examples.bitstrings.OneMaxObjectiveFunction;
 import aitoa.examples.bitstrings.PlateauObjectiveFunction;
-import aitoa.examples.bitstrings.TrapObjectiveFunction;
-import aitoa.examples.bitstrings.TwoMaxObjectiveFunction;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction2;
@@ -215,17 +211,6 @@ public class IOHProfiler {
     return null;
   }
 
-  /** the one-dimensional name prefixes */
-  private static final String[] PREFIXES_1 =
-      { OneMaxObjectiveFunction.NAME_PREFIX,
-          LeadingOnesObjectiveFunction.NAME_PREFIX,
-          TwoMaxObjectiveFunction.NAME_PREFIX,
-          TrapObjectiveFunction.NAME_PREFIX };
-  /** the two-dimensional name prefixes */
-  private static final String[] PREFIXES_2 =
-      { JumpObjectiveFunction.NAME_PREFIX,
-          PlateauObjectiveFunction.NAME_PREFIX };
-
   /**
    * The default method to obtain the function name for a given
    * instance and setup
@@ -242,35 +227,34 @@ public class IOHProfiler {
     Objects.requireNonNull(instance);
     Objects.requireNonNull(setup);
 
-    // first, deal with the simple cases
-    for (final String p : IOHProfiler.PREFIXES_1) {
-      if (instance.startsWith(p)) {
-        try {
-          return new FunctionMetaData(
-              p.substring(0, p.length() - 1),
-              Integer.parseInt(instance.substring(p.length())));
-        } catch (final NumberFormatException nfe) {
-          throw new IllegalArgumentException(instance, nfe);
-        }
+    final BitStringObjectiveFunction bf =
+        BitStringObjectiveFunction.tryLoadExample(instance);
+    if (bf != null) {
+      if (bf instanceof JumpObjectiveFunction) {
+        return new FunctionMetaData(
+            JumpObjectiveFunction.NAME_PREFIX + '_'
+                + ((JumpObjectiveFunction) bf).k,
+            bf.n);
       }
-    }
+      if (bf instanceof PlateauObjectiveFunction) {
+        return new FunctionMetaData(
+            PlateauObjectiveFunction.NAME_PREFIX + '_'
+                + ((PlateauObjectiveFunction) bf).k,
+            bf.n);
+      }
 
-    for (final String p : IOHProfiler.PREFIXES_2) {
-      if (instance.startsWith(p)) {
-        final int j = instance.lastIndexOf('_');
-        if (j <= p.length()) {
-          throw new IllegalArgumentException(instance);
-        }
-        final String k = instance.substring(j + 1);
-        final String n = instance.substring(p.length(), j);
-        try {
-          Integer.parseInt(k);
-          return new FunctionMetaData(p + k,
-              Integer.parseInt(n));
-        } catch (final NumberFormatException nfe) {
-          throw new IllegalArgumentException(instance, nfe);
+      String prefix = null;
+      try {
+        prefix = ((String) (bf.getClass().getField("NAME_PREFIX") //$NON-NLS-1$
+            .get(null)));
+      } catch (@SuppressWarnings("unused") final Throwable error) {
+        prefix = bf.toString();
+        final int i = prefix.indexOf('_');
+        if (i > 0) {
+          prefix = prefix.substring(0, i);
         }
       }
+      return new FunctionMetaData(prefix, bf.n);
     }
 
     // Ok, it won't be any of the simple, default bit string

@@ -16,7 +16,7 @@ public final class TrapObjectiveFunction
     extends BitStringObjectiveFunction {
 
   /** the name prefix */
-  public static final String NAME_PREFIX = "Trap_"; //$NON-NLS-1$
+  public static final String NAME_PREFIX = "Trap"; //$NON-NLS-1$
 
   /**
    * create
@@ -67,6 +67,7 @@ public final class TrapObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return TrapObjectiveFunction.NAME_PREFIX + this.n;
+    return BitStringObjectiveFunction
+        ._make_name_n(TrapObjectiveFunction.NAME_PREFIX, this.n);
   }
 }
