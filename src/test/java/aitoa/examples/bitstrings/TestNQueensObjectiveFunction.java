@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
@@ -38,7 +39,7 @@ public class TestNQueensObjectiveFunction
   /** test the correctness */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public final void testCorrectness() {
+  public final void testCorrectnessF4() {
     final boolean[] opt1 = { //
         false, true, false, false, //
         false, false, false, true, //
@@ -50,9 +51,118 @@ public class TestNQueensObjectiveFunction
         true, false, false, false, //
         false, false, false, true, false, true, false, false };
 
-    Assert.assertEquals(0,
-        TestNQueensObjectiveFunction.F.evaluate(opt1), 0);
-    Assert.assertEquals(0,
-        TestNQueensObjectiveFunction.F.evaluate(opt2), 0);
+    final BitStringObjectiveFunction f =
+        new NQueensObjectiveFunction(opt1.length);
+
+    Assert.assertEquals(0, f.evaluate(opt1), 0);
+    Assert.assertEquals(0, f.evaluate(opt2), 0);
+
+    final int upper = ((int) (f.upperBound()));
+    for (int i = opt1.length; (--i) >= 0;) {
+      final boolean b1 = opt1[i];
+      final boolean b2 = opt2[i];
+
+      opt1[i] = !b1;
+      opt2[i] = !b2;
+
+      int v = (int) (f.evaluate(opt1));
+      TestTools.assertGreater(v, 0);
+      TestTools.assertLessOrEqual(v, upper);
+      v = (int) (f.evaluate(opt2));
+      TestTools.assertGreater(v, 0);
+      TestTools.assertLessOrEqual(v, upper);
+
+      for (int j = i; (--j) >= 0;) {
+        final boolean bb1 = opt1[j];
+        final boolean bb2 = opt2[j];
+
+        opt1[j] = !bb1;
+        opt2[j] = !bb2;
+
+        v = (int) (f.evaluate(opt1));
+        TestTools.assertGreater(v, 0);
+        TestTools.assertLessOrEqual(v, upper);
+        v = (int) (f.evaluate(opt2));
+        TestTools.assertGreater(v, 0);
+        TestTools.assertLessOrEqual(v, upper);
+
+        opt1[j] = bb1;
+        opt2[j] = bb2;
+      }
+
+      opt1[i] = b1;
+      opt2[i] = b2;
+    }
   }
+
+  /** test the correctness */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testCorrectnessF8() {
+    final boolean[] opt = { //
+        false, false, false, true, false, false, false, false, //
+        false, false, false, false, false, true, false, false, //
+        false, false, false, false, false, false, false, true, //
+        false, true, false, false, false, false, false, false, //
+        false, false, false, false, false, false, true, false, //
+        true, false, false, false, false, false, false, false, //
+        false, false, true, false, false, false, false, false, //
+        false, false, false, false, true, false, false, false, //
+    };
+
+    final BitStringObjectiveFunction f =
+        new NQueensObjectiveFunction(opt.length);
+
+    Assert.assertEquals(0, f.evaluate(opt), 0);
+
+    final int upper = ((int) (f.upperBound()));
+    for (int i = opt.length; (--i) >= 0;) {
+      final boolean b1 = opt[i];
+
+      opt[i] = !b1;
+
+      int v = (int) (f.evaluate(opt));
+      TestTools.assertGreater(v, 0);
+      TestTools.assertLessOrEqual(v, upper);
+
+      for (int j = i; (--j) >= 0;) {
+        final boolean bb1 = opt[j];
+
+        opt[j] = !bb1;
+
+        v = (int) (f.evaluate(opt));
+        TestTools.assertGreater(v, 0);
+        TestTools.assertLessOrEqual(v, upper);
+
+        for (int k = j; (--k) >= 0;) {
+          final boolean bbb1 = opt[k];
+
+          opt[k] = !bbb1;
+
+          v = (int) (f.evaluate(opt));
+          TestTools.assertGreater(v, 0);
+          TestTools.assertLessOrEqual(v, upper);
+
+          for (int l = j; (--l) >= 0;) {
+            final boolean bbbb1 = opt[l];
+
+            opt[l] = !bbbb1;
+
+            v = (int) (f.evaluate(opt));
+            TestTools.assertGreater(v, 0);
+            TestTools.assertLessOrEqual(v, upper);
+
+            opt[l] = bbbb1;
+          }
+
+          opt[k] = bbb1;
+        }
+
+        opt[j] = bb1;
+      }
+
+      opt[i] = b1;
+    }
+  }
+
 }
