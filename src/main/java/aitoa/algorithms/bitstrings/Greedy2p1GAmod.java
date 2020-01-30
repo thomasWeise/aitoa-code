@@ -55,7 +55,7 @@ public class Greedy2p1GAmod<Y>
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
-    // Line 1: sample x and y from the search space
+// Line 1: sample x and y from the search space
     boolean[] x = searchSpace.create();
     nullary.apply(x, random);
     double fx = process.evaluate(x);
@@ -67,25 +67,25 @@ public class Greedy2p1GAmod<Y>
     nullary.apply(y, random);
     double fy = process.evaluate(x);
 
-    // other initialization stuff
+// other initialization stuff
     boolean[] znew = searchSpace.create();
 
     final int n = x.length;
 
-    // allocate necessary data structures
+// allocate necessary data structures
     final BinomialDistribution binDist =
         new BinomialDistribution(n, ((double) (this.m)) / n);
     final DiscreteGreaterThanZero dgtzDist =
         new DiscreteGreaterThanZero(binDist);
 
-    // allocate integer array used in mutation
+// allocate integer array used in mutation
     final int[] indices = new int[n];
     for (int i = n; (--i) >= 0;) {
       indices[i] = i;
     }
-    // done with the initialization
+// done with the initialization
 
-    // line 2: the loop
+// line 2: the loop
     while (!process.shouldTerminate()) {
       // line 3: ensure that fx <= fy
       if (fx > fy) {
@@ -97,9 +97,9 @@ public class Greedy2p1GAmod<Y>
         fy = tf;
       } // end rename x to y and vice versa
 
-      // invariant: fx <= fy
+// invariant: fx <= fy
 
-      // line 4: if fx == fy do crossover, otherwise just copy
+// line 4: if fx == fy do crossover, otherwise just copy
       final boolean[] zprime;
       boolean zIsNew = false;
       if (fx < fy) {
@@ -107,29 +107,32 @@ public class Greedy2p1GAmod<Y>
 // not different from x
         zprime = x;
       } else {
-        // do uniform crossover
+// do uniform crossover
         zprime = znew;
 // first, copy everything from x. this allows us to copy only
 // from y in the loop, i.e., to handle one variable less, as we
 // do no longer need to look at x
+        boolean zIsNotx = false;
+        boolean zIsNoty = false;
         System.arraycopy(x, 0, zprime, 0, n);
         for (int i = n; (--i) >= 0;) {
           if (random.nextBoolean()) {
 // if we copy zprime from x, then zprime != y if, well, at least
 // one zprime[i] != y[i]
-            zIsNew = zIsNew || (zprime[i] != y[i]);
+            zIsNoty = zIsNoty || (zprime[i] != y[i]);
           } else {
 // if we copy zprime from y, then zprime != x if, well, at least
 // one zprime[i] != x[i] (which means it must be different from
 // the value stored at zprime[i] before the copying)
             final boolean o = zprime[i];
             final boolean d = (zprime[i] = y[i]);
-            zIsNew = zIsNew || (d != o);
+            zIsNotx = zIsNotx || (d != o);
           } // end copy from y
-        } // end mutation
+        } // end crossover
+        zIsNew = zIsNotx && zIsNoty;
       } // end fx == fy
 
-// zprimeIsNew is true only if zprime != x and zprime != y
+// zIsNew is true only if zprime != x and zprime != y
 // Line 5: sample number l of bits to flip
       final int l =
           (zIsNew ? binDist : dgtzDist).nextInt(random);
@@ -137,10 +140,9 @@ public class Greedy2p1GAmod<Y>
       if (l <= 0) {
 // If no bits will be flipped, we can set z=zprime.
 // If we get here, then zprime != x and zprime != y
-// (element-wise) and zIsNew
-// must be true, because only if zIsNew is true we may have
-// chosen from binDist directly and only then we may have gotten
-// l=0.
+// (element-wise) and zIsNew must be true, because only if zIsNew
+// is true we may have chosen from binDist directly and only then
+// we may have gotten l=0.
         z = zprime;
       } else {
 // At least one bit needs to be flipped, i.e., we perform the
@@ -156,24 +158,21 @@ public class Greedy2p1GAmod<Y>
           z = zprime;
         }
 
+// Now we perform the flips. This can make the bit string become
+// (element-wise) identical to x or y. We need to check both
+// options.
+        boolean zIsNotx = false;
+        boolean zIsNoty = false;
+        zIsNew = false;
 // Shuffle the first l elements in the index list in a
 // Fisher-Yates style.
 // This will produce l random, unique, different indices.
         for (int i = 0; i < l; i++) {
           final int j = i + random.nextInt(n - i);
-          final int t = indices[j];
+          final int index = indices[j];
           indices[j] = indices[i];
-          indices[i] = t;
-        }
+          indices[i] = index;
 
-// Now we perform the flips. This can make the bit string become
-// (element-wise) identical to x or y. We need to check both
-// options.
-        boolean zNEQx = false;
-        boolean zNEQy = false;
-        zIsNew = false;
-        for (int i = l; (--i) >= 0;) {
-          final int index = indices[i];
 // Flip the bit at the index and remember the result.
           final boolean value = (z[index] ^= true);
 // Check if we got z!=x or z!=y: If both already hold, we can
@@ -183,10 +182,10 @@ public class Greedy2p1GAmod<Y>
           }
 // Update (element-wise) z!=x and z!=y, hope for lazy evaluation
 // to speed up.
-          zNEQx = zNEQx || (value != x[index]);
-          zNEQy = zNEQy || (value != y[index]);
+          zIsNotx = zIsNotx || (value != x[index]);
+          zIsNoty = zIsNoty || (value != y[index]);
 // If both hold, we are good.
-          if (zNEQx && zNEQy) {
+          if (zIsNotx && zIsNoty) {
             zIsNew = true;
           }
         }
@@ -196,7 +195,7 @@ public class Greedy2p1GAmod<Y>
 // those in x or y, so we need to do a full compare.
           check: {
             checkX: {
-              if (!zNEQx) {
+              if (!zIsNotx) {
 // maybe (element-wise) z==x, so compare
                 for (int i = n; (--i) >= 0;) {
                   if (z[i] != x[i]) {
@@ -209,7 +208,7 @@ public class Greedy2p1GAmod<Y>
             }
 // if we get here, z!=x (otherwise we would have done break)
             checkY: {
-              if (!zNEQy) { // maybe z==y
+              if (!zIsNoty) { // maybe z==y
                 for (int i = n; (--i) >= 0;) {
                   if (z[i] != y[i]) {
                     break checkY; // found mismatch
@@ -230,7 +229,7 @@ public class Greedy2p1GAmod<Y>
       }
       // result: z!=y, z!=x (element-wise)
 
-      // line 8
+// line 8
       final double fz = process.evaluate(z);
 
       if (fz > fy) {
@@ -239,11 +238,9 @@ public class Greedy2p1GAmod<Y>
       }
 
       if ((fy > fx)// line 9: replace y with z
-          || random.nextBoolean()// line 10: randomly chose y
-      ) {
-// line 9: replace y with z
-// since z cannot be x or y, we can swap pointers instead of
-// copying
+          || random.nextBoolean()) {// line 10: randomly chose y
+// line 9: replace y with z since z cannot be x or y, we can swap
+// pointers instead of copying
         fy = fz;
         final boolean[] ty = y;
         y = z;

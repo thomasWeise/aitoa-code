@@ -2,7 +2,10 @@ package aitoa.algorithms.bitstrings;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
+
+import org.junit.Assert;
 
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -13,26 +16,20 @@ import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 
 /**
- * The Greedy (2+1) GA mod, extended with FFA. The
- * {@linkplain InnerGreedy2p1GAmod basic algorithm} is defined in
- * Algorithm 6 of E. Carvalho Pinto and C. Doerr, "Towards a more
- * practice-aware runtime analysis of evolutionary algorithms,"
- * July 2017, arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online].
- * Available: http://arxiv.org/pdf/1812.00493.pdf. We here
- * present its version applying Frequency Fitness Assignment
- * (FFA).
+ * The Greedy (2+1) GA mod, as defined in Algorithm 6 of E.
+ * Carvalho Pinto and C. Doerr, "Towards a more practice-aware
+ * runtime analysis of evolutionary algorithms," July 2017,
+ * arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online]. Available:
+ * http://arxiv.org/pdf/1812.00493.pdf
  *
  * @param <Y>
  *          the solution space
  */
-public class Greedy2p1GAmodFFA<Y>
+public class InnerGreedy2p1GAmod<Y>
     implements IMetaheuristic<boolean[], Y> {
 
   /** the constant above n */
   public final int m;
-
-  /** the upper bound of the objective value */
-  private final int UB;
 
   /**
    * create
@@ -40,10 +37,8 @@ public class Greedy2p1GAmodFFA<Y>
    * @param _m
    *          the constant above n to define the mutation
    *          probability
-   * @param _UB
-   *          the upper bound of the objective value
    */
-  public Greedy2p1GAmodFFA(final int _m, final int _UB) {
+  public InnerGreedy2p1GAmod(final int _m) {
     super();
     if (_m <= 0) {
       throw new IllegalArgumentException(
@@ -51,12 +46,6 @@ public class Greedy2p1GAmodFFA<Y>
               + _m);
     }
     this.m = _m;
-    if (_UB <= 0) {
-      throw new IllegalArgumentException(
-          "UB must be at least 1, but you specified " //$NON-NLS-1$
-              + _UB);
-    }
-    this.UB = _UB;
   }
 
   /** {@inheritDoc} */
@@ -72,19 +61,20 @@ public class Greedy2p1GAmodFFA<Y>
 // Line 1: sample x and y from the search space
     boolean[] x = searchSpace.create();
     nullary.apply(x, random);
-    int fx = ((int) (process.evaluate(x)));
+    double fx = process.evaluate(x);
     if (process.shouldTerminate()) {
       return;
     }
 
     boolean[] y = searchSpace.create();
     nullary.apply(y, random);
-    int fy = ((int) (process.evaluate(x)));
+    double fy = process.evaluate(x);
+    Assert.assertNotSame(x, y);
 
 // other initialization stuff
     boolean[] znew = searchSpace.create();
-
-    final long[] H = new long[this.UB + 1]; // FFA
+    Assert.assertNotSame(x, znew);
+    Assert.assertNotSame(y, znew);
 
     final int n = x.length;
 
@@ -103,28 +93,31 @@ public class Greedy2p1GAmodFFA<Y>
 
 // line 2: the loop
     while (!process.shouldTerminate()) {
-// line 3: ensure that H[fx] <= H[fy]
-      if (H[fx] > H[fy]) {
+      // line 3: ensure that fx <= fy
+      if (fx > fy) {
         final boolean[] tx = x;
         x = y;
         y = tx;
-        final int tf = fx;
+        final double tf = fx;
         fx = fy;
         fy = tf;
       } // end rename x to y and vice versa
+      Assert.assertNotSame(x, y);
 
-// invariant: H[fx] <= H[fy]
+// invariant: fx <= fy
 
-// line 4: if H[fx] == H[fy] do crossover, otherwise just copy
+// line 4: if fx == fy do crossover, otherwise just copy
       final boolean[] zprime;
       boolean zIsNew = false;
-      if (H[fx] < H[fy]) { // FFA
-// copy from x if H[fx] < H[fy]. In this case, zprime is = x,
-// i.e., is not different from x
+      if (fx < fy) {
+// copy from x if fx < fy. In this case, zprime is = x, i.e., is
+// not different from x
         zprime = x;
       } else {
 // do uniform crossover
         zprime = znew;
+        Assert.assertNotSame(zprime, x);
+        Assert.assertNotSame(zprime, y);
 // first, copy everything from x. this allows us to copy only
 // from y in the loop, i.e., to handle one variable less, as we
 // do no longer need to look at x
@@ -146,6 +139,8 @@ public class Greedy2p1GAmodFFA<Y>
           } // end copy from y
         } // end crossover
         zIsNew = zIsNotx && zIsNoty;
+        Assert.assertTrue(zIsNotx != Arrays.equals(x, znew));
+        Assert.assertTrue(zIsNoty != Arrays.equals(y, znew));
       } // end fx == fy
 
 // zIsNew is true only if zprime != x and zprime != y
@@ -160,6 +155,8 @@ public class Greedy2p1GAmodFFA<Y>
 // is true we may have chosen from binDist directly and only then
 // we may have gotten l=0.
         z = zprime;
+        Assert.assertNotSame(z, x);
+        Assert.assertNotSame(z, y);
       } else {
 // At least one bit needs to be flipped, i.e., we perform the
 // mutation.
@@ -169,9 +166,28 @@ public class Greedy2p1GAmodFFA<Y>
           z = znew;
           System.arraycopy(x, 0, z, 0, n);
         } else {
+          Assert.assertNotSame(zprime, x);
+          Assert.assertNotSame(zprime, y);
+          Assert.assertSame(zprime, znew);
 // zprime=znew: We can use it directly, as we do not need to
 // preserve the contents of zprime since zprime!=x and zprime=y.
           z = zprime;
+        }
+
+// Shuffle the first l elements in the index list in a
+// Fisher-Yates style.
+// This will produce l random, unique, different indices.
+        for (int i = 0; i < l; i++) {
+          final int j = i + random.nextInt(n - i);
+          final int t = indices[j];
+          indices[j] = indices[i];
+          indices[i] = t;
+        }
+
+        for (int j = l; (--j) > 0;) {
+          for (int k = j; (--k) >= 0;) {
+            Assert.assertNotEquals(indices[j], indices[k]);
+          }
         }
 
 // Now we perform the flips. This can make the bit string become
@@ -180,20 +196,15 @@ public class Greedy2p1GAmodFFA<Y>
         boolean zIsNotx = false;
         boolean zIsNoty = false;
         zIsNew = false;
-// Shuffle the first l elements in the index list in a
-// Fisher-Yates style.
-// This will produce l random, unique, different indices.
-        for (int i = 0; i < l; i++) {
-          final int j = i + random.nextInt(n - i);
-          final int index = indices[j];
-          indices[j] = indices[i];
-          indices[i] = index;
-
+        for (int i = l; (--i) >= 0;) {
+          final int index = indices[i];
 // Flip the bit at the index and remember the result.
           final boolean value = (z[index] ^= true);
 // Check if we got z!=x or z!=y: If both already hold, we can
 // skip this.
           if (zIsNew) {
+            Assert.assertTrue(zIsNotx);
+            Assert.assertTrue(zIsNoty);
             continue;
           }
 // Update (element-wise) z!=x and z!=y, hope for lazy evaluation
@@ -218,6 +229,8 @@ public class Greedy2p1GAmodFFA<Y>
                     break checkX; // found mismatch
                   }
                 }
+                Assert.assertArrayEquals(x, z);
+                Assert.assertNotSame(x, z);
 // no mismatch, i.e., (element-wise) z==x, so we can stop here
                 break check;
               }
@@ -230,6 +243,8 @@ public class Greedy2p1GAmodFFA<Y>
                     break checkY; // found mismatch
                   }
                 }
+                Assert.assertArrayEquals(y, z);
+                Assert.assertNotSame(y, z);
 // no mismatch, i.e., (element-wise) z==y, so we can stop here
                 break check;
               }
@@ -241,23 +256,23 @@ public class Greedy2p1GAmodFFA<Y>
       } // end crossover: l>0
 
       if (!zIsNew) {
+        Assert.assertTrue(
+            Arrays.equals(z, x) || Arrays.equals(z, y));
         continue; // z is not new, so do not evaluate
       }
       // result: z!=y, z!=x (element-wise)
+      Assert.assertFalse(
+          Arrays.equals(z, x) || Arrays.equals(z, y));
 
-      // line 8
-      final int fz = ((int) (process.evaluate(z)));
-// update FFA table
-      ++H[fx]; // FFA: preserves H[fx] <= H[fy]
-      ++H[fy]; // FFA: preserves H[fx] <= H[fy]
-      ++H[fz]; // FFA
+// line 8
+      final double fz = process.evaluate(z);
 
-      if (H[fz] > H[fy]) {
-// H[fz] > H[fy] and thus also H[fz] > H[fx]: discard!
+      if (fz > fy) {
+// fz > fy and thus also fz > fx: discard!
         continue;
       }
 
-      if ((H[fy] > H[fx])// line 9: replace y with z
+      if ((fy > fx)// line 9: replace y with z
           || random.nextBoolean()) {// line 10: randomly chose y
 // line 9: replace y with z since z cannot be x or y, we can swap
 // pointers instead of copying
@@ -265,22 +280,24 @@ public class Greedy2p1GAmodFFA<Y>
         final boolean[] ty = y;
         y = z;
         znew = ty;
+        Assert.assertNotSame(y, x);
         continue;
       }
 
-// H[fy] == H[fx], because H[fx] cannot be less than H[fy]
+// fy == fx, because fx cannot be less than fy
 // AND due to random choice above, replace x -> Line 10
       fx = fz;
       final boolean[] tx = x;
       x = z;
       znew = tx;
+      Assert.assertNotSame(y, x);
     } // end main loop
   } // process will have remembered the best candidate solution
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    final String s = "Greedy(2+1)GAmodFFA"; //$NON-NLS-1$
+    final String s = "Greedy(2+1)GAmod"; //$NON-NLS-1$
     if (this.m != 1) {
       return s + this.m;
     }
@@ -301,9 +318,6 @@ public class Greedy2p1GAmodFFA<Y>
     output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
     output.newLine();
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
-        "FFA"));//$NON-NLS-1$
     output.newLine();
   }
 }
