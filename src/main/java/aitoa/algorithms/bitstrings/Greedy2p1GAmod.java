@@ -1,14 +1,11 @@
 package aitoa.algorithms.bitstrings;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
-import aitoa.structure.LogFormat;
+import aitoa.utils.Experiment;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 
@@ -22,27 +19,22 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  * @param <Y>
  *          the solution space
  */
-public class Greedy2p1GAmod<Y>
-    implements IMetaheuristic<boolean[], Y> {
+public class Greedy2p1GAmod<Y> extends _Greedy2p1GAmodBase<Y> {
 
-  /** the constant above n */
-  public final int m;
+  /** create */
+  public Greedy2p1GAmod() {
+    this(_Greedy2p1GAmodBase.DEFAULT_C);
+  }
 
   /**
    * create
    *
-   * @param _m
+   * @param _c
    *          the constant above n to define the mutation
    *          probability
    */
-  public Greedy2p1GAmod(final int _m) {
-    super();
-    if (_m <= 0) {
-      throw new IllegalArgumentException(
-          "m must be at least 1, but you specified " //$NON-NLS-1$
-              + _m);
-    }
-    this.m = _m;
+  public Greedy2p1GAmod(final double _c) {
+    super(_c);
   }
 
   /** {@inheritDoc} */
@@ -74,7 +66,7 @@ public class Greedy2p1GAmod<Y>
 
 // allocate necessary data structures
     final BinomialDistribution binDist =
-        new BinomialDistribution(n, ((double) (this.m)) / n);
+        new BinomialDistribution(n, this.c / n);
     final DiscreteGreaterThanZero dgtzDist =
         new DiscreteGreaterThanZero(binDist);
 
@@ -261,26 +253,10 @@ public class Greedy2p1GAmod<Y>
   @Override
   public String toString() {
     final String s = "Greedy(2+1)GAmod"; //$NON-NLS-1$
-    if (this.m != 1) {
-      return s + this.m;
+    if (this.c != _Greedy2p1GAmodBase.DEFAULT_C) {
+      return s + '_' + Experiment.doubleToStringForName(this.c);
     }
     return s;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final void printSetup(final BufferedWriter output)
-      throws IOException {
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("cr", 1));//$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
-  }
 }

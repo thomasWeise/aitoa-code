@@ -5,16 +5,16 @@ import java.io.IOException;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.utils.Experiment;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 
 /**
  * The Greedy (2+1) GA mod, extended with FFA. The
- * {@linkplain InnerGreedy2p1GAmod basic algorithm} is defined in
+ * {@linkplain Greedy2p1GAmod basic algorithm} is defined in
  * Algorithm 6 of E. Carvalho Pinto and C. Doerr, "Towards a more
  * practice-aware runtime analysis of evolutionary algorithms,"
  * July 2017, arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online].
@@ -26,10 +26,7 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  *          the solution space
  */
 public class Greedy2p1GAmodFFA<Y>
-    implements IMetaheuristic<boolean[], Y> {
-
-  /** the constant above n */
-  public final int m;
+    extends _Greedy2p1GAmodBase<Y> {
 
   /** the upper bound of the objective value */
   private final int UB;
@@ -37,20 +34,24 @@ public class Greedy2p1GAmodFFA<Y>
   /**
    * create
    *
-   * @param _m
+   * @param _UB
+   *          the upper bound of the objective value
+   */
+  public Greedy2p1GAmodFFA(final int _UB) {
+    this(_Greedy2p1GAmodBase.DEFAULT_C, _UB);
+  }
+
+  /**
+   * create
+   *
+   * @param _c
    *          the constant above n to define the mutation
    *          probability
    * @param _UB
    *          the upper bound of the objective value
    */
-  public Greedy2p1GAmodFFA(final int _m, final int _UB) {
-    super();
-    if (_m <= 0) {
-      throw new IllegalArgumentException(
-          "m must be at least 1, but you specified " //$NON-NLS-1$
-              + _m);
-    }
-    this.m = _m;
+  public Greedy2p1GAmodFFA(final double _c, final int _UB) {
+    super(_c);
     if (_UB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
@@ -90,7 +91,7 @@ public class Greedy2p1GAmodFFA<Y>
 
 // allocate necessary data structures
     final BinomialDistribution binDist =
-        new BinomialDistribution(n, ((double) (this.m)) / n);
+        new BinomialDistribution(n, this.c / n);
     final DiscreteGreaterThanZero dgtzDist =
         new DiscreteGreaterThanZero(binDist);
 
@@ -281,8 +282,8 @@ public class Greedy2p1GAmodFFA<Y>
   @Override
   public String toString() {
     final String s = "Greedy(2+1)GAmodFFA"; //$NON-NLS-1$
-    if (this.m != 1) {
-      return s + this.m;
+    if (this.c != _Greedy2p1GAmodBase.DEFAULT_C) {
+      return s + '_' + Experiment.doubleToStringForName(this.c);
     }
     return s;
   }
@@ -291,17 +292,7 @@ public class Greedy2p1GAmodFFA<Y>
   @Override
   public final void printSetup(final BufferedWriter output)
       throws IOException {
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("cr", 1));//$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
-    output.newLine();
-    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         "FFA"));//$NON-NLS-1$
     output.newLine();

@@ -383,6 +383,8 @@ public final class Configuration {
    * @param clazz
    *          the enum class
    * @return the enum value
+   * @param <E>
+   *          the enumeration type
    */
   public static final <E extends Enum<E>> E
       getEnum(final String key, final Class<E> clazz) {

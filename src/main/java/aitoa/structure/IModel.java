@@ -49,6 +49,8 @@ public interface IModel<X> {
    * @param end
    *          the exclusive end index
    * @return the iterable
+   * @param <X>
+   *          the element type
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
@@ -72,6 +74,8 @@ public interface IModel<X> {
    * @param end
    *          the exclusive end index
    * @return the iterable
+   * @param <X>
+   *          the element type
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
