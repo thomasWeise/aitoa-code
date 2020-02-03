@@ -76,11 +76,13 @@ public final class QuickOptimizers {
       dest[1] = fa1;
       return;
     }
+    double fa0 = fa1;
 
     double bestX = a1;
     double bestF = fa1;
     double b1 = b0;
     double fb1 = QuickOptimizers.__call(f, b1);
+    double fb0 = fb1;
 
     if (fb1 < fa1) {
       bestX = b1;
@@ -109,6 +111,8 @@ public final class QuickOptimizers {
             bestF = fa1;
             bestX = a1;
           }
+        } else {
+          fa1 = fa0;
         }
       }
 
@@ -130,16 +134,20 @@ public final class QuickOptimizers {
             bestF = fb1;
             bestX = b1;
           }
+        } else {
+          fb1 = fb0;
         }
       }
 
 // Set the new interval boundaries.
       if (fa1 < fb1) {
         b0 = b1;
+        fb0 = fb1;
         b1 = a1;
         fb1 = fa1;
       } else {
         a0 = a1;
+        fa0 = fa1;
         a1 = b1;
         fa1 = fb1;
       }
