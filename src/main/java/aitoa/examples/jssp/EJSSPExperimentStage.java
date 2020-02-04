@@ -1,15 +1,22 @@
 package aitoa.examples.jssp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import aitoa.algorithms.EA;
+import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.HillClimber;
+import aitoa.algorithms.HillClimber2;
+import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.algorithms.RandomSampling;
+import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
+import aitoa.algorithms.TemperatureSchedule;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IMetaheuristic;
 import aitoa.utils.Experiment.IExperimentStage;
@@ -81,7 +88,7 @@ public enum EJSSPExperimentStage implements
   },
 
   /**
-   * the second stage: hill climbing and hill climbing with
+   * the third stage: hill climbing and hill climbing with
    * restarts with the n-swap operator
    */
   STAGE_3 {
@@ -116,7 +123,237 @@ public enum EJSSPExperimentStage implements
       builder.setUnarySearchOperator(//
           new JSSPUnaryOperatorNSwap());
     }
-  };
+  },
+
+  /**
+   * the fourth stage: EAs with the 1-swap operator
+   */
+  STAGE_4 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._eas();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     */
+    @Override
+    public void configureBuilder(final BlackBoxProcessBuilder<
+        int[], JSSPCandidateSolution> builder) {
+      super.configureBuilder(builder);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1Swap());
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    @Override
+    public void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<int[],
+            JSSPCandidateSolution> builder,
+        final JSSPMakespanObjectiveFunction problem) {
+      super.configureBuilderForProblem(builder, problem);
+      builder.setBinarySearchOperator(
+          new JSSPBinaryOperatorSequence(problem.instance));
+    }
+  },
+
+  /**
+   * the fifth stage: EAs with the n-swap operator
+   */
+  STAGE_5 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._eas();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     */
+    @Override
+    public void configureBuilder(final BlackBoxProcessBuilder<
+        int[], JSSPCandidateSolution> builder) {
+      super.configureBuilder(builder);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperatorNSwap());
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    @Override
+    public void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<int[],
+            JSSPCandidateSolution> builder,
+        final JSSPMakespanObjectiveFunction problem) {
+      super.configureBuilderForProblem(builder, problem);
+      builder.setBinarySearchOperator(
+          new JSSPBinaryOperatorSequence(problem.instance));
+    }
+  },
+
+  /**
+   * the sixth stage: simulated annealing with the 1-swap
+   * operator
+   */
+  STAGE_6 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._sa();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     */
+    @Override
+    public void configureBuilder(final BlackBoxProcessBuilder<
+        int[], JSSPCandidateSolution> builder) {
+      super.configureBuilder(builder);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1Swap());
+    }
+  },
+
+  /**
+   * the seventh stage: enumerating hill climbing with the 1-swap
+   * operator
+   */
+  STAGE_7 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._hc2();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     */
+    @Override
+    public void configureBuilder(final BlackBoxProcessBuilder<
+        int[], JSSPCandidateSolution> builder) {
+      super.configureBuilder(builder);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1Swap());
+    }
+  },
+
+  /**
+   * the eighth stage: enumerating hill climbing with the 1-swap
+   * operator with randomized neighbor sampling
+   */
+  STAGE_8 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._hc2();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    @Override
+    public void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<int[],
+            JSSPCandidateSolution> builder,
+        final JSSPMakespanObjectiveFunction problem) {
+      super.configureBuilderForProblem(builder, problem);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1SwapU(problem.instance));
+    }
+  },;
 
   /** the instances to be used */
   public static final String[] INSTANCES = { //
@@ -196,8 +433,74 @@ public enum EJSSPExperimentStage implements
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
       _hillClimbers() {
-    return Stream.of(() -> new HillClimber<>(),
+    return Stream.of(() -> new HillClimber<>(), //
         () -> new HillClimberWithRestarts<>(256, "256", 0d), //$NON-NLS-1$
         () -> new HillClimberWithRestarts<>(256, "256", 0.05d));//$NON-NLS-1$
+  }
+
+  /**
+   * create the stream of EAs
+   *
+   * @return the stream of EAs
+   */
+  static final
+      Stream<
+          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
+      _eas() {
+
+    final ArrayList<Supplier<
+        IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+            new ArrayList<>();
+
+    for (final int ps : new int[] { 2048, 4096 }) {
+      for (final double cr : new double[] { 0d, 0.05d, 0.3d }) {
+        list.add(() -> new EA<>(cr, ps, ps));
+        list.add(() -> new EAWithPruning<>(cr, ps, ps));
+      }
+    }
+
+    return list.stream();
+  }
+
+  /**
+   * create the stream of SAs
+   *
+   * @return the stream of SAs
+   */
+  static final
+      Stream<
+          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
+      _sa() {
+
+    final ArrayList<Supplier<
+        IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+            new ArrayList<>();
+
+    for (final double Ts : new double[] { 20d, 0.5d * 20d,
+        0.25d * 20d }) {
+      list.add(() -> new SimulatedAnnealing<>(
+          new TemperatureSchedule.Logarithmic(Ts, 1)));
+    } // end start temperature
+    for (final double ep : new double[] { 2e-7d, 4e-7d,
+        8e-7d }) {
+      list.add(() -> new SimulatedAnnealing<>(
+          new TemperatureSchedule.Exponential(20d, ep)));
+    } // end epsilon
+
+    return list.stream();
+  }
+
+  /**
+   * create the hill climbers that enumerate neighborhoods
+   *
+   * @return the hill climbers that enumerate neighborhoods
+   */
+  static final
+      Stream<
+          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
+      _hc2() {
+    return Stream.of(//
+        () -> new HillClimber2<>(), //
+        () -> new HillClimber2WithRestarts<>());
   }
 }

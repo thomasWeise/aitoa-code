@@ -42,8 +42,7 @@ public final class JSSPMakespanObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ("jssp:makespan:" + //$NON-NLS-1$
-        this.getClass().getCanonicalName());
+    return this.instance.toString();
   }
 
 // start relevant

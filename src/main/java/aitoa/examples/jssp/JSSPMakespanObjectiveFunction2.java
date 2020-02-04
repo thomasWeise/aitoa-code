@@ -61,7 +61,7 @@ public final class JSSPMakespanObjectiveFunction2
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return this.getClass().getSimpleName();
+    return this.instance.toString();
   }
 
 // start relevant

@@ -28,10 +28,14 @@ public class JSSPExperiment {
     final Path out = IOUtils.canonicalizePath(
         (args.length > 0) ? args[0] : "results");//$NON-NLS-1$
 
+    final int processors =
+        Math.min(Runtime.getRuntime().availableProcessors(),
+            (args.length > 1) ? Integer.parseInt(args[1])
+                : Integer.MAX_VALUE);
+
     Experiment.executeExperimentInParallel(
         Arrays.stream(EJSSPExperimentStage.values())
             .map((s) -> () -> s),
-        out, Math.max(1,
-            Runtime.getRuntime().availableProcessors() >>> 1));
+        out, processors);
   }
 }
