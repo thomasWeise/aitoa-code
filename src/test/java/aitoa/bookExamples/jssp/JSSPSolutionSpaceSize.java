@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import aitoa.TestTools;
 import aitoa.bookExamples.Tools;
-import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.EJSSPExperimentStage;
 import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the solution space sizes for the JSSP instances */
@@ -111,7 +111,8 @@ public class JSSPSolutionSpaceSize {
   public static final void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
-    printFor.addAll(Arrays.asList(JSSPExperiment.INSTANCES));
+    printFor.addAll(//
+        Arrays.asList(EJSSPExperimentStage.INSTANCES));
 
     System.out.println(
         "|name|$\\jsspJobs$|$\\jsspMachines$|$\\lowerBound(\\#\\textnormal{feasible})$|$\\left|\\solutionSpace\\right|$|"); //$NON-NLS-1$

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 
 import aitoa.bookExamples.Tools;
-import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.EJSSPExperimentStage;
 import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the search space sizes for the JSSP instances */
@@ -45,7 +45,8 @@ public class JSSPSearchSpaceSize {
   public static final void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
-    printFor.addAll(Arrays.asList(JSSPExperiment.INSTANCES));
+    printFor.addAll(//
+        Arrays.asList(EJSSPExperimentStage.INSTANCES));
 
     System.out.println(
         "|name|$\\jsspJobs$|$\\jsspMachines$|$\\left|\\solutionSpace\\right|$|$\\left|\\searchSpace\\right|$|"); //$NON-NLS-1$

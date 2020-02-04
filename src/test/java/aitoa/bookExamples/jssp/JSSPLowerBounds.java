@@ -3,7 +3,7 @@ package aitoa.bookExamples.jssp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import aitoa.examples.jssp.JSSPExperiment;
+import aitoa.examples.jssp.EJSSPExperimentStage;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 
@@ -19,7 +19,8 @@ public class JSSPLowerBounds {
   public static final void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
-    printFor.addAll(Arrays.asList(JSSPExperiment.INSTANCES));
+    printFor.addAll(//
+        Arrays.asList(EJSSPExperimentStage.INSTANCES));
 
     System.out.println(
         "|name|$\\jsspJobsn$|$\\jsspMachines$|$\\lowerBound{\\objF}$|"); //$NON-NLS-1$
