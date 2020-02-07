@@ -1,6 +1,7 @@
 # Example Codes from the Book "An Introduction to Optimization Algorithms"
 
 [<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
+[<img alt="AppVeyor Build Status" src="https://img.shields.io/appveyor/ci/thomasWeise/aitoa-code.svg" height="20"/>](https://ci.appveyor.com/project/thomasWeise/aitoa-code)
 [![Release](https://jitpack.io/v/thomasWeise/aitoa-code.svg)](https://jitpack.io/#thomasWeise/aitoa-code)
 
 
@@ -43,7 +44,7 @@ First, you need to add the following repository, which is a repository that can 
 ```
 
 Than you can add the dependency on our `aitoa-code` repository into your `dependencies` section.
-Here, `0.8.27` is the current version of  `aitoa-code`.
+Here, `0.8.28` is the current version of  `aitoa-code`.
 Notice that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
 
 ```xml
@@ -51,7 +52,7 @@ Notice that you may have more dependencies in your `dependencies` section, say o
   <dependency>
     <groupId>com.github.thomasWeise</groupId>
     <artifactId>aitoa-code</artifactId>
-    <version>0.8.27</version>
+    <version>0.8.28</version>
   </dependency>
 </dependencies>
 ```
