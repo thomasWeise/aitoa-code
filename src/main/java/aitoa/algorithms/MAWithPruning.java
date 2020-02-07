@@ -27,7 +27,6 @@ import aitoa.utils.RandomUtils;
  * solutions with identical objective values before the
  * reproduction step.
  * <p>
- * <p>
  * All candidate solutions represented in the population will
  * always be local optima before entering the binary operators.
  * If these operators work well, they may jump close to other

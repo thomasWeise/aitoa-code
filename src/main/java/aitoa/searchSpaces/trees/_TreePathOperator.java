@@ -106,7 +106,7 @@ class _TreePathOperator extends _TreeOperator {
   /**
    * Replace the end of this path with the new node. Since tree
    * nodes are immutable, this will result in the creation of a
-   * completely new tree and a new root node.<br/>
+   * completely new tree and a new root node.<br>
    * The path becomes invalid after this operation.
    *
    * @param newNode

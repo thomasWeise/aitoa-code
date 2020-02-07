@@ -4,7 +4,7 @@ package aitoa.structure;
  * <p>
  * This class is an internal class. Please do not instantiate it,
  * use it by yourself, or otherwise meddle with it.
- * </p>
+ * <p>
  * This internal {@link java.lang.Thread thread} takes care of
  * end times. We could also check whether a runtime limit is
  * reached by calling
@@ -17,14 +17,12 @@ package aitoa.structure;
  * criterion}. As one thread is shared for all instances of
  * {@link _BlackBoxProcessBase}, this method is very
  * resource-friendly and saves runtime.
- * </p>
  * <p>
  * The thread works as a very simple, sorted queue. It is assumed
  * that there will never be too many problems running in
  * parallel, so we can simply use methods with linear complexity
  * to update and work on the queue. The elements in the queue are
  * sorted according to their termination time.
- * </p>
  */
 final class _TerminationThread extends Thread {
 

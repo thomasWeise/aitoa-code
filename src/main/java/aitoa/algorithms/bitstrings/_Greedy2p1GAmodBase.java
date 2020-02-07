@@ -19,7 +19,7 @@ import aitoa.structure.LogFormat;
 abstract class _Greedy2p1GAmodBase<Y>
     implements IMetaheuristic<boolean[], Y> {
 
-  /** The default {@value} for {@link #c} */
+  /** The default value {@code 1.618033989} for {@link #c} */
   public static final double DEFAULT_C =
       0.5d + (0.5d * Math.sqrt(5d));
 

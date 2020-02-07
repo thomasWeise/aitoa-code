@@ -271,7 +271,7 @@ public class BlackBoxProcessBuilder<X, Y>
    * Set the expected log length
    *
    * @param length
-   *          the length, <=0 for default
+   *          the length, &lt;=0 for default
    * @return this
    */
   public final BlackBoxProcessBuilder<X, Y>
