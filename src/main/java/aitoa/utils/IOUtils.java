@@ -2,13 +2,15 @@ package aitoa.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -332,9 +334,27 @@ public final class IOUtils {
       if (Files.isRegularFile(p)) {
         Files.delete(p);
       } else {
-        Files.walk(p).map(Path::toFile)
-            .sorted((o1, o2) -> -o1.compareTo(o2))
-            .forEach(File::delete);
+        Files.walkFileTree(p, //
+            new SimpleFileVisitor<Path>() {
+              @Override
+              public FileVisitResult postVisitDirectory(
+                  final Path dir, final IOException exc)
+                  throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+              }
+
+              @Override
+              public FileVisitResult visitFile(final Path file,
+                  final BasicFileAttributes attrs)
+                  throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+              }
+            });
+// Files.walk(p).map(Path::toFile)
+// .sorted((o1, o2) -> -o1.compareTo(o2))
+// .forEach(File::delete);
       }
     }
 
