@@ -3,7 +3,6 @@ package aitoa.structure;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -511,11 +510,11 @@ final class _SystemData {
     private static final boolean
         __tryDetectGPULinux(final TreeMap<String, String> map) {
       try {
-        final ProcessBuilder pb = new ProcessBuilder();
-        pb.command("lspci", //$NON-NLS-1$
-            "-nn"); //$NON-NLS-1$
-        pb.redirectError(Redirect.DISCARD);
-        final Process p = pb.start();
+        final Process p = new ProcessBuilder()//
+            .command("lspci", //$NON-NLS-1$
+                "-nn") //$NON-NLS-1$
+            .redirectErrorStream(true)//
+            .start();
 
         try {
           try {
@@ -607,14 +606,13 @@ final class _SystemData {
             ".txt"); //$NON-NLS-1$
         try {
 // use dxdiag to get the graphics card info
-          final ProcessBuilder pb = new ProcessBuilder();
-          pb.command("dxdiag", //$NON-NLS-1$
-              "/whql:off", //$NON-NLS-1$
-              "/t", //$NON-NLS-1$
-              tempFile.toFile().getCanonicalPath());
-          pb.redirectError(Redirect.DISCARD);
-          pb.redirectOutput(Redirect.DISCARD);
-          final Process p = pb.start();
+          final Process p = new ProcessBuilder()//
+              .command("dxdiag", //$NON-NLS-1$
+                  "/whql:off", //$NON-NLS-1$
+                  "/t", //$NON-NLS-1$
+                  tempFile.toFile().getCanonicalPath())
+              .redirectErrorStream(true)//
+              .start();
 
           try {
             p.waitFor();
