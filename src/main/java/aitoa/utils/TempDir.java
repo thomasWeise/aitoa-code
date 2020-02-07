@@ -53,6 +53,10 @@ public final class TempDir implements Closeable {
   /** {@inheritDoc} */
   @Override
   public final void close() throws IOException {
-    IOUtils.delete(this.m_dir);
+    try {
+      IOUtils.delete(this.m_dir);
+    } catch (@SuppressWarnings("unused") final Throwable error) {
+      // ignore
+    }
   }
 }
