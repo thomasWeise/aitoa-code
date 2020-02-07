@@ -3,6 +3,9 @@ package aitoa.structure;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ProcessBuilder.Redirect;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -177,6 +180,8 @@ final class _SystemData {
           LogFormat.SYSTEM_INFO_SESSION_START_DATE_TIME,
           _BlackBoxProcessData._getSessionStart().toString());
 
+      final String osInfo[] = new String[2];
+
       try {
         final SystemInfo sys = new SystemInfo();
 
@@ -287,13 +292,20 @@ final class _SystemData {
           final OperatingSystem os = sys.getOperatingSystem();
           if (os != null) {
             __Holder.__add(data, LogFormat.SYSTEM_INFO_OS_FAMILY,
-                () -> os.getFamily());
+                () -> {
+                  final String s = os.getFamily();
+                  osInfo[0] = s;
+                  return s;
+                });
             __Holder.__addgt0(data,
                 LogFormat.SYSTEM_INFO_OS_BITS,
                 () -> os.getBitness());
             __Holder.__add(data,
-                LogFormat.SYSTEM_INFO_OS_MANUFACTURER,
-                () -> os.getManufacturer());
+                LogFormat.SYSTEM_INFO_OS_MANUFACTURER, () -> {
+                  final String s = os.getManufacturer();
+                  osInfo[1] = s;
+                  return s;
+                });
             __Holder.__addgt(data,
                 LogFormat.SYSTEM_INFO_PROCESS_ID,
                 () -> os.getProcessId(), Long.MIN_VALUE);
@@ -389,6 +401,26 @@ final class _SystemData {
         // ignore
       }
 
+      try { // detect GPU
+        final String os =
+            (((osInfo[0] != null) ? osInfo[0] : "") + //$NON-NLS-1$
+                ((osInfo[1] != null) ? osInfo[1] : ""))//$NON-NLS-1$
+                    .toLowerCase();
+        boolean detected = false;
+        if (os.isEmpty() || //
+            os.contains("linux") || //$NON-NLS-1$
+            os.contains("unbuntu")) {//$NON-NLS-1$
+          detected = __Holder.__tryDetectGPULinux(data);
+        }
+        if ((!detected) && (os.isEmpty() || //
+            os.contains("win"))) {//$NON-NLS-1$
+          detected = __Holder.__tryDetectGPUWindows(data);
+        }
+
+      } catch (@SuppressWarnings("unused") final Throwable ignore) {
+        // ignore
+      } // end detect GPU
+
       for (final Map.Entry<String, String> entry : data
           .entrySet()) {
         out.append(LogFormat.mapEntry(entry.getKey(),
@@ -400,6 +432,366 @@ final class _SystemData {
       out.append(System.lineSeparator());
 
       return out.toString();
+    }
+
+    /**
+     * split a pci string into name, vendor id, and device id
+     *
+     * @param s
+     *          the string
+     * @return the split string
+     */
+    private static final String[] __pciSplit(final String s) {
+      int firstDots = s.indexOf(':');
+
+      if (firstDots > 0) {
+        firstDots = s.indexOf(':', firstDots + 1);
+        if (firstDots > 0) {
+          final int firstBracket = s.lastIndexOf('[');
+          if (firstBracket > firstDots) {
+            final int secondDots =
+                s.indexOf(':', firstBracket + 1);
+            if (secondDots > firstBracket) {
+              final int lastBracket =
+                  s.indexOf(']', secondDots + 1);
+              if (lastBracket > secondDots) {
+                final String name =
+                    s.substring(firstDots + 1, firstBracket)
+                        .trim();
+                if (!name.isEmpty()) {
+                  final String vendorId =
+                      s.substring(firstBracket + 1, secondDots)
+                          .trim();
+                  try {
+                    Integer.parseUnsignedInt(vendorId, 16);
+                  } catch (@SuppressWarnings("unused") final Throwable error) {
+                    return new String[] { name };
+                  }
+
+                  if (!vendorId.isEmpty()) {
+                    final String pciId =
+                        s.substring(secondDots + 1, lastBracket)
+                            .trim();
+                    if (!pciId.isEmpty()) {
+                      try {
+                        Integer.parseUnsignedInt(pciId, 16);
+                      } catch (@SuppressWarnings("unused") final Throwable error) {
+                        return new String[] { name };
+                      }
+
+// register name, vendor id, and pci ID
+                      return new String[] { name, vendorId,
+                          pciId };
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            // no vendor/pci ID
+            final String t = s.substring(firstDots + 1).trim();
+            if (!t.isEmpty()) {
+              return new String[] { t };
+            }
+          }
+        }
+      }
+
+      return null;
+    }
+
+    /**
+     * Try to detect the GPU under Linux
+     *
+     * @param map
+     *          the destination map
+     * @return {@code true} if a graphics card was detected,
+     *         {@code false} otherwise
+     */
+    private static final boolean
+        __tryDetectGPULinux(final TreeMap<String, String> map) {
+      try {
+        final ProcessBuilder pb = new ProcessBuilder();
+        pb.command("lspci", //$NON-NLS-1$
+            "-nn"); //$NON-NLS-1$
+        pb.redirectError(Redirect.DISCARD);
+        final Process p = pb.start();
+
+        try {
+          try {
+            String[] vga = null;
+            String[] displayController = null;
+
+            try (final InputStream is = p.getInputStream();
+                final InputStreamReader isr =
+                    new InputStreamReader(is);
+                final BufferedReader br =
+                    new BufferedReader(isr)) {
+              String s = null;
+
+              while ((s = br.readLine()) != null) {
+                s = s.trim();
+                final String t = s.toLowerCase();
+                if (t.contains("vga compatible controller")) { //$NON-NLS-1$
+                  final String[] q = __Holder.__pciSplit(s);
+                  if ((q != null) && ((vga == null)
+                      || (vga.length < q.length))) {
+                    vga = q;
+                    if ((displayController != null)
+                        && (displayController.length >= 3)
+                        && (q.length >= 3)) {
+                      break;
+                    }
+                  }
+                } else {
+                  if (t.contains("display controller")) { //$NON-NLS-1$
+                    final String[] q = __Holder.__pciSplit(s);
+                    if ((q != null)
+                        && ((displayController == null)
+                            || (displayController.length < q.length))) {
+                      displayController = q;
+                      if ((vga != null) && (vga.length >= 3)
+                          && (q.length >= 3)) {
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            if (displayController != null) {
+              vga = displayController;
+            }
+            if (vga != null) {
+              __Holder.__add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
+                  vga[0]);
+              if (vga.length > 1) {
+                __Holder.__add(map,
+                    LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID,
+                    vga[1]);
+                if (vga.length > 2) {
+                  __Holder.__add(map,
+                      LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID,
+                      vga[2]);
+                }
+              }
+              return true;
+            }
+
+          } finally {
+            p.waitFor();
+          }
+        } finally {
+          p.destroy();
+        }
+
+      } catch (@SuppressWarnings("unused") final Throwable error) {
+        // ignore
+      }
+      return false;
+    }
+
+    /**
+     * Try to detect the GPU under Windows
+     *
+     * @param map
+     *          the destination map
+     * @return {@code true} if a graphics card was detected,
+     *         {@code false} otherwise
+     */
+    private static final boolean __tryDetectGPUWindows(
+        final TreeMap<String, String> map) {
+      try {
+        final Path tempFile = Files.createTempFile("gd", //$NON-NLS-1$
+            ".txt"); //$NON-NLS-1$
+        try {
+// use dxdiag to get the graphics card info
+          final ProcessBuilder pb = new ProcessBuilder();
+          pb.command("dxdiag", //$NON-NLS-1$
+              "/whql:off", //$NON-NLS-1$
+              "/t", //$NON-NLS-1$
+              tempFile.toFile().getCanonicalPath());
+          pb.redirectError(Redirect.DISCARD);
+          pb.redirectOutput(Redirect.DISCARD);
+          final Process p = pb.start();
+
+          try {
+            p.waitFor();
+            if (p.exitValue() != 0) {
+              return false;
+            }
+
+// Wait until the text file has fully been written.
+// When doing dxdiag via command line, I saw some slightly
+// strange effects where it seemed as if the file was still
+// written while the process had already been returned. Maybe
+// there was some spawning of a sub-processes or something. So we
+// better be on the safe side and wait until we can expect that
+// the file won't change anymore.
+            long lastSize = 0L;
+            int waitNonIncreased = 5;
+            for (int i = 300; (--i) >= 0;) {
+              final long size = Files.size(tempFile);
+              if (size > lastSize) {
+                waitNonIncreased = 5;
+                lastSize = size;
+              } else {
+                if (size > 0L) {
+                  if ((--waitNonIncreased) <= 0) {
+                    break;
+                  }
+                }
+              }
+              try {
+                Thread.sleep(100L);
+              } catch (@SuppressWarnings("unused") final Throwable ignore) {
+                // ignore
+              }
+            }
+
+            String name = null;
+            String vendorId = null;
+            String deviceId = null;
+
+// OK, if we get here, the file has probably been written fully
+            try (final BufferedReader br =
+                Files.newBufferedReader(tempFile)) {
+              String s = null;
+              boolean inDashes = false;
+              boolean inDisplay = false;
+
+              readFile: while ((s = br.readLine()) != null) {
+                s = s.trim();
+                if (s.isEmpty()) {
+                  continue readFile;
+                }
+
+                boolean isAllDashes = true;
+                inner: for (int i = s.length(); (--i) >= 0;) {
+                  if (s.charAt(i) != '-') {
+                    isAllDashes = false;
+                    break inner;
+                  }
+                }
+
+                if (isAllDashes) {
+                  inDashes = !inDashes;
+                  continue readFile;
+                }
+
+                if (inDashes) {
+                  inDisplay = s.toLowerCase().contains(//
+                      "display devices"); //$NON-NLS-1$
+                  continue readFile;
+                }
+
+                if (!inDisplay) {
+                  continue readFile;
+                }
+
+                final int dots = s.indexOf(':');
+
+                if (dots <= 0) {
+                  continue readFile;
+                }
+                final String key =
+                    s.substring(0, dots).trim().toLowerCase();
+
+                if (key.isEmpty()) {
+                  continue readFile;
+                }
+
+                if (key.contains("card name")) { //$NON-NLS-1$
+                  if (name == null) {
+                    name = s.substring(dots + 1).trim();
+                    if (!name.isEmpty()) {
+                      if ((vendorId != null)
+                          && (deviceId != null)) {
+                        break readFile;
+                      }
+                      continue readFile;
+                    }
+                    name = null;
+                  }
+                  continue readFile;
+                }
+
+                if (key.contains("vendor id")) {//$NON-NLS-1$
+                  if (vendorId == null) {
+                    vendorId = s.substring(dots + 1).trim()
+                        .toLowerCase();
+                    if ((vendorId.length() > 2)
+                        && vendorId.startsWith("0x")) {//$NON-NLS-1$
+                      vendorId = vendorId.substring(2);
+                      try {
+                        Integer.parseUnsignedInt(vendorId, 16);
+                        if ((name != null)
+                            && (deviceId != null)) {
+                          break readFile;
+                        }
+                        continue readFile;
+                      } catch (@SuppressWarnings("unused") final Throwable error2) {
+                        // ignore
+                      }
+                    }
+                    vendorId = null;
+                  }
+                  continue readFile;
+                }
+
+                if (key.contains("device id")) {//$NON-NLS-1$
+                  if (deviceId == null) {
+                    deviceId = s.substring(dots + 1).trim()
+                        .toLowerCase();
+                    if ((deviceId.length() > 2)
+                        && deviceId.startsWith("0x")) {//$NON-NLS-1$
+                      deviceId = deviceId.substring(2);
+                      try {
+                        Integer.parseUnsignedInt(deviceId, 16);
+                        if ((name != null)
+                            && (vendorId != null)) {
+                          break readFile;
+                        }
+                        continue readFile;
+                      } catch (@SuppressWarnings("unused") final Throwable error2) {
+                        // ignore
+                      }
+                    }
+                    deviceId = null;
+                  }
+                  continue readFile;
+                }
+              } // end read file
+            } // close writer
+
+            // write back the infos
+            if (name != null) {
+              __Holder.__add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
+                  name);
+              if (vendorId != null) {
+                __Holder.__add(map,
+                    LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID,
+                    vendorId);
+                if (deviceId != null) {
+                  __Holder.__add(map,
+                      LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID,
+                      deviceId);
+                }
+              }
+              return true;
+            }
+
+          } finally {
+            p.destroy();
+          }
+        } finally {
+          Files.delete(tempFile);
+        }
+      } catch (@SuppressWarnings("unused") final Throwable error) {
+        // ignore
+      }
+      return false;
     }
   }
 }

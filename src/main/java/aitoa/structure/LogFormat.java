@@ -200,6 +200,14 @@ public final class LogFormat {
   /** the command line of the current process */
   public static final String SYSTEM_INFO_PROCESS_COMMAND_LINE =
       "PROCESS_COMMAND_LINE"; //$NON-NLS-1$
+  /** the command line of the GPU name */
+  public static final String SYSTEM_INFO_GPU_NAME = "GPU_NAME"; //$NON-NLS-1$
+  /** the command line of the GPU vendor id */
+  public static final String SYSTEM_INFO_GPU_PCI_VENDOR_ID =
+      "GPU_PCI_VENDOR_ID"; //$NON-NLS-1$
+  /** the command line of the GPU PCI id */
+  public static final String SYSTEM_INFO_GPU_PCI_DEVICE_ID =
+      "GPU_PCI_DEVICE_ID"; //$NON-NLS-1$
 
   /** the key END_SYSTEM */
   public static final String END_SYSTEM = "END_SYSTEM"; //$NON-NLS-1$
