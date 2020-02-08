@@ -1,0 +1,8 @@
+kind: pipeline
+name: default
+
+steps:
+- name: test
+  image: maven:latest
+  commands:
+  - mvn clean compile package test install -B -V
