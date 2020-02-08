@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -730,15 +731,145 @@ public class Experiment {
    *          the stages
    * @param outputDir
    *          the output directory
-   * @see #executeExperiment(Stream, Path, boolean, boolean,
-   *      boolean, boolean)
+   * @see #executeExperiment(Stream, Path, BiFunction, boolean,
+   *      boolean, boolean, boolean)
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
    */
-  public static final void executeExperiment(
-      final Stream<
-          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
-      final Path outputDir) {
-    Experiment.executeExperiment(stages, outputDir, true, true,
-        true, true);
+  public static final <X, Y> void
+      executeExperiment(
+          final Stream<Supplier<IExperimentStage<? extends X,
+              ? extends Y, ?, ?>>> stages,
+          final Path outputDir) {
+    Experiment.executeExperiment(stages, outputDir, null);
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages}.
+   * <p>
+   * How can we run experiments with optimization algorithms over
+   * many runs on different problem instances? We would surely
+   * like to execute the runs in parallel. With this procedure,
+   * we provide a very simple mechanism to achieve that. The idea
+   * is that we simply start several instances of the same
+   * program, each of which calls this method with exactly the
+   * same parameters. Each run, being a combination of a problem
+   * instance (objective function), algorithm setup, and random
+   * seed, uniquely fits to one log file in a sub folder of
+   * {@code outputDir} will produce output in that one log file
+   * (via the {@link aitoa.structure.IBlackBoxProcess}). Before
+   * beginning to execute the run, we try to create the log file.
+   * This is an atomic operation of the file system which fails
+   * if the log file already exists. This way, we can tell
+   * whether any parallel process is already doing that run. If
+   * so, we just skip it in the current process. If not, we
+   * execute it and, after it ends, write its output into the log
+   * file. This simple concept of parallelism will also work with
+   * shared folders. In other words, you can also use it to
+   * execute bigger experiments in a cluster.
+   * <p>
+   * Experiments can proceed in (what I call)
+   * "{@linkplain IExperimentStage stages}". Each stage consists
+   * of a set of problem instances, a set of algorithms, and a
+   * number of runs for the algorithm-instance combinations. A
+   * stage is completed when all runs for it have been finished.
+   * This allows for some form of batch processing of
+   * sub-experiments. But you can also have stages of increasing
+   * numbers of runs. For example, you could first want to have
+   * 11 runs for each algorithm on each instance in "stage 1".
+   * Then you can set the number of runs to 21 in "stage 2".
+   * Since our random seeds are generated deterministically, this
+   * will keep the existing runs and add ten more. The advantage
+   * is that you will, at some point, already have results for
+   * each problem instance and algorithm that you can interpret
+   * and analyze. While you are doing that, the experiment
+   * executer will tirelessly add more results. If you have a
+   * scalable problem, say
+   * {@linkplain aitoa.examples.bitstrings.OneMaxObjectiveFunction
+   * OneMax}, you could also solve scales up to, say 40 in the
+   * first stage and then go to 100 in the second and to 200 in
+   * third. Or you could also apply more algorithm setups in the
+   * later stages. Or any combination of that. The point and goal
+   * of this staging approach is that you can first do some
+   * exploration of the results, which would allow you to, e.g.,
+   * begin to write a report, while more results are appearing
+   * during this time which can then help you to gain more
+   * statistical confidence.
+   * <p>
+   * In order to not waste too many resources, the problem
+   * instances and algorithms are instantiated as lazily as
+   * possible, via instances of
+   * {@link java.util.function.Supplier}s provided by
+   * {@link java.util.stream.Stream}s.
+   * <p>
+   * While this method runs a single experiment in a single
+   * thread, you can use
+   * {@link #executeExperimentInParallel(Stream, Path)} and its
+   * variants to launch multiple threads in parallel. This has
+   * the advantage that these threads will share information
+   * about which runs have already been conducted, which speeds
+   * up the experiment execution and reduces the access to the
+   * underlying file system-
+   * <p>
+   * If you run the experiment with many processes on many
+   * computers via a shared folder, then this allows for a large
+   * amount of parallelism. It can also lead to network trouble,
+   * if too many processes try to check for file creation at
+   * once. In order to alleviate this, this function here makes
+   * as few calls to the file creation routine as possible. Also,
+   * it will sometimes wait for a short time before issuing the
+   * next file creation request. This would hopefully reduce the
+   * load on the server a little bit. If we still get I/O errors,
+   * then we will try to wait a longer time and then restart the
+   * experiment (of course, skipping all already performed runs).
+   * We will then also increase the waiting time between file
+   * operation. The goal is to complete the experiment, no matter
+   * what. However, all exceptions different from
+   * {@link java.io.IOException} will and should lead to a
+   * termination of the experiment.
+   * <p>
+   * This method will write a short note to the console whenever
+   * a new run or a new stage starts. The log lines are prepended
+   * by a prefix of: {@code processId:threadId:trial:stage date},
+   * where {@code processId} is the process ID in
+   * base-{@value java.lang.Character#MAX_RADIX} and
+   * {@code threadId} is the ID of the current thread in
+   * base-{@value java.lang.Character#MAX_RADIX}. These two
+   * numbers should uniquely identify a strand of execution on
+   * the current computer. {@code trialId} is the number of the
+   * trial of the experiment in decimal. Normally, this will be
+   * 1. However, every time we have restart due to an
+   * {@link java.io.IOException}, which hopefully never happens,
+   * then it will be increased. {@code stage} is the index of the
+   * current stage (in decimal) and, finally, {@code date} is
+   * current date and time.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param nameFunction
+   *          a function naming the experiment setups (algorithm
+   *          + operators), or {@code null} to just always use
+   *          the algorithm names
+   * @see #executeExperiment(Stream, Path, BiFunction, boolean,
+   *      boolean, boolean, boolean)
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
+   */
+  public static final <X, Y> void executeExperiment(
+      final Stream<Supplier<IExperimentStage<? extends X,
+          ? extends Y, ?, ?>>> stages,
+      final Path outputDir,
+      final BiFunction<IMetaheuristic<X, Y>,
+          BlackBoxProcessBuilder<X, Y>, String> nameFunction) {
+    Experiment.executeExperiment(stages, outputDir, nameFunction,
+        true, true, true, true);
   }
 
   /**
@@ -749,6 +880,10 @@ public class Experiment {
    *          the stages
    * @param outputDir
    *          the output directory
+   * @param nameFunction
+   *          a function naming the experiment setups (algorithm
+   *          + operators), or {@code null} to just always use
+   *          the algorithm names
    * @param writeLogInfos
    *          should we print log information?
    * @param waitAfterSkippedRuns
@@ -769,16 +904,23 @@ public class Experiment {
    *          it more likely that we can continue successfully
    *          after the wait
    * @see #executeExperiment(Stream, Path)
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
    */
-  public static final void executeExperiment(
-      final Stream<
-          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
-      final Path outputDir, final boolean writeLogInfos,
+  public static final <X, Y> void executeExperiment(
+      final Stream<Supplier<IExperimentStage<
+          ? extends X, ? extends Y, ?, ?>>> stages,
+      final Path outputDir,
+      final BiFunction<IMetaheuristic<X, Y>,
+          BlackBoxProcessBuilder<X, Y>, String> nameFunction,
+      final boolean writeLogInfos,
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError) {
     Experiment._executeExperiment(stages, outputDir,
-        writeLogInfos, waitAfterSkippedRuns,
+        nameFunction, writeLogInfos, waitAfterSkippedRuns,
         waitAfterWorkWasDone, waitAfterIOError, new HashSet<>());
   }
 
@@ -806,6 +948,26 @@ public class Experiment {
   }
 
   /**
+   * Obtain the default name for a given experiment setup. This
+   * will just return the algorithm name.
+   *
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
+   * @param algorithm
+   *          the algorithm
+   * @param builder
+   *          the process builder
+   * @return the name
+   */
+  public static final <X, Y> String defaultSetupName(
+      final IMetaheuristic<X, Y> algorithm,
+      final BlackBoxProcessBuilder<X, Y> builder) {
+    return Experiment.nameFromObjectPrepare(algorithm);
+  }
+
+  /**
    * Execute an experiment over, potentially, several
    * {@linkplain IExperimentStage stages}.
    *
@@ -813,6 +975,10 @@ public class Experiment {
    *          the stages
    * @param outputDir
    *          the output directory
+   * @param nameFunction
+   *          a function naming the experiment setups (algorithm
+   *          + operators), or {@code null} to just always use
+   *          the algorithm names
    * @param writeLogInfos
    *          should we print log information?
    * @param waitAfterSkippedRuns
@@ -834,16 +1000,28 @@ public class Experiment {
    *          after the wait
    * @param done
    *          the hash set for the runs that are done
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
    * @see #executeExperiment(Stream, Path)
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  static final void _executeExperiment(
-      final Stream<
-          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
-      final Path outputDir, final boolean writeLogInfos,
+  static final <X, Y> void _executeExperiment(
+      final Stream<Supplier<IExperimentStage<
+          ? extends X, ? extends Y, ?, ?>>> stages,
+      final Path outputDir,
+      final BiFunction<IMetaheuristic<X, Y>,
+          BlackBoxProcessBuilder<X, Y>, String> nameFunction,
+      final boolean writeLogInfos,
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError, final HashSet<Path> done) {
+
+    final BiFunction<IMetaheuristic<X, Y>,
+        BlackBoxProcessBuilder<X, Y>,
+        String> names = ((nameFunction != null) ? nameFunction
+            : Experiment::defaultSetupName);
 
     try {
       final Supplier<IExperimentStage>[] stageList =
@@ -944,7 +1122,7 @@ public class Experiment {
 
 // Get the problem instance name.
               final String instName =
-                  Objects.requireNonNull(f.toString());
+                  Experiment.nameFromObjectPrepare(f);
 
 // We generate one random seed for each run. All algorithms use
 // the same random seeds.
@@ -966,10 +1144,7 @@ public class Experiment {
                 final IMetaheuristic algorithm = Objects
                     .requireNonNull(algorithmSupplier.get());
 
-// Get the algorithm name.
-                final String algoName =
-                    Objects.requireNonNull(algorithm.toString());
-// And configure the builder for using the algorithm
+// configure the builder for using the algorithm
                 stage.configureBuilderForProblemAndAlgorithm(
                     builder, f, algorithm);
 
@@ -977,6 +1152,16 @@ public class Experiment {
 // a random order.
                 RandomUtils.shuffle(random, seeds, 0,
                     seeds.length);
+
+// Get the algorithm name.
+                final String algoName =
+                    Experiment.nameFromObjectPrepare(
+                        names.apply(algorithm, builder));
+                if (algoName.isEmpty()) {
+                  throw new IllegalArgumentException(
+                      "Name of algorithm cannot be null or empty, but is " //$NON-NLS-1$
+                          + algoName);
+                }
 
                 for (final long seed : seeds) {
 
@@ -1175,7 +1360,38 @@ public class Experiment {
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir, final int cores) {
     Experiment.executeExperimentInParallel(stages, outputDir,
-        cores, true, true, true, true);
+        cores, null);
+  }
+
+  /**
+   * Execute an experiment over, potentially, several
+   * {@linkplain IExperimentStage stages} and on several
+   * {@code cores}.
+   *
+   * @param stages
+   *          the stages
+   * @param outputDir
+   *          the output directory
+   * @param cores
+   *          the number of cores to use
+   * @param nameFunction
+   *          a function naming the experiment setups (algorithm
+   *          + operators), or {@code null} to just always use
+   *          the algorithm names
+   * @see #executeExperiment(Stream, Path)
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
+   */
+  public static final <X, Y> void executeExperimentInParallel(
+      final Stream<Supplier<IExperimentStage<? extends X,
+          ? extends Y, ?, ?>>> stages,
+      final Path outputDir, final int cores,
+      final BiFunction<IMetaheuristic<X, Y>,
+          BlackBoxProcessBuilder<X, Y>, String> nameFunction) {
+    Experiment.executeExperimentInParallel(stages, outputDir,
+        cores, nameFunction, true, true, true, true);
   }
 
   /**
@@ -1219,6 +1435,10 @@ public class Experiment {
    *          the output directory
    * @param cores
    *          the number of cores to use
+   * @param nameFunction
+   *          a function naming the experiment setups (algorithm
+   *          + operators), or {@code null} to just always use
+   *          the algorithm names
    * @param writeLogInfos
    *          should we print log information?
    * @param waitAfterSkippedRuns
@@ -1238,13 +1458,19 @@ public class Experiment {
    *          on the server hosting a shared drive and may make
    *          it more likely that we can continue successfully
    *          after the wait
-   * @see #executeExperiment(Stream, Path, boolean, boolean,
-   *      boolean, boolean)
+   * @see #executeExperiment(Stream, Path, BiFunction, boolean,
+   *      boolean, boolean, boolean)
+   * @param <X>
+   *          the search space
+   * @param <Y>
+   *          the solution space
    */
-  public static final void executeExperimentInParallel(
-      final Stream<
-          Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
+  public static final <X, Y> void executeExperimentInParallel(
+      final Stream<Supplier<IExperimentStage<? extends X,
+          ? extends Y, ?, ?>>> stages,
       final Path outputDir, final int cores,
+      final BiFunction<IMetaheuristic<X, Y>,
+          BlackBoxProcessBuilder<X, Y>, String> nameFunction,
       final boolean writeLogInfos,
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
@@ -1258,8 +1484,8 @@ public class Experiment {
     Objects.requireNonNull(outputDir);
     Objects.requireNonNull(stages);
 
-    final List<
-        Supplier<IExperimentStage<?, ?, ?, ?>>> stageList =
+    final List<Supplier<IExperimentStage<? extends X,
+        ? extends Y, ?, ?>>> stageList =
             stages.collect(Collectors.toList());
     if (stageList.size() <= 0) {
       throw new IllegalArgumentException(
@@ -1278,8 +1504,9 @@ public class Experiment {
     for (int i = threads.length; (--i) >= 0;) {
       final Thread t = threads[i] = new Thread(
           () -> Experiment._executeExperiment(stageList.stream(),
-              outputDir, writeLogInfos, waitAfterSkippedRuns,
-              waitAfterWorkWasDone, waitAfterIOError, done),
+              outputDir, nameFunction, writeLogInfos,
+              waitAfterSkippedRuns, waitAfterWorkWasDone,
+              waitAfterIOError, done),
           "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
       t.setDaemon(true);
       t.setPriority(Thread.MIN_PRIORITY);

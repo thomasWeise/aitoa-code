@@ -36,6 +36,6 @@ public class JSSPExperiment {
     Experiment.executeExperimentInParallel(
         Arrays.stream(EJSSPExperimentStage.values())
             .map((s) -> () -> s),
-        out, processors);
+        out, processors, EJSSPExperimentStage::nameFunction);
   }
 }

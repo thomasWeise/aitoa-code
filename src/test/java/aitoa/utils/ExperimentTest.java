@@ -307,7 +307,7 @@ public class ExperimentTest {
 
       Experiment.executeExperiment(
           Stream.of(() -> stage_1, () -> stage_2), dir.getPath(),
-          false, false, false, false);
+          null, false, false, false, false);
 
       try (TempDir dir2 = new TempDir()) {
         final Path endResults = EndResults.makeEndResultsTable(
@@ -438,7 +438,7 @@ public class ExperimentTest {
 
       Experiment.executeExperimentInParallel(
           Stream.of(() -> stage_1, () -> stage_2), dir.getPath(),
-          2, false, false, false, false);
+          2, null, false, false, false, false);
 
       try (TempDir dir2 = new TempDir()) {
         final Path endResults = EndResults.makeEndResultsTable(

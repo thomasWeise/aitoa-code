@@ -19,6 +19,7 @@ import aitoa.algorithms.SingleRandomSample;
 import aitoa.algorithms.TemperatureSchedule;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IMetaheuristic;
+import aitoa.utils.Experiment;
 import aitoa.utils.Experiment.IExperimentStage;
 
 /** the stages of the JSSP experiment */
@@ -68,7 +69,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hillClimbers("_1swap"); //$NON-NLS-1$
+      return EJSSPExperimentStage._hillClimbers();
     }
 
     /**
@@ -106,7 +107,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hillClimbers("_nswap"); //$NON-NLS-1$
+      return EJSSPExperimentStage._hillClimbers();
     }
 
     /**
@@ -143,7 +144,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._eas("_1swap_seqx"); //$NON-NLS-1$
+      return EJSSPExperimentStage._eas();
     }
 
     /**
@@ -199,7 +200,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._eas("_nswap_seqx"); //$NON-NLS-1$
+      return EJSSPExperimentStage._eas();
     }
 
     /**
@@ -256,7 +257,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._sa("_1swap"); //$NON-NLS-1$
+      return EJSSPExperimentStage._sa();
     }
 
     /**
@@ -294,7 +295,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2("_1swap"); //$NON-NLS-1$
+      return EJSSPExperimentStage._hc2();
     }
 
     /**
@@ -332,7 +333,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2("_1swapU"); //$NON-NLS-1$
+      return EJSSPExperimentStage._hc2();
     }
 
     /**
@@ -374,7 +375,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2("_12swap"); //$NON-NLS-1$
+      return EJSSPExperimentStage._hc2();
     }
 
     /**
@@ -465,54 +466,27 @@ public enum EJSSPExperimentStage implements
   /**
    * create the stream of hill climbers
    *
-   * @param nameSuffix
-   *          the name suffix
    * @return the stream of hill climbers
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _hillClimbers(final String nameSuffix) {
-    return Stream.of(
-        () -> new HillClimber<int[], JSSPCandidateSolution>() {
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        }, //
-           //
-        () -> new HillClimberWithRestarts<int[],
-            JSSPCandidateSolution>(256, "256", 0d) { //$NON-NLS-1$
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        },
-        //
-        () -> new HillClimberWithRestarts<int[],
-            JSSPCandidateSolution>(256, "256", 0.05d) { //$NON-NLS-1$
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        });
+      _hillClimbers() {
+    return Stream.of(() -> new HillClimber<>(), //
+        () -> new HillClimberWithRestarts<>(256, "256", 0d), //$NON-NLS-1$
+        () -> new HillClimberWithRestarts<>(256, "256", 0.05d)); //$NON-NLS-1$
     //
   }
 
   /**
    * create the stream of EAs
    *
-   * @param nameSuffix
-   *          the name suffix
    * @return the stream of EAs
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _eas(final String nameSuffix) {
+      _eas() {
 
     final ArrayList<Supplier<
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
@@ -520,22 +494,8 @@ public enum EJSSPExperimentStage implements
 
     for (final int ps : new int[] { 2048, 4096 }) {
       for (final double cr : new double[] { 0d, 0.05d, 0.3d }) {
-        list.add(() -> new EA<int[], JSSPCandidateSolution>(cr,
-            ps, ps) {
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        });
-        list.add(() -> new EAWithPruning<int[],
-            JSSPCandidateSolution>(cr, ps, ps) {
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        });
+        list.add(() -> new EA<>(cr, ps, ps));
+        list.add(() -> new EAWithPruning<>(cr, ps, ps));
       }
     }
 
@@ -545,14 +505,12 @@ public enum EJSSPExperimentStage implements
   /**
    * create the stream of SAs
    *
-   * @param nameSuffix
-   *          the name suffix
    * @return the stream of SAs
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _sa(final String nameSuffix) {
+      _sa() {
 
     final ArrayList<Supplier<
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
@@ -560,27 +518,13 @@ public enum EJSSPExperimentStage implements
 
     for (final double Ts : new double[] { 20d, 0.5d * 20d,
         0.25d * 20d }) {
-      list.add(() -> new SimulatedAnnealing<int[],
-          JSSPCandidateSolution>(
-              new TemperatureSchedule.Logarithmic(Ts, 1)) {
-        @Override
-        public String toString() {
-          final String r = super.toString();
-          return r + nameSuffix;
-        }
-      });
+      list.add(() -> new SimulatedAnnealing<>(
+          new TemperatureSchedule.Logarithmic(Ts, 1)));
     } // end start temperature
     for (final double ep : new double[] { 2e-7d, 4e-7d,
         8e-7d }) {
-      list.add(() -> new SimulatedAnnealing<int[],
-          JSSPCandidateSolution>(
-              new TemperatureSchedule.Exponential(20d, ep)) {
-        @Override
-        public String toString() {
-          final String r = super.toString();
-          return r + nameSuffix;
-        }
-      });
+      list.add(() -> new SimulatedAnnealing<>(
+          new TemperatureSchedule.Exponential(20d, ep)));
     } // end epsilon
 
     return list.stream();
@@ -589,29 +533,48 @@ public enum EJSSPExperimentStage implements
   /**
    * create the hill climbers that enumerate neighborhoods
    *
-   * @param nameSuffix
-   *          the name suffix
    * @return the hill climbers that enumerate neighborhoods
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _hc2(final String nameSuffix) {
+      _hc2() {
     return Stream.of(//
-        () -> new HillClimber2<int[], JSSPCandidateSolution>() {
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        }, //
-        () -> new HillClimber2WithRestarts<int[],
-            JSSPCandidateSolution>() {
-          @Override
-          public String toString() {
-            final String r = super.toString();
-            return r + nameSuffix;
-          }
-        });
+        () -> new HillClimber2<>(), //
+        () -> new HillClimber2WithRestarts<>());
+  }
+
+  /**
+   * the name function
+   *
+   * @param algorithm
+   *          the algorithm
+   * @param builder
+   *          the builder
+   * @return the name
+   */
+  static final String nameFunction(
+      final IMetaheuristic<int[],
+          JSSPCandidateSolution> algorithm,
+      final BlackBoxProcessBuilder<int[],
+          JSSPCandidateSolution> builder) {
+
+    String name =
+        Experiment.defaultSetupName(algorithm, builder);
+
+    if ((algorithm instanceof SingleRandomSample)
+        || (algorithm instanceof RandomSampling)) {
+      return name;
+    }
+
+    name = Experiment.nameFromObjectsMerge(name, Objects
+        .requireNonNull(builder.getUnarySearchOperator()));
+    if ((algorithm instanceof EA)
+        || (algorithm instanceof EAWithPruning)) {
+      name = Experiment.nameFromObjectsMerge(name, Objects
+          .requireNonNull(builder.getBinarySearchOperator()));
+    }
+
+    return name;
   }
 }
