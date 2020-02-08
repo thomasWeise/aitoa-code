@@ -107,7 +107,7 @@ public class EAWithPruning<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((("eap_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr);
   }

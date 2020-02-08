@@ -112,7 +112,7 @@ public class EA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((("ea_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr);
   }

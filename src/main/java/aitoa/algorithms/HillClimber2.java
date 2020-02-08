@@ -29,8 +29,7 @@ import aitoa.structure.IUnarySearchOperator;
  *          the solution space
  */
 // start relevant
-public final class HillClimber2<X, Y>
-    implements IMetaheuristic<X, Y> {
+public class HillClimber2<X, Y> implements IMetaheuristic<X, Y> {
 
 // end relevant
   /** create */
@@ -82,7 +81,7 @@ public final class HillClimber2<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "hc2f"; //$NON-NLS-1$
   }
 // start relevant

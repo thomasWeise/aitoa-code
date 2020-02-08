@@ -38,7 +38,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public final class HillClimberWithRestarts<X, Y>
+public class HillClimberWithRestarts<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
   /** the initial steps before restarts */
@@ -148,7 +148,7 @@ public final class HillClimberWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((("hc_rs_" + //$NON-NLS-1$
         this.initialFailsBeforeRestartStrategy) + '_')
         + this.increaseFactor);

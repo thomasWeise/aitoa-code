@@ -83,8 +83,8 @@ public final class JSSPUnaryOperator12Swap
       }
     }
   }
-
 // end relevant
+
   /**
    * We visit all points in the search space that could possibly
    * be reached by applying one
