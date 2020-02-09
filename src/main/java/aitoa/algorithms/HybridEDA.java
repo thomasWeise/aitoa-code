@@ -28,7 +28,8 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public class HybridEDA<X, Y> implements IMetaheuristic<X, Y> {
+public final class HybridEDA<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of solution to be selected */

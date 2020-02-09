@@ -24,7 +24,7 @@ import aitoa.utils.RandomUtils;
  * @param <Y>
  *          the solution space
  */
-public class EAWithRestarts<X, Y>
+public final class EAWithRestarts<X, Y>
     implements IMetaheuristic<X, Y> {
 
   /** the crossover rate */

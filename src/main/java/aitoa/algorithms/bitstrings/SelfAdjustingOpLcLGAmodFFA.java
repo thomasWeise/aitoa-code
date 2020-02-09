@@ -27,7 +27,7 @@ import aitoa.utils.math.DiscreteRandomDistribution;
  * @param <Y>
  *          the solution space
  */
-public class SelfAdjustingOpLcLGAmodFFA<Y>
+public final class SelfAdjustingOpLcLGAmodFFA<Y>
     implements IMetaheuristic<boolean[], Y> {
 
   /** the internal adaptation factor */
@@ -301,7 +301,7 @@ public class SelfAdjustingOpLcLGAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     return "SelfAdjusting(1+(LcL))GAmodFFA"; //$NON-NLS-1$
   }
 

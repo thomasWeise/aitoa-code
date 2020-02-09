@@ -50,7 +50,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public class MAWithPruning<X, Y>
+public final class MAWithPruning<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
 

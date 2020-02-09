@@ -47,7 +47,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public class EA<X, Y> implements IMetaheuristic<X, Y> {
+public final class EA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the crossover rate */
@@ -112,7 +112,7 @@ public class EA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     return ((((("ea_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr);
   }

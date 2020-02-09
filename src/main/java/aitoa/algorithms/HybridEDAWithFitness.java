@@ -25,7 +25,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public class HybridEDAWithFitness<X, Y>
+public final class HybridEDAWithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
 

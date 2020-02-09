@@ -37,7 +37,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public class SimulatedAnnealing<X, Y>
+public final class SimulatedAnnealing<X, Y>
     implements IMetaheuristic<X, Y> {
 
   /** the temperature schedule */
@@ -97,7 +97,7 @@ public class SimulatedAnnealing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     return ("sa_" + //$NON-NLS-1$
         this.schedule.toString());
   }

@@ -25,7 +25,7 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  * @param <Y>
  *          the solution space
  */
-public class Greedy2p1GAmodFFA<Y>
+public final class Greedy2p1GAmodFFA<Y>
     extends _Greedy2p1GAmodBase<Y> {
 
   /** the upper bound of the objective value */
@@ -280,7 +280,7 @@ public class Greedy2p1GAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     final String s = "Greedy(2+1)GAmodFFA"; //$NON-NLS-1$
     if (this.c != _Greedy2p1GAmodBase.DEFAULT_C) {
       return s + '_' + Experiment.doubleToStringForName(this.c);

@@ -228,7 +228,7 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new MH1(),
+                  return Stream.of(() -> new EA1p1<>(),
                       () -> new RandomSampling<>());
                 }
 
@@ -280,7 +280,7 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new MH1(),
+                  return Stream.of(() -> new EA1p1<>(),
                       () -> new RandomSampling<>());
                 }
 
@@ -356,11 +356,11 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new MH1(),
+                  return Stream.of(() -> new EA1p1<>(),
                       () -> new RandomSampling<>(),
-                      () -> new MH3(
+                      () -> new Greedy2p1GAmodFFA<>(
                           ((int) (problem.upperBound()))),
-                      () -> new MH2());
+                      () -> new Greedy2p1GAmod<>());
                 }
 
                 @Override
@@ -411,7 +411,7 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new MH1(),
+                  return Stream.of(() -> new EA1p1<>(),
                       () -> new RandomSampling<>());
                 }
 
@@ -446,56 +446,6 @@ public class ExperimentTest {
         Assert.assertNotNull(endResults);
         Assert.assertTrue(Files.size(endResults) > 10L);
       }
-    }
-  }
-
-  /** the first metaheuristic */
-  private static final class MH1
-      extends EA1p1<boolean[], boolean[]> {
-    /** create */
-    MH1() {
-      super();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String toString() {
-      return "a"; //$NON-NLS-1$
-    }
-  }
-
-  /** the second metaheuristic */
-  private static final class MH2
-      extends Greedy2p1GAmod<boolean[]> {
-    /** create */
-    MH2() {
-      super();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String toString() {
-      return "b"; //$NON-NLS-1$
-    }
-  }
-
-  /** the second metaheuristic */
-  private static final class MH3
-      extends Greedy2p1GAmodFFA<boolean[]> {
-    /**
-     * create
-     *
-     * @param upper
-     *          the upper bound
-     */
-    MH3(final int upper) {
-      super(upper);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String toString() {
-      return "c"; //$NON-NLS-1$
     }
   }
 }

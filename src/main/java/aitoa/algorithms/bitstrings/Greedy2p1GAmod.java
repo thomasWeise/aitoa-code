@@ -19,7 +19,8 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  * @param <Y>
  *          the solution space
  */
-public class Greedy2p1GAmod<Y> extends _Greedy2p1GAmodBase<Y> {
+public final class Greedy2p1GAmod<Y>
+    extends _Greedy2p1GAmodBase<Y> {
 
   /** create */
   public Greedy2p1GAmod() {
@@ -251,12 +252,11 @@ public class Greedy2p1GAmod<Y> extends _Greedy2p1GAmodBase<Y> {
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     final String s = "Greedy(2+1)GAmod"; //$NON-NLS-1$
     if (this.c != _Greedy2p1GAmodBase.DEFAULT_C) {
       return s + '_' + Experiment.doubleToStringForName(this.c);
     }
     return s;
   }
-
 }

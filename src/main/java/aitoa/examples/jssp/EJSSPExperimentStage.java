@@ -19,7 +19,6 @@ import aitoa.algorithms.SingleRandomSample;
 import aitoa.algorithms.TemperatureSchedule;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IMetaheuristic;
-import aitoa.utils.Experiment;
 import aitoa.utils.Experiment.IExperimentStage;
 
 /** the stages of the JSSP experiment */
@@ -542,39 +541,5 @@ public enum EJSSPExperimentStage implements
     return Stream.of(//
         () -> new HillClimber2<>(), //
         () -> new HillClimber2WithRestarts<>());
-  }
-
-  /**
-   * the name function
-   *
-   * @param algorithm
-   *          the algorithm
-   * @param builder
-   *          the builder
-   * @return the name
-   */
-  static final String nameFunction(
-      final IMetaheuristic<int[],
-          JSSPCandidateSolution> algorithm,
-      final BlackBoxProcessBuilder<int[],
-          JSSPCandidateSolution> builder) {
-
-    String name =
-        Experiment.defaultSetupName(algorithm, builder);
-
-    if ((algorithm instanceof SingleRandomSample)
-        || (algorithm instanceof RandomSampling)) {
-      return name;
-    }
-
-    name = Experiment.nameFromObjectsMerge(name, Objects
-        .requireNonNull(builder.getUnarySearchOperator()));
-    if ((algorithm instanceof EA)
-        || (algorithm instanceof EAWithPruning)) {
-      name = Experiment.nameFromObjectsMerge(name, Objects
-          .requireNonNull(builder.getBinarySearchOperator()));
-    }
-
-    return name;
   }
 }

@@ -30,7 +30,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public class MA<X, Y> implements IMetaheuristic<X, Y> {
+public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of selected parents */

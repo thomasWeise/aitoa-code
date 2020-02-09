@@ -28,7 +28,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
+public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
   /** create */
   public EA1p1() {
@@ -70,7 +70,7 @@ public class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
+  public final String toString() {
     return "(1+1)-EA"; //$NON-NLS-1$
   }
 

@@ -26,7 +26,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public class EAWithFitness<X, Y>
+public final class EAWithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
 

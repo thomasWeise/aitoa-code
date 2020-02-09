@@ -15,7 +15,30 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import aitoa.algorithms.EA;
+import aitoa.algorithms.EA1p1;
+import aitoa.algorithms.EA1p1WithFitness;
+import aitoa.algorithms.EAWithFitness;
+import aitoa.algorithms.EAWithPruning;
+import aitoa.algorithms.EAWithRestarts;
+import aitoa.algorithms.EDA;
+import aitoa.algorithms.EDAWithFitness;
+import aitoa.algorithms.HillClimber;
+import aitoa.algorithms.HillClimber2;
+import aitoa.algorithms.HillClimber2WithRestarts;
+import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.HybridEDA;
+import aitoa.algorithms.HybridEDAWithFitness;
+import aitoa.algorithms.MA;
+import aitoa.algorithms.MAWithFitness;
+import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
+import aitoa.algorithms.SimulatedAnnealing;
+import aitoa.algorithms.SingleRandomSample;
+import aitoa.algorithms.bitstrings.Greedy2p1GAmod;
+import aitoa.algorithms.bitstrings.Greedy2p1GAmodFFA;
+import aitoa.algorithms.bitstrings.SelfAdjustingOpLcLGAmod;
+import aitoa.algorithms.bitstrings.SelfAdjustingOpLcLGAmodFFA;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -964,7 +987,49 @@ public class Experiment {
   public static final <X, Y> String defaultSetupName(
       final IMetaheuristic<X, Y> algorithm,
       final BlackBoxProcessBuilder<X, Y> builder) {
-    return Experiment.nameFromObjectPrepare(algorithm);
+    final String name =
+        Experiment.nameFromObjectPrepare(algorithm);
+
+    if ((algorithm instanceof RandomSampling) || //
+        (algorithm instanceof SingleRandomSample) || //
+        (algorithm instanceof EDA) || //
+        (algorithm instanceof EDAWithFitness) || //
+        (algorithm instanceof Greedy2p1GAmod) || //
+        (algorithm instanceof Greedy2p1GAmodFFA) || //
+        (algorithm instanceof SelfAdjustingOpLcLGAmod) || //
+        (algorithm instanceof SelfAdjustingOpLcLGAmodFFA)) {
+      return name;
+    }
+
+    if ((algorithm instanceof HillClimber) || //
+        (algorithm instanceof HillClimberWithRestarts) || //
+        (algorithm instanceof HillClimber2) || //
+        (algorithm instanceof HillClimber2WithRestarts) || //
+        (algorithm instanceof EA1p1) || //
+        (algorithm instanceof SimulatedAnnealing) || //
+        (algorithm instanceof HybridEDA) || //
+        (algorithm instanceof HybridEDAWithFitness)) {
+      return Experiment.nameFromObjectsMerge(name, //
+          Objects.requireNonNull(//
+              builder.getUnarySearchOperator()));
+    }
+
+    if ((algorithm instanceof EA) || //
+        (algorithm instanceof EA1p1WithFitness) || //
+        (algorithm instanceof EAWithFitness) || //
+        (algorithm instanceof EAWithPruning) || //
+        (algorithm instanceof EAWithRestarts) || //
+        (algorithm instanceof MA) || //
+        (algorithm instanceof MAWithFitness) || //
+        (algorithm instanceof MAWithPruning)) {
+      return Experiment.nameFromObjectsMerge(name, //
+          Objects.requireNonNull(//
+              builder.getUnarySearchOperator()), //
+          Objects.requireNonNull(//
+              builder.getBinarySearchOperator()));
+    }
+
+    return name;
   }
 
   /**
