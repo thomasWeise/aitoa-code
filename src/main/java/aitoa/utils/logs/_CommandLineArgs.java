@@ -77,6 +77,7 @@ abstract class _CommandLineArgs {
    *
    * @return the success predicate
    */
+  @SuppressWarnings("unchecked")
   static final Predicate<EndResult> _getSuccess() {
     final String goalFunc = Configuration.getString(//
         _CommandLineArgs.PARAM_GOAL_FUNC);

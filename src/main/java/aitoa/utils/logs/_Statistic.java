@@ -61,6 +61,7 @@ abstract class _Statistic {
    * @param value
    *          the value
    */
+  @SuppressWarnings("static-method")
   void _add(final long value) {
     throw new UnsupportedOperationException();
   }
@@ -71,6 +72,7 @@ abstract class _Statistic {
    * @param value
    *          the value
    */
+  @SuppressWarnings("static-method")
   void _add(final double value) {
     throw new UnsupportedOperationException();
   }
