@@ -13,6 +13,8 @@ import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.MA;
+import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
@@ -391,6 +393,48 @@ public enum EJSSPExperimentStage implements
       builder.setUnarySearchOperator(//
           new JSSPUnaryOperator12Swap());
     }
+  },
+
+  /**
+   * the tenth stage: memetic algorithms with the 1-swap operator
+   * with randomized neighbor sampling
+   */
+  STAGE_10 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+      return EJSSPExperimentStage._ma();
+    }
+
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    @Override
+    public void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<int[],
+            JSSPCandidateSolution> builder,
+        final JSSPMakespanObjectiveFunction problem) {
+      super.configureBuilderForProblem(builder, problem);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1SwapU(problem.instance));
+    }
   };
 
   /** the instances to be used */
@@ -541,5 +585,38 @@ public enum EJSSPExperimentStage implements
     return Stream.of(//
         () -> new HillClimber2<>(), //
         () -> new HillClimber2WithRestarts<>());
+  }
+
+  /**
+   * create the memetic algorithms
+   *
+   * @return the memetic algorithms
+   */
+  static final
+      Stream<
+          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
+      _ma() {
+    return Stream.of(//
+        () -> new MA<>(16, 16, Integer.MAX_VALUE), //
+        () -> new MAWithPruning<>(16, 16, Integer.MAX_VALUE), //
+        () -> new MA<>(16, 16, 10), //
+        () -> new MAWithPruning<>(16, 16, 10), //
+        () -> new MA<>(16, 16, 100), //
+        () -> new MAWithPruning<>(16, 16, 100), //
+        //
+        () -> new MA<>(64, 64, Integer.MAX_VALUE), //
+        () -> new MAWithPruning<>(64, 64, Integer.MAX_VALUE), //
+        () -> new MA<>(64, 64, 10), //
+        () -> new MAWithPruning<>(64, 64, 10), //
+        () -> new MA<>(64, 64, 100), //
+        () -> new MAWithPruning<>(64, 64, 100), //
+        //
+        () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
+        () -> new MAWithPruning<>(4096, 4096, Integer.MAX_VALUE), //
+        () -> new MA<>(4096, 4096, 10), //
+        () -> new MAWithPruning<>(4096, 4096, 10), //
+        () -> new MA<>(4096, 4096, 100), //
+        () -> new MAWithPruning<>(4096, 4096, 100) //
+    );
   }
 }

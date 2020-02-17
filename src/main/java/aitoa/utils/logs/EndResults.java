@@ -136,15 +136,17 @@ public final class EndResults {
       }
       if (keepExisting) {
         if (logProgressToConsole) {
-          ConsoleIO.stdout("End result table '" + //$NON-NLS-1$
-              end + "' found.");//$NON-NLS-1$
+          ConsoleIO.stdout(//
+              "End result table '" + //$NON-NLS-1$
+                  end + "' found.");//$NON-NLS-1$
         }
         return end;
       }
       if (logProgressToConsole) {
-        ConsoleIO.stdout("End result table '" + //$NON-NLS-1$
-            end
-            + "' found, but will be deleted and re-created.");//$NON-NLS-1$
+        ConsoleIO.stdout(//
+            "End result table '" + //$NON-NLS-1$
+                end
+                + "' found, but will be deleted and re-created.");//$NON-NLS-1$
       }
       Files.delete(end);
     }
@@ -162,17 +164,18 @@ public final class EndResults {
 
       final Path[] algorithms = IOUtils.subDirectories(in);
       if (logProgressToConsole) {
-        ConsoleIO.stdout("Found " + algorithms.length + //$NON-NLS-1$
-            " potential algorithm directories.");//$NON-NLS-1$
+        ConsoleIO.stdout("Found " //$NON-NLS-1$
+            + algorithms.length//
+            + " potential algorithm directories.");//$NON-NLS-1$
       }
 
       for (final Path algorithm : algorithms) {
         final String algoName =
             algorithm.getFileName().toString().trim();
         if (logProgressToConsole) {
-          ConsoleIO
-              .stdout("Now processing algorithm '" + algoName + //$NON-NLS-1$
-                  "'.");//$NON-NLS-1$
+          ConsoleIO.stdout("Now processing algorithm '" //$NON-NLS-1$
+              + algoName + //
+              "'.");//$NON-NLS-1$
         }
 
         final Path[] instances =
@@ -181,8 +184,9 @@ public final class EndResults {
           final String instName =
               instance.getFileName().toString().trim();
           if (logProgressToConsole) {
-            ConsoleIO
-                .stdout("Now processing instance '" + instName + //$NON-NLS-1$
+            ConsoleIO.stdout(//
+                "Now processing instance '" //$NON-NLS-1$
+                    + instName + //
                     "' for algorithm '" + algoName //$NON-NLS-1$
                     + "'.");//$NON-NLS-1$
           }
@@ -212,8 +216,8 @@ public final class EndResults {
             bw.write(Long.toString(
                 line.m_lastLine.time_last_improvement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long
-                .toString(line.m_lastLine.fe_last_improvement));
+            bw.write(Long.toString(//
+                line.m_lastLine.fe_last_improvement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(
                 Long.toString(line.m_lastLine.improvements));
@@ -318,7 +322,7 @@ public final class EndResults {
     try (final BufferedReader br = Files.newBufferedReader(p)) {
       String algorithm = null;
       String instance = null;
-      String seed = null;
+      long seed;
       double bestF = Double.POSITIVE_INFINITY;
       long totalTime = -1L;
       long totalFEs = -1L;
@@ -328,6 +332,7 @@ public final class EndResults {
       long budgetTime = -1L;
       long budgetFEs = -1L;
       double goalF = Double.POSITIVE_INFINITY;
+      final _Cache cache = new _Cache();
 
       String line2;
       int lineIndex = 0;
@@ -362,6 +367,7 @@ public final class EndResults {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
+          algorithm = cache._string(algorithm);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -371,12 +377,13 @@ public final class EndResults {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
+          instance = cache._string(instance);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          seed = line.substring(lastSemi, nextSemi).trim();
-          RandomUtils.stringToRandSeed(seed);
+          seed = RandomUtils.stringToRandSeed(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //

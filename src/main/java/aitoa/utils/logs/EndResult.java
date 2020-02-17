@@ -63,7 +63,7 @@ public final class EndResult extends Setup {
    *          the goal objective value
    */
   public EndResult(final String _algorithm,
-      final String _instance, final String _seed,
+      final String _instance, final long _seed,
       final double _bestF, final long _totalTime,
       final long _totalFEs, final long _lastImprovementTime,
       final long _lastImprovementFE,

@@ -682,7 +682,7 @@ public class EndResultStatistics {
     }
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
-
+      final _Cache cache = new _Cache();
       String line2;
       int lineIndex = 0;
       String algorithm = null;
@@ -825,6 +825,7 @@ public class EndResultStatistics {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
+          algorithm = cache._string(algorithm);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -834,6 +835,7 @@ public class EndResultStatistics {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
+          instance = cache._string(instance);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //

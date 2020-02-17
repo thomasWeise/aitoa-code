@@ -140,8 +140,8 @@ public final class ErtEcdf {
       endFolder = IOUtils.canonicalizePath(
           out.resolve(ErtEcdf.ERT_ECDF_FOLDER).resolve(ertName));
     } else {
-      endFolder = IOUtils
-          .canonicalizePath(out.resolve(ErtEcdf.ERT_ECDF_FOLDER)
+      endFolder = IOUtils.canonicalizePath(//
+          out.resolve(ErtEcdf.ERT_ECDF_FOLDER)//
               .resolve(ertName).resolve(selectionID));
     }
 

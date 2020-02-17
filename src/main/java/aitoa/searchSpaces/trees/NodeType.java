@@ -219,6 +219,7 @@ public abstract class NodeType<T extends Node>
    *          the node type
    * @see Node#asJava(Appendable)
    */
+  @SuppressWarnings("unchecked")
   public static final <T extends Node> NodeType<T> dummy() {
     return NodeType.DUMMY_TYPE;
   }

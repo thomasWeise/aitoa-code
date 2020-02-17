@@ -51,6 +51,7 @@ public class Node {
    *
    * @return the number of children
    */
+  @SuppressWarnings("static-method")
   public int getChildCount() {
     return 0;
   }
