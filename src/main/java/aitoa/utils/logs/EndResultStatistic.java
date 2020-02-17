@@ -292,6 +292,8 @@ public final class EndResultStatistic
     hc = (31 * hc) + Integer.hashCode(this.successes);
     hc = (31 * hc) + Double.hashCode(this.ertTime);
     hc = (31 * hc) + Double.hashCode(this.ertFEs);
+    hc = (31 * hc) + Objects.hashCode(this.successTime);
+    hc = (31 * hc) + Objects.hashCode(this.successFEs);
     return hc;
   }
 
