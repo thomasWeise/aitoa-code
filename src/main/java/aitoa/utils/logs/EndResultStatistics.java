@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,8 @@ public class EndResultStatistics {
   /** the file name used for end result statistics tables */
   public static final String FILE_NAME = "endResultStatistics"; //$NON-NLS-1$
 
+  /** the setup of the run */
+  private static final String COL_SETUP = ".setup";//$NON-NLS-1$
   /** the column with the number of successes */
   public static final String COL_RUNS = "n.runs";//$NON-NLS-1$
   /** the column with the number of successes */
@@ -44,31 +47,174 @@ public class EndResultStatistics {
   /** the column with the ert fes */
   public static final String COL_ERT_FES = "ert.fes";//$NON-NLS-1$
 
+  /** the statistics about the success FEs */
+  public static final String COL_SUCCESS_FES = "success.fes";//$NON-NLS-1$
+  /** the statistics about the success time */
+  public static final String COL_SUCCESS_TIME = "success.time";//$NON-NLS-1$
+
+  /** the suffix for the minimum column */
+  private static final String COL_MIN = ".min"; //$NON-NLS-1$
+  /** the suffix for the q050 column */
+  private static final String COL_Q050 = ".q050"; //$NON-NLS-1$
+  /** the suffix for the q159 column */
+  private static final String COL_Q159 = ".q159"; //$NON-NLS-1$
+  /** the suffix for the q250 column */
+  private static final String COL_Q250 = ".q250"; //$NON-NLS-1$
+  /** the suffix for the median column */
+  private static final String COL_MEDIAN = ".median"; //$NON-NLS-1$
+  /** the suffix for the q750 column */
+  private static final String COL_Q750 = ".q750"; //$NON-NLS-1$
+  /** the suffix for the q841 column */
+  private static final String COL_Q841 = ".q841"; //$NON-NLS-1$
+  /** the suffix for the q950 column */
+  private static final String COL_Q950 = ".q950"; //$NON-NLS-1$
+  /** the suffix for the maximum column */
+  private static final String COL_MAX = ".max"; //$NON-NLS-1$
+  /** the suffix for the mean column */
+  private static final String COL_MEAN = ".mean"; //$NON-NLS-1$
+  /** the suffix for the sd column */
+  private static final String COL_SD = ".sd";//$NON-NLS-1$
+
   /** the big quantiles */
-  private static final double[] QUANTILES_BIG =
-      { 0d, 0.05d, Statistics.GAUSSIAN_QUANTILE_159, 0.25d, 0.5d,
-          0.75d, Statistics.GAUSSIAN_QUANTILE_841, 0.95d, 1d };
+  private static final double[] QUANTILES_BIG = { //
+      0d, //
+      0.05d, //
+      Statistics.GAUSSIAN_QUANTILE_159, //
+      0.25d, //
+      0.5d, //
+      0.75d, //
+      Statistics.GAUSSIAN_QUANTILE_841, //
+      0.95d, //
+      1d };//
 
   /**
    * create the default header for a given key
    *
    * @param key
    *          the key
+   * @param addSetupCols
+   *          should we add setup columns?
    * @return the header
    */
-  private static String __makeHeaderBig(final String key) {
-    return LogFormat.joinLogLine(//
-        key + ".min", //$NON-NLS-1$
-        key + ".q050", //$NON-NLS-1$
-        key + ".q159", //$NON-NLS-1$
-        key + ".q250", //$NON-NLS-1$
-        key + ".median", //$NON-NLS-1$
-        key + ".q750", //$NON-NLS-1$
-        key + ".q841", //$NON-NLS-1$
-        key + ".q950", //$NON-NLS-1$
-        key + ".max", //$NON-NLS-1$
-        key + ".mean", //$NON-NLS-1$
-        key + ".sd");//$NON-NLS-1$
+  private static String __makeHeaderBig(final String key,
+      final boolean addSetupCols) {
+    String[] cols = { key + EndResultStatistics.COL_MIN, //
+        key + EndResultStatistics.COL_Q050, //
+        key + EndResultStatistics.COL_Q159, //
+        key + EndResultStatistics.COL_Q250, //
+        key + EndResultStatistics.COL_MEDIAN, //
+        key + EndResultStatistics.COL_Q750, //
+        key + EndResultStatistics.COL_Q841, //
+        key + EndResultStatistics.COL_Q950, //
+        key + EndResultStatistics.COL_MAX, //
+        key + EndResultStatistics.COL_MEAN, //
+        key + EndResultStatistics.COL_SD };
+    // expand the columns
+    if (addSetupCols) {
+      final int len = cols.length - 1;
+      final String[] tmp = new String[(len * 2) + 1];
+
+      int i = 0;
+      int j = 0;
+      for (; i < len; ++i) {
+        final String s = cols[i];
+        tmp[j++] = s;
+        tmp[j++] = s + EndResultStatistics.COL_SETUP;
+      }
+      tmp[j++] = cols[i];
+      cols = tmp;
+    }
+    return LogFormat.joinLogLine(cols);
+  }
+
+  /**
+   * find the setup with a result closest to the given value
+   *
+   * @param value
+   *          the value
+   * @param unique
+   *          the list of unique setups
+   * @return the chosen, closest value
+   */
+  private static final Setup __closestSetup(//
+      final double value, //
+      final __Holder.__InnerSetup[] unique) {//
+
+    int lower = 0;
+    int upper = unique.length - 1;
+    int mid = lower;
+
+    // first, do binary search
+    while (lower <= upper) {
+      mid = (lower + upper) >>> 1;
+      final __Holder.__InnerSetup midVal = unique[mid];
+      if (midVal.m_bestF2 < value) {
+        lower = mid + 1;
+      } else {
+        if (midVal.m_bestF2 > value) {
+          upper = mid - 1;
+        } else {
+          return midVal;
+        }
+      }
+    }
+
+    // second: try to re-adjust
+    __Holder.__InnerSetup best = unique[mid];
+    double testVal = best.m_bestF2;
+    if (testVal == value) {
+      return best;
+    }
+    final double bestDist = Math.abs(testVal - value);
+    if (bestDist <= 0d) {
+      return best;
+    }
+    lower = mid;
+    upper = mid;
+
+    // test towards lower indices
+    int lenience = 2;
+    while ((--lower) >= 0) {
+      final __Holder.__InnerSetup test = unique[lower];
+      testVal = test.m_bestF2;
+      if (testVal == value) {
+        return test;
+      }
+      final double testDist = Math.abs(testVal - value);
+      if (testDist <= 0d) {
+        return test;
+      }
+      if (testDist < bestDist) {
+        best = test;
+      } else {
+        if ((--lenience) <= 0) {
+          break;
+        }
+      }
+    }
+
+    // test towards higher indices
+    lenience = 2;
+    while ((++upper) < unique.length) {
+      final __Holder.__InnerSetup test = unique[upper];
+      testVal = test.m_bestF2;
+      if (testVal == value) {
+        return test;
+      }
+      final double testDist = Math.abs(testVal - value);
+      if (testDist <= 0d) {
+        return test;
+      }
+      if (testDist < bestDist) {
+        best = test;
+      } else {
+        if ((--lenience) <= 0) {
+          break;
+        }
+      }
+    }
+
+    return best;
   }
 
   /**
@@ -78,24 +224,54 @@ public class EndResultStatistics {
    *          the data
    * @param quantiles
    *          the quantiles to use,
+   * @param unique
+   *          the unique points
+   * @param min
+   *          the minimum setup
+   * @param max
+   *          the maximum setup
    * @param bw
    *          the destination
    * @return the mean
    * @throws IOException
    *           if i/o fails
    */
-  private static final Number __printStat(final _Statistic data,
-      final double[] quantiles, final BufferedWriter bw)
-      throws IOException {
+  private static final Number __printStat(//
+      final _Statistic data, //
+      final double[] quantiles, //
+      final __Holder.__InnerSetup[] unique, //
+      final Setup min, //
+      final Setup max, //
+      final BufferedWriter bw) throws IOException {
     for (final double d : quantiles) {
-      bw.write(
-          LogFormat.numberToStringForLog(data._quantile(d)));
+      final Number quantile = data._quantile(d);
+      bw.write(LogFormat.numberToStringForLog(quantile));
       bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+      if (unique != null) {
+        bw.write(EndResultStatistics.__closestSetup(//
+            quantile.doubleValue(), unique).toString());
+        bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+      } else {
+        if ((d <= 0d) && (min != null)) {
+          bw.write(min.toString());
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+        } else {
+          if ((d >= 1d) && (max != null)) {
+            bw.write(max.toString());
+            bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          }
+        }
+      }
     }
     final Number[] res = data._meanAndStdDev();
     final Number mean = Objects.requireNonNull(res[0]);
     bw.write(LogFormat.numberToStringForLog(mean));
     bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+    if (unique != null) {
+      bw.write(EndResultStatistics.__closestSetup(//
+          mean.doubleValue(), unique).toString());
+      bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+    }
     bw.write(LogFormat.numberToStringForLog(//
         Objects.requireNonNull(res[1])));
     return mean;
@@ -110,15 +286,31 @@ public class EndResultStatistics {
    *
    * @param key
    *          the key
+   * @param addSetupCols
+   *          do we need the setup columns?
    * @return the header
    */
-  private static String __makeHeaderSmall(final String key) {
+  private static String __makeHeaderSmall(final String key,
+      final boolean addSetupCols) {
+
+    if (addSetupCols) {
+      final String s, t;
+      return LogFormat.joinLogLine(//
+          s = key + EndResultStatistics.COL_MIN, //
+          s + EndResultStatistics.COL_SETUP, //
+          key + EndResultStatistics.COL_MEDIAN, //
+          t = key + EndResultStatistics.COL_MAX, //
+          t + EndResultStatistics.COL_SETUP, //
+          key + EndResultStatistics.COL_MEAN, //
+          key + EndResultStatistics.COL_SD);
+    }
+
     return LogFormat.joinLogLine(//
-        key + ".min", //$NON-NLS-1$
-        key + ".median", //$NON-NLS-1$
-        key + ".max", //$NON-NLS-1$
-        key + ".mean", //$NON-NLS-1$
-        key + ".sd");//$NON-NLS-1$
+        key + EndResultStatistics.COL_MIN, //
+        key + EndResultStatistics.COL_MEDIAN, //
+        key + EndResultStatistics.COL_MAX, //
+        key + EndResultStatistics.COL_MEAN, //
+        key + EndResultStatistics.COL_SD);
   }
 
   /** the internal header */
@@ -126,24 +318,29 @@ public class EndResultStatistics {
       EndResults.COL_ALGORITHM, //
       EndResults.COL_INSTANCE, //
       EndResultStatistics.COL_RUNS,
-      EndResultStatistics.__makeHeaderBig(EndResults.COL_BEST_F), //
+      EndResultStatistics.__makeHeaderBig(EndResults.COL_BEST_F,
+          true), //
       EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_TOTAL_TIME), //
+          .__makeHeaderBig(EndResults.COL_TOTAL_TIME, false), //
       EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_TOTAL_FES), //
-      EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_LAST_IMPROVEMENT_TIME), //
-      EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_LAST_IMPROVEMENT_FES), //
+          .__makeHeaderBig(EndResults.COL_TOTAL_FES, false), //
       EndResultStatistics.__makeHeaderBig(
-          EndResults.COL_NUMBER_OF_IMPROVEMENTS), //
+          EndResults.COL_LAST_IMPROVEMENT_TIME, false), //
+      EndResultStatistics.__makeHeaderBig(
+          EndResults.COL_LAST_IMPROVEMENT_FES, false), //
+      EndResultStatistics.__makeHeaderBig(
+          EndResults.COL_NUMBER_OF_IMPROVEMENTS, false), //
       EndResultStatistics
-          .__makeHeaderSmall(EndResults.COL_BUDGET_TIME), //
+          .__makeHeaderSmall(EndResults.COL_BUDGET_TIME, false), //
       EndResultStatistics
-          .__makeHeaderSmall(EndResults.COL_BUDGET_FES), //
+          .__makeHeaderSmall(EndResults.COL_BUDGET_FES, false), //
       EndResultStatistics.COL_SUCCESSES, //
       EndResultStatistics.COL_ERT_TIME, //
-      EndResultStatistics.COL_ERT_FES//
+      EndResultStatistics.COL_ERT_FES, //
+      EndResultStatistics.__makeHeaderSmall(
+          EndResultStatistics.COL_SUCCESS_TIME, true), //
+      EndResultStatistics.__makeHeaderSmall(
+          EndResultStatistics.COL_SUCCESS_FES, true)//
   );
 
   /**
@@ -256,6 +453,10 @@ public class EndResultStatistics {
         __Holder h = results[i];
         results[i] = null;
 
+        if (!h.m_finalized) {
+          throw new IllegalStateException();
+        }
+
         bw.write(h.algorithm);
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
         bw.write(h.instance);
@@ -279,17 +480,24 @@ public class EndResultStatistics {
         bw.write(Integer.toString(runs));
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        EndResultStatistics.__printStat(h.m_bestF,
-            EndResultStatistics.QUANTILES_BIG, bw);
+        EndResultStatistics.__printStat(//
+            h.m_bestF, //
+            EndResultStatistics.QUANTILES_BIG, //
+            h.m_uniqueBestF, null, null, //
+            bw);
         h.m_bestF = null;
+        h.m_uniqueBestF = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
         if (h.m_totalTime.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(h.m_totalTime,
-            EndResultStatistics.QUANTILES_BIG, bw);
+        EndResultStatistics.__printStat(//
+            h.m_totalTime, //
+            EndResultStatistics.QUANTILES_BIG, //
+            null, null, null, //
+            bw);
         h.m_totalTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -297,8 +505,11 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(h.m_totalFEs,
-            EndResultStatistics.QUANTILES_BIG, bw);
+        EndResultStatistics.__printStat(//
+            h.m_totalFEs, //
+            EndResultStatistics.QUANTILES_BIG, //
+            null, null, null, //
+            bw);
         h.m_totalFEs = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -307,9 +518,11 @@ public class EndResultStatistics {
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         final Number lastImprovementTimeMean = //
-            EndResultStatistics.__printStat(
-                h.m_lastImprovementTime,
-                EndResultStatistics.QUANTILES_BIG, bw);
+            EndResultStatistics.__printStat(//
+                h.m_lastImprovementTime, //
+                EndResultStatistics.QUANTILES_BIG, //
+                null, null, null, //
+                bw);
         h.m_lastImprovementTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -317,9 +530,12 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        final Number lastImprovementFEMean = EndResultStatistics
-            .__printStat(h.m_lastImprovementFE,
-                EndResultStatistics.QUANTILES_BIG, bw);
+        final Number lastImprovementFEMean =
+            EndResultStatistics.__printStat(//
+                h.m_lastImprovementFE, //
+                EndResultStatistics.QUANTILES_BIG, //
+                null, null, null, //
+                bw);
         h.m_lastImprovementFE = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -327,8 +543,11 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(h.m_numberOfImprovements,
-            EndResultStatistics.QUANTILES_BIG, bw);
+        EndResultStatistics.__printStat(//
+            h.m_numberOfImprovements, //
+            EndResultStatistics.QUANTILES_BIG, //
+            null, null, null, //
+            bw);
         h.m_numberOfImprovements = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -336,8 +555,11 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(h.m_budgetTime,
-            EndResultStatistics.QUANTILES_SMALL, bw);
+        EndResultStatistics.__printStat(//
+            h.m_budgetTime, //
+            EndResultStatistics.QUANTILES_SMALL, //
+            null, null, null, //
+            bw);
         h.m_budgetTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -345,8 +567,11 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(h.m_budgetFEs,
-            EndResultStatistics.QUANTILES_SMALL, bw);
+        EndResultStatistics.__printStat(//
+            h.m_budgetFEs, //
+            EndResultStatistics.QUANTILES_SMALL, //
+            null, null, null, //
+            bw);
         h.m_budgetFEs = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
@@ -355,11 +580,11 @@ public class EndResultStatistics {
 
         if (h.m_successes > 0) {
           if (allSuccess) {
-            bw.write(LogFormat
-                .numberToStringForLog(lastImprovementTimeMean));
+            bw.write(LogFormat.numberToStringForLog(//
+                lastImprovementTimeMean));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(LogFormat
-                .numberToStringForLog(lastImprovementFEMean));
+            bw.write(LogFormat.numberToStringForLog(//
+                lastImprovementFEMean));
           } else {
             bw.write(LogFormat.numberToStringForLog(
                 h.m_ertTime._divideSumBy(h.m_successes)));
@@ -367,12 +592,52 @@ public class EndResultStatistics {
             bw.write(LogFormat.numberToStringForLog(
                 h.m_ertFEs._divideSumBy(h.m_successes)));
           }
+
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          EndResultStatistics.__printStat(//
+              h.m_successTime, //
+              EndResultStatistics.QUANTILES_SMALL, //
+              null, //
+              h.m_fastestSuccessTimeSetup, //
+              h.m_slowestSuccessTimeSetup, //
+              bw);
+          h.m_successTime = null;
+          h.m_fastestSuccessTimeSetup = null;
+          h.m_slowestSuccessTimeSetup = null;
+
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          EndResultStatistics.__printStat(//
+              h.m_successFEs, //
+              EndResultStatistics.QUANTILES_SMALL, //
+              null, //
+              h.m_fastestSuccessFEsSetup, //
+              h.m_slowestSuccessFEsSetup, //
+              bw);
+          h.m_successFEs = null;
+          h.m_fastestSuccessFEsSetup = null;
+          h.m_slowestSuccessFEsSetup = null;
+
         } else {
           final String s =
               Double.toString(Double.POSITIVE_INFINITY);
           bw.write(s);
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
           bw.write(s);
+
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
+          bw.write(LogFormat.CSV_SEPARATOR_CHAR);
         }
         h.m_ertFEs = null;
         h.m_ertTime = null;
@@ -424,16 +689,27 @@ public class EndResultStatistics {
       String instance = null;
       int runs = -1;
       double bestF_min = Double.NaN;
+      Setup bestF_min_setup = null;
       double bestF_q050 = Double.NaN;
+      Setup bestF_q050_setup = null;
       double bestF_q159 = Double.NaN;
+      Setup bestF_q159_setup = null;
       double bestF_q250 = Double.NaN;
+      Setup bestF_q250_setup = null;
       double bestF_median = Double.NaN;
+      Setup bestF_median_setup = null;
       double bestF_q750 = Double.NaN;
+      Setup bestF_q750_setup = null;
       double bestF_q841 = Double.NaN;
+      Setup bestF_q841_setup = null;
       double bestF_q950 = Double.NaN;
+      Setup bestF_q950_setup = null;
       double bestF_max = Double.NaN;
+      Setup bestF_max_setup = null;
       double bestF_mean = Double.NaN;
+      Setup bestF_mean_setup = null;
       double bestF_sd = Double.NaN;
+
       long totalTime_min = -1L;
       double totalTime_q050 = Double.NaN;
       double totalTime_q159 = Double.NaN;
@@ -503,6 +779,22 @@ public class EndResultStatistics {
       double ertTime = Double.NaN;
       double ertFEs = Double.NaN;
 
+      long successTime_min = -1L;
+      Setup successTime_min_setup = null;
+      double successTime_median = Double.NaN;
+      long successTime_max = -1L;
+      Setup successTime_max_setup = null;
+      double successTime_mean = Double.NaN;
+      double successTime_sd = Double.NaN;
+
+      long successFEs_min = -1L;
+      Setup successFEs_min_setup = null;
+      double successFEs_median = Double.NaN;
+      long successFEs_max = -1L;
+      Setup successFEs_max_setup = null;
+      double successFEs_mean = Double.NaN;
+      double successFEs_sd = Double.NaN;
+
       while ((line2 = br.readLine()) != null) {
         ++lineIndex;
         if (line2.isEmpty()) {
@@ -568,6 +860,12 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
+          bestF_min_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
           bestF_q050 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (!Double.isFinite(bestF_q050)) {
@@ -581,6 +879,12 @@ public class EndResultStatistics {
                     ") must be greater or equal to bestF.min ("//$NON-NLS-1$
                     + bestF_min + ").");//$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          bestF_q050_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -602,6 +906,12 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
+          bestF_q159_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
           bestF_q250 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (!Double.isFinite(bestF_q250)) {
@@ -615,6 +925,12 @@ public class EndResultStatistics {
                     ") must be greater or equal to bestF.q159 ("//$NON-NLS-1$
                     + bestF_q159 + ").");//$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          bestF_q250_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -636,6 +952,12 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
+          bestF_median_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
           bestF_q750 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (!Double.isFinite(bestF_q750)) {
@@ -649,6 +971,12 @@ public class EndResultStatistics {
                     ") must be greater or equal to bestF.median ("//$NON-NLS-1$
                     + bestF_median + ").");//$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          bestF_q750_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -670,6 +998,12 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
+          bestF_q841_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
           bestF_q950 = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (!Double.isFinite(bestF_q950)) {
@@ -683,6 +1017,12 @@ public class EndResultStatistics {
                     ") must be greater or equal to bestF.q841 ("//$NON-NLS-1$
                     + bestF_q841 + ").");//$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          bestF_q950_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -704,6 +1044,12 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
+          bestF_max_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
           bestF_mean = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (!Double.isFinite(bestF_mean)) {
@@ -718,6 +1064,12 @@ public class EndResultStatistics {
                     ") must be inside [bestF.min, bestF.max], i.e., ("//$NON-NLS-1$
                     + bestF_min) + ',') + bestF_max + ").");//$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+              ++lastSemi);
+          bestF_mean_setup = new Setup(
+              line.substring(lastSemi, nextSemi).trim());
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -1894,10 +2246,6 @@ public class EndResultStatistics {
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
               ++lastSemi);
-          if (nextSemi >= 0) {
-            throw new IllegalStateException("too many columns!");//$NON-NLS-1$
-          }
-          nextSemi = line.length();
           ertFEs = Double.parseDouble(
               line.substring(lastSemi, nextSemi).trim());
           if (((!Double.isFinite(ertFEs))
@@ -1913,14 +2261,243 @@ public class EndResultStatistics {
                     ertFEs + " if there are " //$NON-NLS-1$
                     + successes + " successes."); //$NON-NLS-1$
           }
+          lastSemi = nextSemi;
+
+          if (successes > 0) {
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_min = Long.parseLong(
+                line.substring(lastSemi, nextSemi).trim());
+            if (successTime_min < 0L) {
+              throw new IllegalArgumentException(
+                  "successTime.min must be >=0, but is " //$NON-NLS-1$
+                      + successTime_min);
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_min_setup = new Setup(
+                line.substring(lastSemi, nextSemi).trim());
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_median = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successTime_median)) {
+              throw new IllegalArgumentException(
+                  "successTime.median must be finite, but is " //$NON-NLS-1$
+                      + successTime_median);
+            }
+            if (successTime_median < successTime_min) {
+              throw new IllegalArgumentException(
+                  "successTime.median (" + successTime_median + //$NON-NLS-1$
+                      ") must be greater or equal to successTime.min ("//$NON-NLS-1$
+                      + successTime_min + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_max = Long.parseLong(
+                line.substring(lastSemi, nextSemi).trim());
+            if (successTime_max < 0L) {
+              throw new IllegalArgumentException(
+                  "successTime.max must be >=0, but is " //$NON-NLS-1$
+                      + successTime_max);
+            }
+            if (successTime_max < successTime_median) {
+              throw new IllegalArgumentException(
+                  "successTime.max (" + successTime_max + //$NON-NLS-1$
+                      ") must be greater or equal to successTime.median ("//$NON-NLS-1$
+                      + successTime_median + ").");//$NON-NLS-1$
+            }
+            if (successTime_max > lastImprovementTime_max) {
+              throw new IllegalArgumentException(
+                  "successTime.max (" + successTime_max + //$NON-NLS-1$
+                      ") must be less or equal to lastImprovementTime.max ("//$NON-NLS-1$
+                      + lastImprovementTime_max + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_max_setup = new Setup(
+                line.substring(lastSemi, nextSemi).trim());
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_mean = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successTime_mean)) {
+              throw new IllegalArgumentException(
+                  "successTime.mean must be finite, but is " //$NON-NLS-1$
+                      + successTime_mean);
+            }
+            if ((successTime_max < successTime_mean)
+                || (successTime_min > successTime_mean)) {
+              throw new IllegalArgumentException(
+                  (("successTime.mean (" + successTime_mean + //$NON-NLS-1$
+                      ") must be inside [successTime.min, successTime.max], i.e., ("//$NON-NLS-1$
+                      + successTime_min) + ',') + successTime_max
+                      + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successTime_sd = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successTime_sd)
+                || (successTime_sd < 0d)) {
+              throw new IllegalArgumentException(
+                  "successTime.sd must be finite and >=0, but is " //$NON-NLS-1$
+                      + successTime_sd);
+            }
+            if ((successTime_max > successTime_min) == (successTime_sd <= 0d)) {
+              throw new IllegalArgumentException(
+                  "successTime.sd=" + successTime_sd + //$NON-NLS-1$
+                      " impossible for successTime.min=" + //$NON-NLS-1$
+                      successTime_min + " and successTime.max="//$NON-NLS-1$
+                      + successTime_max + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_min = Long.parseLong(
+                line.substring(lastSemi, nextSemi).trim());
+            if (successFEs_min <= 0L) {
+              throw new IllegalArgumentException(
+                  "successFEs.min must be >0, but is " //$NON-NLS-1$
+                      + successFEs_min);
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_min_setup = new Setup(
+                line.substring(lastSemi, nextSemi).trim());
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_median = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successFEs_median)) {
+              throw new IllegalArgumentException(
+                  "successFEs.median must be finite, but is " //$NON-NLS-1$
+                      + successFEs_median);
+            }
+            if (successFEs_median < successFEs_min) {
+              throw new IllegalArgumentException(
+                  "successFEs.median (" + successFEs_median + //$NON-NLS-1$
+                      ") must be greater or equal to successFEs.min ("//$NON-NLS-1$
+                      + successFEs_min + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_max = Long.parseLong(
+                line.substring(lastSemi, nextSemi).trim());
+            if (successFEs_max <= 0L) {
+              throw new IllegalArgumentException(
+                  "successFEs.max must be >0, but is " //$NON-NLS-1$
+                      + successFEs_max);
+            }
+            if (successFEs_max < successFEs_median) {
+              throw new IllegalArgumentException(
+                  "successFEs.max (" + successFEs_max + //$NON-NLS-1$
+                      ") must be greater or equal to successFEs.median ("//$NON-NLS-1$
+                      + successFEs_median + ").");//$NON-NLS-1$
+            }
+            if (successFEs_max > lastImprovementFE_max) {
+              throw new IllegalArgumentException(
+                  "successFEs.max (" + successFEs_max + //$NON-NLS-1$
+                      ") must be less or equal to lastImprovementFE_max ("//$NON-NLS-1$
+                      + lastImprovementFE_max + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_max_setup = new Setup(
+                line.substring(lastSemi, nextSemi).trim());
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            successFEs_mean = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successFEs_mean)) {
+              throw new IllegalArgumentException(
+                  "successFEs.mean must be finite, but is " //$NON-NLS-1$
+                      + successFEs_mean);
+            }
+            if ((successFEs_max < successFEs_mean)
+                || (successFEs_min > successFEs_mean)) {
+              throw new IllegalArgumentException(
+                  (("successFEs.mean (" + successFEs_mean + //$NON-NLS-1$
+                      ") must be inside [successFEs.min, successFEs.max], i.e., ("//$NON-NLS-1$
+                      + successFEs_min) + ',') + successFEs_max
+                      + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+
+            nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
+                ++lastSemi);
+            if (nextSemi >= 0) {
+              throw new IllegalStateException(
+                  "too many columns!");//$NON-NLS-1$
+            }
+            nextSemi = line.length();
+            successFEs_sd = Double.parseDouble(
+                line.substring(lastSemi, nextSemi).trim());
+            if (!Double.isFinite(successFEs_sd)
+                || (successFEs_sd < 0d)) {
+              throw new IllegalArgumentException(
+                  "successFEs.sd must be finite and >=0, but is " //$NON-NLS-1$
+                      + successFEs_sd);
+            }
+            if ((successFEs_max > successFEs_min) == (successFEs_sd <= 0d)) {
+              throw new IllegalArgumentException(
+                  "successFEs.sd=" + successFEs_sd + //$NON-NLS-1$
+                      " impossible for successFEs.min=" + //$NON-NLS-1$
+                      successFEs_min + " and successFEs.max="//$NON-NLS-1$
+                      + successFEs_max + ").");//$NON-NLS-1$
+            }
+            lastSemi = nextSemi;
+          }
 
           consumer.accept(new EndResultStatistic(algorithm, //
               instance, //
               runs, //
               new EndResultStatistic.DoubleStatisticsBig(
-                  bestF_min, bestF_q050, bestF_q159, bestF_q250,
-                  bestF_median, bestF_q750, bestF_q841,
-                  bestF_q950, bestF_max, bestF_mean, bestF_sd), //
+                  bestF_min, //
+                  bestF_min_setup, //
+                  bestF_q050, //
+                  bestF_q050_setup, //
+                  bestF_q159, //
+                  bestF_q159_setup, //
+                  bestF_q250, //
+                  bestF_q250_setup, //
+                  bestF_median, //
+                  bestF_median_setup, //
+                  bestF_q750, //
+                  bestF_q750_setup, //
+                  bestF_q841, //
+                  bestF_q841_setup, //
+                  bestF_q950, //
+                  bestF_q950_setup, //
+                  bestF_max, //
+                  bestF_max_setup, //
+                  bestF_mean, //
+                  bestF_mean_setup, //
+                  bestF_sd), //
               new EndResultStatistic.IntStatisticsBig(
                   totalTime_min, totalTime_q050, totalTime_q159,
                   totalTime_q250, totalTime_median,
@@ -1971,8 +2548,25 @@ public class EndResultStatistics {
                   budgetFEs_mean, budgetFEs_sd), //
               successes, //
               ertTime, //
-              ertFEs//
-          ));
+              ertFEs, //
+              (successes <= 0) ? null : //
+                  new EndResultStatistic.IntStatisticsSmallWithSetups(
+                      successTime_min, //
+                      successTime_min_setup, //
+                      successTime_median, //
+                      successTime_max, //
+                      successTime_max_setup, //
+                      successTime_mean, //
+                      successTime_sd), //
+              (successes <= 0) ? null : //
+                  new EndResultStatistic.IntStatisticsSmallWithSetups(
+                      successFEs_min, //
+                      successFEs_min_setup, //
+                      successFEs_median, //
+                      successFEs_max, //
+                      successFEs_max_setup, //
+                      successFEs_mean, //
+                      successFEs_sd)));
         } catch (final Throwable error) {
           throw new IOException(//
               "Line " + lineIndex //$NON-NLS-1$
@@ -2085,10 +2679,30 @@ public class EndResultStatistics {
     /** the instance */
     final String instance;
 
-    /** the seeds */
-    private HashSet<String> m_seeds;
+    /** the setups */
+    private HashSet<__InnerSetup> m_setups;
+    /** the unique best f setups */
+    __InnerSetup[] m_uniqueBestF;
+
     /** the success predicate */
     private Predicate<EndResult> m_success;
+
+    /** the fastest successful run in terms of runtime */
+    Setup m_fastestSuccessTimeSetup;
+    /** the fastest successful run in terms of runtime */
+    long m_fastestSuccessTime;
+    /** the slowest successful run in terms of runtime */
+    Setup m_slowestSuccessTimeSetup;
+    /** the slowest successful run in terms of runtime */
+    long m_slowestSuccessTime;
+    /** the fastest successful run in terms of runFEs */
+    Setup m_fastestSuccessFEsSetup;
+    /** the fastest successful run in terms of runFEs */
+    long m_fastestSuccessFEs;
+    /** the slowest successful run in terms of runFEs */
+    Setup m_slowestSuccessFEsSetup;
+    /** the slowest successful run in terms of runFEs */
+    long m_slowestSuccessFEs;
 
     /** the best-f statistic */
     _Statistic m_bestF;
@@ -2110,8 +2724,15 @@ public class EndResultStatistics {
     _Statistic m_ertTime;
     /** the empirical expected running FEs statistic */
     _Statistic m_ertFEs;
+    /** the success FEs */
+    _Statistic m_successFEs;
+    /** the success time */
+    _Statistic m_successTime;
+
     /** the number of successes */
     int m_successes;
+    /** are we finalized? */
+    boolean m_finalized;
 
     /**
      * create the holder
@@ -2127,7 +2748,7 @@ public class EndResultStatistics {
         final Predicate<EndResult> success) {
       this.algorithm = Objects.requireNonNull(_algo);
       this.instance = Objects.requireNonNull(_inst);
-      this.m_seeds = new HashSet<>();
+      this.m_setups = new HashSet<>();
 
       this.m_bestF = new _Doubles();
       this.m_totalTime = new _Longs();
@@ -2139,7 +2760,13 @@ public class EndResultStatistics {
       this.m_budgetFEs = new _Longs();
       this.m_ertTime = new _Longs();
       this.m_ertFEs = new _Longs();
+      this.m_successFEs = new _Longs();
+      this.m_successTime = new _Longs();
       this.m_success = Objects.requireNonNull(success);
+      this.m_fastestSuccessFEs = Long.MAX_VALUE;
+      this.m_slowestSuccessFEs = Long.MIN_VALUE;
+      this.m_fastestSuccessTime = Long.MAX_VALUE;
+      this.m_slowestSuccessTime = Long.MIN_VALUE;
     }
 
     /** {@inheritDoc} */
@@ -2165,9 +2792,7 @@ public class EndResultStatistics {
     /** {@inheritDoc} */
     @Override
     public final void accept(final EndResult t) {
-      final boolean newSeed = this.m_seeds.add(t.seed);
-      if ((!newSeed) && t.instance.equals(this.instance)
-          && t.algorithm.equals(this.algorithm)) {
+      if (!this.m_setups.add(new __InnerSetup(t))) {
         throw new IllegalStateException("Seed '" + //$NON-NLS-1$
             t.seed + "' appears twice for algorithm '"//$NON-NLS-1$
             + t.algorithm + "' on instance '"//$NON-NLS-1$
@@ -2187,6 +2812,33 @@ public class EndResultStatistics {
         ++this.m_successes;
         this.m_ertTime._add(t.lastImprovementTime);
         this.m_ertFEs._add(t.lastImprovementFE);
+        this.m_successFEs._add(t.lastImprovementFE);
+        this.m_successTime._add(t.lastImprovementTime);
+
+        Setup use = null;
+        if (t.lastImprovementFE < this.m_fastestSuccessFEs) {
+          this.m_fastestSuccessFEs = t.lastImprovementFE;
+          this.m_fastestSuccessFEsSetup = use = new Setup(t);
+        }
+
+        if (t.lastImprovementFE > this.m_slowestSuccessFEs) {
+          this.m_slowestSuccessFEs = t.lastImprovementFE;
+          this.m_slowestSuccessFEsSetup =
+              ((use == null) ? (use = new Setup(t)) : use);
+        }
+
+        if (t.lastImprovementTime < this.m_fastestSuccessTime) {
+          this.m_fastestSuccessTime = t.lastImprovementTime;
+          this.m_fastestSuccessTimeSetup =
+              ((use == null) ? (use = new Setup(t)) : use);
+        }
+
+        if (t.lastImprovementTime > this.m_slowestSuccessTime) {
+          this.m_slowestSuccessTime = t.lastImprovementTime;
+          this.m_slowestSuccessTimeSetup =
+              ((use == null) ? (use = new Setup(t)) : use);
+        }
+
       } else {
         this.m_ertTime._add(t.totalTime);
         this.m_ertFEs._add(t.totalFEs);
@@ -2195,8 +2847,24 @@ public class EndResultStatistics {
 
     /** finalize */
     final void _finalize() {
-      this.m_seeds.clear();
-      this.m_seeds = null;
+      if (this.m_finalized) {
+        throw new IllegalStateException();
+      }
+      this.m_finalized = true;
+
+      final HashSet<__InnerSetup> data = this.m_setups;
+      this.m_setups = null;
+      final __InnerSetup[] tmp =
+          data.toArray(new __InnerSetup[data.size()]);
+      data.clear();
+      for (final __InnerSetup s : tmp) {
+        data.add(s);
+      }
+      data.toArray(tmp);
+      Arrays.sort(
+          this.m_uniqueBestF = Arrays.copyOf(tmp, data.size()));
+      data.clear();
+
       this.m_success = null;
 
       this.m_bestF = this.m_bestF._finalize();
@@ -2212,6 +2880,63 @@ public class EndResultStatistics {
       this.m_budgetFEs = this.m_budgetFEs._finalize();
       this.m_ertTime = this.m_ertTime._finalize();
       this.m_ertFEs = this.m_ertFEs._finalize();
+
+      if (this.m_successes > 0) {
+        this.m_successFEs = this.m_successFEs._finalize();
+        this.m_successTime = this.m_successTime._finalize();
+      } else {
+        this.m_successFEs = null;
+        this.m_successTime = null;
+      }
+    }
+
+    /** the inner setup */
+    private final class __InnerSetup extends Setup {
+      /** the inner setup */
+      final double m_bestF2;
+
+      /**
+       * create the inner setup
+       *
+       * @param e
+       *          the end result record
+       */
+      __InnerSetup(final EndResult e) {
+        super(e);
+        this.m_bestF2 = e.bestF;
+      }
+
+      /** {@inheritDoc} */
+      @Override
+      public final int hashCode() {
+        if (__Holder.this.m_finalized) {
+          return Double.hashCode(this.m_bestF2);
+        }
+        return super.hashCode();
+      }
+
+      /** {@inheritDoc} */
+      @Override
+      public final boolean equals(final Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (__Holder.this.m_finalized) {
+          return Double.compare(this.m_bestF2,
+              ((__InnerSetup) o).m_bestF2) == 0;
+        }
+        return super.equals(o);
+      }
+
+      /** {@inheritDoc} */
+      @Override
+      public final int compareTo(final Setup s) {
+        if (__Holder.this.m_finalized) {
+          return Double.compare(this.m_bestF2,
+              ((__InnerSetup) s).m_bestF2);
+        }
+        return super.compareTo(s);
+      }
     }
   }
 

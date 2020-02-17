@@ -43,6 +43,16 @@ public final class EndResultStatistic
   public final double ertTime;
   /** the empirical expected FEs to success */
   public final double ertFEs;
+  /**
+   * statistics regarding the last improvement time of successful
+   * runs, or {@code null} if no run was successful
+   */
+  public final IntStatisticsSmallWithSetups successTime;
+  /**
+   * statistics regarding the last improvement FE of successful
+   * runs, or {@code null} if no run was successful
+   */
+  public final IntStatisticsSmallWithSetups successFEs;
 
   /**
    * create
@@ -75,6 +85,14 @@ public final class EndResultStatistic
    *          the expected running time in ms
    * @param _ertFEs
    *          the expected running time in FEs
+   * @param _successTime
+   *          statistics regarding the last improvement time of
+   *          successful runs, or {@code null} if no run was
+   *          successful
+   * @param _successFEs
+   *          statistics regarding the last improvement FEs of
+   *          successful runs, or {@code null} if no run was
+   *          successful
    */
   public EndResultStatistic(final String _algorithm,
       final String _instance, final int _runs,
@@ -85,8 +103,11 @@ public final class EndResultStatistic
       final IntStatisticsBig _lastImprovementFE,
       final IntStatisticsBig _numberOfImprovements,
       final IntStatisticsSmall _budgetTime,
-      final IntStatisticsSmall _budgetFEs, final int _successes,
-      final double _ertTime, final double _ertFEs) {
+      final IntStatisticsSmall _budgetFEs, final int _successes, //
+      final double _ertTime, //
+      final double _ertFEs, //
+      final IntStatisticsSmallWithSetups _successTime, //
+      final IntStatisticsSmallWithSetups _successFEs) {
     super();
 
     this.algorithm = _algorithm.trim();
@@ -153,6 +174,35 @@ public final class EndResultStatistic
       throw new IllegalArgumentException(
           "Invalid FE ERT " + this.ertFEs //$NON-NLS-1$
               + " for number of successes " + this.successes); //$NON-NLS-1$
+    }
+
+    if (this.successes > 0) {
+      this.successFEs = Objects.requireNonNull(_successFEs);
+      this.successTime = Objects.requireNonNull(_successTime);
+
+      if (this.successFEs.max > this.lastImprovementFE.max) {
+        throw new IllegalArgumentException(//
+            "The maximum FE until success (" //$NON-NLS-1$
+                + this.successFEs.max//
+                + ") cannot be more than the maximum last improvement FE ("//$NON-NLS-1$
+                + this.lastImprovementFE.max//
+                + ").");//$NON-NLS-1$
+      }
+      if (this.successTime.max > this.lastImprovementTime.max) {
+        throw new IllegalArgumentException(//
+            "The maximum time until success (" //$NON-NLS-1$
+                + this.successTime.max//
+                + ") cannot be more than the maximum last improvement time ("//$NON-NLS-1$
+                + this.lastImprovementTime.max//
+                + ").");//$NON-NLS-1$
+      }
+    } else {
+      if ((_successTime != null) || (_successFEs != null)) {
+        throw new IllegalArgumentException(
+            "If no run is successful, we also cannot have statistics about the time to success."); //$NON-NLS-1$
+      }
+      this.successFEs = null;
+      this.successTime = null;
     }
   }
 
@@ -370,17 +420,17 @@ public final class EndResultStatistic
   /** the statistic quantiles */
   private static class __StatQuantiles extends __StatBase {
     /** the 5% quantile */
-    public double q050;
+    public final double q050;
     /** the 15.9% quantile */
-    public double q159;
+    public final double q159;
     /** the 25% quantile */
-    public double q250;
+    public final double q250;
     /** the 75% quantile */
-    public double q750;
+    public final double q750;
     /** the 84.1% quantile */
-    public double q841;
+    public final double q841;
     /** the 95% quantile */
-    public double q950;
+    public final double q950;
 
     /**
      * create
@@ -667,38 +717,95 @@ public final class EndResultStatistic
     /** the maximum */
     public final double max;
 
+    /** the minimum setup */
+    public final Setup minSetup;
+    /** the 5% quantile setup */
+    public final Setup q050Setup;
+    /** the 15.9% quantile setup */
+    public final Setup q159Setup;
+    /** the 25% quantile setup */
+    public final Setup q250Setup;
+    /** the median setup */
+    public final Setup medianSetup;
+    /** the 75% quantile setup */
+    public final Setup q750Setup;
+    /** the 84.1% quantile setup */
+    public final Setup q841Setup;
+    /** the 95% quantile setup */
+    public final Setup q950Setup;
+    /** the minimum setup setup */
+    public final Setup maxSetup;
+    /** the mean setup setup */
+    public final Setup meanSetup;
+
     /**
      * create
      *
      * @param _min
      *          the minimum
+     * @param _minSetup
+     *          the minimum setup
      * @param _q050
      *          the 5% quantile
+     * @param _q050Setup
+     *          the 5% quantile setup
      * @param _q159
      *          the 15.9% quantile
+     * @param _q159Setup
+     *          the 15.9% quantile setup
      * @param _q250
      *          the 25% quantile
+     * @param _q250Setup
+     *          the 25% quantile setup
+     * @param _medianSetup
+     *          the median setup
      * @param _q750
      *          the 75% quantile
+     * @param _q750Setup
+     *          the 75% quantile setup
      * @param _q841
      *          the 84.1% quantile
+     * @param _q841Setup
+     *          the 84.1% quantile setup
      * @param _q950
      *          the 95% quantile
+     * @param _q950Setup
+     *          the 95% quantile setup
      * @param _max
      *          the maximum
+     * @param _maxSetup
+     *          the maximum setup
      * @param _mean
      *          the mean
+     * @param _meanSetup
+     *          the mean setup
      * @param _sd
      *          the standard deviation
      * @param _median
      *          the median
      */
-    public DoubleStatisticsBig(final double _min,
-        final double _q050, final double _q159,
-        final double _q250, final double _median,
-        final double _q750, final double _q841,
-        final double _q950, final double _max,
-        final double _mean, final double _sd) {
+    public DoubleStatisticsBig(//
+        final double _min, //
+        final Setup _minSetup, //
+        final double _q050, //
+        final Setup _q050Setup, //
+        final double _q159, //
+        final Setup _q159Setup, //
+        final double _q250, //
+        final Setup _q250Setup, //
+        final double _median, //
+        final Setup _medianSetup, //
+        final double _q750, //
+        final Setup _q750Setup, //
+        final double _q841, //
+        final Setup _q841Setup, //
+        final double _q950, //
+        final Setup _q950Setup, //
+        final double _max, //
+        final Setup _maxSetup, //
+        final double _mean, //
+        final Setup _meanSetup, //
+        final double _sd) {
       super(_q050, _q159, _q250, _median, _q750, _q841, _q950,
           _mean, _sd);
 
@@ -723,6 +830,17 @@ public final class EndResultStatistic
             (((("Invalid min/max/sd: "//$NON-NLS-1$
                 + this.min) + '/') + this.max) + '/') + this.sd);
       }
+
+      this.minSetup = Objects.requireNonNull(_minSetup);
+      this.q050Setup = Objects.requireNonNull(_q050Setup);
+      this.q159Setup = Objects.requireNonNull(_q159Setup);
+      this.q250Setup = Objects.requireNonNull(_q250Setup);
+      this.medianSetup = Objects.requireNonNull(_medianSetup);
+      this.q750Setup = Objects.requireNonNull(_q750Setup);
+      this.q841Setup = Objects.requireNonNull(_q841Setup);
+      this.q950Setup = Objects.requireNonNull(_q950Setup);
+      this.maxSetup = Objects.requireNonNull(_maxSetup);
+      this.meanSetup = Objects.requireNonNull(_meanSetup);
     }
 
     /** {@inheritDoc} */
@@ -731,6 +849,16 @@ public final class EndResultStatistic
       int hc = super.hashCode();
       hc = (31 * hc) + Double.hashCode(this.min);
       hc = (31 * hc) + Double.hashCode(this.max);
+      hc = (31 * hc) + this.minSetup.hashCode();
+      hc = (31 * hc) + this.q050Setup.hashCode();
+      hc = (31 * hc) + this.q159Setup.hashCode();
+      hc = (31 * hc) + this.q250Setup.hashCode();
+      hc = (31 * hc) + this.medianSetup.hashCode();
+      hc = (31 * hc) + this.q750Setup.hashCode();
+      hc = (31 * hc) + this.q841Setup.hashCode();
+      hc = (31 * hc) + this.q950Setup.hashCode();
+      hc = (31 * hc) + this.maxSetup.hashCode();
+      hc = (31 * hc) + this.meanSetup.hashCode();
       return hc;
     }
 
@@ -747,9 +875,19 @@ public final class EndResultStatistic
     static final boolean _equalsDoubleStatisticsBig(
         final DoubleStatisticsBig a,
         final DoubleStatisticsBig b) {
-      return __StatQuantiles._equalsStatQuantiles(a, b)
-          && (Double.compare(a.min, b.min) == 0)
-          && (Double.compare(a.max, b.max) == 0);
+      return __StatQuantiles._equalsStatQuantiles(a, b)//
+          && (Double.compare(a.min, b.min) == 0)//
+          && (Double.compare(a.max, b.max) == 0) //
+          && a.minSetup.equals(b.minSetup)//
+          && a.q050Setup.equals(b.q050Setup)//
+          && a.q159Setup.equals(b.q159Setup)//
+          && a.q250Setup.equals(b.q250Setup)//
+          && a.medianSetup.equals(b.medianSetup)//
+          && a.q750Setup.equals(b.q750Setup)//
+          && a.q841Setup.equals(b.q841Setup)//
+          && a.q950Setup.equals(b.q950Setup)//
+          && a.maxSetup.equals(b.maxSetup)//
+          && a.meanSetup.equals(b.meanSetup);
     }
 
     /** {@inheritDoc} */
@@ -811,12 +949,53 @@ public final class EndResultStatistic
       if (res != 0) {
         return res;
       }
-      return Double.compare(this.sd, o.sd);
+      res = Double.compare(this.sd, o.sd);
+      if (res != 0) {
+        return res;
+      }
+
+      res = this.minSetup.compareTo(o.minSetup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q050Setup.compareTo(o.q050Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q159Setup.compareTo(o.q159Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q250Setup.compareTo(o.q250Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.medianSetup.compareTo(o.medianSetup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q750Setup.compareTo(o.q750Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q841Setup.compareTo(o.q841Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.q950Setup.compareTo(o.q950Setup);
+      if (res != 0) {
+        return res;
+      }
+      res = this.maxSetup.compareTo(o.maxSetup);
+      if (res != 0) {
+        return res;
+      }
+      return this.meanSetup.compareTo(o.meanSetup);
     }
   }
 
   /** the integer statistics */
-  public static final class IntStatisticsSmall extends __StatBase
+  public static class IntStatisticsSmall extends __StatBase
       implements Comparable<IntStatisticsSmall> {
     /** the minimum */
     public final long min;
@@ -865,7 +1044,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
       int hc = super.hashCode();
       hc = (31 * hc) + Long.hashCode(this.min);
       hc = (31 * hc) + Long.hashCode(this.max);
@@ -874,7 +1053,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int compareTo(final IntStatisticsSmall o) {
+    public int compareTo(final IntStatisticsSmall o) {
       if (o == this) {
         return 0;
       }
@@ -916,7 +1095,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final boolean equals(final Object o) {
+    public boolean equals(final Object o) {
       if (o == this) {
         return true;
       }
@@ -928,4 +1107,87 @@ public final class EndResultStatistic
     }
   }
 
+  /** the integer statistics */
+  public static class IntStatisticsSmallWithSetups
+      extends IntStatisticsSmall {
+    /** the setup where the minimum value was achieved */
+    public final Setup minSetup;
+    /** the setup where the maximum value was achieved */
+    public final Setup maxSetup;
+
+    /**
+     * create
+     *
+     * @param _min
+     *          the minimum
+     * @param _minSetup
+     *          the setup where the minimum value was achieved
+     * @param _median
+     *          the median
+     * @param _max
+     *          the maximum
+     * @param _maxSetup
+     *          the setup where the maximum value was achieved
+     * @param _mean
+     *          the mean
+     * @param _sd
+     *          the standard deviation
+     */
+    public IntStatisticsSmallWithSetups(final long _min,
+        final Setup _minSetup, final double _median,
+        final long _max, final Setup _maxSetup,
+        final double _mean, final double _sd) {
+      super(_min, _median, _max, _mean, _sd);
+      this.minSetup = Objects.requireNonNull(_minSetup);
+      this.maxSetup = Objects.requireNonNull(_maxSetup);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final int hashCode() {
+      int hc = super.hashCode();
+      hc = (31 * hc) + this.minSetup.hashCode();
+      hc = (31 * hc) + this.maxSetup.hashCode();
+      return hc;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final int compareTo(final IntStatisticsSmall o) {
+      if (o == this) {
+        return 0;
+      }
+      int res = super.compareTo(o);
+      if ((res != 0)
+          || (!(o instanceof IntStatisticsSmallWithSetups))) {
+        return res;
+      }
+
+      final IntStatisticsSmallWithSetups x =
+          ((IntStatisticsSmallWithSetups) o);
+      res = this.minSetup.compareTo(x.minSetup);
+      if (res != 0) {
+        return res;
+      }
+
+      return this.maxSetup.compareTo(x.maxSetup);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final boolean equals(final Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof IntStatisticsSmallWithSetups) {
+        final IntStatisticsSmallWithSetups x =
+            ((IntStatisticsSmallWithSetups) o);
+        return IntStatisticsSmall._equalsIntStatisticsSmall(this,
+            x)//
+            && this.minSetup.equals(x.minSetup) //
+            && this.maxSetup.equals(x.maxSetup);
+      }
+      return false;
+    }
+  }
 }

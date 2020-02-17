@@ -324,9 +324,12 @@ public class Experiment {
 
   /**
    * Get the path to a suitable log file for the given
-   * experimental run if that log file does not yet exist. This
-   * method allows for both parallel execution and for restarting
-   * of experiments.
+   * experimental. If {@code onlyComputePath==true}, then only
+   * the path will be computed and returned. If
+   * {@code onlyComputePath==false}, then the path will be
+   * computed and it is checked whether it already exists. If so,
+   * {@code null} is returned. Otherwise, the (empty) new log
+   * file is created and the path is returned.
    *
    * @param root
    *          the root path
@@ -336,16 +339,20 @@ public class Experiment {
    *          the algorithm setup
    * @param randSeed
    *          the random seed
+   * @param onlyComputePath
+   *          should the log file be created ({@code false}) or
+   *          just the path be composed ({@code true})?
    * @return the path, or {@code null} if the run should not be
-   *         performed
+   *         performed and {@code onlyComputePath==true}
    * @throws IOException
    *           if I/O fails
    */
   public static final Path logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed) throws IOException {
+      final long randSeed, final boolean onlyComputePath)
+      throws IOException {
     return Experiment.__logFile(root, algorithm, instance,
-        randSeed, null);
+        randSeed, null, onlyComputePath);
   }
 
   /**
@@ -389,6 +396,9 @@ public class Experiment {
    * @param done
    *          a hash set to receive and remember the attempted
    *          runs and existing directories
+   * @param onlyComputePath
+   *          should the log file be created ({@code false}) or
+   *          just the path be composed ({@code true})?
    * @return the path, or {@code null} if the run should not be
    *         performed
    * @throws IOException
@@ -396,8 +406,8 @@ public class Experiment {
    */
   private static final Path __logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed, final HashSet<Path> done)
-      throws IOException {
+      final long randSeed, final HashSet<Path> done,
+      final boolean onlyComputePath) throws IOException {
 
     synchronized (IOUtils._IO_SYNCH) {
 
@@ -415,6 +425,11 @@ public class Experiment {
           instPath.resolve(Experiment.nameStringsMerge(algo,
               inst, RandomUtils.randSeedToString(randSeed))
               + LogFormat.FILE_SUFFIX));
+
+      if (onlyComputePath) {
+        // we got the path, and don't need to do anything else
+        return filePath;
+      }
 
       if ((done != null) && (!done.add(filePath))) {
         return null;
@@ -436,16 +451,15 @@ public class Experiment {
         }
       }
 
-      // We try to create the log file. If that succeeds, then
-      // the no such log file existed before, meaning that we
-      // have to do the run and return the file.
-      // If it fails, there are two possible reasons:
-      // 1) The file already exists. That is OK, because then the
-      // run is either already in progress or already completed.
-      // 2) The file does not exist but we could not create it
-      // either. Or it cannot be determined whether it exists or
-      // not and it also connot be created. In this case, we need
-      // to throw an I/O exception.
+// We try to create the log file. If that succeeds, then the no
+// such log file existed before, meaning that we have to do the
+// run and return the file. If it fails, there are two possible
+// reasons: 1) The file already exists. That is OK, because then
+// the run is either already in progress or already completed. 2)
+// The file does not exist but we could not create it either. Or
+// it cannot be determined whether it exists or not and it also
+// cannot be created. In this case, we need to throw an I/O
+// exception.
       try {
         Files.createFile(filePath);
       } catch (@SuppressWarnings("unused") final FileAlreadyExistsException error) {
@@ -1241,7 +1255,7 @@ public class Experiment {
                   synchronized (done) {
                     final int currentSize = done.size();
                     logFile = Experiment.__logFile(useDir,
-                        algoName, instName, seed, done);
+                        algoName, instName, seed, done, false);
                     runNotLocallyDone =
                         (done.size() > currentSize);
                   }

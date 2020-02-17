@@ -2,22 +2,14 @@ package aitoa.utils.logs;
 
 import java.util.Objects;
 
-import aitoa.utils.RandomUtils;
+import aitoa.structure.LogFormat;
 
 /**
  * A line of the end results table, as created by
  * {@link EndResults}.
  */
-public final class EndResult implements Comparable<EndResult> {
+public final class EndResult extends Setup {
 
-  /** the algorithm id */
-  public final String algorithm;
-  /** the instance id */
-  public final String instance;
-  /** the seed */
-  public final String seed;
-  /** the random seed value */
-  public final long seedVal;
   /** the best objective value achieved by the run */
   public final double bestF;
   /** the total time consumed by the run */
@@ -77,24 +69,7 @@ public final class EndResult implements Comparable<EndResult> {
       final long _lastImprovementFE,
       final long _numberOfImprovements, final long _budgetTime,
       final long _budgetFEs, final double _goalF) {
-    super();
-
-    this.algorithm = _algorithm.trim();
-    if (this.algorithm.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Cannot have '" + _algorithm + //$NON-NLS-1$
-              "' as algorithm name.");//$NON-NLS-1$
-    }
-
-    this.instance = _instance.trim();
-    if (this.instance.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Cannot have '" + _instance + //$NON-NLS-1$
-              "' as instance name.");//$NON-NLS-1$
-    }
-
-    this.seed = _seed.trim();
-    this.seedVal = RandomUtils.stringToRandSeed(this.seed);
+    super(_algorithm, _instance, _seed);
 
     this.bestF = _bestF;
     if (!Double.isFinite(this.bestF)) {
@@ -173,7 +148,7 @@ public final class EndResult implements Comparable<EndResult> {
   public final int hashCode() {
     int hc = this.algorithm.hashCode();
     hc = (31 * hc) + this.instance.hashCode();
-    hc = (31 * hc) + Long.hashCode(this.seedVal);
+    hc = (31 * hc) + Long.hashCode(this.seed);
     hc = (31 * hc) + Double.hashCode(this.bestF);
     hc = (31 * hc) + Long.hashCode(this.totalTime);
     hc = (31 * hc) + Long.hashCode(this.totalFEs);
@@ -196,7 +171,7 @@ public final class EndResult implements Comparable<EndResult> {
       final EndResult e = ((EndResult) o);
       return (Objects.equals(this.algorithm, e.algorithm) && //
           Objects.equals(this.instance, e.instance) && //
-          (this.seedVal == e.seedVal) && //
+          (this.seed == e.seed) && //
           (Double.compare(this.bestF, e.bestF) == 0) && //
           (this.totalTime == e.totalTime) && //
           (this.totalFEs == e.totalFEs) && //
@@ -213,63 +188,71 @@ public final class EndResult implements Comparable<EndResult> {
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final EndResult o) {
+  public final int compareTo(final Setup o) {
     if (o == this) {
       return 0;
     }
 
-    int r = this.algorithm.compareTo(o.algorithm);
-    if (r != 0) {
-      return r;
+    if (o instanceof EndResult) {
+      final EndResult e = ((EndResult) o);
+      int r = this.algorithm.compareTo(e.algorithm);
+      if (r != 0) {
+        return r;
+      }
+      r = this.instance.compareTo(e.instance);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compareUnsigned(this.seed, e.seed);
+      if (r != 0) {
+        return r;
+      }
+      r = Double.compare(this.bestF, e.bestF);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.lastImprovementFE,
+          e.lastImprovementFE);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.lastImprovementTime,
+          e.lastImprovementTime);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(e.numberOfImprovements,
+          this.numberOfImprovements);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.totalFEs, e.totalFEs);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.totalTime, e.totalTime);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.budgetFEs, e.budgetFEs);
+      if (r != 0) {
+        return r;
+      }
+      r = Long.compare(this.budgetTime, e.budgetTime);
+      if (r != 0) {
+        return r;
+      }
+      return Double.compare(this.goalF, e.goalF);
     }
-    r = this.instance.compareTo(o.instance);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.seedVal, o.seedVal);
-    if (r != 0) {
-      return r;
-    }
-    r = Double.compare(this.bestF, o.bestF);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.lastImprovementFE,
-        o.lastImprovementFE);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.lastImprovementTime,
-        o.lastImprovementTime);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(o.numberOfImprovements,
-        this.numberOfImprovements);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.totalFEs, o.totalFEs);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.totalTime, o.totalTime);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.budgetFEs, o.budgetFEs);
-    if (r != 0) {
-      return r;
-    }
-    r = Long.compare(this.budgetTime, o.budgetTime);
-    if (r != 0) {
-      return r;
-    }
-    r = Double.compare(this.goalF, o.goalF);
-    if (r != 0) {
-      return r;
-    }
+    return super.compareTo(o);
+  }
 
-    return 0;
+  /** {@inheritDoc} */
+  @Override
+  public final String toString() {
+    return super.toString() + ':' + this.bestF
+        + LogFormat.CSV_SEPARATOR_CHAR + this.lastImprovementFE
+        + LogFormat.CSV_SEPARATOR_CHAR
+        + this.lastImprovementTime;
   }
 }

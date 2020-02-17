@@ -335,8 +335,8 @@ public class JSSPExperimentOld {
     // iterate over the random seeds
     for (final long seed : RandomUtils
         .uniqueRandomSeeds(instName, JSSPExperimentOld.N_RUNS)) {
-      final Path file =
-          Experiment.logFile(baseDir, algoName, instName, seed);
+      final Path file = Experiment.logFile(baseDir, algoName,
+          instName, seed, false);
       if (file == null) {
         ConsoleIO.stdout(((((("Logfile for run " + algoName)//$NON-NLS-1$
             + ';') + instName) + ';') + seed)
@@ -436,8 +436,8 @@ public class JSSPExperimentOld {
     // iterate over the random seeds
     for (final long seed : RandomUtils
         .uniqueRandomSeeds(instName, JSSPExperimentOld.N_RUNS)) {
-      final Path file =
-          Experiment.logFile(baseDir, algoName, instName, seed);
+      final Path file = Experiment.logFile(baseDir, algoName,
+          instName, seed, false);
       if (file == null) {
         ConsoleIO.stdout(((((("Logfile for run " + algoName)//$NON-NLS-1$
             + ';') + instName) + ';') + seed)

@@ -144,7 +144,7 @@ public class ExperimentTest {
 
     final Path test = Experiment.logFile(dir, "/2.3", //$NON-NLS-1$
         " sdfsf.g_ _", //$NON-NLS-1$
-        1L);
+        1L, false);
 
     Assert.assertTrue(test.startsWith(dir));
     Assert.assertTrue(Files.exists(test));
@@ -168,14 +168,14 @@ public class ExperimentTest {
 
     Assert.assertNull(Experiment.logFile(dir, "2.3", //$NON-NLS-1$
         " sdfsfdg_ _", //$NON-NLS-1$
-        1L));
+        1L, false));
 
     Files.delete(test);
     Assert.assertFalse(Files.exists(test));
 
     final Path test2 = Experiment.logFile(dir, "2d3", //$NON-NLS-1$
         "_sdfsf.g", //$NON-NLS-1$
-        1L);
+        1L, false);
     Assert.assertEquals(test, test2);
     Files.delete(test);
     Assert.assertFalse(Files.exists(test));
