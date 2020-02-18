@@ -21,7 +21,6 @@ public class TestHillClimberWithRestartsOnJSSP
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
     final int rs = 1 + rand.nextInt(512);
-    final double f = rand.nextDouble();
-    return new HillClimberWithRestarts<>(rs, "test", f * f); //$NON-NLS-1$
+    return new HillClimberWithRestarts<>(rs);
   }
 }

@@ -2,7 +2,6 @@ package aitoa.algorithms;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
@@ -41,47 +40,55 @@ import aitoa.structure.LogFormat;
 public final class HillClimberWithRestarts<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
-  /** the initial steps before restarts */
-  public final int initialFailsBeforeRestart;
+  /** the number of non-improving steps before restarts */
+  public final long failsBeforeRestart;
 
-  /** the strategy for the initial steps before restarts */
-  public final String initialFailsBeforeRestartStrategy;
-
-  /** the increase factor */
-  public final double increaseFactor;
+  /**
+   * the strategy that determined the value of
+   * {@link #failsBeforeRestart}
+   */
+  public final String failsBeforeRestartStrategy;
 
   /**
    * create
    *
-   * @param _initialStepsBeforeRestart
-   *          the initial number of steps before restarts
-   * @param _initialStepsBeforeRestartStrategy
-   *          the strategy for the initial steps before restarts
-   * @param _increaseFactor
-   *          the increase factor
+   * @param _failsBeforeRestart
+   *          the number of non-improving steps before restarts
    */
   public HillClimberWithRestarts(
-      final int _initialStepsBeforeRestart,
-      final String _initialStepsBeforeRestartStrategy,
-      final double _increaseFactor) {
+      final long _failsBeforeRestart) {
+    this(_failsBeforeRestart,
+        Long.toString(_failsBeforeRestart));
+  }
+
+  /**
+   * create
+   *
+   * @param _failsBeforeRestart
+   *          the number of non-improving steps before restarts
+   * @param _failsBeforeRestartStrategy
+   *          the the strategy that determined the value of
+   *          {@code _failsBeforeRestart}
+   */
+  public HillClimberWithRestarts(final long _failsBeforeRestart,
+      final String _failsBeforeRestartStrategy) {
     super();
 
-    if ((_initialStepsBeforeRestart < 1)
-        || (_initialStepsBeforeRestart > 1_000_000)) {
+    if ((_failsBeforeRestart < 1L)
+        || (_failsBeforeRestart > 1_000_000_000L)) {
       throw new IllegalArgumentException(
-          "Invalid initialFailsBeforeRestart: " //$NON-NLS-1$
-              + _initialStepsBeforeRestart);
+          "failsBeforeRestart must be in 1...1_000_000_000, but is " //$NON-NLS-1$
+              + _failsBeforeRestart);
     }
-    this.initialFailsBeforeRestart = _initialStepsBeforeRestart;
-    this.initialFailsBeforeRestartStrategy = Objects
-        .requireNonNull(_initialStepsBeforeRestartStrategy);
+    this.failsBeforeRestart = _failsBeforeRestart;
 
-    if ((_increaseFactor < 0d) || (_increaseFactor > 16d)
-        || (!(Double.isFinite(_increaseFactor)))) {
+    this.failsBeforeRestartStrategy =
+        _failsBeforeRestartStrategy.trim();
+    if (this.failsBeforeRestartStrategy.isEmpty()) {
       throw new IllegalArgumentException(
-          "Invalid increaseFactor: " + _increaseFactor); //$NON-NLS-1$
+          "Invalid failsBeforeRestartStrategy: '" //$NON-NLS-1$
+              + _failsBeforeRestartStrategy + "'."); //$NON-NLS-1$
     }
-    this.increaseFactor = _increaseFactor;
   }
 
   /** {@inheritDoc} */
@@ -89,15 +96,11 @@ public final class HillClimberWithRestarts<X, Y>
   public final void printSetup(final BufferedWriter output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("initialStepsBeforeRestart", ///$NON-NLS-1$
-        this.initialFailsBeforeRestart));
+    output.write(LogFormat.mapEntry("failsBeforeRestart", ///$NON-NLS-1$
+        this.failsBeforeRestart));
     output.newLine();
-    output.write(
-        LogFormat.mapEntry("initialStepsBeforeRestartStrategy", //$NON-NLS-1$
-            this.initialFailsBeforeRestartStrategy));
-    output.newLine();
-    output.write(LogFormat.mapEntry("increaseFactor", //$NON-NLS-1$
-        this.increaseFactor));
+    output.write(LogFormat.mapEntry("failsBeforeRestartStrategy", ///$NON-NLS-1$
+        this.failsBeforeRestartStrategy));
     output.newLine();
   }
 
@@ -114,44 +117,37 @@ public final class HillClimberWithRestarts<X, Y>
         process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
 
-    long failsBeforeRestart = this.initialFailsBeforeRestart;
-    long failCounter = 0L; // initialize counters
 // start relevant
 // omitted: initialize local variables x_cur, x_best, nullary,
 // unary,random, failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
       nullary.apply(x_best, random); // sample random solution
       double f_best = process.evaluate(x_best); // evaluate it
+      long failCounter = 0L; // initialize counters
 
-      innerHC: do {// repeat until budget exhausted or got stock
+      while (!(process.shouldTerminate())) { // inner loop
         unary.apply(x_best, x_cur, random); // try to improve
-        ++failCounter;// increase step counter
         final double f_cur = process.evaluate(x_cur); // evaluate
+
         if (f_cur < f_best) { // we found a better solution
           f_best = f_cur; // remember best quality
           process.getSearchSpace().copy(x_cur, x_best); // copy
           failCounter = 0L; // reset number of unsuccessful steps
         } else { // ok, we did not find an improvement
-          if (failCounter >= failsBeforeRestart) {
-            // increase steps before restart
-            failsBeforeRestart = Math.max(failsBeforeRestart,
-                Math.round(failsBeforeRestart
-                    * (1d + this.increaseFactor)));
-            failCounter = 0L;
-            break innerHC; // jump back to outer loop for restart
-          }
-        }
-      } while (!process.shouldTerminate()); // until time is up
-    }
+          if ((++failCounter) >= this.failsBeforeRestart) {
+            break; // jump back to outer loop for restart
+          } // increase fail counter
+        } // failure
+      } // inner loop
+    } // outer loop
   }
 // end relevant
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("hc_rs_" + //$NON-NLS-1$
-        this.initialFailsBeforeRestartStrategy) + '_')
-        + this.increaseFactor);
+    return "hc_rs_" + //$NON-NLS-1$
+        this.failsBeforeRestartStrategy;
   }
 // start relevant
 }

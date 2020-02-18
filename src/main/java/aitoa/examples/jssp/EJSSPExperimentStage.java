@@ -434,6 +434,8 @@ public enum EJSSPExperimentStage implements
       super.configureBuilderForProblem(builder, problem);
       builder.setUnarySearchOperator(//
           new JSSPUnaryOperator1SwapU(problem.instance));
+      builder.setBinarySearchOperator(
+          new JSSPBinaryOperatorSequence(problem.instance));
     }
   };
 
@@ -516,8 +518,9 @@ public enum EJSSPExperimentStage implements
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
       _hillClimbers() {
     return Stream.of(() -> new HillClimber<>(), //
-        () -> new HillClimberWithRestarts<>(256, "256", 0d), //$NON-NLS-1$
-        () -> new HillClimberWithRestarts<>(256, "256", 0.05d)); //$NON-NLS-1$
+        () -> new HillClimberWithRestarts<>(128),
+        () -> new HillClimberWithRestarts<>(256),
+        () -> new HillClimberWithRestarts<>(512));
     //
   }
 

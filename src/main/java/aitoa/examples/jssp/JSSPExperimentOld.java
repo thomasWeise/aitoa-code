@@ -108,11 +108,10 @@ public class JSSPExperimentOld {
 
 // hill climbers which do not enumerate neighborhood with
 // restarts
-          for (final double inc : new double[] { 0d, 0.05d }) {
-            JSSPExperimentOld.run(
-                new HillClimberWithRestarts<>(256, "256", inc), //$NON-NLS-1$
-                unary, null, inst, out);
-          } // end restart settings
+          JSSPExperimentOld.run(
+              new HillClimberWithRestarts<>(256), // $NON-NLS-1$
+              unary, null, inst, out);
+          // end restart settings
         } // only use basic unary ops
 
 // hill climbers with neighborhood enumeration

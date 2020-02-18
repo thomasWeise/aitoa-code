@@ -13,10 +13,10 @@ The code is designed as a versatile and general implementation of these algorith
 
 The [book](http://thomasweise.github.io/aitoa/index.html) is available in the following formats:
 
-1. [aitoa.pdf](http://thomasweise.github.io/aitoa/aitoa.pdf), in the [PDF](http://en.wikipedia.org/wiki/Pdf) format for reading on the computer and/or printing (but please don't print this, save paper),
-2. [aitoa.html](http://thomasweise.github.io/aitoa/aitoa.html), in the [HTML5](http://en.wikipedia.org/wiki/HTML5) format for reading in the browser on any device,
-3. [aitoa.epub](http://thomasweise.github.io/aitoa/aitoa.epub), in the [EPUB3](http://en.wikipedia.org/wiki/EPUB) format for reading on mobile phones or other hand-held devices, and
-4. [aitoa.azw3](http://thomasweise.github.io/aitoa/aitoa.azw3), in the [AZW3](http://en.wikipedia.org/wiki/Kindle_File_Format) format for reading on [Kindle](http://en.wikipedia.org/wiki/Amazon_Kindle) and similar devices.
+1. [aitoa.pdf](http://thomasweise.github.io/aitoa/aitoa.pdf), in the [PDF](http://thomasweise.github.io/aitoa/aitoa.pdf) format for reading on the computer and/or printing (but please don't print this, save paper),
+2. [aitoa.html](http://thomasweise.github.io/aitoa/aitoa.html), in the [HTML5](http://thomasweise.github.io/aitoa/aitoa.html) format for reading in the browser on any device,
+3. [aitoa.epub](http://thomasweise.github.io/aitoa/aitoa.epub), in the [EPUB3](http://thomasweise.github.io/aitoa/aitoa.epub) format for reading on mobile phones or other hand-held devices, and
+4. [aitoa.azw3](http://thomasweise.github.io/aitoa/aitoa.azw3), in the [AZW3](http://thomasweise.github.io/aitoa/aitoa.azw3) format for reading on Kindle and similar devices.
 
 ## 2. How to Use
 
@@ -44,7 +44,7 @@ First, you need to add the following repository, which is a repository that can 
 ```
 
 Than you can add the dependency on our `aitoa-code` repository into your `dependencies` section.
-Here, `0.8.31` is the current version of  `aitoa-code`.
+Here, `0.8.32` is the current version of  `aitoa-code`.
 Notice that you may have more dependencies in your `dependencies` section, say on `junit`, but here I just put the one for `aitoa-code` as example.
 
 ```xml
@@ -52,7 +52,7 @@ Notice that you may have more dependencies in your `dependencies` section, say o
   <dependency>
     <groupId>com.github.thomasWeise</groupId>
     <artifactId>aitoa-code</artifactId>
-    <version>0.8.31</version>
+    <version>0.8.32</version>
   </dependency>
 </dependencies>
 ```
