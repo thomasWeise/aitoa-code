@@ -525,8 +525,7 @@ final class _SystemData {
               line = line.trim();
               if (line.isEmpty()) {
                 continue;
-              }
-              System.out.println(line);
+              }              
               final String linelc = line.toLowerCase();
               final int index = linelc.indexOf("<p>name:");//$NON-NLS-1$
               if (index >= 0) {
