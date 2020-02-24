@@ -232,6 +232,7 @@ abstract class _BlackBoxProcessBase<X, Y>
   /** {@inheritDoc} */
   @Override
   void _printInfos(final Appendable out) throws IOException {
+    final long time = System.currentTimeMillis();
     super._printInfos(out);
     out.append(_BlackBoxProcessBase.BEGIN_STATE);
     out.append(System.lineSeparator());
@@ -242,7 +243,7 @@ abstract class _BlackBoxProcessBase<X, Y>
         this.m_lastImprovementFE));
     out.append(System.lineSeparator());
     out.append(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
-        this.getConsumedTime()));
+        time - this.m_startTime));
     out.append(System.lineSeparator());
     out.append(
         LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,

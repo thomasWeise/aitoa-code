@@ -3,6 +3,7 @@ package aitoa.structure;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -500,6 +501,111 @@ final class _SystemData {
     }
 
     /**
+     * Look up one device or vendor in the PCI device repository.
+     *
+     * @param id
+     *          the device or vendor id
+     * @return the string
+     */
+    private static final String __pciLookup(final String id) {
+      for (final String base : new String[] {
+          "http://pci-ids.ucw.cz/read/PC/", //$NON-NLS-1$
+          "https://pci-ids.ucw.cz/read/PC/" //$NON-NLS-1$
+      }) {
+        try {
+          try (
+              final InputStream is =
+                  new URL(base + id).openStream();
+              final InputStreamReader isr =
+                  new InputStreamReader(is);
+              final BufferedReader br =
+                  new BufferedReader(isr)) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+              line = line.trim();
+              if (line.isEmpty()) {
+                continue;
+              }
+              System.out.println(line);
+              final String linelc = line.toLowerCase();
+              final int index = linelc.indexOf("<p>name:");//$NON-NLS-1$
+              if (index >= 0) {
+                final int end = linelc.indexOf("</", //$NON-NLS-1$
+                    index + 8);
+                if (end > index) {
+                  final String res =
+                      line.substring(index + 8, end).trim();
+                  if (!res.isEmpty()) {
+                    return res;
+                  }
+                }
+              }
+            }
+          }
+          return null;
+        } catch (@SuppressWarnings("unused") final Throwable error) {
+          // ignore
+        }
+      }
+
+      return null;
+    }
+
+    /**
+     * Add a GPU information
+     *
+     * @param vendor
+     *          the vendor
+     * @param device
+     *          the device
+     * @param map
+     *          the destination map
+     */
+    private static final void __addGPU(final String vendor,
+        final String device, final TreeMap<String, String> map) {
+
+      String vendorId = null;
+      String deviceId = null;
+      if (vendor != null) {
+        vendorId = Integer.toUnsignedString(//
+            Integer.parseUnsignedInt(vendor, 16), 16)
+            .toLowerCase();
+        while (vendorId.length() < 4) {
+          vendorId = '0' + vendorId;
+        }
+        __Holder.__add(map,
+            LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID, vendorId);
+      }
+
+      if (device != null) {
+        deviceId = Integer.toUnsignedString(//
+            Integer.parseUnsignedInt(device, 16), 16)
+            .toLowerCase();
+        while (vendorId.length() < 4) {
+          deviceId = '0' + deviceId;
+        }
+        __Holder.__add(map,
+            LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID, deviceId);
+      }
+
+      if (vendorId != null) {
+        final String vn = __Holder.__pciLookup(vendorId);
+        if (vn != null) {
+          __Holder.__add(map,
+              LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR, vn);
+        }
+        if (deviceId != null) {
+          final String dc =
+              __Holder.__pciLookup(vendorId + '/' + deviceId);
+          if (dc != null) {
+            __Holder.__add(map,
+                LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE, dc);
+          }
+        }
+      }
+    }
+
+    /**
      * Try to detect the GPU under Linux
      *
      * @param map
@@ -507,8 +613,8 @@ final class _SystemData {
      * @return {@code true} if a graphics card was detected,
      *         {@code false} otherwise
      */
-    private static final boolean
-        __tryDetectGPULinux(final TreeMap<String, String> map) {
+    private static final boolean __tryDetectGPULinux(//
+        final TreeMap<String, String> map) {
       try {
         final Process p = new ProcessBuilder()//
             .command("lspci", //$NON-NLS-1$
@@ -566,14 +672,8 @@ final class _SystemData {
               __Holder.__add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
                   vga[0]);
               if (vga.length > 1) {
-                __Holder.__add(map,
-                    LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID,
-                    vga[1]);
-                if (vga.length > 2) {
-                  __Holder.__add(map,
-                      LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID,
-                      vga[2]);
-                }
+                __Holder.__addGPU(vga[1],
+                    (vga.length > 2) ? vga[2] : null, map);
               }
               return true;
             }
@@ -767,16 +867,7 @@ final class _SystemData {
             if (name != null) {
               __Holder.__add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
                   name);
-              if (vendorId != null) {
-                __Holder.__add(map,
-                    LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID,
-                    vendorId);
-                if (deviceId != null) {
-                  __Holder.__add(map,
-                      LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID,
-                      deviceId);
-                }
-              }
+              __Holder.__addGPU(vendorId, deviceId, map);
               return true;
             }
 

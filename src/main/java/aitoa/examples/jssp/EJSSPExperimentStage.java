@@ -517,11 +517,17 @@ public enum EJSSPExperimentStage implements
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
       _hillClimbers() {
-    return Stream.of(() -> new HillClimber<>(), //
-        () -> new HillClimberWithRestarts<>(128),
-        () -> new HillClimberWithRestarts<>(256),
-        () -> new HillClimberWithRestarts<>(512));
-    //
+    final ArrayList<Supplier<
+        IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+            new ArrayList<>();
+
+    list.add(() -> new HillClimber<>());
+    for (int i = 7; i <= 18; i++) {
+      final int pow = 1 << i;
+      list.add(() -> new HillClimberWithRestarts<>(pow));
+    }
+
+    return (list.stream());
   }
 
   /**
