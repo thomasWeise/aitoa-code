@@ -30,18 +30,18 @@ public final class RandomSampling<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// allocate data structure for holding 1 point from search space
+// Allocate data structure for holding 1 point from search space.
     final X x = process.getSearchSpace().create();
-// get nullary search operation for creating random point of X
+// Get nullary search operation for creating random point of X.
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator();
     final Random random = process.getRandom();// get random gen
 
-    do {// repeat until budget exhausted
-      nullary.apply(x, random); // create random point in X
-// evaluate the point: process.evaluate applies representation
-// mapping and calls objective function. "process" will remember
-// the best solution, so whoever called "solve" can obtain it.
+    do {// Repeat until budget is exhausted.
+      nullary.apply(x, random); // Create random point in X.
+// Evaluate the point: process.evaluate applies the
+// representation mapping and calls objective function. It
+// remembers the best solution, so the caller can obtain it.
       process.evaluate(x);
     } while (!process.shouldTerminate()); // do until time is up
   }
