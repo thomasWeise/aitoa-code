@@ -145,7 +145,11 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._eas();
+      return Stream.concat(//
+          EJSSPExperimentStage._eas(new int[] { 128, 256, 512,
+              1024, 2048, 4096, 8192, 16384 },
+              new double[] { 0 }), //
+          EJSSPExperimentStage._eas(null, null));
     }
 
     /**
@@ -201,7 +205,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._eas();
+      return EJSSPExperimentStage._eas(null, null);
     }
 
     /**
@@ -533,19 +537,26 @@ public enum EJSSPExperimentStage implements
   /**
    * create the stream of EAs
    *
+   * @param populationSizes
+   *          the population sizes
+   * @param crossoverRates
+   *          the crossover rates
    * @return the stream of EAs
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _eas() {
+      _eas(final int[] populationSizes,
+          final double[] crossoverRates) {
 
     final ArrayList<Supplier<
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
             new ArrayList<>();
 
-    for (final int ps : new int[] { 2048, 4096 }) {
-      for (final double cr : new double[] { 0d, 0.05d, 0.3d }) {
+    for (final int ps : ((populationSizes == null)
+        ? new int[] { 2048, 4096 } : populationSizes)) {
+      for (final double cr : ((crossoverRates == null)
+          ? new double[] { 0d, 0.05d, 0.3d } : crossoverRates)) {
         list.add(() -> new EA<>(cr, ps, ps));
         list.add(() -> new EAWithPruning<>(cr, ps, ps));
       }
