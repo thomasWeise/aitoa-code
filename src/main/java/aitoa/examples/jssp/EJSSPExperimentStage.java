@@ -148,8 +148,8 @@ public enum EJSSPExperimentStage implements
       return Stream.concat(//
           EJSSPExperimentStage._eas(new int[] { 128, 256, 512,
               1024, 2048, 4096, 8192, 16384 },
-              new double[] { 0 }), //
-          EJSSPExperimentStage._eas(null, null));
+              new double[] { 0 }, false), //
+          EJSSPExperimentStage._eas(null, null, true));
     }
 
     /**
@@ -205,7 +205,11 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._eas(null, null);
+      return Stream.concat(//
+          EJSSPExperimentStage._eas(new int[] { 128, 256, 512,
+              1024, 2048, 4096, 8192, 16384 },
+              new double[] { 0 }, false), //
+          EJSSPExperimentStage._eas(null, null, true));
     }
 
     /**
@@ -541,13 +545,16 @@ public enum EJSSPExperimentStage implements
    *          the population sizes
    * @param crossoverRates
    *          the crossover rates
+   * @param withPruning
+   *          should we run the experiment with pruning?
    * @return the stream of EAs
    */
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
       _eas(final int[] populationSizes,
-          final double[] crossoverRates) {
+          final double[] crossoverRates,
+          final boolean withPruning) {
 
     final ArrayList<Supplier<
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
