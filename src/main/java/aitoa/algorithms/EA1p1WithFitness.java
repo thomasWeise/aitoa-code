@@ -30,7 +30,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public final class EA1p1WithFitness<X, Y>
+public class EA1p1WithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
   /** the fitness assignment process */
   public final FitnessAssignmentProcess<? super X> fitness;
@@ -92,7 +92,7 @@ public final class EA1p1WithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "(1+1)-EA_" + //$NON-NLS-1$
         this.fitness.toString();
   }
