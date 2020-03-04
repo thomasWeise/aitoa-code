@@ -6,8 +6,9 @@ import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
@@ -406,7 +407,7 @@ public class Experiment {
    */
   private static final Path __logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed, final HashSet<Path> done,
+      final long randSeed, final __FileSet done,
       final boolean onlyComputePath) throws IOException {
 
     synchronized (IOUtils._IO_SYNCH) {
@@ -958,7 +959,7 @@ public class Experiment {
       final boolean waitAfterIOError) {
     Experiment._executeExperiment(stages, outputDir,
         nameFunction, writeLogInfos, waitAfterSkippedRuns,
-        waitAfterWorkWasDone, waitAfterIOError, new HashSet<>());
+        waitAfterWorkWasDone, waitAfterIOError, new __FileSet());
   }
 
   /** perform garbage collection */
@@ -1095,7 +1096,7 @@ public class Experiment {
       final boolean writeLogInfos,
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
-      final boolean waitAfterIOError, final HashSet<Path> done) {
+      final boolean waitAfterIOError, final __FileSet done) {
 
     final BiFunction<IMetaheuristic<X, Y>,
         BlackBoxProcessBuilder<X, Y>,
@@ -1298,11 +1299,18 @@ public class Experiment {
                             .printSetup((BufferedWriter) bw));
                   } catch (final IOException
                       | OutOfMemoryError error) {
+                    synchronized (done) {
+                      if (error instanceof OutOfMemoryError) {
+// The reason for the out-of-memory situation might have been
+// that "done" grew too big. Maybe if we just clear it, we
+// can prevent the error from occurring again.
+                        done.clear();
+                      } else {
+                        done.remove(logFile);
+                      }
+                    }
                     Experiment.__doGc();
 
-                    synchronized (done) {
-                      done.remove(logFile);
-                    }
                     if (writeLogInfos) {
                       if (error instanceof OutOfMemoryError) {
                         ConsoleIO.stderr(
@@ -1500,7 +1508,20 @@ public class Experiment {
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir) {
     Experiment.executeExperimentInParallel(stages, outputDir,
-        Runtime.getRuntime().availableProcessors());
+        Experiment.defaultThreadCount());
+  }
+
+  /**
+   * Get the default thread count
+   *
+   * @return the default thread count
+   */
+  public static final int defaultThreadCount() {
+    final int i = Runtime.getRuntime().availableProcessors();
+    if (i < 1) {
+      throw new IllegalStateException("No processors?"); //$NON-NLS-1$
+    }
+    return i;
   }
 
   /**
@@ -1578,7 +1599,7 @@ public class Experiment {
           + cores + " worker threads.");//$NON-NLS-1$
     }
 
-    final HashSet<Path> done = new HashSet<>();
+    final __FileSet done = new __FileSet();
 
     for (int i = threads.length; (--i) >= 0;) {
       final Thread t = threads[i] = new Thread(
@@ -1617,6 +1638,54 @@ public class Experiment {
       ConsoleIO.stdout("Finished waiting for " + //$NON-NLS-1$
           cores
           + " worker threads, the experiment is complete.");//$NON-NLS-1$
+    }
+  }
+
+  /** the set of paths */
+  private static final class __FileSet
+      extends LinkedHashMap<Path, Object> {
+    /** the serial version uid */
+    private static final long serialVersionUID = 1L;
+    /** the key */
+    private static final Object KEY = new Object();
+    /** the maximum map size */
+    private static final int MAX_SIZE = 1024 * 1024;
+
+    /** create */
+    __FileSet() {
+      super();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @SuppressWarnings("rawtypes")
+    protected final boolean
+        removeEldestEntry(final Map.Entry eldest) {
+      return this.size() > __FileSet.MAX_SIZE;
+    }
+
+    /**
+     * Add an element
+     *
+     * @param path
+     *          the path
+     * @return {@code true} if the path was new, {@code false}
+     *         otherwise
+     */
+    public final boolean add(final Path path) {
+      return (this.put(path, __FileSet.KEY) == null);
+    }
+
+    /**
+     * Check if the element {@code path} is present
+     *
+     * @param path
+     *          the path
+     * @return {@code true} if the element {@code path} is
+     *         present, {@code false} if not
+     */
+    public final boolean contains(final Path path) {
+      return this.get(path) != null;
     }
   }
 }
