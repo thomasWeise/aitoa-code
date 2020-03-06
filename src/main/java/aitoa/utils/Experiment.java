@@ -1314,7 +1314,7 @@ public class Experiment {
                     if (writeLogInfos) {
                       if (error instanceof OutOfMemoryError) {
                         ConsoleIO.stderr(
-                            "We ran out of memoryin the experimental run '" //$NON-NLS-1$
+                            "We ran out of memory in the experimental run '" //$NON-NLS-1$
                                 + logFile
                                 + "'. We will try to delete the log file and then continue.", //$NON-NLS-1$
                             error);

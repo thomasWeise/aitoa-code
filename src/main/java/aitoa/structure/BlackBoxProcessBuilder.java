@@ -26,6 +26,9 @@ public class BlackBoxProcessBuilder<X, Y>
   /** the expected log length */
   private int m_expectedLogLength;
 
+  /** should we log all data? */
+  private boolean m_logAll;
+
   /** Create the base class of the black box problem */
   public BlackBoxProcessBuilder() {
     super();
@@ -316,27 +319,60 @@ public class BlackBoxProcessBuilder<X, Y>
   }
 
   /**
+   * Will the generated black box process log every single FE?
+   *
+   * @return {@code true} if every single FE is logged,
+   *         {@code false} otherwise.
+   */
+  public final boolean isLoggingAll() {
+    return this.m_logAll;
+  }
+
+  /**
+   * Set whether or not this builder should lock every single FE
+   *
+   * @param logAll
+   *          {@code true} if every single FE should be logged,
+   *          {@code false} otherwise
+   * @return this builder
+   */
+  public final BlackBoxProcessBuilder<X, Y>
+      setLogAll(final boolean logAll) {
+    this.m_logAll = logAll;
+    return this;
+  }
+
+  /**
    * The internal version used to create the instance of the
    * black box problem. This method is overridden by the test
    * version of the black-box process builder.
    *
    * @return the problem instance
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
   IBlackBoxProcess<X, Y> _get() {
+    if (this.m_logAll && (this.m_logPath == null)) {
+      throw new IllegalArgumentException(
+          "No log path is provided, while logging is set to ALL."); //$NON-NLS-1$
+    }
+
     if (this.m_mapping == null) {
       // search space == solution space
       if (this.m_logPath == null) {
         return new _BlackBoxProcess1NoLog(this);
       }
-      return new _BlackBoxProcess1Log(this);
+      return this.m_logAll //
+          ? new _BlackBoxProcess1LogAll(this)//
+          : new _BlackBoxProcess1Log(this);
     }
 
     // search and solution space are different
     if (this.m_logPath == null) {
       return new _BlackBoxProcess2NoLog(this);
     }
-    return new _BlackBoxProcess2Log(this);
+    return this.m_logAll //
+        ? new _BlackBoxProcess2LogAll(this)//
+        : new _BlackBoxProcess2Log(this);
   }
 
   /**

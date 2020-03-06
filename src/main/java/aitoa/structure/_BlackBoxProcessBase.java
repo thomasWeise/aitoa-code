@@ -199,7 +199,8 @@ abstract class _BlackBoxProcessBase<X, Y>
       final long time = log[i++] - startTime;
 
       writeF: {
-        if (Double.isFinite(f) && (f >= Long.MIN_VALUE)
+        if (Double.isFinite(f)//
+            && (f >= Long.MIN_VALUE)//
             && (f <= Long.MAX_VALUE)) {
           final long lf = ((long) f);
           if (lf == f) {
