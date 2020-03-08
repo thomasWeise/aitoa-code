@@ -80,7 +80,7 @@ public final class Greedy2p1GAmodFFA<Y>
 
     boolean[] y = searchSpace.create();
     nullary.apply(y, random);
-    int fy = ((int) (process.evaluate(x)));
+    int fy = ((int) (process.evaluate(y)));
 
 // other initialization stuff
     boolean[] znew = searchSpace.create();
