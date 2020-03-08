@@ -1338,14 +1338,18 @@ public class Experiment {
 // log file had been created empty, so no other process would try
 // to repeat the run. We therefore try to delete that log file,
 // while will probably fail, but let's try.
-                    try {
-                      Files.delete(logFile);
-                    } catch (final Throwable error2) {
-                      if (writeLogInfos) {
-                        ConsoleIO.stderr(
-                            "We got an error when trying to delete file '" //$NON-NLS-1$
-                                + logFile + "'.", //$NON-NLS-1$
-                            error2);
+                    synchronized (done) {
+                      try {
+                        Files.delete(logFile);
+                      } catch (final Throwable error2) {
+                        if (writeLogInfos) {
+                          ConsoleIO.stderr(
+                              "We got an error when trying to delete file '" //$NON-NLS-1$
+                                  + logFile + "'.", //$NON-NLS-1$
+                              error2);
+                        }
+                      } finally {
+                        done.remove(logFile);
                       }
                     }
 
