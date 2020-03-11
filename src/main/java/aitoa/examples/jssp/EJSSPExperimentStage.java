@@ -146,10 +146,15 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.concat(//
-          EJSSPExperimentStage._eas(new int[] { 128, 256, 512,
-              1024, 2048, 4096, 8192, 16384 },
-              new double[] { 0 }, false), //
-          EJSSPExperimentStage._eas(null, null, true));
+          EJSSPExperimentStage._eas(//
+              new int[] { 128, 256, 512, 1024, 2048, 4096,
+                  8192 }, //
+              new double[] { 0, 0.05, 0.3 }, //
+              false), //
+          EJSSPExperimentStage._eas(//
+              new int[] { 128, 256, 512, 1024, }, //
+              new double[] { 0, 0.05, 0.3 }, //
+              true));
     }
 
     /**
@@ -565,7 +570,9 @@ public enum EJSSPExperimentStage implements
       for (final double cr : ((crossoverRates == null)
           ? new double[] { 0d, 0.05d, 0.3d } : crossoverRates)) {
         list.add(() -> new EA<>(cr, ps, ps));
-        list.add(() -> new EAWithPruning<>(cr, ps, ps));
+        if (withPruning) {
+          list.add(() -> new EAWithPruning<>(cr, ps, ps));
+        }
       }
     }
 
@@ -646,18 +653,12 @@ public enum EJSSPExperimentStage implements
         () -> new MAWithPruning<>(64, 64, 100), //
         //
         () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
-        () -> new MAWithPruning<>(1024, 1024, Integer.MAX_VALUE), //
         () -> new MA<>(1024, 1024, 10), //
-        () -> new MAWithPruning<>(1024, 1024, 10), //
         () -> new MA<>(1024, 1024, 100), //
-        () -> new MAWithPruning<>(1024, 1024, 100), //
         //
         () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
-        () -> new MAWithPruning<>(4096, 4096, Integer.MAX_VALUE), //
         () -> new MA<>(4096, 4096, 10), //
-        () -> new MAWithPruning<>(4096, 4096, 10), //
-        () -> new MA<>(4096, 4096, 100), //
-        () -> new MAWithPruning<>(4096, 4096, 100) //
+        () -> new MA<>(4096, 4096, 100) //
     );
   }
 }
