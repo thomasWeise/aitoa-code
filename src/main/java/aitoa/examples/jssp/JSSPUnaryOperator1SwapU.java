@@ -28,7 +28,7 @@ public final class JSSPUnaryOperator1SwapU
     implements IUnarySearchOperator<int[]> {
 // end relevant
   /** the indexes */
-  private final int[] m_indexes;
+  final int[] m_indexes;
 
   /**
    * create the representation
@@ -127,13 +127,13 @@ public final class JSSPUnaryOperator1SwapU
 // start relevant
     System.arraycopy(x, 0, dest, 0, dest.length); // copy x
 
-    // We move along the index-pair array and shuffle the indices
-    // on the way
+// We move along the index-pair array and shuffle the indices on
+// the way
     for (int i = 0, start = -1; i < pairCount; i++) {
 
-      // Get "a" and "b": the next, randomly chosen index pair.
-      // What we do here is basically an iterative version of the
-      // Fisher-Yates shuffle.
+// Get "a" and "b": the next, randomly chosen index pair.
+// What we do here is basically an iterative version of the
+// Fisher-Yates shuffle.
       int swapWith = (i + random.nextInt(pairCount - i)) << 1;
       final int a = indexes[swapWith];
       indexes[swapWith] = indexes[++start];
@@ -146,8 +146,8 @@ public final class JSSPUnaryOperator1SwapU
       final int job_j = dest[b];// the job at second index
 
       if (job_i != job_j) {
-        dest[b] = job_j; // then we swap the values
-        dest[a] = job_i; // and will then call the visitor
+        dest[a] = job_j; // then we swap the values
+        dest[b] = job_i; // and will then call the visitor
         if (visitor.test(dest)) {
           return true; // visitor says: stop -> return true
         } // visitor did not say stop, so we need to

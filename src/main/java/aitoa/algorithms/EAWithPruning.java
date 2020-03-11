@@ -160,8 +160,8 @@ public final class EAWithPruning<X, Y>
 // we switch the two arrays here so the rest is the same as EA
       makeUnique: for (final Individual<X> ind : P2) {
         ++done;
-        if ((unique <= 0)
-            || (ind.quality > P[unique - 1].quality)) {
+        if ((unique <= 0) || //
+            (ind.quality > P[unique - 1].quality)) {
           P[unique] = ind;
           if ((++unique) >= this.mu) { // we are done and can
             System.arraycopy(P2, done, P, unique, // copy the
@@ -184,7 +184,8 @@ public final class EAWithPruning<X, Y>
         }
 
         final Individual<X> dest = P[index];
-        final Individual<X> sel = P[(++p1) % unique];
+        p1 = (p1 + 1) % unique;
+        final Individual<X> sel = P[p1];
         if ((unique >= 2) && (random.nextDouble() <= this.cr)) {
           int p2; // to hold index of second selected record
           do { // find a second, different record

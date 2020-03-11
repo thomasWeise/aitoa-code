@@ -638,6 +638,20 @@ public enum EJSSPExperimentStage implements
         () -> new MA<>(64, 64, 100), //
         () -> new MAWithPruning<>(64, 64, 100), //
         //
+        () -> new MA<>(256, 256, Integer.MAX_VALUE), //
+        () -> new MAWithPruning<>(256, 256, Integer.MAX_VALUE), //
+        () -> new MA<>(256, 256, 10), //
+        () -> new MAWithPruning<>(256, 256, 10), //
+        () -> new MA<>(256, 256, 100), //
+        () -> new MAWithPruning<>(64, 64, 100), //
+        //
+        () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
+        () -> new MAWithPruning<>(1024, 1024, Integer.MAX_VALUE), //
+        () -> new MA<>(1024, 1024, 10), //
+        () -> new MAWithPruning<>(1024, 1024, 10), //
+        () -> new MA<>(1024, 1024, 100), //
+        () -> new MAWithPruning<>(1024, 1024, 100), //
+        //
         () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
         () -> new MAWithPruning<>(4096, 4096, Integer.MAX_VALUE), //
         () -> new MA<>(4096, 4096, 10), //

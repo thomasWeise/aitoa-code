@@ -156,7 +156,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
                 if (newQuality < ind.quality) { // better?
                   ind.quality = newQuality; // store quality
                   searchSpace.copy(point, ind.x); // store point
-                  return (true); // exit to next loop
+                  return true; // exit to next loop
                 } // if we get here, point is not better
                 return process.shouldTerminate();
               }); // repeat this until no improvement or time is

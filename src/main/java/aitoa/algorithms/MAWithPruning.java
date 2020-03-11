@@ -176,11 +176,10 @@ public final class MAWithPruning<X, Y>
                   if (newQuality < ind.quality) { // better?
                     ind.quality = newQuality; // store quality
                     searchSpace.copy(point, ind.x); // store
-                    return (true); // exit to next loop
+                    return true; // exit to next loop
                   } // if we get here, point is not better
                   return process.shouldTerminate();
-                }); // repeat this until no improvement or time
-                    // is up
+                }); // repeat until no improvement or time up
             if (process.shouldTerminate()) { // we return
               return; // best solution is stored in process
             }
@@ -198,8 +197,8 @@ public final class MAWithPruning<X, Y>
 // we switch the two arrays here so the rest is the same as EA
         makeUnique: for (final Individual<X> ind : P2) {
           ++done;
-          if ((unique <= 0)
-              || (ind.quality > P[unique - 1].quality)) {
+          if ((unique <= 0) || //
+              (ind.quality > P[unique - 1].quality)) {
             P[unique] = ind;
             if ((++unique) >= this.mu) { // we are done and can
               System.arraycopy(P2, done, P, unique, // copy the
@@ -224,7 +223,8 @@ public final class MAWithPruning<X, Y>
             return; // best solution is stored in process
           }
           final Individual<X> dest = P[index];
-          final Individual<X> sel = P[(++p1) % unique];
+          p1 = (p1 + 1) % unique;
+          final Individual<X> sel = P[p1];
           // to hold index of second selected record
           do { // find a second, different record
             p2 = random.nextInt(unique);
