@@ -166,8 +166,9 @@ public final class EAWithRestarts<X, Y>
           }
 
           final Individual<X> dest = population[index];
-          final Individual<X> parent1 =
-              population[(++p1) % this.mu]; // parent 1
+          p1 = (p1 + 1) % this.mu;
+          final Individual<X> parent1 = population[p1]; // parent
+                                                        // 1
 
           if (random.nextDouble() <= this.cr) { // crossover!
             int p2;

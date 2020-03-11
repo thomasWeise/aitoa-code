@@ -170,7 +170,8 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
         }
 
         final Individual<X> dest = P[index];
-        final Individual<X> sel = P[(++p1) % this.mu];
+        p1 = (p1 + 1) % this.mu;
+        final Individual<X> sel = P[p1];
 // end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!

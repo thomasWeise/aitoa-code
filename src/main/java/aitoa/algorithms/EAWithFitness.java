@@ -158,7 +158,8 @@ public final class EAWithFitness<X, Y>
         }
 
         final FitnessIndividual<X> dest = P[index];
-        final FitnessIndividual<X> sel = P[(++p1) % this.mu];
+        p1 = (p1 + 1) % this.mu;
+        final FitnessIndividual<X> sel = P[p1];
         if (random.nextDouble() <= this.cr) { // crossover!
           int p2; // to hold index of second selected record
           do { // find a second, different record
