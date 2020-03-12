@@ -62,9 +62,8 @@ public final class TreeSpace implements ISpace<Node[]> {
     final Node n = z[0];
     if (n != null) {
       n.asText(out);
-      final String s = System.lineSeparator();
-      out.append(s);
-      out.append(s);
+      out.append(System.lineSeparator());
+      out.append(System.lineSeparator());
       n.asJavaPrintParameters(out);
     } else {
       out.append("null"); //$NON-NLS-1$

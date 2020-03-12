@@ -70,8 +70,8 @@ public final class JSSPSolutionSpace
   public final void print(final JSSPCandidateSolution z,
       final Appendable out) throws IOException {
     JSSPSolutionSpace.__printJava(z, out);
-    out.append('\n');
-    out.append('\n');
+    out.append(System.lineSeparator());
+    out.append(System.lineSeparator());
     JSSPSolutionSpace.__printGanttData(z, out);
   }
 
@@ -90,26 +90,25 @@ public final class JSSPSolutionSpace
   private static final void __printGanttData(
       final JSSPCandidateSolution z, final Appendable out)
       throws IOException {
-    out.append("if(!(require(\"plotteR\"))){");//$NON-NLS-1$
-    out.append('\n');
+    out.append("if(!(require(\"aitoaEvaluate\"))){");//$NON-NLS-1$
+    out.append(System.lineSeparator());
     out.append("if(!(require(\"devtools\"))){");//$NON-NLS-1$
-    out.append('\n');
+    out.append(System.lineSeparator());
     out.append("install.packages(\"devtools\");");//$NON-NLS-1$
-    out.append('\n');
+    out.append(System.lineSeparator());
     out.append("library(\"devtools\");");//$NON-NLS-1$
-    out.append('\n');
+    out.append(System.lineSeparator());
     out.append("};");//$NON-NLS-1$
-    out.append('\n');
+    out.append(System.lineSeparator());
     out.append(
-        "devtools::install_github(\"thomasWeise/plotteR\");");//$NON-NLS-1$
-    out.append('\n');
-    out.append("library(\"plotteR\");");//$NON-NLS-1$
-    out.append('\n');
+        "devtools::install_github(\"thomasWeise/aitoaEvaluate\");");//$NON-NLS-1$
+    out.append(System.lineSeparator());
+    out.append("library(\"aitoaEvaluate\");");//$NON-NLS-1$
+    out.append(System.lineSeparator());
     out.append("};");//$NON-NLS-1$
-    out.append('\n');
-
-    out.append("plot.gantt(list("); //$NON-NLS-1$
-    out.append('\n');
+    out.append(System.lineSeparator());
+    out.append("aitoaEvaluate::aitoa.plot.gantt(list("); //$NON-NLS-1$
+    out.append(System.lineSeparator());
 
     char next1 = ' ';
     for (final int[] sched : z.schedule) {
@@ -127,14 +126,14 @@ public final class JSSPSolutionSpace
         out.append("L,end=");//$NON-NLS-1$
         out.append(Integer.toString(sched[i++]));
         out.append("L)");//$NON-NLS-1$
-        out.append('\n');
+        out.append(System.lineSeparator());
       }
 
       out.append(')');
-      out.append('\n');
+      out.append(System.lineSeparator());
     }
 
-    out.append("), prefix.job=\"\");"); //$NON-NLS-1$
+    out.append("));"); //$NON-NLS-1$
   }
 
   /**
@@ -157,7 +156,7 @@ public final class JSSPSolutionSpace
     for (final int[] schedule : z.schedule) {
       out.append(ch1);
       ch1 = ',';
-      out.append('\n');
+      out.append(System.lineSeparator());
       char ch2 = '{';
       for (final int i : schedule) {
         out.append(ch2);
@@ -261,9 +260,8 @@ public final class JSSPSolutionSpace
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((("jssp:gantt:" //$NON-NLS-1$
-        + this.instance.toString()) + ':')
-        + this.getClass().getCanonicalName());
+    return ("jssp:gantt:" //$NON-NLS-1$
+        + this.instance.toString());
   }
 
   /** {@inheritDoc} */

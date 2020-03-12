@@ -115,10 +115,9 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return (("jssp:int[" + //$NON-NLS-1$
-        this.length + "]:" //$NON-NLS-1$
-        + this.instance.toString()) + ':'
-        + this.getClass().getCanonicalName());
+    return ((("jssp:int[" + //$NON-NLS-1$
+        this.length) + "]:") //$NON-NLS-1$
+        + this.instance.toString());
   }
 // start relevant
 }

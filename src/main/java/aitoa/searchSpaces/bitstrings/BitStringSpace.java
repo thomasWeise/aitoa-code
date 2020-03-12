@@ -65,9 +65,8 @@ public final class BitStringSpace implements ISpace<boolean[]> {
     for (final boolean b : z) {
       out.append(b ? '1' : '0');
     }
-    final String s = System.lineSeparator();
-    out.append(s);
-    out.append(s);
+    out.append(System.lineSeparator());
+    out.append(System.lineSeparator());
     out.append("new boolean[] ");//$NON-NLS-1$
     char sep = '{';
     for (final boolean b : z) {

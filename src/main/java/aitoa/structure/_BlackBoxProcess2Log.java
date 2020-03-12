@@ -63,14 +63,21 @@ final class _BlackBoxProcess2Log<X, Y>
         _BlackBoxProcessBase._writeLog(this.m_log,
             this.m_logSize, this.m_startTime, out);
         this.m_log = null;
-        out.write('\n');
+        out.newLine();
         this._printInfos(out);
         if (this.m_consumedFEs > 0L) {
-          out.write("\n# BEST_X\n"); //$NON-NLS-1$
+          out.newLine();
+          out.write("# BEST_X"); //$NON-NLS-1$
+          out.newLine();
           this.m_searchSpace.print(this.m_bestX, out);
-          out.write("\n# END_BEST_X\n# BEST_Y\n"); //$NON-NLS-1$
+          out.newLine();
+          out.write("# END_BEST_X");//$NON-NLS-1$
+          out.newLine();
+          out.write("# BEST_Y"); //$NON-NLS-1$
+          out.newLine();
           this.m_solutionSpace.print(this.m_bestY, out);
-          out.write("\n# END_BEST_Y"); //$NON-NLS-1$
+          out.newLine();
+          out.write("# END_BEST_Y"); //$NON-NLS-1$
         }
       }
     });
