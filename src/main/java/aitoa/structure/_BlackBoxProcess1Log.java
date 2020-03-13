@@ -55,22 +55,20 @@ final class _BlackBoxProcess1Log<X>
         _BlackBoxProcessBase._writeLog(this.m_log,
             this.m_logSize, this.m_startTime, out);
         this.m_log = null;
-        out.newLine();
         this._printInfos(out);
         if (this.m_consumedFEs > 0L) {
-          out.newLine();
           out.write("# BEST_X"); //$NON-NLS-1$
           out.newLine();
           this.m_searchSpace.print(this.m_bestX, out);
           out.newLine();
           out.write("# END_BEST_X"); //$NON-NLS-1$
+          out.newLine();
         }
       }
     });
 
     // validate result: throw error if invalid
     this.m_searchSpace.check(this.m_bestX);
-
   }
 
   /** {@inheritDoc} */

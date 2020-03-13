@@ -63,10 +63,8 @@ final class _BlackBoxProcess2LogAll<X, Y>
         _BlackBoxProcessBase._writeLog(this.m_log,
             this.m_logSize, this.m_startTime, out);
         this.m_log = null;
-        out.newLine();
         this._printInfos(out);
         if (this.m_consumedFEs > 0L) {
-          out.newLine();
           out.write("# BEST_X"); //$NON-NLS-1$
           out.newLine();
           this.m_searchSpace.print(this.m_bestX, out);
@@ -78,6 +76,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
           this.m_solutionSpace.print(this.m_bestY, out);
           out.newLine();
           out.write("# END_BEST_Y"); //$NON-NLS-1$
+          out.newLine();
         }
       }
     });
@@ -156,7 +155,6 @@ final class _BlackBoxProcess2LogAll<X, Y>
       final IOConsumer<BufferedWriter> printer)
       throws IOException {
     IOUtils.synchronizedIO(() -> {
-      this.m_logWriter.newLine();
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(' ');
       this.m_logWriter.write(sectionName);
@@ -165,7 +163,6 @@ final class _BlackBoxProcess2LogAll<X, Y>
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(" END_"); //$NON-NLS-1$
       this.m_logWriter.write(sectionName);
-      this.m_logWriter.newLine();
       this.m_logWriter.newLine();
     });
   }

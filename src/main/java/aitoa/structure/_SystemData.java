@@ -36,7 +36,7 @@ final class _SystemData {
    *
    * @return the system data
    */
-  static final String _getSystemData() {
+  static final char[] _getSystemData() {
     return __Holder.SYSTEM_DATA;
   }
 
@@ -44,7 +44,7 @@ final class _SystemData {
   private static final class __Holder {
 
     /** make the system data */
-    static final String SYSTEM_DATA =
+    static final char[] SYSTEM_DATA =
         __Holder.__makeSystemData();
 
     /**
@@ -146,7 +146,7 @@ final class _SystemData {
      *
      * @return the system data
      */
-    private static final String __makeSystemData() {
+    private static final char[] __makeSystemData() {
       final StringBuilder out = new StringBuilder();
 
       // print the system information
@@ -431,7 +431,11 @@ final class _SystemData {
       out.append(LogFormat.asComment(LogFormat.END_SYSTEM));
       out.append(System.lineSeparator());
 
-      return out.toString();
+      final int length = out.length();
+      final char[] res = new char[length];
+      out.getChars(0, length, res, 0);
+
+      return res;
     }
 
     /**
@@ -525,7 +529,7 @@ final class _SystemData {
               line = line.trim();
               if (line.isEmpty()) {
                 continue;
-              }              
+              }
               final String linelc = line.toLowerCase();
               final int index = linelc.indexOf("<p>name:");//$NON-NLS-1$
               if (index >= 0) {

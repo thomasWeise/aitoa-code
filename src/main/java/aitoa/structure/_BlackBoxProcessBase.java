@@ -222,37 +222,36 @@ abstract class _BlackBoxProcessBase<X, Y>
   }
 
   /** the state begin */
-  private static final String BEGIN_STATE =
-      System.lineSeparator()
-          + LogFormat.asComment(LogFormat.BEGIN_STATE);
+  private static final char[] BEGIN_STATE =
+      (LogFormat.asComment(LogFormat.BEGIN_STATE)
+          + System.lineSeparator()).toCharArray();
 
   /** the state end */
-  private static final String END_STATE = System.lineSeparator()
-      + LogFormat.asComment(LogFormat.END_STATE);
+  private static final char[] END_STATE = (System.lineSeparator()
+      + LogFormat.asComment(LogFormat.END_STATE)
+      + System.lineSeparator()).toCharArray();
 
   /** {@inheritDoc} */
   @Override
-  void _printInfos(final Appendable out) throws IOException {
+  void _printInfos(final BufferedWriter out) throws IOException {
     final long time = System.currentTimeMillis();
     super._printInfos(out);
-    out.append(_BlackBoxProcessBase.BEGIN_STATE);
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
+    out.write(_BlackBoxProcessBase.BEGIN_STATE);
+    out.write(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
         this.m_consumedFEs));
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_FE,
+    out.newLine();
+    out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_FE,
         this.m_lastImprovementFE));
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
+    out.newLine();
+    out.write(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
         time - this.m_startTime));
-    out.append(System.lineSeparator());
-    out.append(
-        LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
-            this.getLastImprovementTime()));
-    out.append(System.lineSeparator());
-    out.append(LogFormat.mapEntry(LogFormat.BEST_F,
+    out.newLine();
+    out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
+        this.getLastImprovementTime()));
+    out.newLine();
+    out.write(LogFormat.mapEntry(LogFormat.BEST_F,
         LogFormat.doubleToStringForLog(this.m_bestF)));
-    out.append(_BlackBoxProcessBase.END_STATE);
+    out.write(_BlackBoxProcessBase.END_STATE);
   }
 
   /** {@inheritDoc} */

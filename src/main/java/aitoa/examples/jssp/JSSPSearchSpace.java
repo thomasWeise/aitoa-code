@@ -64,7 +64,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   @Override
   public final void print(final int[] z, final Appendable out)
       throws IOException {
-    out.append("new int[]"); //$NON-NLS-1$
+    out.append("new int[] "); //$NON-NLS-1$
     char ch = '{';
     for (final int i : z) {
       out.append(ch);

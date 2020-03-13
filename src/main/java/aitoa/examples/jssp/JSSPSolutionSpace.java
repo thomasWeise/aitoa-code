@@ -90,9 +90,9 @@ public final class JSSPSolutionSpace
   private static final void __printGanttData(
       final JSSPCandidateSolution z, final Appendable out)
       throws IOException {
-    out.append("if(!(require(\"aitoaEvaluate\"))){");//$NON-NLS-1$
+    out.append("if(!(require(\"aitoaEvaluate\"))) {");//$NON-NLS-1$
     out.append(System.lineSeparator());
-    out.append("if(!(require(\"devtools\"))){");//$NON-NLS-1$
+    out.append("if(!(require(\"devtools\"))) {");//$NON-NLS-1$
     out.append(System.lineSeparator());
     out.append("install.packages(\"devtools\");");//$NON-NLS-1$
     out.append(System.lineSeparator());
