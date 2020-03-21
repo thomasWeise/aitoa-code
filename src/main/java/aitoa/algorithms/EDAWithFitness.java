@@ -1,7 +1,7 @@
 package aitoa.algorithms;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
@@ -72,21 +72,21 @@ public final class EDAWithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "eda")); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         this.fitness));
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */

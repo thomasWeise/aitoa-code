@@ -1,7 +1,7 @@
 package aitoa.algorithms;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Objects;
 import java.util.Random;
 
@@ -104,11 +104,11 @@ public final class SimulatedAnnealing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "sa")); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     IMetaheuristic.super.printSetup(output);
     this.schedule.printSetup(output);
   }

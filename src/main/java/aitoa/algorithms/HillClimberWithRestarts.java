@@ -1,7 +1,7 @@
 package aitoa.algorithms;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
@@ -68,7 +68,7 @@ public final class HillClimberWithRestarts<X, Y>
    *          the number of non-improving steps before restarts
    * @param _failsBeforeRestartStrategy
    *          the the strategy that determined the value of
-   *          {@code _failsBeforeRestart}
+   *          {@code _failsBeforeRestart}output.write(System.lineSeparator());
    */
   public HillClimberWithRestarts(final long _failsBeforeRestart,
       final String _failsBeforeRestartStrategy) {
@@ -93,15 +93,15 @@ public final class HillClimberWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("failsBeforeRestart", ///$NON-NLS-1$
         this.failsBeforeRestart));
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("failsBeforeRestartStrategy", ///$NON-NLS-1$
         this.failsBeforeRestartStrategy));
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */

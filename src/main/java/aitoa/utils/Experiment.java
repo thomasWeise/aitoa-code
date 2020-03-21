@@ -1,7 +1,7 @@
 package aitoa.utils;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -1296,7 +1296,7 @@ public class Experiment {
                     process.printLogSection(
                         LogFormat.ALGORITHM_SETUP_LOG_SECTION,
                         (bw) -> algorithm
-                            .printSetup((BufferedWriter) bw));
+                            .printSetup((Writer) bw));
                   } catch (final IOException
                       | OutOfMemoryError error) {
                     synchronized (done) {

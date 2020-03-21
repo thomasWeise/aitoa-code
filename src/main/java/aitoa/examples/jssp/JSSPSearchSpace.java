@@ -69,7 +69,6 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
     for (final int i : z) {
       out.append(ch);
       ch = ',';
-      out.append(' ');
       out.append(Integer.toString(i));
     }
     out.append('}');

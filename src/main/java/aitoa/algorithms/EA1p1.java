@@ -1,7 +1,7 @@
 package aitoa.algorithms;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
@@ -76,22 +76,22 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "1+1_ea")); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 0));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 // start relevant
 }

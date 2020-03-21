@@ -1,7 +1,7 @@
 package aitoa.algorithms.bitstrings;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
@@ -290,11 +290,11 @@ public final class Greedy2p1GAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     super.printSetup(output);
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         "FFA"));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 }

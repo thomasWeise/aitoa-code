@@ -1,8 +1,8 @@
 package aitoa.structure;
 
-import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Random;
 
 import aitoa.utils.IOUtils.IOConsumer;
@@ -199,8 +199,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *           if I/O fails
    */
   public default void printLogSection(final String sectionName,
-      final IOConsumer<BufferedWriter> printer)
-      throws IOException {
+      final IOConsumer<Writer> printer) throws IOException {
     // does nothing
   }
 // start relevant

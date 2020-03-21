@@ -1,7 +1,7 @@
 package aitoa.algorithms.bitstrings;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -68,7 +68,7 @@ public class InnerGreedy2p1GAmod<Y>
 
     boolean[] y = searchSpace.create();
     nullary.apply(y, random);
-    double fy = process.evaluate(x);
+    double fy = process.evaluate(y);
     Assert.assertNotSame(x, y);
 
 // other initialization stuff
@@ -306,18 +306,18 @@ public class InnerGreedy2p1GAmod<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 1));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 }

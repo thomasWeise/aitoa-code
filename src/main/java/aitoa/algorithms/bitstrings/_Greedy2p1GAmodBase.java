@@ -1,7 +1,7 @@
 package aitoa.algorithms.bitstrings;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.LogFormat;
@@ -45,23 +45,23 @@ abstract class _Greedy2p1GAmodBase<Y>
 
   /** {@inheritDoc} */
   @Override
-  public void printSetup(final BufferedWriter output)
+  public void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 1));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("c", this.c)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cIsDefault", //$NON-NLS-1$
         this.c == _Greedy2p1GAmodBase.DEFAULT_C));
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 }

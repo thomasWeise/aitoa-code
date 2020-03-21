@@ -1,7 +1,7 @@
 package aitoa.algorithms;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import aitoa.structure.LogFormat;
 import aitoa.utils.Experiment;
@@ -54,14 +54,14 @@ public abstract class TemperatureSchedule {
    * @throws IOException
    *           if i/o fails
    */
-  public void printSetup(final BufferedWriter output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("temperatureSchedule", //$NON-NLS-1$
         this));
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("startTemperature", ///$NON-NLS-1$
         this.startTemperature));
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 
   /**
@@ -120,12 +120,12 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final void printSetup(final BufferedWriter output)
+    public final void printSetup(final Writer output)
         throws IOException {
       super.printSetup(output);
       output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$
           this.epsilon));
-      output.newLine();
+      output.write(System.lineSeparator());
     }
 // start exponential
   }
@@ -188,12 +188,12 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final void printSetup(final BufferedWriter output)
+    public final void printSetup(final Writer output)
         throws IOException {
       super.printSetup(output);
       output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$
           this.epsilon));
-      output.newLine();
+      output.write(System.lineSeparator());
     }
 // start logarithmic
   }

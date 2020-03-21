@@ -1,7 +1,7 @@
 package aitoa.structure;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -293,7 +293,7 @@ public class BlackBoxProcessBuilder<X, Y>
    *
    * @return the log
    */
-  final BufferedWriter _createLogWriter() {
+  final Writer _createLogWriter() {
     // create log writer now, to a) spot potential errors and b)
     // make sure the file exists, so other threads may skip over
     // the problem

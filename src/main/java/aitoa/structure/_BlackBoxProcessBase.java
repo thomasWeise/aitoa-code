@@ -1,7 +1,7 @@
 package aitoa.structure;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -187,12 +187,12 @@ abstract class _BlackBoxProcessBase<X, Y>
    *           if an i/o error occurs
    */
   static final void _writeLog(final long[] log, final int size,
-      final long startTime, final BufferedWriter out)
+      final long startTime, final Writer out)
       throws IOException {
     out.write(_BlackBoxProcessBase.BEGIN_LOG);
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(_BlackBoxProcessBase.LOG_HEADER);
-    out.newLine();
+    out.write(System.lineSeparator());
     for (int i = 0; i < size;) {
       final double f = Double.longBitsToDouble(log[i++]);
       final long fes = log[i++];
@@ -215,10 +215,10 @@ abstract class _BlackBoxProcessBase<X, Y>
       out.write(Long.toString(fes));
       out.write(LogFormat.CSV_SEPARATOR_CHAR);
       out.write(Long.toString(time));
-      out.newLine();
+      out.write(System.lineSeparator());
     }
     out.write(_BlackBoxProcessBase.END_OF_LOG);
-    out.newLine();
+    out.write(System.lineSeparator());
   }
 
   /** the state begin */
@@ -233,22 +233,22 @@ abstract class _BlackBoxProcessBase<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  void _printInfos(final BufferedWriter out) throws IOException {
+  void _printInfos(final Writer out) throws IOException {
     final long time = System.currentTimeMillis();
     super._printInfos(out);
     out.write(_BlackBoxProcessBase.BEGIN_STATE);
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
         this.m_consumedFEs));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_FE,
         this.m_lastImprovementFE));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
         time - this.m_startTime));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
         this.getLastImprovementTime()));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.BEST_F,
         LogFormat.doubleToStringForLog(this.m_bestF)));
     out.write(_BlackBoxProcessBase.END_STATE);

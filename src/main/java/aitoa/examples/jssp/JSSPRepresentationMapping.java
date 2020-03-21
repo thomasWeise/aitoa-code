@@ -47,8 +47,7 @@ public final class JSSPRepresentationMapping implements
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ("jssp:int[]-to-Gantt:" + //$NON-NLS-1$
-        this.getClass().getCanonicalName());
+    return ("jssp:int[]-to-Gantt"); //$NON-NLS-1$
   }
 
 // start relevant

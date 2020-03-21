@@ -1,7 +1,6 @@
 package aitoa.algorithms;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.CharArrayReader;
 import java.io.CharArrayWriter;
 import java.io.IOException;
@@ -36,10 +35,8 @@ public abstract class TestMetaheuristic<X, Y>
   @Test(timeout = 3600000)
   public final void testPrintSetup() throws IOException {
     char[] text = null;
-    try (CharArrayWriter caw = new CharArrayWriter();
-        BufferedWriter bw = new BufferedWriter(caw)) {
-      this.getInstance().printSetup(bw);
-      bw.flush();
+    try (CharArrayWriter caw = new CharArrayWriter()) {
+      this.getInstance().printSetup(caw);
       text = caw.toCharArray();
     }
     Assert.assertNotNull(text);

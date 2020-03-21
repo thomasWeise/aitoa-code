@@ -1,8 +1,8 @@
 package aitoa.structure;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -149,47 +149,47 @@ abstract class _BlackBoxProcessData<X, Y> {
    * @throws IOException
    *           if i/o fails
    */
-  void _printInfos(final BufferedWriter out) throws IOException {
+  void _printInfos(final Writer out) throws IOException {
     out.write(LogFormat.asComment(LogFormat.BEGIN_SETUP));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SEARCH_SPACE,
         this.m_searchSpace));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.NULLARY_OP,
         this.m_nullary));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(
         LogFormat.mapEntry(LogFormat.UNARY_OP, this.m_unary));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(
         LogFormat.mapEntry(LogFormat.BINARY_OP, this.m_binary));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.TERNARY_OP,
         this.m_ternary));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SOLUTION_SPACE,
         this.m_solutionSpace));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(
         LogFormat.REPRESENTATION_MAPPING, this.m_mapping));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.OBJECTIVE_FUNCTION,
         this.m_f));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(
         LogFormat.mapEntry(LogFormat.MAX_FES, this.m_maxFEs));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(
         LogFormat.mapEntry(LogFormat.MAX_TIME, this.m_maxTime));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.GOAL_F,
         LogFormat.doubleToStringForLog(this.m_goalF)));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.RANDOM_SEED,
         RandomUtils.randSeedToString(this.m_randSeed)));
-    out.newLine();
+    out.write(System.lineSeparator());
     out.write(LogFormat.asComment(LogFormat.END_SETUP));
-    out.newLine();
+    out.write(System.lineSeparator());
 
     // print the system information
     out.write(_SystemData._getSystemData());
@@ -198,10 +198,9 @@ abstract class _BlackBoxProcessData<X, Y> {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    try (final StringWriter sw = new StringWriter();
-        final BufferedWriter sb = new BufferedWriter(sw)) {
-      this._printInfos(sb);
-      return sb.toString();
+    try (final StringWriter sw = new StringWriter()) {
+      this._printInfos(sw);
+      return sw.toString();
     } catch (final IOException ioe) {
       throw new RuntimeException(ioe);
     }

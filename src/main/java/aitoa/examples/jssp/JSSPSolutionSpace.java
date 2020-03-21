@@ -161,7 +161,6 @@ public final class JSSPSolutionSpace
       for (final int i : schedule) {
         out.append(ch2);
         ch2 = ',';
-        out.append(' ');
         out.append(Integer.toString(i));
       }
       out.append('}');

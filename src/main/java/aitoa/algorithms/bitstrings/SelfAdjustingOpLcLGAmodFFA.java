@@ -1,7 +1,7 @@
 package aitoa.algorithms.bitstrings;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
@@ -307,27 +307,27 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final BufferedWriter output)
+  public final void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("F", 1.5));///$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("c", //$NON-NLS-1$
         "1OverLambda"));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", //$NON-NLS-1$
         "selfAdjustingFrom1ToN"));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("p", //$NON-NLS-1$
         "1OverLambda")); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         "FFA"));//$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 
   /** the holder */

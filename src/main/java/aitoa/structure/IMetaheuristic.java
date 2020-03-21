@@ -2,8 +2,8 @@
 package aitoa.structure;
 // end relevant
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * A metaheuristic optimization algorithm
@@ -34,10 +34,10 @@ public interface IMetaheuristic<X, Y> {
    * @throws IOException
    *           if i/o fails
    */
-  public default void printSetup(final BufferedWriter output)
+  public default void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("algorithm", this)); //$NON-NLS-1$
-    output.newLine();
+    output.write(System.lineSeparator());
   }
 // start relevant
 }

@@ -1,7 +1,7 @@
 package aitoa.structure;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import aitoa.utils.IOUtils;
 import aitoa.utils.IOUtils.IOConsumer;
@@ -23,7 +23,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
   /** the best-so-far candidate solution */
   final Y m_bestY;
   /** the log file */
-  private final BufferedWriter m_logWriter;
+  private final Writer m_logWriter;
   /** the log */
   private long[] m_log;
   /** the log size */
@@ -59,24 +59,24 @@ final class _BlackBoxProcess2LogAll<X, Y>
 
     // write the log information and then close log
     IOUtils.synchronizedIO(() -> {
-      try (final BufferedWriter out = this.m_logWriter) {
+      try (final Writer out = this.m_logWriter) {
         _BlackBoxProcessBase._writeLog(this.m_log,
             this.m_logSize, this.m_startTime, out);
         this.m_log = null;
         this._printInfos(out);
         if (this.m_consumedFEs > 0L) {
           out.write("# BEST_X"); //$NON-NLS-1$
-          out.newLine();
+          out.write(System.lineSeparator());
           this.m_searchSpace.print(this.m_bestX, out);
-          out.newLine();
+          out.write(System.lineSeparator());
           out.write("# END_BEST_X");//$NON-NLS-1$
-          out.newLine();
+          out.write(System.lineSeparator());
           out.write("# BEST_Y"); //$NON-NLS-1$
-          out.newLine();
+          out.write(System.lineSeparator());
           this.m_solutionSpace.print(this.m_bestY, out);
-          out.newLine();
+          out.write(System.lineSeparator());
           out.write("# END_BEST_Y"); //$NON-NLS-1$
-          out.newLine();
+          out.write(System.lineSeparator());
         }
       }
     });
@@ -152,18 +152,17 @@ final class _BlackBoxProcess2LogAll<X, Y>
   /** {@inheritDoc} */
   @Override
   public final void printLogSection(final String sectionName,
-      final IOConsumer<BufferedWriter> printer)
-      throws IOException {
+      final IOConsumer<Writer> printer) throws IOException {
     IOUtils.synchronizedIO(() -> {
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(' ');
       this.m_logWriter.write(sectionName);
-      this.m_logWriter.newLine();
+      this.m_logWriter.write(System.lineSeparator());
       printer.accept(this.m_logWriter);
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);
       this.m_logWriter.write(" END_"); //$NON-NLS-1$
       this.m_logWriter.write(sectionName);
-      this.m_logWriter.newLine();
+      this.m_logWriter.write(System.lineSeparator());
     });
   }
 }
