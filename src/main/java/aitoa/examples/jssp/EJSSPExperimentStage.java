@@ -480,6 +480,8 @@ public enum EJSSPExperimentStage implements
           final int mu = lambda / (1 << j);
           list.add(() -> new EDA<>(mu, lambda, //
               new JSSPUMDAModel(problem.instance)));
+          list.add(() -> new EDA<>(mu, lambda, //
+              new JSSPSpreadModel(problem.instance, 16)));
         }
       }
       return list.stream();

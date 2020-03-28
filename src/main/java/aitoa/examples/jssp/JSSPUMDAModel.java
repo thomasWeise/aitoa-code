@@ -13,26 +13,26 @@ import aitoa.utils.RandomUtils;
  * this distribution. This model is univariate, since we consider
  * each index of the schedule representation separately.
  */
-public final class JSSPUMDAModel implements IModel<int[]> {
+public class JSSPUMDAModel implements IModel<int[]> {
 
   /** the counters */
-  private final long[][] m_counts;
+  final long[][] m_counts;
   /**
    * the permutation used for picking indices to fill in a random
    * order
    */
-  private final int[] m_perm;
+  final int[] m_perm;
 
   /** the probability vector */
-  private final long[] m_prob;
+  final long[] m_prob;
 
   /** the jobs we can choose from */
-  private final int[] m_jobChoseFrom;
+  final int[] m_jobChoseFrom;
 
   /** the remaining number of times a job can be scheduled */
-  private final int[] m_jobRemainingTimes;
+  final int[] m_jobRemainingTimes;
   /** the number of machines */
-  private final int m_m;
+  final int m_m;
 
   /**
    * create a model for the given jssp instance
@@ -61,9 +61,19 @@ public final class JSSPUMDAModel implements IModel<int[]> {
     }
   }
 
+  /**
+   * create a JSSP UMDA model from a string
+   *
+   * @param instance
+   *          the instance id
+   */
+  public JSSPUMDAModel(final String instance) {
+    this(new JSSPInstance(instance));
+  }
+
   /** {@inheritDoc} */
   @Override
-  public final void initialize() {
+  public void initialize() {
     for (final long[] l : this.m_counts) {
       Arrays.fill(l, 1L);
     }
@@ -71,7 +81,7 @@ public final class JSSPUMDAModel implements IModel<int[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void update(final Iterable<int[]> selected) {
+  public void update(final Iterable<int[]> selected) {
     for (final int[] sel : selected) {
       for (int j = sel.length; (--j) >= 0;) {
         ++this.m_counts[j][sel[j]];
