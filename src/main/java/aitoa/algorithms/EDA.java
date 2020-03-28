@@ -13,7 +13,6 @@ import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
-import aitoa.utils.RandomUtils;
 
 /**
  * An estimation of distribution algorithm does not apply search
@@ -130,7 +129,6 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     }
 
     for (;;) {// each iteration: update model, sample model
-      RandomUtils.shuffle(random, P, 0, P.length);
       Arrays.sort(P); // sort: best solutions at start
 // update model with mu<lambda best solutions
       Model.update(IModel.use(P, 0, this.mu));
