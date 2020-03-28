@@ -84,27 +84,36 @@ public final class JSSPUMDAModel implements IModel<int[]> {
   public final void sample(final int[] dest,
       final Random random) {
     final int[] perm = this.m_perm;
+// each job occurs m times
     final int[] jobRemainingTimes = this.m_jobRemainingTimes;
     Arrays.fill(jobRemainingTimes, this.m_m);
+// the jobs we can choose from
     final int[] jobChooseFrom = this.m_jobChoseFrom;
     final long[] prob = this.m_prob;
     final long[][] counts = this.m_counts;
+// we can choose from n jobs
     int jobChooseLength = jobChooseFrom.length;
 
+// permute the indexes for which we pick jobs
     RandomUtils.shuffle(random, perm, 0, perm.length);
 
+// iterate over the job indices
     for (final int index : perm) {
       long N = 0L;
 
+// build the cumulative frequency vector, N be the overall sum
       for (int j = 0; j < jobChooseLength; ++j) {
         N += counts[index][jobChooseFrom[j]];
         prob[j] = N;
       }
 
+// pick a job index, where the probability is proportional to the
+// frequency
       final int i = JSSPUMDAModel.find(
           RandomUtils.uniformFrom0ToNminus1(random, N), prob,
           jobChooseLength);
 
+// pick and store the job
       final int job = jobChooseFrom[i];
       dest[index] = job;
       if ((--jobRemainingTimes[job]) == 0) {

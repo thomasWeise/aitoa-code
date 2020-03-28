@@ -495,4 +495,30 @@ public class RandomUtilsTest {
     RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE / 2,
         Long.MAX_VALUE / 2);
   }
+
+  /**
+   * test uniformFromMtoN with Long.MIN_VALUE to 0
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testUniformFromMinusMinTo0Big() {
+    final boolean[] found = new boolean[10];
+    final long mi = Integer.MAX_VALUE + 1L;
+    final long bound = mi + found.length;
+    int total = found.length;
+    for (;;) {
+      final long l = RandomUtils.uniformFrom0ToNminus1(
+          ThreadLocalRandom.current(), bound) - mi;
+      if (l >= 0L) {
+        final int i = (int) l;
+        if (found[i]) {
+          continue;
+        }
+        found[i] = true;
+        if ((--total) <= 0) {
+          return;
+        }
+      }
+    }
+  }
 }

@@ -1,6 +1,8 @@
 package aitoa.examples.jssp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,6 +48,37 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
   @Override
   protected int[] createValid() {
     return JSSPTestUtils.createValidX(TestJSSPUMDAModel.PROBLEM);
+  }
+
+  /**
+   * Test the model
+   */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testModelTraining() {
+    final JSSPInstance demo = new JSSPInstance("demo"); //$NON-NLS-1$
+    final JSSPUMDAModel model = new JSSPUMDAModel(demo);
+
+    for (int z = 100; (--z) >= 0;) {
+      model.initialize();
+      final int[] template = JSSPTestUtils.createValidX(demo);
+      final ArrayList<int[]> list = new ArrayList<>();
+      list.add(template);
+      for (int i = 1000; (--i) >= 0;) {
+        model.update(list);
+      }
+
+      final int[] dest = new int[demo.m * demo.n];
+      checker: {
+        for (int i = 10; (--i) >= 0;) {
+          model.sample(dest, ThreadLocalRandom.current());
+          if (Arrays.equals(template, dest)) {
+            break checker;
+          }
+        }
+        Assert.fail("never sampled right result."); //$NON-NLS-1$
+      }
+    }
   }
 
   /**

@@ -301,7 +301,7 @@ public final class RandomUtils {
       uniformFrom0ToNminus1(final Random random, final long N) {
     long bits, val;
     do {
-      bits = (random.nextLong() << 1) >>> 1;
+      bits = (random.nextLong() << 1L) >>> 1L;
       val = bits % N;
     } while (((bits - val) + (N - 1L)) < 0L);
     return val;

@@ -13,6 +13,7 @@ import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.utils.RandomUtils;
 
 /**
  * An {@linkplain aitoa.algorithms.EDA estimation of distribution
@@ -131,6 +132,7 @@ public final class EDAWithFitness<X, Y>
     }
 
     for (;;) {// each iteration: update model, sample model
+      RandomUtils.shuffle(random, P, 0, P.length);
       this.fitness.assignFitness(P);
       Arrays.sort(P); // sort: best solutions at start
 // update model with mu<lambda best solutions
