@@ -148,8 +148,8 @@ public enum EJSSPExperimentStage implements
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.concat(//
           EJSSPExperimentStage._eas(//
-              new int[] { 128, 256, 512, 1024, 2048, 4096,
-                  8192 }, //
+              new int[] { 128, 256, 512, 1024, 2048, 4096, 8192,
+                  16384, 32768, 65536 }, //
               new double[] { 0, 0.05, 0.3 }, //
               false), //
           EJSSPExperimentStage._eas(//
@@ -212,8 +212,9 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.concat(//
-          EJSSPExperimentStage._eas(new int[] { 128, 256, 512,
-              1024, 2048, 4096, 8192, 16384 },
+          EJSSPExperimentStage._eas(
+              new int[] { 128, 256, 512, 1024, 2048, 4096, 8192,
+                  16384, 16384, 32768, 65536 },
               new double[] { 0 }, false), //
           EJSSPExperimentStage._eas(null, null, true));
     }
