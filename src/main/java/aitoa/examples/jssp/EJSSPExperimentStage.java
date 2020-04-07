@@ -215,8 +215,11 @@ public enum EJSSPExperimentStage implements
           EJSSPExperimentStage._eas(
               new int[] { 128, 256, 512, 1024, 2048, 4096, 8192,
                   16384, 16384, 32768, 65536 },
-              new double[] { 0 }, false), //
-          EJSSPExperimentStage._eas(null, null, true));
+              new double[] { 0, 0.05, 0.3, 0.98 }, false),
+          EJSSPExperimentStage._eas(
+              new int[] { 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+                  2048, 4096, 8192, 16384, 16384, 32768, 65536 },
+              new double[] { 0.05, 0.3 }, true));
     }
 
     /**
