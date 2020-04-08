@@ -104,7 +104,7 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());

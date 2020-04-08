@@ -98,7 +98,7 @@ public final class EAWithRestarts<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", true)); //$NON-NLS-1$
     output.write(System.lineSeparator());

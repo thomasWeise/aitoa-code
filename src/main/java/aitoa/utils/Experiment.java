@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 import aitoa.algorithms.EA;
 import aitoa.algorithms.EA1p1;
 import aitoa.algorithms.EA1p1WithFitness;
+import aitoa.algorithms.EAWithClearing;
 import aitoa.algorithms.EAWithFitness;
-import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EAWithRestarts;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.EDAWithFitness;
@@ -31,8 +31,8 @@ import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.HybridEDAWithFitness;
 import aitoa.algorithms.MA;
+import aitoa.algorithms.MAWithClearing;
 import aitoa.algorithms.MAWithFitness;
-import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
@@ -1032,11 +1032,11 @@ public class Experiment {
     if ((algorithm instanceof EA) || //
         (algorithm instanceof EA1p1WithFitness) || //
         (algorithm instanceof EAWithFitness) || //
-        (algorithm instanceof EAWithPruning) || //
+        (algorithm instanceof EAWithClearing) || //
         (algorithm instanceof EAWithRestarts) || //
         (algorithm instanceof MA) || //
         (algorithm instanceof MAWithFitness) || //
-        (algorithm instanceof MAWithPruning)) {
+        (algorithm instanceof MAWithClearing)) {
       return Experiment.nameFromObjectsMerge(name, //
           Objects.requireNonNull(//
               builder.getUnarySearchOperator()), //

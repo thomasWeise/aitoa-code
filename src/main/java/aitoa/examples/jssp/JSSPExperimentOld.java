@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import aitoa.algorithms.EA;
+import aitoa.algorithms.EAWithClearing;
 import aitoa.algorithms.EAWithFitness;
-import aitoa.algorithms.EAWithPruning;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.EDAWithFitness;
 import aitoa.algorithms.HillClimber;
@@ -16,8 +16,8 @@ import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.HybridEDAWithFitness;
 import aitoa.algorithms.IntFFA;
 import aitoa.algorithms.MA;
+import aitoa.algorithms.MAWithClearing;
 import aitoa.algorithms.MAWithFitness;
-import aitoa.algorithms.MAWithPruning;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
@@ -161,8 +161,8 @@ public class JSSPExperimentOld {
                       unary, binary, inst, out);
 // the EA with pruning, i.e., which enforces population diversity
                   JSSPExperimentOld.run(
-                      new EAWithPruning<>(cr, mu, lambda), unary,
-                      binary, inst, out);
+                      new EAWithClearing<>(cr, mu, lambda),
+                      unary, binary, inst, out);
 // the EA with frequency fitness assignment
                   JSSPExperimentOld.run(
                       new EAWithFitness<>(cr, mu, lambda,
@@ -176,7 +176,7 @@ public class JSSPExperimentOld {
                     Integer.MAX_VALUE, 10, 100 }) {
 // memetic algorithms here rely on enumeration and use cr=1
                   JSSPExperimentOld.run(
-                      new MAWithPruning<>(mu, lambda, steps),
+                      new MAWithClearing<>(mu, lambda, steps),
                       unary, binary, inst, out);
                   JSSPExperimentOld.run(
                       new MA<>(mu, lambda, steps), unary, binary,
@@ -255,7 +255,7 @@ public class JSSPExperimentOld {
                   maxDepth, inst, out);
 // the EA with pruning, i.e., which enforces population diversity
               JSSPExperimentOld.__runGP(
-                  new EAWithPruning<>(cr, mu, lambda), maxDepth,
+                  new EAWithClearing<>(cr, mu, lambda), maxDepth,
                   inst, out);
               JSSPExperimentOld.__runGP(
                   new EAWithFitness<>(cr, mu, lambda,

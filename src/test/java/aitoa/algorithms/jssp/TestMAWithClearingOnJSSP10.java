@@ -3,16 +3,16 @@ package aitoa.algorithms.jssp;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import aitoa.algorithms.MAWithPruning;
+import aitoa.algorithms.MAWithClearing;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.structure.IMetaheuristic;
 
 /**
- * Test the {@linkplain aitoa.algorithms.MAWithPruning memetic
+ * Test the {@linkplain aitoa.algorithms.MAWithClearing memetic
  * algorithm with pruning} on the JSSP
  */
-public class TestMAWithPruningOnJSSP
+public class TestMAWithClearingOnJSSP10
     extends TestMetaheuristicOnJSSP {
 
   /** {@inheritDoc} */
@@ -22,6 +22,6 @@ public class TestMAWithPruningOnJSSP
     final Random rand = ThreadLocalRandom.current();
     final int mu = 2 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
-    return new MAWithPruning<>(mu, lambda, Integer.MAX_VALUE);
+    return new MAWithClearing<>(mu, lambda, 10);
   }
 }

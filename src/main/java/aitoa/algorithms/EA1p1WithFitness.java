@@ -111,7 +111,7 @@ public final class EA1p1WithFitness<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 0));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", false)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());

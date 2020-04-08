@@ -8,14 +8,14 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import aitoa.algorithms.EA;
-import aitoa.algorithms.EAWithPruning;
+import aitoa.algorithms.EAWithClearing;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.algorithms.MA;
-import aitoa.algorithms.MAWithPruning;
+import aitoa.algorithms.MAWithClearing;
 import aitoa.algorithms.RandomSampling;
 import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.SingleRandomSample;
@@ -219,7 +219,7 @@ public enum EJSSPExperimentStage implements
           EJSSPExperimentStage._eas(
               new int[] { 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                   2048, 4096, 8192, 16384, 16384, 32768, 65536 },
-              new double[] { 0.05, 0.3 }, true));
+              new double[] { 0.05 }, true));
     }
 
     /**
@@ -611,7 +611,7 @@ public enum EJSSPExperimentStage implements
           ? new double[] { 0d, 0.05d, 0.3d } : crossoverRates)) {
         list.add(() -> new EA<>(cr, ps, ps));
         if (withPruning) {
-          list.add(() -> new EAWithPruning<>(cr, ps, ps));
+          list.add(() -> new EAWithClearing<>(cr, ps, ps));
         }
       }
     }
@@ -672,25 +672,25 @@ public enum EJSSPExperimentStage implements
       _ma() {
     return Stream.of(//
         () -> new MA<>(16, 16, Integer.MAX_VALUE), //
-        () -> new MAWithPruning<>(16, 16, Integer.MAX_VALUE), //
+        () -> new MAWithClearing<>(16, 16, Integer.MAX_VALUE), //
         () -> new MA<>(16, 16, 10), //
-        () -> new MAWithPruning<>(16, 16, 10), //
+        () -> new MAWithClearing<>(16, 16, 10), //
         () -> new MA<>(16, 16, 100), //
-        () -> new MAWithPruning<>(16, 16, 100), //
+        () -> new MAWithClearing<>(16, 16, 100), //
         //
         () -> new MA<>(64, 64, Integer.MAX_VALUE), //
-        () -> new MAWithPruning<>(64, 64, Integer.MAX_VALUE), //
+        () -> new MAWithClearing<>(64, 64, Integer.MAX_VALUE), //
         () -> new MA<>(64, 64, 10), //
-        () -> new MAWithPruning<>(64, 64, 10), //
+        () -> new MAWithClearing<>(64, 64, 10), //
         () -> new MA<>(64, 64, 100), //
-        () -> new MAWithPruning<>(64, 64, 100), //
+        () -> new MAWithClearing<>(64, 64, 100), //
         //
         () -> new MA<>(256, 256, Integer.MAX_VALUE), //
-        () -> new MAWithPruning<>(256, 256, Integer.MAX_VALUE), //
+        () -> new MAWithClearing<>(256, 256, Integer.MAX_VALUE), //
         () -> new MA<>(256, 256, 10), //
-        () -> new MAWithPruning<>(256, 256, 10), //
+        () -> new MAWithClearing<>(256, 256, 10), //
         () -> new MA<>(256, 256, 100), //
-        () -> new MAWithPruning<>(64, 64, 100), //
+        () -> new MAWithClearing<>(64, 64, 100), //
         //
         () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
         () -> new MA<>(1024, 1024, 10), //

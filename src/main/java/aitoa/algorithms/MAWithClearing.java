@@ -22,15 +22,15 @@ import aitoa.utils.RandomUtils;
  * always applies the binary operator to find new points in the
  * search space and then refines them with a
  * {@linkplain aitoa.algorithms.HillClimber2 first-improvement
- * local search} based on a unary operator. This MA with pruning
- * here also, well, prunes the population from candidate
+ * local search} based on a unary operator. This MA with clearing
+ * here also, well, clears the population from candidate
  * solutions with identical objective values before the
  * reproduction step.
  * <p>
  * All candidate solutions represented in the population will
  * always be local optima before entering the binary operators.
  * If these operators work well, they may jump close to other
- * local optima. The pruning ensures that all "parents" from
+ * local optima. The clearing ensures that all "parents" from
  * which new points in the search space are derived have a
  * different solution quality. This, in turn, implies that they
  * are different candidate solutions. These, in turn, must be the
@@ -50,7 +50,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public final class MAWithPruning<X, Y>
+public final class MAWithClearing<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
 
@@ -71,7 +71,7 @@ public final class MAWithPruning<X, Y>
    * @param _maxLSSteps
    *          the maximum number of local search steps
    */
-  public MAWithPruning(final int _mu, final int _lambda,
+  public MAWithClearing(final int _mu, final int _lambda,
       final int _maxLSSteps) {
     super();
     if ((_mu <= 1) || (_mu > 1_000_000)) {
@@ -105,7 +105,7 @@ public final class MAWithPruning<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 1d));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", true)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
@@ -117,7 +117,7 @@ public final class MAWithPruning<X, Y>
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    final String s = ((("map_" + //$NON-NLS-1$
+    final String s = ((("mac_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda);
     if (this.maxLSSteps >= Integer.MAX_VALUE) {
       return s;

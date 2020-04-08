@@ -17,7 +17,7 @@ import aitoa.utils.RandomUtils;
 
 /**
  * An {@linkplain aitoa.algorithms.EA evolutionary algorithm}
- * which prunes the population from candidate solutions with
+ * which clears the population from candidate solutions with
  * identical objective values before the reproduction step. This
  * ensures that all "parents" from which new points in the search
  * space are derived have a different solution quality. This, in
@@ -40,7 +40,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public final class EAWithPruning<X, Y>
+public final class EAWithClearing<X, Y>
     implements IMetaheuristic<X, Y> {
 // end relevant
 
@@ -61,7 +61,7 @@ public final class EAWithPruning<X, Y>
    * @param _lambda
    *          the number of offspring to be created
    */
-  public EAWithPruning(final double _cr, final int _mu,
+  public EAWithClearing(final double _cr, final int _mu,
       final int _lambda) {
     super();
     if ((_cr < 0d) || (_cr > 1d) || (!(Double.isFinite(_cr)))) {
@@ -99,7 +99,7 @@ public final class EAWithPruning<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", true)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
@@ -108,7 +108,7 @@ public final class EAWithPruning<X, Y>
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((((("eap_" + //$NON-NLS-1$
+    return ((((("eac_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr);
   }
 
@@ -117,9 +117,10 @@ public final class EAWithPruning<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// omitted: initialize local variables random, searchSpace,
+// omitted: Initialize local variables random, searchSpace,
 // nullary, unary, binary, and arrays P and P2 of length
-// mu+lambda, and array T to null
+// mu+lambda, and array T to null. Then fill the population with
+// random individuals (you already know this).
 // end relevant
 // create local variables
     final Random random = process.getRandom();
@@ -134,70 +135,68 @@ public final class EAWithPruning<X, Y>
     Individual<X>[] T = null,
         P = new Individual[this.mu + this.lambda],
         P2 = new Individual[P.length];
-// start relevant
+
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
-// end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-// start relevant
     }
 
+// start relevant
     while (!process.shouldTerminate()) { // main loop
-// shuffle P, so after sorting the order of unique recs is random
+// Shuffle P: After sorting the order of unique recs is random.
       RandomUtils.shuffle(random, P, 0, P.length);
-// sort the population: mu best individuals at front are selected
+// Sort the population: mu best individuals are at the front.
       Arrays.sort(P);
-// we now want to keep only the solutions with unique fitness
+// We now want to keep only the solutions with unique quality.
       int unique = 0, done = 0, end = P.length;
-      T = P; // since array P is sorted, so we can do this by
-      P = P2; // processing it from begin to end and copying
-      P2 = T; // these individuals to the start of another array
-// we switch the two arrays here so the rest is the same as EA
+      T = P; // First switch the arrays. P2 is sorted. We process
+      P = P2; // it from begin to end and copy the unique records
+      P2 = T; // to the start of P, the rest to the end of P.
       makeUnique: for (final Individual<X> ind : P2) {
-        ++done;
-        if ((unique <= 0) || //
+        ++done; // Increase number of processed in individuals.
+        if ((unique <= 0) || // two lines: check for uniqueness
             (ind.quality > P[unique - 1].quality)) {
-          P[unique] = ind;
-          if ((++unique) >= this.mu) { // we are done and can
+          P[unique] = ind; // Individual unique -> copy to start
+          if ((++unique) >= this.mu) { // We got enough records:
             System.arraycopy(P2, done, P, unique, // copy the
                 P.length - done); // remaining individuals
             break makeUnique; // directly, they do not need to
-          } // be unique, as they will be overwritten anyway
+          } // be unique, as they will be overwritten anyway.
         } else { // ind has an already-seen quality, so we copy
           P[--end] = ind; // it to the end of the array, where
-        } // it will eventually be overwritten
+        } // it will eventually be overwritten.
       }
-// now we have 1 <= unique <= mu unique solutions
-// shuffle the first unique solutions to ensure fairness
+// Now we have 1 <= unique <= mu unique solutions.
+// Shuffle the unique solutions again, to ensure fairness.
       RandomUtils.shuffle(random, P, 0, unique);
       int p1 = -1; // index to iterate over first parent
 
-// override the worse (mu+lambda-unique) solutions
+// Override the worse (mu + lambda - unique) solutions.
       for (int index = P.length; (--index) >= unique;) {
-        if (process.shouldTerminate()) { // we return
-          return; // best solution is stored in process
+        if (process.shouldTerminate()) { // Finished.
+          return; // The best solution is stored in process.
         }
 
-        final Individual<X> dest = P[index];
-        p1 = (p1 + 1) % unique;
-        final Individual<X> sel = P[p1];
+        final Individual<X> dest = P[index]; // offspring
+        p1 = (p1 + 1) % unique; // parent 1 index
+        final Individual<X> sel = P[p1]; // parent 1
         if ((unique >= 2) && (random.nextDouble() <= this.cr)) {
-          int p2; // to hold index of second selected record
+          int p2; // p2 is the index of second selected parent.
           do { // find a second, different record
             p2 = random.nextInt(unique);
-          } while (p2 == p1);
-// perform recombination of the two selected individuals
+          } while (p2 == p1); // Of course, can't be p1.
+// Perform recombination of the two selected individuals.
           binary.apply(sel.x, P[p2].x, dest.x, random);
-        } else {
-// create modified copy of parent using unary operator
+        } else { // Otherwise: Mutation.
+// Create modified copy of parent using unary operator.
           unary.apply(sel.x, dest.x, random);
         }
-// map to solution/schedule and evaluate quality
+// Map to candidate solution and evaluate quality.
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
     } // the end of the main loop
