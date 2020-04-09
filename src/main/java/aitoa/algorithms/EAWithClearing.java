@@ -117,10 +117,9 @@ public final class EAWithClearing<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// Omitted: Initialize local variables random, searchSpace,
-// nullary, unary, binary, and arrays P and P2 of length
-// mu+lambda, and array T to null.
-// Also omitted: Fill the population with random individuals.
+// Omitted: Initialize local variables random, unary, nullary,
+// searchSpace, binary, set arrays P and P2 of length mu+lambda,
+// and array T to null. Fill P with random solutions + evaluate.
 // end relevant
 // create local variables
     final Random random = process.getRandom();
@@ -150,7 +149,7 @@ public final class EAWithClearing<X, Y>
     while (!process.shouldTerminate()) { // main loop
       RandomUtils.shuffle(random, P, 0, P.length); // make fair
       Arrays.sort(P); // best individuals at front
-// We now want to keep only the solutions with unique quality.
+// Select only the u best solutions of unique quality, 1<=u<=mu.
       int u = 0, done = 0, end = P.length;
       T = P; // First switch the arrays. P2 is sorted. We process
       P = P2; // it from begin to end and copy the unique records
@@ -159,25 +158,24 @@ public final class EAWithClearing<X, Y>
         ++done; // Increase number of processed in individuals.
         if ((u <= 0) || (r.quality > P[u - 1].quality)) {
           P[u] = r; // Individual unique -> copy to start
-          if ((++u) >= this.mu) { // copy remaining records
+          if ((++u) >= this.mu) { // Got enough? Copy rest.
             System.arraycopy(P2, done, P, u, P.length - done);
-            break makeUnique; // directly, they do not need to
-          } // be unique, as they will be overwritten anyway.
+            break makeUnique;
+          }
         } else { // r has an already-seen quality, so we copy
           P[--end] = r; // it to the end of the array, where
         } // it will eventually be overwritten.
-      }
-// Now we have 1 <= u <= mu unique solutions.
-// Shuffle the unique solutions again, to ensure fairness.
-      RandomUtils.shuffle(random, P, 0, u);
+      } // Now we have 1 <= u <= mu unique solutions.
+      RandomUtils.shuffle(random, P, 0, u); // for fairness
       int p1 = -1; // index to iterate over first parent
-
-// Override the worse (mu + lambda - u) solutions.
+// Overwrite the worse (mu + lambda - u) solutions.
       for (int index = P.length; (--index) >= u;) {
+// Omitted: Quit loop if process.shouldTerminate()
+// end relevant
         if (process.shouldTerminate()) { // Finished.
           return; // The best solution is stored in process.
         }
-
+// start relevant
         final Individual<X> dest = P[index]; // offspring
         p1 = (p1 + 1) % u; // parent 1 index
         final Individual<X> sel = P[p1]; // parent 1
@@ -186,13 +184,10 @@ public final class EAWithClearing<X, Y>
           do { // find a second, different record
             p2 = random.nextInt(u);
           } while (p2 == p1); // Of course, can't be p1.
-// Perform recombination of the two selected individuals.
           binary.apply(sel.x, P[p2].x, dest.x, random);
         } else { // Otherwise: Mutation.
-// Create modified copy of parent using unary operator.
           unary.apply(sel.x, dest.x, random);
         }
-// Map to candidate solution and evaluate quality.
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
     } // the end of the main loop
