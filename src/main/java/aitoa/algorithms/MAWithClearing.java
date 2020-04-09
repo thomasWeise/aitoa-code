@@ -39,7 +39,7 @@ import aitoa.utils.RandomUtils;
  * <p>
  * Please notice that the direct, simple comparisons of the
  * objective values applied here in form of
- * {@code ind.quality > P[unique - 1].quality} only make sense in
+ * {@code ind.quality > P[u - 1].quality} only make sense in
  * combinatorial problems where these values are integers. In
  * numerical problems, we could, e.g., base the comparisons on
  * some similarity thresholds.
@@ -185,49 +185,46 @@ public final class MAWithClearing<X, Y>
             }
           } while (improved && ((--steps) > 0));
         } // end of 1 ls iteration: we have refined 1 solution
-// shuffle P, so after sorting the order of unique recs is random
-        RandomUtils.shuffle(random, P, 0, P.length);
-// sort the population: mu best individuals at front are selected
-        Arrays.sort(P);
+
+        RandomUtils.shuffle(random, P, 0, P.length); // make fair
+        Arrays.sort(P); // best records at front
 // we now want to keep only the solutions with unique fitness
-        int unique = 0, done = 0, end = P.length;
+        int u = 0, done = 0, end = P.length;
         T = P; // since array P is sorted, so we can do this by
         P = P2; // processing it from begin to end and copying
         P2 = T; // these individuals to the start of P
 // we switch the two arrays here so the rest is the same as EA
-        makeUnique: for (final Individual<X> ind : P2) {
+        makeUnique: for (final Individual<X> r : P2) {
           ++done;
-          if ((unique <= 0) || //
-              (ind.quality > P[unique - 1].quality)) {
-            P[unique] = ind;
-            if ((++unique) >= this.mu) { // we are done and can
-              System.arraycopy(P2, done, P, unique, // copy the
-                  P.length - done); // remaining individuals
+          if ((u <= 0) || (r.quality > P[u - 1].quality)) {
+            P[u] = r;
+            if ((++u) >= this.mu) { // we are done and can
+              System.arraycopy(P2, done, P, u, P.length - done);
               break makeUnique; // directly, they do not need to
             } // be unique, as they will be overwritten anyway
           } else { // ind has an already-seen quality, so we copy
-            P[--end] = ind; // it to the end of the array, where
+            P[--end] = r; // it to the end of the array, where
           } // it will eventually be overwritten
         }
-        if (unique <= 1) { // 1 <= unique <= mu unique solutions
-          continue restart; // if unique==1, restart, because
+        if (u <= 1) { // 1 <= u <= mu unique solutions
+          continue restart; // if u==1, restart, because
         } // then recombination makes no sense
-// now we have 2 <= unique <= mu unique solutions
+// now we have 2 <= u <= mu unique solutions
 // shuffle the first unique solutions to ensure fairness
-        RandomUtils.shuffle(random, P, 0, unique);
+        RandomUtils.shuffle(random, P, 0, u);
         int p1 = -1; // index to iterate over first parent
 
-// override the worse (mu+lambda-unique) solutions
-        for (int index = P.length; (--index) >= unique;) {
+// override the worse (mu+lambda-u) solutions
+        for (int index = P.length; (--index) >= u;) {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
           final Individual<X> dest = P[index];
-          p1 = (p1 + 1) % unique;
+          p1 = (p1 + 1) % u;
           final Individual<X> sel = P[p1];
           // to hold index of second selected record
           do { // find a second, different record
-            p2 = random.nextInt(unique);
+            p2 = random.nextInt(u);
           } while (p2 == p1);
 // perform recombination and compute quality
           binary.apply(sel.x, P[p2].x, dest.x, random);

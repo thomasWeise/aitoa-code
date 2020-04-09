@@ -27,8 +27,8 @@ import aitoa.utils.RandomUtils;
  * <p>
  * Please notice that the direct, simple comparisons of the
  * objective values applied here in form of
- * {@code ind.quality > P[unique - 1].quality} only make sense
- * when the objective values can exactly be represented in the
+ * {@code ind.quality > P[u - 1].quality} only make sense when
+ * the objective values can exactly be represented in the
  * {@code double} range. This is the case in combinatorial
  * problems where these values are integers. In numerical
  * problems, we could, e.g., base the comparisons on some
@@ -117,10 +117,10 @@ public final class EAWithClearing<X, Y>
   @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// omitted: Initialize local variables random, searchSpace,
+// Omitted: Initialize local variables random, searchSpace,
 // nullary, unary, binary, and arrays P and P2 of length
-// mu+lambda, and array T to null. Then fill the population with
-// random individuals (you already know this).
+// mu+lambda, and array T to null.
+// Also omitted: Fill the population with random individuals.
 // end relevant
 // create local variables
     final Random random = process.getRandom();
@@ -148,47 +148,43 @@ public final class EAWithClearing<X, Y>
 
 // start relevant
     while (!process.shouldTerminate()) { // main loop
-// Shuffle P: After sorting the order of unique recs is random.
-      RandomUtils.shuffle(random, P, 0, P.length);
-// Sort the population: mu best individuals are at the front.
-      Arrays.sort(P);
+      RandomUtils.shuffle(random, P, 0, P.length); // make fair
+      Arrays.sort(P); // best individuals at front
 // We now want to keep only the solutions with unique quality.
-      int unique = 0, done = 0, end = P.length;
+      int u = 0, done = 0, end = P.length;
       T = P; // First switch the arrays. P2 is sorted. We process
       P = P2; // it from begin to end and copy the unique records
       P2 = T; // to the start of P, the rest to the end of P.
-      makeUnique: for (final Individual<X> ind : P2) {
+      makeUnique: for (final Individual<X> r : P2) {
         ++done; // Increase number of processed in individuals.
-        if ((unique <= 0) || // two lines: check for uniqueness
-            (ind.quality > P[unique - 1].quality)) {
-          P[unique] = ind; // Individual unique -> copy to start
-          if ((++unique) >= this.mu) { // We got enough records:
-            System.arraycopy(P2, done, P, unique, // copy the
-                P.length - done); // remaining individuals
+        if ((u <= 0) || (r.quality > P[u - 1].quality)) {
+          P[u] = r; // Individual unique -> copy to start
+          if ((++u) >= this.mu) { // copy remaining records
+            System.arraycopy(P2, done, P, u, P.length - done);
             break makeUnique; // directly, they do not need to
           } // be unique, as they will be overwritten anyway.
-        } else { // ind has an already-seen quality, so we copy
-          P[--end] = ind; // it to the end of the array, where
+        } else { // r has an already-seen quality, so we copy
+          P[--end] = r; // it to the end of the array, where
         } // it will eventually be overwritten.
       }
-// Now we have 1 <= unique <= mu unique solutions.
+// Now we have 1 <= u <= mu unique solutions.
 // Shuffle the unique solutions again, to ensure fairness.
-      RandomUtils.shuffle(random, P, 0, unique);
+      RandomUtils.shuffle(random, P, 0, u);
       int p1 = -1; // index to iterate over first parent
 
-// Override the worse (mu + lambda - unique) solutions.
-      for (int index = P.length; (--index) >= unique;) {
+// Override the worse (mu + lambda - u) solutions.
+      for (int index = P.length; (--index) >= u;) {
         if (process.shouldTerminate()) { // Finished.
           return; // The best solution is stored in process.
         }
 
         final Individual<X> dest = P[index]; // offspring
-        p1 = (p1 + 1) % unique; // parent 1 index
+        p1 = (p1 + 1) % u; // parent 1 index
         final Individual<X> sel = P[p1]; // parent 1
-        if ((unique >= 2) && (random.nextDouble() <= this.cr)) {
+        if ((u >= 2) && (random.nextDouble() <= this.cr)) {
           int p2; // p2 is the index of second selected parent.
           do { // find a second, different record
-            p2 = random.nextInt(unique);
+            p2 = random.nextInt(u);
           } while (p2 == p1); // Of course, can't be p1.
 // Perform recombination of the two selected individuals.
           binary.apply(sel.x, P[p2].x, dest.x, random);
