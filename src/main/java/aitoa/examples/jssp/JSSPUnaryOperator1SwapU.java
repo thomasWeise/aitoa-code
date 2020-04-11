@@ -23,10 +23,9 @@ import aitoa.structure.IUnarySearchOperator;
  * indices. Based on this order, the possible search moves are
  * enumerated.
  */
-// start relevant
 public final class JSSPUnaryOperator1SwapU
     implements IUnarySearchOperator<int[]> {
-// end relevant
+
   /** the indexes */
   final int[] m_indexes;
 
@@ -69,7 +68,6 @@ public final class JSSPUnaryOperator1SwapU
    *          {@inheritDoc}
    */
   @Override
-// start relevant
   public final void apply(final int[] x, final int[] dest,
       final Random random) {
 // copy the source point in search space to the dest
@@ -90,7 +88,6 @@ public final class JSSPUnaryOperator1SwapU
     }
   }
 
-// end relevant
   /**
    * We visit all points in the search space that could possibly
    * be reached by applying one
@@ -126,7 +123,7 @@ public final class JSSPUnaryOperator1SwapU
 // end enumerate
     final int[] indexes = this.m_indexes;
     final int pairCount = indexes.length >> 1;
-// start relevant
+// start enumerate
     System.arraycopy(x, 0, dest, 0, dest.length); // copy x
 
 // We move along the index-pair array and shuffle the indices on
@@ -163,6 +160,4 @@ public final class JSSPUnaryOperator1SwapU
   public final boolean canEnumerate() {
     return true;
   }
-// start relevant
 }
-// end relevant
