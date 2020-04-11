@@ -276,7 +276,28 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._sa();
+      final ArrayList<Supplier<
+          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+              new ArrayList<>();
+
+      for (final double Ts : new double[] { 20d, 0.5d * 20d,
+          0.25d * 20d }) {
+        list.add(() -> new SimulatedAnnealing<>(
+            new TemperatureSchedule.Logarithmic(Ts, 1)));
+      } // end start temperature
+      for (final double ep : new double[] { //
+          0.25e-7d, //
+          0.5e-7d, //
+          1e-7d, //
+          1.5e-7d, //
+          2e-7d, //
+          4e-7d, //
+          8e-7d }) {
+        list.add(() -> new SimulatedAnnealing<>(
+            new TemperatureSchedule.Exponential(20d, ep)));
+      } // end epsilon
+
+      return list.stream();
     }
 
     /**
@@ -615,34 +636,6 @@ public enum EJSSPExperimentStage implements
         }
       }
     }
-
-    return list.stream();
-  }
-
-  /**
-   * create the stream of SAs
-   *
-   * @return the stream of SAs
-   */
-  static final
-      Stream<
-          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _sa() {
-
-    final ArrayList<Supplier<
-        IMetaheuristic<int[], JSSPCandidateSolution>>> list =
-            new ArrayList<>();
-
-    for (final double Ts : new double[] { 20d, 0.5d * 20d,
-        0.25d * 20d }) {
-      list.add(() -> new SimulatedAnnealing<>(
-          new TemperatureSchedule.Logarithmic(Ts, 1)));
-    } // end start temperature
-    for (final double ep : new double[] { 2e-7d, 4e-7d,
-        8e-7d }) {
-      list.add(() -> new SimulatedAnnealing<>(
-          new TemperatureSchedule.Exponential(20d, ep)));
-    } // end epsilon
 
     return list.stream();
   }

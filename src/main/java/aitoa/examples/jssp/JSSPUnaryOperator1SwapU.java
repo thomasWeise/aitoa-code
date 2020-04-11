@@ -117,23 +117,22 @@ public final class JSSPUnaryOperator1SwapU
    *          {@inheritDoc}
    */
   @Override
-// start relevant
+// start enumerate
   public final boolean enumerate(final Random random,
       final int[] x, final int[] dest,
       final Predicate<int[]> visitor) {
-// end relevant
+// indexes be the flattened list of unique index pairs and
+// pairCount their number.
+// end enumerate
     final int[] indexes = this.m_indexes;
     final int pairCount = indexes.length >> 1;
 // start relevant
     System.arraycopy(x, 0, dest, 0, dest.length); // copy x
 
 // We move along the index-pair array and shuffle the indices on
-// the way
+// the way with an iterative version of the Fisher-Yates shuffle.
     for (int i = 0, start = -1; i < pairCount; i++) {
-
 // Get "a" and "b": the next, randomly chosen index pair.
-// What we do here is basically an iterative version of the
-// Fisher-Yates shuffle.
       int swapWith = (i + random.nextInt(pairCount - i)) << 1;
       final int a = indexes[swapWith];
       indexes[swapWith] = indexes[++start];
@@ -157,7 +156,7 @@ public final class JSSPUnaryOperator1SwapU
     }
     return false; // we have enumerated the complete neighborhood
   }
-// end relevant
+// end enumerate
 
   /** {@inheritDoc} */
   @Override
