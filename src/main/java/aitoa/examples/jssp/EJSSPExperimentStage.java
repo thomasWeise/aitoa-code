@@ -453,7 +453,52 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._ma();
+
+      return Stream.of(//
+          () -> new MA<>(4, 4, Integer.MAX_VALUE), //
+          () -> new MAWithClearing<>(4, 4, Integer.MAX_VALUE), //
+          () -> new MA<>(4, 4, 10), //
+          () -> new MAWithClearing<>(4, 4, 10), //
+          () -> new MA<>(4, 4, 100), //
+          () -> new MAWithClearing<>(4, 4, 100), //
+          //
+          () -> new MA<>(8, 8, Integer.MAX_VALUE), //
+          () -> new MAWithClearing<>(8, 8, Integer.MAX_VALUE), //
+          () -> new MA<>(8, 8, 10), //
+          () -> new MAWithClearing<>(8, 8, 10), //
+          () -> new MA<>(8, 8, 100), //
+          () -> new MAWithClearing<>(8, 8, 100), //
+          //
+          () -> new MA<>(16, 16, Integer.MAX_VALUE), //
+          () -> new MAWithClearing<>(16, 16, Integer.MAX_VALUE), //
+          () -> new MA<>(16, 16, 10), //
+          () -> new MAWithClearing<>(16, 16, 10), //
+          () -> new MA<>(16, 16, 100), //
+          () -> new MAWithClearing<>(16, 16, 100), //
+          //
+          () -> new MA<>(64, 64, Integer.MAX_VALUE), //
+          () -> new MAWithClearing<>(64, 64, Integer.MAX_VALUE), //
+          () -> new MA<>(64, 64, 10), //
+          () -> new MAWithClearing<>(64, 64, 10), //
+          () -> new MA<>(64, 64, 100), //
+          () -> new MAWithClearing<>(64, 64, 100), //
+          //
+          () -> new MA<>(256, 256, Integer.MAX_VALUE), //
+          () -> new MAWithClearing<>(256, 256,
+              Integer.MAX_VALUE), //
+          () -> new MA<>(256, 256, 10), //
+          () -> new MAWithClearing<>(256, 256, 10), //
+          () -> new MA<>(256, 256, 100), //
+          () -> new MAWithClearing<>(256, 256, 100), //
+          //
+          () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
+          () -> new MA<>(1024, 1024, 10), //
+          () -> new MA<>(1024, 1024, 100), //
+          //
+          () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
+          () -> new MA<>(4096, 4096, 10), //
+          () -> new MA<>(4096, 4096, 100) //
+      );
     }
 
     /**
@@ -652,46 +697,5 @@ public enum EJSSPExperimentStage implements
     return Stream.of(//
         () -> new HillClimber2<>(), //
         () -> new HillClimber2WithRestarts<>());
-  }
-
-  /**
-   * create the memetic algorithms
-   *
-   * @return the memetic algorithms
-   */
-  static final
-      Stream<
-          Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _ma() {
-    return Stream.of(//
-        () -> new MA<>(16, 16, Integer.MAX_VALUE), //
-        () -> new MAWithClearing<>(16, 16, Integer.MAX_VALUE), //
-        () -> new MA<>(16, 16, 10), //
-        () -> new MAWithClearing<>(16, 16, 10), //
-        () -> new MA<>(16, 16, 100), //
-        () -> new MAWithClearing<>(16, 16, 100), //
-        //
-        () -> new MA<>(64, 64, Integer.MAX_VALUE), //
-        () -> new MAWithClearing<>(64, 64, Integer.MAX_VALUE), //
-        () -> new MA<>(64, 64, 10), //
-        () -> new MAWithClearing<>(64, 64, 10), //
-        () -> new MA<>(64, 64, 100), //
-        () -> new MAWithClearing<>(64, 64, 100), //
-        //
-        () -> new MA<>(256, 256, Integer.MAX_VALUE), //
-        () -> new MAWithClearing<>(256, 256, Integer.MAX_VALUE), //
-        () -> new MA<>(256, 256, 10), //
-        () -> new MAWithClearing<>(256, 256, 10), //
-        () -> new MA<>(256, 256, 100), //
-        () -> new MAWithClearing<>(64, 64, 100), //
-        //
-        () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
-        () -> new MA<>(1024, 1024, 10), //
-        () -> new MA<>(1024, 1024, 100), //
-        //
-        () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
-        () -> new MA<>(4096, 4096, 10), //
-        () -> new MA<>(4096, 4096, 100) //
-    );
   }
 }
