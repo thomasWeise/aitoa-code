@@ -230,7 +230,7 @@ public final class MAWithClearing<X, Y>
           binary.apply(sel.x, P[p2].x, dest.x, random);
           dest.quality = process.evaluate(dest.x);
         } // the end of the offspring generation
-        localSearchStart = this.mu; // ls only for lambda new
+        localSearchStart = u; // ls only for lambda +mu-u new
       } // the end of the main loop
     } // end of the restart loop
   }
