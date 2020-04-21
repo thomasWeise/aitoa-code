@@ -469,19 +469,6 @@ public enum EJSSPExperimentStage implements
     }
 
     /**
-     * get the number of runs
-     *
-     * @param problem
-     *          the problem
-     * @return the runs
-     */
-    @Override
-    public int
-        getRuns(final JSSPMakespanObjectiveFunction problem) {
-      return 13;
-    }
-
-    /**
      * Configure the black box process builder for the given
      * problem.
      *
