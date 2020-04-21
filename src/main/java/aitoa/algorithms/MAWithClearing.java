@@ -3,9 +3,9 @@ package aitoa.algorithms;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -144,29 +144,30 @@ public final class MAWithClearing<X, Y>
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
     final X temp = searchSpace.create();
-    Individual<X>[] T = null,
-        P = new Individual[this.mu + this.lambda],
-        P2 = new Individual[P.length];
-    int p2;
+    LSIndividual<X>[] T = null,
+        P = new LSIndividual[this.mu + this.lambda],
+        P2 = new LSIndividual[P.length];
     boolean improved = false;
+    int p2 = -1;
 // start relevant
     restart: while (!process.shouldTerminate()) {
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         nullary.apply(x, random);
-        P[i] = new Individual<>(x, process.evaluate(x));
+        P[i] = new LSIndividual<>(x, process.evaluate(x));
 // end relevant
         if (process.shouldTerminate()) {
           return;
         }
 // start relevant
       }
-      int localSearchStart = 0; // at first, apply ls to all
 
       while (!process.shouldTerminate()) { // main loop
-        for (int i = P.length; (--i) >= localSearchStart;) {
-          final Individual<X> ind = P[i];
+        for (final LSIndividual<X> ind : P) {
+          if (ind.isOptimum) {
+            continue;
+          }
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2
             improved = unary.enumerate(random, ind.x, temp, //
@@ -184,17 +185,18 @@ public final class MAWithClearing<X, Y>
               return; // best solution is stored in process
             }
           } while (improved && ((--steps) > 0));
+          ind.isOptimum = !improved; // is it an optimum?
         } // end of 1 ls iteration: we have refined 1 solution
 
         RandomUtils.shuffle(random, P, 0, P.length); // make fair
-        Arrays.sort(P); // best records at front
+        Arrays.sort(P, Individual.BY_QUALITY);
 // we now want to keep only the solutions with unique fitness
         int u = 0, done = 0, end = P.length;
         T = P; // since array P is sorted, so we can do this by
         P = P2; // processing it from begin to end and copying
         P2 = T; // these individuals to the start of P
 // we switch the two arrays here so the rest is the same as EA
-        makeUnique: for (final Individual<X> r : P2) {
+        makeUnique: for (final LSIndividual<X> r : P2) {
           ++done;
           if ((u <= 0) || (r.quality > P[u - 1].quality)) {
             P[u] = r;
@@ -219,62 +221,29 @@ public final class MAWithClearing<X, Y>
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-          final Individual<X> dest = P[index];
+          final LSIndividual<X> dest = P[index];
           p1 = (p1 + 1) % u;
-          final Individual<X> sel = P[p1];
-          // to hold index of second selected record
-          do { // find a second, different record
+          final LSIndividual<X> sel = P[p1];
+// to hold index of second selected record
+          do {
             p2 = random.nextInt(u);
           } while (p2 == p1);
 // perform recombination and compute quality
           binary.apply(sel.x, P[p2].x, dest.x, random);
           dest.quality = process.evaluate(dest.x);
+          dest.isOptimum = false;
         } // the end of the offspring generation
-        localSearchStart = u; // ls only for lambda +mu-u new
       } // the end of the main loop
     } // end of the restart loop
   }
 // end relevant
 
-  /**
-   * the individual record: hold one point in search space and
-   * its quality
-   *
-   * @param <X>
-   *          the data structure of the search space
-   */
-  private static final class Individual<X>
-      implements Comparable<Individual<X>> {
-    /** the point in the search space */
-    final X x;
-    /** the quality */
-    double quality;
-
-    /**
-     * create the individual record
-     *
-     * @param _x
-     *          the point in the search space
-     * @param _q
-     *          the quality
-     */
-    Individual(final X _x, final double _q) {
-      super();
-      this.x = Objects.requireNonNull(_x);
-      this.quality = _q;
-    }
-
-    /**
-     * compare two individuals: the one with smaller quality is
-     * better.
-     *
-     * @return -1 if this record is better than {@code o}, 1 if
-     *         it is worse, 0 otherwise
-     */
-    @Override
-    public final int compareTo(final Individual<X> o) {
-      return Double.compare(this.quality, o.quality);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
+        this, builder);
   }
 // start relevant
 }

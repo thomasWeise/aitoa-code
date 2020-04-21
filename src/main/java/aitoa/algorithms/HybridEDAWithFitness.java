@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-import aitoa.algorithms.FitnessAssignmentProcess.FitnessIndividual;
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
@@ -117,6 +117,14 @@ public final class HybridEDAWithFitness<X, Y>
   }
 
   /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
+  }
+
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
@@ -175,7 +183,7 @@ public final class HybridEDAWithFitness<X, Y>
       }
 
       this.fitness.assignFitness(P);
-      Arrays.sort(P); // sort: best solutions at start
+      Arrays.sort(P, this.fitness);
       Model.update(IModel.use(P, 0, this.mu)); // update model
 
 // sample new population

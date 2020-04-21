@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-import aitoa.algorithms.FitnessAssignmentProcess.FitnessIndividual;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
@@ -132,7 +131,7 @@ public final class EDAWithFitness<X, Y>
 
     for (;;) {// each iteration: update model, sample model
       this.fitness.assignFitness(P);
-      Arrays.sort(P); // sort: best solutions at start
+      Arrays.sort(P, this.fitness);
 // update model with mu<lambda best solutions
       Model.update(IModel.use(P, 0, this.mu));
 

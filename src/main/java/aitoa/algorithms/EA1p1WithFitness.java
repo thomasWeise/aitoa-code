@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.Objects;
 import java.util.Random;
 
-import aitoa.algorithms.FitnessAssignmentProcess.FitnessIndividual;
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
@@ -74,14 +74,13 @@ public final class EA1p1WithFitness<X, Y>
     nullary.apply(pop[0].x, random); // create and evaluate first
     pop[0].quality = process.evaluate(pop[0].x); // individual
 
-    while (!process.shouldTerminate()) {// repeat until budget
-                                        // exhausted
+    while (!process.shouldTerminate()) {
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(pop[0].x, pop[1].x, random);
 // map x_cur from X to Y and evaluate candidate solution
       pop[1].quality = process.evaluate(pop[1].x);
       this.fitness.assignFitness(pop); // compute fitness
-      if (pop[0].fitness >= pop[1].fitness) {
+      if (this.fitness.compare(pop[0], pop[1]) >= 0) {
         final FitnessIndividual<X> temp = pop[0];
         pop[0] = pop[1]; // if new individual has better or
         pop[1] = temp; // equal fitness: accept it
@@ -93,6 +92,9 @@ public final class EA1p1WithFitness<X, Y>
   /** {@inheritDoc} */
   @Override
   public final String toString() {
+    if (this.fitness instanceof IntFFA) {
+      return "(1+1)-FEA";//$NON-NLS-1$
+    }
     return "(1+1)-EA_" + //$NON-NLS-1$
         this.fitness.toString();
   }
@@ -120,6 +122,13 @@ public final class EA1p1WithFitness<X, Y>
     output.write(System.lineSeparator());
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(//
+        this, builder);
+  }
 // start relevant
 }
 // end relevant

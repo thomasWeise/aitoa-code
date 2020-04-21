@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
@@ -148,6 +149,14 @@ public final class HillClimberWithRestarts<X, Y>
   public final String toString() {
     return "hc_rs_" + //$NON-NLS-1$
         this.failsBeforeRestartStrategy;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
   }
 // start relevant
 }

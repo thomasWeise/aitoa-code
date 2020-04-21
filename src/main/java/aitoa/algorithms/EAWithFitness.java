@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-import aitoa.algorithms.FitnessAssignmentProcess.FitnessIndividual;
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -146,7 +146,7 @@ public final class EAWithFitness<X, Y>
     for (;;) { // main loop: one iteration = one generation
 // sort the population: mu best individuals at front are selected
       this.fitness.assignFitness(P);
-      Arrays.sort(P);
+      Arrays.sort(P, this.fitness);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -181,5 +181,16 @@ public final class EAWithFitness<X, Y>
 // start relevant
     } // the end of the main loop
   }
+// end relevant
+
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
+        this, builder);
+  }
+
+// start relevant
 }
 // end relevant

@@ -3,9 +3,9 @@ package aitoa.algorithms;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -124,8 +124,8 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
     final X temp = searchSpace.create();
     int p2;
 
-    final Individual<X>[] P =
-        new Individual[this.mu + this.lambda];
+    final LSIndividual<X>[] P =
+        new LSIndividual[this.mu + this.lambda];
 // start relevant
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
@@ -133,18 +133,19 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
       final X x = searchSpace.create();
       nullary.apply(x, random);
-      P[i] = new Individual<>(x, process.evaluate(x));
+      P[i] = new LSIndividual<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
 // start relevant
     }
-    int localSearchStart = 0; // at first, apply ls to all
 
     while (!process.shouldTerminate()) { // main loop
-      for (int i = P.length; (--i) >= localSearchStart;) {
-        final Individual<X> ind = P[i];
-// refine P[i] with local search à la HillClimber2 (code omitted)
+      for (final LSIndividual<X> ind : P) {
+        if (ind.isOptimum) {
+          continue;
+        }
+// refine ind with local search à la HillClimber2 (code omitted)
 // for a given number of maximum steps
 // end relevant
         int steps = this.maxLSSteps;
@@ -159,16 +160,16 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
                   return true; // exit to next loop
                 } // if we get here, point is not better
                 return process.shouldTerminate();
-              }); // repeat this until no improvement or time is
-                  // up
+              }); // repeat this until no improvement or time up
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
         } while (improved && ((--steps) > 0));
-      } // end of 1 ls iteration: we have refined 1 solution
+        ind.isOptimum = !improved; // is it a local optimum?
 // start relevant
+      } // end of 1 ls iteration: we have refined 1 solution
 // sort the population: mu best individuals at front are selected
-      Arrays.sort(P);
+      Arrays.sort(P, Individual.BY_QUALITY);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -180,8 +181,8 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
           return; // best solution is stored in process
         }
 // start relevant
-        final Individual<X> dest = P[index];
-        final Individual<X> sel = P[(++p1) % this.mu];
+        final LSIndividual<X> dest = P[index];
+        final LSIndividual<X> sel = P[(++p1) % this.mu];
 
         do { // find a second, different record
           p2 = random.nextInt(this.mu);
@@ -190,52 +191,18 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
         binary.apply(sel.x, P[p2].x, dest.x, random);
 // map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
+        dest.isOptimum = false;
       } // the end of the offspring generation
-
-      localSearchStart = this.mu;
     } // the end of the main loop
   }
 // end relevant
 
-  /**
-   * the individual record: hold one point in search space and
-   * its quality
-   *
-   * @param <X>
-   *          the data structure of the search space
-   */
-  private static final class Individual<X>
-      implements Comparable<Individual<X>> {
-    /** the point in the search space */
-    final X x;
-    /** the quality */
-    double quality;
-
-    /**
-     * create the individual record
-     *
-     * @param _x
-     *          the point in the search space
-     * @param _q
-     *          the quality
-     */
-    Individual(final X _x, final double _q) {
-      super();
-      this.x = Objects.requireNonNull(_x);
-      this.quality = _q;
-    }
-
-    /**
-     * compare two individuals: the one with smaller quality is
-     * better.
-     *
-     * @return -1 if this record is better than {@code o}, 1 if
-     *         it is worse, 0 otherwise
-     */
-    @Override
-    public final int compareTo(final Individual<X> o) {
-      return Double.compare(this.quality, o.quality);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
+        this, builder);
   }
 // start relevant
 }

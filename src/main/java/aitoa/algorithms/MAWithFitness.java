@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-import aitoa.algorithms.FitnessAssignmentProcess.FitnessIndividual;
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -113,6 +113,14 @@ public final class MAWithFitness<X, Y>
   }
 
   /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
+        this, builder);
+  }
+
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
@@ -132,8 +140,8 @@ public final class MAWithFitness<X, Y>
     final X temp = searchSpace.create();
     int p2;
 
-    final FitnessIndividual<X>[] P =
-        new FitnessIndividual[this.mu + this.lambda];
+    final LSFitnessIndividual<X>[] P =
+        new LSFitnessIndividual[this.mu + this.lambda];
     this.fitness.initialize();
 // start relevant
 // first generation: fill population with random individuals
@@ -142,17 +150,18 @@ public final class MAWithFitness<X, Y>
 // end relevant
       final X x = searchSpace.create();
       nullary.apply(x, random);
-      P[i] = new FitnessIndividual<>(x, process.evaluate(x));
+      P[i] = new LSFitnessIndividual<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
 // start relevant
     }
-    int localSearchStart = 0; // at first, apply ls to all
 
     while (!process.shouldTerminate()) { // main loop
-      for (int i = P.length; (--i) >= localSearchStart;) {
-        final FitnessIndividual<X> ind = P[i];
+      for (final LSFitnessIndividual<X> ind : P) {
+        if (ind.isOptimum) {
+          continue;
+        }
         int steps = this.maxLSSteps;
 // refine P[i] with local search à la HillClimber2 (code omitted)
 // end relevant
@@ -167,17 +176,17 @@ public final class MAWithFitness<X, Y>
                   return (true); // exit to next loop
                 } // if we get here, point is not better
                 return process.shouldTerminate();
-              }); // repeat this until no improvement or time is
-                  // up
+              }); // repeat this until no improvement or time up
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
         } while (improved && ((--steps) > 0));
+        ind.isOptimum = !improved; // is it a local optimum?
       } // end of 1 ls iteration: we have refined 1 solution
 // start relevant
 // sort the population: mu best individuals at front are selected
       this.fitness.assignFitness(P);
-      Arrays.sort(P);
+      Arrays.sort(P, this.fitness);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -189,8 +198,8 @@ public final class MAWithFitness<X, Y>
           return; // best solution is stored in process
         }
 // start relevant
-        final FitnessIndividual<X> dest = P[index];
-        final FitnessIndividual<X> sel = P[(++p1) % this.mu];
+        final LSFitnessIndividual<X> dest = P[index];
+        final LSFitnessIndividual<X> sel = P[(++p1) % this.mu];
 
         do { // find a second, different record
           p2 = random.nextInt(this.mu);
@@ -199,6 +208,7 @@ public final class MAWithFitness<X, Y>
         binary.apply(sel.x, P[p2].x, dest.x, random);
 // map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
+        dest.isOptimum = false;
       } // the end of the offspring generation
 
       // end relevant
@@ -206,7 +216,6 @@ public final class MAWithFitness<X, Y>
         return; // best solution is stored in process
       }
       // start relevant
-      localSearchStart = this.mu;
     } // the end of the main loop
   }
 }

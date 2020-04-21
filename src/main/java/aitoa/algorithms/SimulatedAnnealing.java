@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Objects;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
@@ -60,6 +61,32 @@ public final class SimulatedAnnealing<X, Y>
 
   /** {@inheritDoc} */
   @Override
+  public final String toString() {
+    return ("sa_" + //$NON-NLS-1$
+        this.schedule.toString());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void printSetup(final Writer output)
+      throws IOException {
+    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
+        "sa")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    IMetaheuristic.super.printSetup(output);
+    this.schedule.printSetup(output);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
+  }
+
+  /** {@inheritDoc} */
+  @Override
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_new, x_cur, nullary, unary, random
@@ -93,25 +120,5 @@ public final class SimulatedAnnealing<X, Y>
       } // otherwise, i.e., f_new >= f_cur: just forget x_new
     } while (!process.shouldTerminate()); // until time is up
   } // process will have remembered the best candidate solution
-// end relevant
-
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
-    return ("sa_" + //$NON-NLS-1$
-        this.schedule.toString());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void printSetup(final Writer output)
-      throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "sa")); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
-    this.schedule.printSetup(output);
-  }
-// start relevant
 }
 // end relevant

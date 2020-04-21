@@ -2,6 +2,7 @@ package aitoa.algorithms;
 
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
@@ -70,6 +71,14 @@ public final class HillClimber<X, Y>
   @Override
   public final String toString() {
     return "hc"; //$NON-NLS-1$
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
   }
 // start relevant
 }

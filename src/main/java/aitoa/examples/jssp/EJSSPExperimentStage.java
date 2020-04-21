@@ -454,51 +454,31 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
 
-      return Stream.of(//
-          () -> new MA<>(4, 4, Integer.MAX_VALUE), //
-          () -> new MAWithClearing<>(4, 4, Integer.MAX_VALUE), //
-          () -> new MA<>(4, 4, 10), //
-          () -> new MAWithClearing<>(4, 4, 10), //
-          () -> new MA<>(4, 4, 100), //
-          () -> new MAWithClearing<>(4, 4, 100), //
-          //
-          () -> new MA<>(8, 8, Integer.MAX_VALUE), //
-          () -> new MAWithClearing<>(8, 8, Integer.MAX_VALUE), //
-          () -> new MA<>(8, 8, 10), //
-          () -> new MAWithClearing<>(8, 8, 10), //
-          () -> new MA<>(8, 8, 100), //
-          () -> new MAWithClearing<>(8, 8, 100), //
-          //
-          () -> new MA<>(16, 16, Integer.MAX_VALUE), //
-          () -> new MAWithClearing<>(16, 16, Integer.MAX_VALUE), //
-          () -> new MA<>(16, 16, 10), //
-          () -> new MAWithClearing<>(16, 16, 10), //
-          () -> new MA<>(16, 16, 100), //
-          () -> new MAWithClearing<>(16, 16, 100), //
-          //
-          () -> new MA<>(64, 64, Integer.MAX_VALUE), //
-          () -> new MAWithClearing<>(64, 64, Integer.MAX_VALUE), //
-          () -> new MA<>(64, 64, 10), //
-          () -> new MAWithClearing<>(64, 64, 10), //
-          () -> new MA<>(64, 64, 100), //
-          () -> new MAWithClearing<>(64, 64, 100), //
-          //
-          () -> new MA<>(256, 256, Integer.MAX_VALUE), //
-          () -> new MAWithClearing<>(256, 256,
-              Integer.MAX_VALUE), //
-          () -> new MA<>(256, 256, 10), //
-          () -> new MAWithClearing<>(256, 256, 10), //
-          () -> new MA<>(256, 256, 100), //
-          () -> new MAWithClearing<>(256, 256, 100), //
-          //
-          () -> new MA<>(1024, 1024, Integer.MAX_VALUE), //
-          () -> new MA<>(1024, 1024, 10), //
-          () -> new MA<>(1024, 1024, 100), //
-          //
-          () -> new MA<>(4096, 4096, Integer.MAX_VALUE), //
-          () -> new MA<>(4096, 4096, 10), //
-          () -> new MA<>(4096, 4096, 100) //
-      );
+      final ArrayList<Supplier<
+          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+              new ArrayList<>();
+
+      for (final int mu : new int[] { 8, 16 }) {
+        for (final int ls : new int[] { Integer.MAX_VALUE,
+            32 }) {
+          list.add(() -> new MA<>(mu, mu, ls));
+          list.add(() -> new MAWithClearing<>(mu, mu, ls));
+        }
+      }
+      return list.stream();
+    }
+
+    /**
+     * get the number of runs
+     *
+     * @param problem
+     *          the problem
+     * @return the runs
+     */
+    @Override
+    public int
+        getRuns(final JSSPMakespanObjectiveFunction problem) {
+      return 13;
     }
 
     /**

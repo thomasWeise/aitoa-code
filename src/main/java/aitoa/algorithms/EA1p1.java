@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
@@ -53,8 +54,7 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
 
-    while (!process.shouldTerminate()) {// repeat until budget
-                                        // exhausted
+    while (!process.shouldTerminate()) {
 // create a slightly modified copy of x_best and store in x_cur
       unary.apply(x_best, x_cur, random);
 // map x_cur from X to Y and evaluate candidate solution
@@ -92,6 +92,14 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
   }
 // start relevant
 }

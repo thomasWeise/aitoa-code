@@ -3,9 +3,9 @@ package aitoa.algorithms;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -153,7 +153,7 @@ public final class EAWithRestarts<X, Y>
         ++nonImprovedGen; // assume no improvement
 
 // sort the population: mu best individuals at front are selected
-        Arrays.sort(population);
+        Arrays.sort(population, Individual.BY_QUALITY);
 // shuffle mating pool to ensure fairness if lambda<mu
         RandomUtils.shuffle(random, population, 0, this.mu);
         int p1 = -1; // index to iterate over first parent
@@ -194,44 +194,11 @@ public final class EAWithRestarts<X, Y>
     } // end of the main loop for independent restarts
   }
 
-  /**
-   * the individual record: hold one point in search space and
-   * its quality
-   *
-   * @param <X>
-   *          the data structure of the search space
-   */
-  private static final class Individual<X>
-      implements Comparable<Individual<X>> {
-    /** the point in the search space */
-    final X x;
-    /** the quality */
-    double quality;
-
-    /**
-     * create the individual record
-     *
-     * @param _x
-     *          the point in the search space
-     * @param _q
-     *          the quality
-     */
-    Individual(final X _x, final double _q) {
-      super();
-      this.x = Objects.requireNonNull(_x);
-      this.quality = _q;
-    }
-
-    /**
-     * compare two individuals: the one with smaller quality is
-     * better.
-     *
-     * @return -1 if this record is better than {@code o}, 1 if
-     *         it is worse, 0 otherwise
-     */
-    @Override
-    public final int compareTo(final Individual<X> o) {
-      return Double.compare(this.quality, o.quality);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
+        this, builder);
   }
 }

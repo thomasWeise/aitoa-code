@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Supplier;
 
+import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
@@ -110,6 +110,14 @@ public final class HybridEDA<X, Y>
   }
 
   /** {@inheritDoc} */
+  @Override
+  public final String
+      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
+    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
+        builder);
+  }
+
+  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
@@ -165,7 +173,7 @@ public final class HybridEDA<X, Y>
         } while (improved && ((--steps) > 0));
       }
 
-      Arrays.sort(P); // sort: best solutions at start
+      Arrays.sort(P, Individual.BY_QUALITY);
       Model.update(IModel.use(P, 0, this.mu)); // update model
 
 // sample new population
@@ -178,54 +186,5 @@ public final class HybridEDA<X, Y>
       } // the end of the new points generation
     } // the end of the main loop
   }
-// end relevant
-
-  /**
-   * the individual record: hold one point in search space and
-   * its quality
-   *
-   * @param <X>
-   *          the data structure of the search space
-   */
-  private static final class Individual<X>
-      implements Comparable<Individual<X>>, Supplier<X> {
-    /** the point in the search space */
-    final X x;
-    /** the quality */
-    double quality;
-
-    /**
-     * create the individual record
-     *
-     * @param _x
-     *          the point in the search space
-     * @param _q
-     *          the quality
-     */
-    Individual(final X _x, final double _q) {
-      super();
-      this.x = Objects.requireNonNull(_x);
-      this.quality = _q;
-    }
-
-    /**
-     * compare two individuals: the one with smaller quality is
-     * better.
-     *
-     * @return -1 if this record is better than {@code o}, 1 if
-     *         it is worse, 0 otherwise
-     */
-    @Override
-    public final int compareTo(final Individual<X> o) {
-      return Double.compare(this.quality, o.quality);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final X get() {
-      return this.x;
-    }
-  }
-// start relevant
 }
 // end relevant
