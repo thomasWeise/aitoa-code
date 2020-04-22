@@ -24,10 +24,8 @@ import aitoa.utils.RandomUtils;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class MAWithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
-// end relevant
 
   /** the number of selected parents */
   public final int mu;
@@ -123,10 +121,7 @@ public final class MAWithFitness<X, Y>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// the initialization of local variables is omitted for brevity
-// end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
@@ -143,18 +138,15 @@ public final class MAWithFitness<X, Y>
     final LSFitnessIndividual<X>[] P =
         new LSFitnessIndividual[this.mu + this.lambda];
     this.fitness.initialize();
-// start relevant
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
 // set P[i] = random individual (code omitted)
-// end relevant
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new LSFitnessIndividual<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-// start relevant
     }
 
     while (!process.shouldTerminate()) { // main loop
@@ -164,7 +156,6 @@ public final class MAWithFitness<X, Y>
         }
         int steps = this.maxLSSteps;
 // refine P[i] with local search à la HillClimber2 (code omitted)
-// end relevant
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
               (point) -> {
@@ -183,7 +174,7 @@ public final class MAWithFitness<X, Y>
         } while (improved && ((--steps) > 0));
         ind.isOptimum = !improved; // is it a local optimum?
       } // end of 1 ls iteration: we have refined 1 solution
-// start relevant
+
 // sort the population: mu best individuals at front are selected
       this.fitness.assignFitness(P);
       Arrays.sort(P, this.fitness);
@@ -193,11 +184,10 @@ public final class MAWithFitness<X, Y>
 
 // override the worse lambda solutions with new offsprings
       for (int index = P.length; (--index) >= this.mu;) {
-// end relevant
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-// start relevant
+
         final LSFitnessIndividual<X> dest = P[index];
         final LSFitnessIndividual<X> sel = P[(++p1) % this.mu];
 
@@ -211,12 +201,9 @@ public final class MAWithFitness<X, Y>
         dest.isOptimum = false;
       } // the end of the offspring generation
 
-      // end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-      // start relevant
     } // the end of the main loop
   }
 }
-// end relevant

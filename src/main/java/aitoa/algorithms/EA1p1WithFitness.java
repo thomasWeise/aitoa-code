@@ -29,13 +29,11 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class EA1p1WithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
   /** the fitness assignment process */
   public final FitnessAssignmentProcess<? super X> fitness;
 
-// end relevant
   /**
    * create
    *
@@ -51,7 +49,6 @@ public final class EA1p1WithFitness<X, Y>
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables pop, nullary, unary, random
 // end relevant

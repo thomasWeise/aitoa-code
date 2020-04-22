@@ -29,11 +29,9 @@ import aitoa.structure.IUnarySearchOperator;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class HillClimber2<X, Y>
     implements IMetaheuristic<X, Y> {
 
-// end relevant
   /** create */
   public HillClimber2() {
     super();
@@ -41,11 +39,9 @@ public final class HillClimber2<X, Y>
 
   /** {@inheritDoc} */
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random,
 // f_best, improved: omitted here for brevity
-// end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
@@ -54,7 +50,7 @@ public final class HillClimber2<X, Y>
         process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
     boolean improved = true;
-// start relevant
+
 // create starting point: a random point in the search space
     nullary.apply(x_best, random); // put random point in x_best
     final double[] f_best = { process.evaluate(x_best) }; // evaluate
@@ -79,7 +75,6 @@ public final class HillClimber2<X, Y>
     }
 
   } // process will have remembered the best candidate solution
-// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -94,6 +89,4 @@ public final class HillClimber2<X, Y>
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);
   }
-// start relevant
 }
-// end relevant

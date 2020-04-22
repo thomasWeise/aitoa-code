@@ -24,10 +24,8 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class HybridEDAWithFitness<X, Y>
     implements IMetaheuristic<X, Y> {
-// end relevant
 
   /** the number of solution to be selected */
   public final int mu;
@@ -127,9 +125,7 @@ public final class HybridEDAWithFitness<X, Y>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
@@ -144,7 +140,6 @@ public final class HybridEDAWithFitness<X, Y>
     final X temp = searchSpace.create();
     this.fitness.initialize();
 
-// start relevant
 // the initialization of local variables is omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
 
@@ -153,11 +148,9 @@ public final class HybridEDAWithFitness<X, Y>
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new FitnessIndividual<>(x, process.evaluate(x));
-// end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-// start relevant
     }
 
     for (;;) {// each iteration: LS, update model, then sample
@@ -194,12 +187,9 @@ public final class HybridEDAWithFitness<X, Y>
         Model.sample(dest.x, random);
         dest.quality = process.evaluate(dest.x);
       } // the end of the new points generation
-// end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-// start relevant
     } // the end of the main loop
   }
 }
-// end relevant

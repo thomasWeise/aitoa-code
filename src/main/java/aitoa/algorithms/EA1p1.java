@@ -28,9 +28,8 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
-// end relevant
+
   /** create */
   public EA1p1() {
     super();
@@ -38,10 +37,9 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random
-// end relevant
+
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
@@ -49,7 +47,7 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
-// start relevant
+
 // create starting point: a random point in the search space
     nullary.apply(x_best, random); // put random point in x_best
     double f_best = process.evaluate(x_best); // map & evaluate
@@ -66,7 +64,6 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
       } // otherwise, i.e., f_cur > f_best: just forget x_cur
     } // until time is up
   } // process will have remembered the best candidate solution
-// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -101,6 +98,4 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);
   }
-// start relevant
 }
-// end relevant

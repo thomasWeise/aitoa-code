@@ -142,12 +142,13 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 
     while (!process.shouldTerminate()) { // main loop
       for (final LSIndividual<X> ind : P) {
+// If ind is not known to be local optimum, refine it with local
+// search à la HillClimber2 for a given number of maximum steps
+// (code omitted for brevity).
+// end relevant
         if (ind.isOptimum) {
           continue;
         }
-// refine ind with local search à la HillClimber2 (code omitted)
-// for a given number of maximum steps
-// end relevant
         int steps = this.maxLSSteps;
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
@@ -189,9 +190,10 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
         } while (p2 == p1);
 // perform recombination of the two selected individuals
         binary.apply(sel.x, P[p2].x, dest.x, random);
-// map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);
+// end relevant
         dest.isOptimum = false;
+// start relevant
       } // the end of the offspring generation
     } // the end of the main loop
   }

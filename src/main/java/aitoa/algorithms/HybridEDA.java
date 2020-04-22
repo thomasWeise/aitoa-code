@@ -27,10 +27,8 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class HybridEDA<X, Y>
     implements IMetaheuristic<X, Y> {
-// end relevant
 
   /** the number of solution to be selected */
   public final int mu;
@@ -120,9 +118,7 @@ public final class HybridEDA<X, Y>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
@@ -135,7 +131,6 @@ public final class HybridEDA<X, Y>
     final Individual<X>[] P = new Individual[this.lambda];
     final X temp = searchSpace.create();
 
-// start relevant
 // the initialization of local variables is omitted for brevity
     Model.initialize(); // initialize model=uniform distribution
 
@@ -144,11 +139,9 @@ public final class HybridEDA<X, Y>
       final X x = searchSpace.create();
       nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
-// end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
-// start relevant
     }
 
     for (;;) {// each iteration: LS, update model, then sample
@@ -187,4 +180,3 @@ public final class HybridEDA<X, Y>
     } // the end of the main loop
   }
 }
-// end relevant

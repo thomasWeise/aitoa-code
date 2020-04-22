@@ -141,11 +141,9 @@ public final class EAWithRestarts<X, Y>
         final X x = searchSpace.create();
         nullary.apply(x, random);
         population[i] = new Individual<>(x, process.evaluate(x));
-// end relevant
         if (process.shouldTerminate()) {
           return;
         }
-// start relevant
       }
 
       while (nonImprovedGen < this.generationsUntilRestart) {

@@ -49,10 +49,8 @@ import aitoa.utils.RandomUtils;
  * @param <Y>
  *          the solution space
  */
-// start relevant
 public final class MAWithClearing<X, Y>
     implements IMetaheuristic<X, Y> {
-// end relevant
 
   /** the number of selected parents */
   public final int mu;
@@ -128,12 +126,7 @@ public final class MAWithClearing<X, Y>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-// start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
-// omitted: initialize local variables random, searchSpace,
-// nullary, unary, binary, and arrays P and P2 of length
-// mu+lambda, and array T to null
-// end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
@@ -149,18 +142,16 @@ public final class MAWithClearing<X, Y>
         P2 = new LSIndividual[P.length];
     boolean improved = false;
     int p2 = -1;
-// start relevant
+
     restart: while (!process.shouldTerminate()) {
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         nullary.apply(x, random);
         P[i] = new LSIndividual<>(x, process.evaluate(x));
-// end relevant
         if (process.shouldTerminate()) {
           return;
         }
-// start relevant
       }
 
       while (!process.shouldTerminate()) { // main loop
@@ -236,7 +227,6 @@ public final class MAWithClearing<X, Y>
       } // the end of the main loop
     } // end of the restart loop
   }
-// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -245,6 +235,4 @@ public final class MAWithClearing<X, Y>
     return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
         this, builder);
   }
-// start relevant
 }
-// end relevant
