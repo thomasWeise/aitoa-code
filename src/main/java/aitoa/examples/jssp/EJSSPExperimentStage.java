@@ -14,6 +14,7 @@ import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithClearing;
 import aitoa.algorithms.RandomSampling;
@@ -508,19 +509,68 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
+
       final ArrayList<Supplier<
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
-      for (int i = 10; i <= 16; i++) {
-        final int lambda = (1 << i);
-        for (int j = 6; j <= 8; j++) {
-          final int mu = lambda / (1 << j);
-          list.add(() -> new EDA<>(mu, lambda, //
-              new JSSPUMDAModel(problem.instance)));
-          list.add(() -> new EDA<>(mu, lambda, //
-              new JSSPSpreadModel(problem.instance, 16)));
-        }
-      }
+
+      list.add(() -> new EDA<>(1, 1 << 5, //
+          new JSSPUMDAModel(problem.instance, 64L)));
+      list.add(() -> new EDA<>(2, 1 << 5, //
+          new JSSPUMDAModel(problem.instance, 32L)));
+
+      list.add(() -> new EDA<>(1, 1 << 10, //
+          new JSSPUMDAModel(problem.instance, 64L)));
+      list.add(() -> new EDA<>(2, 1 << 10, //
+          new JSSPUMDAModel(problem.instance, 32L)));
+
+      list.add(() -> new EDA<>(1, 1 << 15, //
+          new JSSPUMDAModel(problem.instance, 64L)));
+      list.add(() -> new EDA<>(2, 1 << 15, //
+          new JSSPUMDAModel(problem.instance, 32L)));
+
+      return list.stream();
+    }
+  },
+
+  /**
+   * the twelfth stage: estimation of distribution algorithm with
+   * local search
+   */
+  STAGE_12 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+
+      final ArrayList<Supplier<
+          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+              new ArrayList<>();
+
+      list.add(() -> new HybridEDA<>(1, 16, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 64L)));
+      list.add(() -> new HybridEDA<>(2, 16, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 32L)));
+      list.add(() -> new HybridEDA<>(4, 16, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 16L)));
+
+      list.add(() -> new HybridEDA<>(1, 32, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 64L)));
+      list.add(() -> new HybridEDA<>(2, 32, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 32L)));
+      list.add(() -> new HybridEDA<>(4, 32, Integer.MAX_VALUE, //
+          new JSSPUMDAModel(problem.instance, 16L)));
+
       return list.stream();
     }
   };

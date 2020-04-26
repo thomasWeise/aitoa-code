@@ -16,32 +16,46 @@ import aitoa.utils.RandomUtils;
 public class JSSPUMDAModel implements IModel<int[]> {
 
   /** the counters */
-  final long[][] m_counts;
+  private final long[][] m_counts;
   /**
    * the permutation used for picking indices to fill in a random
    * order
    */
-  final int[] m_perm;
+  private final int[] m_perm;
 
   /** the probability vector */
-  final long[] m_prob;
+  private final long[] m_prob;
 
   /** the jobs we can choose from */
-  final int[] m_jobChoseFrom;
+  private final int[] m_jobChoseFrom;
 
   /** the remaining number of times a job can be scheduled */
-  final int[] m_jobRemainingTimes;
+  private final int[] m_jobRemainingTimes;
   /** the number of machines */
-  final int m_m;
+  private final int m_m;
+
+  /** the probability multiplier */
+  public final long multiplier;
 
   /**
    * create a model for the given jssp instance
    *
    * @param instance
    *          the instance
+   * @param _multiplier
+   *          the probability multiplier
    */
-  public JSSPUMDAModel(final JSSPInstance instance) {
+  public JSSPUMDAModel(final JSSPInstance instance,
+      final long _multiplier) {
     super();
+
+    if (_multiplier <= 0L) {
+      throw new IllegalArgumentException(
+          "Multiplier must be greater than 0, but is " //$NON-NLS-1$
+              + _multiplier);
+    }
+
+    this.multiplier = _multiplier;
 
     int n = instance.n;
     this.m_m = instance.m;
@@ -62,18 +76,29 @@ public class JSSPUMDAModel implements IModel<int[]> {
   }
 
   /**
-   * create a JSSP UMDA model from a string
+   * create a JSSP umda model from a string
    *
-   * @param instance
-   *          the instance id
+   * @param strings
+   *          the strings
    */
-  public JSSPUMDAModel(final String instance) {
-    this(new JSSPInstance(instance));
+  private JSSPUMDAModel(final String[] strings) {
+    this(new JSSPInstance(strings[0]), //
+        (strings.length > 1) ? Long.parseLong(strings[1]) : 1L);
+  }
+
+  /**
+   * create a JSSP umda model from a string
+   *
+   * @param string
+   *          the strings
+   */
+  public JSSPUMDAModel(final String string) {
+    this(string.split("_")); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public void initialize() {
+  public final void initialize() {
     for (final long[] l : this.m_counts) {
       Arrays.fill(l, 1L);
     }
@@ -82,9 +107,10 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public void update(final Iterable<int[]> selected) {
+    this.initialize();
     for (final int[] sel : selected) {
       for (int j = sel.length; (--j) >= 0;) {
-        ++this.m_counts[j][sel[j]];
+        this.m_counts[j][sel[j]] += this.multiplier;
       }
     }
   }
@@ -136,7 +162,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "umda"; //$NON-NLS-1$
+    return "umda_" + this.multiplier; //$NON-NLS-1$
   }
 
   /**

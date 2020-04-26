@@ -27,7 +27,7 @@ public class TestHybridFFAUMDAOnJSSP11
     final int mu = 1 + rand.nextInt(lambda);
 
     return new HybridEDAWithFitness<>(mu, lambda, 11,
-        new JSSPUMDAModel(instance),
+        new JSSPUMDAModel(instance, 1 + rand.nextInt(2)),
         new IntFFA((int) (0.5d
             + new JSSPMakespanObjectiveFunction(instance)
                 .upperBound())));

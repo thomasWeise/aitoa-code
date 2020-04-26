@@ -20,7 +20,7 @@ public class TestUMDAWithFitnessOnJSSP2
   protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
     return new EDAWithFitness<>(1024, 8192,
-        new JSSPUMDAModel(instance),
+        new JSSPUMDAModel(instance, 3),
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)
                 .upperBound())));

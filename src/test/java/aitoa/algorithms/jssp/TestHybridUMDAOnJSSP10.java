@@ -25,6 +25,6 @@ public class TestHybridUMDAOnJSSP10
     final int mu = 1 + rand.nextInt(lambda);
 
     return new HybridEDA<>(mu, lambda, 10,
-        new JSSPUMDAModel(instance));
+        new JSSPUMDAModel(instance, 1 + rand.nextInt(2)));
   }
 }

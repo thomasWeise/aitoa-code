@@ -23,6 +23,7 @@ public class TestUMDAOnJSSP extends TestMetaheuristicOnJSSP {
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new EDA<>(mu, lambda, new JSSPUMDAModel(instance));
+    return new EDA<>(mu, lambda,
+        new JSSPUMDAModel(instance, 1 + rand.nextInt(2)));
   }
 }

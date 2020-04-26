@@ -27,7 +27,7 @@ public class TestUMDAWithFitnessOnJSSP
     final int mu = 1 + rand.nextInt(lambda);
 
     return new EDAWithFitness<>(mu, lambda,
-        new JSSPUMDAModel(instance),
+        new JSSPUMDAModel(instance, 1 + rand.nextInt(2)),
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)
                 .upperBound())));

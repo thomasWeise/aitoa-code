@@ -24,7 +24,7 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
 
   /** the operator we use */
   private static final IModel<int[]> OP =
-      new JSSPUMDAModel(TestJSSPUMDAModel.PROBLEM);
+      new JSSPUMDAModel(TestJSSPUMDAModel.PROBLEM, 1L);
 
   /** {@inheritDoc} */
   @Override
@@ -57,16 +57,14 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
   @Test(timeout = 3600000)
   public final void testModelTraining() {
     final JSSPInstance demo = new JSSPInstance("demo"); //$NON-NLS-1$
-    final JSSPUMDAModel model = new JSSPUMDAModel(demo);
+    final JSSPUMDAModel model = new JSSPUMDAModel(demo, 1000L);
 
     for (int z = 100; (--z) >= 0;) {
       model.initialize();
       final int[] template = JSSPTestUtils.createValidX(demo);
       final ArrayList<int[]> list = new ArrayList<>();
       list.add(template);
-      for (int i = 1000; (--i) >= 0;) {
-        model.update(list);
-      }
+      model.update(list);
 
       final int[] dest = new int[demo.m * demo.n];
       checker: {
