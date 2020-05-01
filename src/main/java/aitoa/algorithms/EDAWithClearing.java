@@ -2,7 +2,6 @@ package aitoa.algorithms;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -34,7 +33,8 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 // start relevant
-public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
+public final class EDAWithClearing<X, Y>
+    implements IMetaheuristic<X, Y> {
 // end relevant
 
   /** the number of solution to be selected */
@@ -54,7 +54,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
    * @param _model
    *          the model
    */
-  public EDA(final int _mu, final int _lambda,
+  public EDAWithClearing(final int _mu, final int _lambda,
       final IModel<X> _model) {
     super();
     if ((_lambda < 1) || (_lambda > 100_000_000)) {
@@ -87,14 +87,14 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", true));//$NON-NLS-1$
     output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return ((((("eda_" + //$NON-NLS-1$
+    return ((((("edac_" + //$NON-NLS-1$
         this.model.toString()) + '_') + this.mu) + '+')
         + this.lambda);
   }
@@ -113,11 +113,10 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     final IModel<X> Model = this.model;
 
     final Individual<X>[] P = new Individual[this.lambda];
-    restart: while (!process.shouldTerminate()) {
 // start relevant
 // local variable initialization omitted for brevity
+    restart: while (!process.shouldTerminate()) {
       Model.initialize(); // initialize model=uniform
-                          // distribution
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -132,14 +131,12 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
       }
 
       for (;;) {// each iteration: update model, sample model
-// end relevant
-        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+        final int u = Utils.qualityBasedClearing(P, this.mu);
+        if (u < this.model.minimumSamplesNeededForUpdate()) {
           continue restart;
         }
-// start relevant
-        Arrays.sort(P, Individual.BY_QUALITY);
-// update model with mu<lambda best solutions
-        Model.update(IModel.use(P, 0, this.mu));
+// update model with 1<u<=mu<lambda best unique solutions
+        Model.update(IModel.use(P, 0, u));
 
 // sample new population
         for (final Individual<X> dest : P) {
@@ -150,10 +147,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
           }
         } // the end of the solution generation
       } // the end of the main loop
-// end relevant
     }
-// start relevant
   }
-
 }
 // end relevant

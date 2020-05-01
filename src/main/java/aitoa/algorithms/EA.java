@@ -140,6 +140,7 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
         process.getUnarySearchOperator();
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
+    int p2; // to hold index of second selected record
 
     final Individual<X>[] P =
         new Individual[this.mu + this.lambda];
@@ -175,7 +176,6 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
 // end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
-          int p2; // to hold index of second selected record
           do { // find a second, different record
             p2 = random.nextInt(this.mu);
           } while (p2 == p1);

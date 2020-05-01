@@ -128,6 +128,7 @@ public final class EAWithRestarts<X, Y>
         process.getUnarySearchOperator();
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
+    int p2;
 
     final Individual<X>[] population =
         new Individual[this.mu + this.lambda];
@@ -165,11 +166,9 @@ public final class EAWithRestarts<X, Y>
 
           final Individual<X> dest = population[index];
           p1 = (p1 + 1) % this.mu;
-          final Individual<X> parent1 = population[p1]; // parent
-                                                        // 1
+          final Individual<X> parent1 = population[p1];
 
           if (random.nextDouble() <= this.cr) { // crossover!
-            int p2;
             do { // find a second parent who is different from
               p2 = random.nextInt(this.mu);
             } while (p2 == p1);

@@ -39,6 +39,15 @@ public interface IModel<X> {
   public abstract void sample(final X dest, final Random random);
 
   /**
+   * The minimum number of samples needed to perform an update
+   *
+   * @return the minimum number of samples needed for an update
+   */
+  public default int minimumSamplesNeededForUpdate() {
+    return 1;
+  }
+
+  /**
    * Create an iterable over a given range of the specified
    * array. The range must be non-empty.
    *

@@ -99,6 +99,8 @@ public final class HybridEDAWithFitness<X, Y>
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         this.fitness));
     output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
+    output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */
@@ -140,56 +142,64 @@ public final class HybridEDAWithFitness<X, Y>
     final X temp = searchSpace.create();
     this.fitness.initialize();
 
+    restart: while (!process.shouldTerminate()) {
 // the initialization of local variables is omitted for brevity
-    Model.initialize(); // initialize model=uniform distribution
+      Model.initialize(); // initialize model=uniform
+                          // distribution
 
 // first generation: fill population with random individuals
-    for (int i = P.length; (--i) >= 0;) {
-      final X x = searchSpace.create();
-      nullary.apply(x, random);
-      P[i] = new FitnessIndividual<>(x, process.evaluate(x));
-      if (process.shouldTerminate()) { // we return
-        return; // best solution is stored in process
-      }
-    }
-
-    for (;;) {// each iteration: LS, update model, then sample
-      for (final FitnessIndividual<X> ind : P) {
-        int steps = this.maxLSSteps;
-        do { // local search in style of HillClimber2
-          improved = unary.enumerate(random, ind.x, temp, //
-              (point) -> {
-                final double newQuality =
-                    process.evaluate(point);
-                if (newQuality < ind.quality) { // better?
-                  ind.quality = newQuality; // store quality
-                  searchSpace.copy(point, ind.x); // store point
-                  return (true); // exit to next loop
-                } // if we get here, point is not better
-                return process.shouldTerminate();
-              }); // repeat this until no improvement or time is
-                  // up
-          if (process.shouldTerminate()) { // we return
-            return; // best solution is stored in process
-          }
-        } while (improved && ((--steps) > 0));
-      }
-
-      this.fitness.assignFitness(P);
-      Arrays.sort(P, this.fitness);
-      Model.update(IModel.use(P, 0, this.mu)); // update model
-
-// sample new population
-      for (final FitnessIndividual<X> dest : P) {
+      for (int i = P.length; (--i) >= 0;) {
+        final X x = searchSpace.create();
+        nullary.apply(x, random);
+        P[i] = new FitnessIndividual<>(x, process.evaluate(x));
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-        Model.sample(dest.x, random);
-        dest.quality = process.evaluate(dest.x);
-      } // the end of the new points generation
-      if (process.shouldTerminate()) { // we return
-        return; // best solution is stored in process
       }
-    } // the end of the main loop
+
+      for (;;) {// each iteration: LS, update model, then sample
+        for (final FitnessIndividual<X> ind : P) {
+          int steps = this.maxLSSteps;
+          do { // local search in style of HillClimber2
+            improved = unary.enumerate(random, ind.x, temp, //
+                (point) -> {
+                  final double newQuality =
+                      process.evaluate(point);
+                  if (newQuality < ind.quality) { // better?
+                    ind.quality = newQuality; // store quality
+                    searchSpace.copy(point, ind.x); // store
+                                                    // point
+                    return (true); // exit to next loop
+                  } // if we get here, point is not better
+                  return process.shouldTerminate();
+                }); // repeat this until no improvement or time
+                    // is
+                    // up
+            if (process.shouldTerminate()) { // we return
+              return; // best solution is stored in process
+            }
+          } while (improved && ((--steps) > 0));
+        }
+
+        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+          continue restart;
+        }
+        this.fitness.assignFitness(P);
+        Arrays.sort(P, this.fitness);
+        Model.update(IModel.use(P, 0, this.mu)); // update model
+
+// sample new population
+        for (final FitnessIndividual<X> dest : P) {
+          if (process.shouldTerminate()) { // we return
+            return; // best solution is stored in process
+          }
+          Model.sample(dest.x, random);
+          dest.quality = process.evaluate(dest.x);
+        } // the end of the new points generation
+        if (process.shouldTerminate()) { // we return
+          return; // best solution is stored in process
+        }
+      } // the end of the main loop
+    }
   }
 }

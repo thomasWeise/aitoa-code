@@ -2,7 +2,6 @@ package aitoa.algorithms;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.BlackBoxProcessBuilder;
@@ -137,9 +136,8 @@ public final class MAWithClearing<X, Y>
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
     final X temp = searchSpace.create();
-    LSIndividual<X>[] T = null,
-        P = new LSIndividual[this.mu + this.lambda],
-        P2 = new LSIndividual[P.length];
+    final LSIndividual<X>[] P =
+        new LSIndividual[this.mu + this.lambda];
     boolean improved = false;
     int p2 = -1;
 
@@ -180,25 +178,7 @@ public final class MAWithClearing<X, Y>
         } // end of 1 ls iteration: we have refined 1 solution
 
         RandomUtils.shuffle(random, P, 0, P.length); // make fair
-        Arrays.sort(P, Individual.BY_QUALITY);
-// we now want to keep only the solutions with unique fitness
-        int u = 0, done = 0, end = P.length;
-        T = P; // since array P is sorted, so we can do this by
-        P = P2; // processing it from begin to end and copying
-        P2 = T; // these individuals to the start of P
-// we switch the two arrays here so the rest is the same as EA
-        makeUnique: for (final LSIndividual<X> r : P2) {
-          ++done;
-          if ((u <= 0) || (r.quality > P[u - 1].quality)) {
-            P[u] = r;
-            if ((++u) >= this.mu) { // we are done and can
-              System.arraycopy(P2, done, P, u, P.length - done);
-              break makeUnique; // directly, they do not need to
-            } // be unique, as they will be overwritten anyway
-          } else { // ind has an already-seen quality, so we copy
-            P[--end] = r; // it to the end of the array, where
-          } // it will eventually be overwritten
-        }
+        final int u = Utils.qualityBasedClearing(P, this.mu);
         if (u <= 1) { // 1 <= u <= mu unique solutions
           continue restart; // if u==1, restart, because
         } // then recombination makes no sense

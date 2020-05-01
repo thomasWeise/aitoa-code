@@ -10,11 +10,12 @@ import java.util.stream.Stream;
 import aitoa.algorithms.EA;
 import aitoa.algorithms.EAWithClearing;
 import aitoa.algorithms.EDA;
+import aitoa.algorithms.EDAWithClearing;
 import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
-import aitoa.algorithms.HybridEDA;
+import aitoa.algorithms.HybridEDAWithClearing;
 import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithClearing;
 import aitoa.algorithms.RandomSampling;
@@ -509,27 +510,53 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-
-      final ArrayList<Supplier<
-          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
-              new ArrayList<>();
-
-      list.add(() -> new EDA<>(1, 1 << 5, //
-          new JSSPUMDAModel(problem.instance, 64L)));
-      list.add(() -> new EDA<>(2, 1 << 5, //
-          new JSSPUMDAModel(problem.instance, 32L)));
-
-      list.add(() -> new EDA<>(1, 1 << 10, //
-          new JSSPUMDAModel(problem.instance, 64L)));
-      list.add(() -> new EDA<>(2, 1 << 10, //
-          new JSSPUMDAModel(problem.instance, 32L)));
-
-      list.add(() -> new EDA<>(1, 1 << 15, //
-          new JSSPUMDAModel(problem.instance, 64L)));
-      list.add(() -> new EDA<>(2, 1 << 15, //
-          new JSSPUMDAModel(problem.instance, 32L)));
-
-      return list.stream();
+      return Stream.of(//
+          () -> new EDA<>(2, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDA<>(2, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDA<>(3, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDA<>(3, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDA<>(4, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDA<>(4, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+//
+          () -> new EDAWithClearing<>(2, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(2, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(2, 256, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(2, 128, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(2, 64, //
+              new JSSPUMDAModel(problem.instance)), //
+          //
+          () -> new EDAWithClearing<>(3, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(3, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(3, 256, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(3, 128, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(3, 64, //
+              //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(4, 32768, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(4, 4096, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(4, 256, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(4, 128, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new EDAWithClearing<>(4, 64, //
+              new JSSPUMDAModel(problem.instance))//
+      );
     }
   },
 
@@ -553,25 +580,53 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
 
-      final ArrayList<Supplier<
-          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
-              new ArrayList<>();
+      return Stream.of(//
+          () -> new HybridEDAWithClearing<>(2, 16,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(4, 16,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(8, 16,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(2, 32,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(4, 32,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(8, 32,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(16, 32,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(4, 8,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)), //
+          () -> new HybridEDAWithClearing<>(2, 4,
+              Integer.MAX_VALUE, //
+              new JSSPUMDAModel(problem.instance)));
+    }
 
-      list.add(() -> new HybridEDA<>(1, 16, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 64L)));
-      list.add(() -> new HybridEDA<>(2, 16, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 32L)));
-      list.add(() -> new HybridEDA<>(4, 16, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 16L)));
-
-      list.add(() -> new HybridEDA<>(1, 32, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 64L)));
-      list.add(() -> new HybridEDA<>(2, 32, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 32L)));
-      list.add(() -> new HybridEDA<>(4, 32, Integer.MAX_VALUE, //
-          new JSSPUMDAModel(problem.instance, 16L)));
-
-      return list.stream();
+    /**
+     * Configure the black box process builder for the given
+     * problem.
+     *
+     * @param builder
+     *          the builder to configure
+     * @param problem
+     *          the problem
+     */
+    @Override
+    public void configureBuilderForProblem(
+        final BlackBoxProcessBuilder<int[],
+            JSSPCandidateSolution> builder,
+        final JSSPMakespanObjectiveFunction problem) {
+      super.configureBuilderForProblem(builder, problem);
+      builder.setUnarySearchOperator(//
+          new JSSPUnaryOperator1SwapU(problem.instance));
     }
   };
 

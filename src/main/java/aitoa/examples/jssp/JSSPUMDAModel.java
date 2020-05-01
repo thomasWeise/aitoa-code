@@ -34,28 +34,38 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** the number of machines */
   private final int m_m;
 
-  /** the probability multiplier */
-  public final long multiplier;
+  /** the probability base */
+  public final long base;
 
   /**
    * create a model for the given jssp instance
    *
    * @param instance
    *          the instance
-   * @param _multiplier
-   *          the probability multiplier
+   */
+  public JSSPUMDAModel(final JSSPInstance instance) {
+    this(instance, Integer.MAX_VALUE);
+  }
+
+  /**
+   * create a model for the given jssp instance
+   *
+   * @param instance
+   *          the instance
+   * @param _base
+   *          the number of probability units assigned for each
+   *          occurrence of a given job at a given index
    */
   public JSSPUMDAModel(final JSSPInstance instance,
-      final long _multiplier) {
+      final long _base) {
     super();
 
-    if (_multiplier <= 0L) {
+    if (_base <= 0L) {
       throw new IllegalArgumentException(
-          "Multiplier must be greater than 0, but is " //$NON-NLS-1$
-              + _multiplier);
+          "Base multiplier must be greater than 0, but is " //$NON-NLS-1$
+              + _base);
     }
-
-    this.multiplier = _multiplier;
+    this.base = _base;
 
     int n = instance.n;
     this.m_m = instance.m;
@@ -83,7 +93,14 @@ public class JSSPUMDAModel implements IModel<int[]> {
    */
   private JSSPUMDAModel(final String[] strings) {
     this(new JSSPInstance(strings[0]), //
-        (strings.length > 1) ? Long.parseLong(strings[1]) : 1L);
+        (strings.length > 1) ? Long.parseLong(strings[1])
+            : 1024L);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int minimumSamplesNeededForUpdate() {
+    return 2;
   }
 
   /**
@@ -107,10 +124,17 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public void update(final Iterable<int[]> selected) {
-    this.initialize();
+    final int l = this.m_counts.length;
+
+// First set nearest occurrence to maximum distance.
+    for (final long[] a : this.m_counts) {
+      Arrays.fill(a, 1L);
+    }
+
+// Assign probability.
     for (final int[] sel : selected) {
-      for (int j = sel.length; (--j) >= 0;) {
-        this.m_counts[j][sel[j]] += this.multiplier;
+      for (int j = l; (--j) >= 0;) {
+        this.m_counts[j][sel[j]] += this.base;
       }
     }
   }
@@ -162,7 +186,10 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "umda_" + this.multiplier; //$NON-NLS-1$
+    if (this.base == Integer.MAX_VALUE) {
+      return "umda";//$NON-NLS-1$
+    }
+    return "umda_" + this.base; //$NON-NLS-1$
   }
 
   /**

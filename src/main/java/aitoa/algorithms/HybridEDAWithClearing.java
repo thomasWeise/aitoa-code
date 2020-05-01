@@ -27,7 +27,7 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-public final class HybridEDA<X, Y>
+public final class HybridEDAWithClearing<X, Y>
     implements IMetaheuristic<X, Y> {
 
   /** the number of solution to be selected */
@@ -51,7 +51,7 @@ public final class HybridEDA<X, Y>
    * @param _model
    *          the model
    */
-  public HybridEDA(final int _mu, final int _lambda,
+  public HybridEDAWithClearing(final int _mu, final int _lambda,
       final int _maxLSSteps, final IModel<?> _model) {
     super();
     if ((_lambda < 1) || (_lambda > 1_000_000)) {
@@ -93,14 +93,14 @@ public final class HybridEDA<X, Y>
     output.write(
         LogFormat.mapEntry("maxLSSteps", this.maxLSSteps));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", true));//$NON-NLS-1$
     output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    final String s = ((((("heda_" + //$NON-NLS-1$
+    final String s = ((((("hedac_" + //$NON-NLS-1$
         this.model.toString()) + '_') + this.mu) + '+')
         + this.lambda);
     if (this.maxLSSteps >= Integer.MAX_VALUE) {
@@ -172,11 +172,12 @@ public final class HybridEDA<X, Y>
           } while (improved && ((--steps) > 0));
         }
 
-        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+        Arrays.sort(P, Individual.BY_QUALITY);
+        final int u = Utils.qualityBasedClearing(P, this.mu);
+        if (u < Model.minimumSamplesNeededForUpdate()) {
           continue restart;
         }
-        Arrays.sort(P, Individual.BY_QUALITY);
-        Model.update(IModel.use(P, 0, this.mu)); // update model
+        Model.update(IModel.use(P, 0, u)); // update model
 
 // sample new population
         for (final Individual<X> dest : P) {

@@ -50,7 +50,7 @@ public final class EDAWithFitness<X, Y>
       final IModel<X> _model,
       final FitnessAssignmentProcess<? super X> _fitness) {
     super();
-    if ((_lambda < 1) || (_lambda > 1_000_000)) {
+    if ((_lambda < 1) || (_lambda > 100_000_000)) {
       throw new IllegalArgumentException(
           "Invalid lambda: " + _lambda); //$NON-NLS-1$
     }
@@ -84,6 +84,8 @@ public final class EDAWithFitness<X, Y>
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
         this.fitness));
     output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
+    output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */
@@ -110,33 +112,45 @@ public final class EDAWithFitness<X, Y>
         new FitnessIndividual[this.lambda];
     this.fitness.initialize();
 
+// end relevant
+    restart: while (!process.shouldTerminate()) {
+// start relevant
 // local variable initialization omitted for brevity
-    Model.initialize(); // initialize model=uniform distribution
+      Model.initialize(); // initialize model=uniform
+                          // distribution
 
 // first generation: fill population with random individuals
-    for (int i = P.length; (--i) >= 0;) {
-      final X x = searchSpace.create();
-      nullary.apply(x, random);
-      P[i] = new FitnessIndividual<>(x, process.evaluate(x));
-      if (process.shouldTerminate()) { // we return
-        return; // best solution is stored in process
-      }
-    }
-
-    for (;;) {// each iteration: update model, sample model
-      this.fitness.assignFitness(P);
-      Arrays.sort(P, this.fitness);
-// update model with mu<lambda best solutions
-      Model.update(IModel.use(P, 0, this.mu));
-
-// sample new population
-      for (final FitnessIndividual<X> dest : P) {
-        Model.sample(dest.x, random); // create new solution
-        dest.quality = process.evaluate(dest.x);
+      for (int i = P.length; (--i) >= 0;) {
+        final X x = searchSpace.create();
+        nullary.apply(x, random);
+        P[i] = new FitnessIndividual<>(x, process.evaluate(x));
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
-      } // the end of the solution generation
-    } // the end of the main loop
+      }
+
+      for (;;) {// each iteration: update model, sample model
+// end relevant
+        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+          continue restart;
+        }
+// start relevant
+        this.fitness.assignFitness(P);
+        Arrays.sort(P, this.fitness);
+// update model with mu<lambda best solutions
+        Model.update(IModel.use(P, 0, this.mu));
+
+// sample new population
+        for (final FitnessIndividual<X> dest : P) {
+          Model.sample(dest.x, random); // create new solution
+          dest.quality = process.evaluate(dest.x);
+          if (process.shouldTerminate()) { // we return
+            return; // best solution is stored in process
+          }
+        } // the end of the solution generation
+      } // the end of the main loop
+    }
+// end relevant
   }
+// start relevant
 }

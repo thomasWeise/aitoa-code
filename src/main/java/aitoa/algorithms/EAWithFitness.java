@@ -126,7 +126,7 @@ public final class EAWithFitness<X, Y>
         process.getUnarySearchOperator();
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
-
+    int p2; // to hold index of second selected record
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.mu + this.lambda];
     this.fitness.initialize();
@@ -161,7 +161,6 @@ public final class EAWithFitness<X, Y>
         p1 = (p1 + 1) % this.mu;
         final FitnessIndividual<X> sel = P[p1];
         if (random.nextDouble() <= this.cr) { // crossover!
-          int p2; // to hold index of second selected record
           do { // find a second, different record
             p2 = random.nextInt(this.mu);
           } while (p2 == p1);

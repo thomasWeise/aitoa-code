@@ -2,7 +2,6 @@ package aitoa.algorithms;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.BlackBoxProcessBuilder;
@@ -130,12 +129,13 @@ public final class EAWithClearing<X, Y>
         process.getUnarySearchOperator();
     final IBinarySearchOperator<X> binary =
         process.getBinarySearchOperator();
+    int p2;
 
-    Individual<X>[] T = null,
-        P = new Individual[this.mu + this.lambda],
-        P2 = new Individual[P.length];
+    final Individual<X>[] P =
+        new Individual[this.mu + this.lambda];
 
 // first generation: fill population with random individuals
+// start relevant
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       nullary.apply(x, random);
@@ -145,27 +145,10 @@ public final class EAWithClearing<X, Y>
       }
     }
 
-// start relevant
     while (!process.shouldTerminate()) { // main loop
       RandomUtils.shuffle(random, P, 0, P.length); // make fair
-      Arrays.sort(P, Individual.BY_QUALITY);
-// Select only the u best solutions of unique quality, 1<=u<=mu.
-      int u = 0, done = 0, end = P.length;
-      T = P; // First switch the arrays. P2 is sorted. We process
-      P = P2; // it from begin to end and copy the unique records
-      P2 = T; // to the start of P, the rest to the end of P.
-      makeUnique: for (final Individual<X> r : P2) {
-        ++done; // Increase number of processed in individuals.
-        if ((u <= 0) || (r.quality > P[u - 1].quality)) {
-          P[u] = r; // Individual unique -> copy to start
-          if ((++u) >= this.mu) { // Got enough? Copy rest.
-            System.arraycopy(P2, done, P, u, P.length - done);
-            break makeUnique;
-          }
-        } else { // r has an already-seen quality, so we copy
-          P[--end] = r; // it to the end of the array, where
-        } // it will eventually be overwritten.
-      } // Now we have 1 <= u <= mu unique solutions.
+      final int u = Utils.qualityBasedClearing(P, this.mu);
+      // Now we have 1 <= u <= mu unique solutions.
       RandomUtils.shuffle(random, P, 0, u); // for fairness
       int p1 = -1; // index to iterate over first parent
 // Overwrite the worse (mu + lambda - u) solutions.
@@ -180,7 +163,6 @@ public final class EAWithClearing<X, Y>
         p1 = (p1 + 1) % u; // parent 1 index
         final Individual<X> sel = P[p1]; // parent 1
         if ((u >= 2) && (random.nextDouble() <= this.cr)) {
-          int p2; // p2 is the index of second selected parent.
           do { // find a second, different record
             p2 = random.nextInt(u);
           } while (p2 == p1); // Of course, can't be p1.
