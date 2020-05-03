@@ -286,7 +286,9 @@ public enum EJSSPExperimentStage implements
           0.25d * 20d }) {
         list.add(() -> new SimulatedAnnealing<>(
             new TemperatureSchedule.Logarithmic(Ts, 1)));
-      } // end start temperature
+      } // end
+        // start
+        // temperature
       for (final double ep : new double[] { //
           0.25e-7d, //
           0.5e-7d, //
@@ -297,7 +299,8 @@ public enum EJSSPExperimentStage implements
           8e-7d }) {
         list.add(() -> new SimulatedAnnealing<>(
             new TemperatureSchedule.Exponential(20d, ep)));
-      } // end epsilon
+      } // end
+        // epsilon
 
       return list.stream();
     }
@@ -510,53 +513,29 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return Stream.of(//
-          () -> new EDA<>(2, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDA<>(2, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDA<>(3, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDA<>(3, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDA<>(4, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDA<>(4, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-//
-          () -> new EDAWithClearing<>(2, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(2, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(2, 256, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(2, 128, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(2, 64, //
-              new JSSPUMDAModel(problem.instance)), //
-          //
-          () -> new EDAWithClearing<>(3, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(3, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(3, 256, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(3, 128, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(3, 64, //
-              //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(4, 32768, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(4, 4096, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(4, 256, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(4, 128, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new EDAWithClearing<>(4, 64, //
-              new JSSPUMDAModel(problem.instance))//
-      );
+
+      final ArrayList<Supplier<
+          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+              new ArrayList<>();
+
+      for (final int mu : new int[] { 2, 3, 4 }) {
+        list.add(() -> new EDA<>(mu, 32768, //
+            new JSSPUMDAModel(problem.instance)));
+        list.add(() -> new EDA<>(mu, 4096, //
+            new JSSPUMDAModel(problem.instance)));
+        list.add(() -> new EDAWithClearing<>(mu, 32768, //
+            new JSSPUMDAModel(problem.instance)));
+        list.add(() -> new EDAWithClearing<>(mu, 4096, //
+            new JSSPUMDAModel(problem.instance)));
+
+        for (final int lambdaShift : new int[] { 4, 5, 6, 7,
+            8 }) {
+          final int lambda = 1 << lambdaShift;
+          list.add(() -> new EDAWithClearing<>(mu, lambda, //
+              new JSSPUMDAModel(problem.instance)));
+        }
+      }
+      return list.stream();
     }
   },
 

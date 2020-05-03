@@ -123,6 +123,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
 
   /** {@inheritDoc} */
   @Override
+// start update
   public void update(final Iterable<int[]> selected) {
     final int l = this.m_counts.length;
 
@@ -138,9 +139,11 @@ public class JSSPUMDAModel implements IModel<int[]> {
       }
     }
   }
+// end update
 
   /** {@inheritDoc} */
   @Override
+// start sampling
   public final void sample(final int[] dest,
       final Random random) {
     final int[] perm = this.m_perm;
@@ -151,13 +154,14 @@ public class JSSPUMDAModel implements IModel<int[]> {
     final int[] jobChooseFrom = this.m_jobChoseFrom;
     final long[] prob = this.m_prob;
     final long[][] counts = this.m_counts;
+
 // we can choose from n jobs
     int jobChooseLength = jobChooseFrom.length;
 
 // permute the indexes for which we pick jobs
     RandomUtils.shuffle(random, perm, 0, perm.length);
 
-// iterate over the job indices
+// iterate over the indices into the array (in random order)
     for (final int index : perm) {
       long N = 0L;
 
@@ -167,21 +171,20 @@ public class JSSPUMDAModel implements IModel<int[]> {
         prob[j] = N;
       }
 
-// pick a job index, where the probability is proportional to the
-// frequency
-      final int i = JSSPUMDAModel.find(
+// pick index with probability proportional to stored frequency
+      final int select = JSSPUMDAModel.find(
           RandomUtils.uniformFrom0ToNminus1(random, N), prob,
           jobChooseLength);
 
-// pick and store the job
-      final int job = jobChooseFrom[i];
-      dest[index] = job;
-      if ((--jobRemainingTimes[job]) == 0) {
-        jobChooseFrom[i] = jobChooseFrom[--jobChooseLength];
+      final int job = jobChooseFrom[select]; // get selected job
+      dest[index] = job; // store job in result
+      if ((--jobRemainingTimes[job]) == 0) { // job completed?
+        jobChooseFrom[select] = jobChooseFrom[--jobChooseLength];
         jobChooseFrom[jobChooseLength] = job;
       }
-    }
+    } // end iteration over array indices
   }
+// end sampling
 
   /** {@inheritDoc} */
   @Override
