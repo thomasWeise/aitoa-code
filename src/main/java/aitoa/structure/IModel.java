@@ -10,6 +10,7 @@ import java.util.function.Supplier;
  * @param <X>
  *          the search space
  */
+// start relevant
 public interface IModel<X> {
 
   /** initialize the model */
@@ -46,6 +47,7 @@ public interface IModel<X> {
   public default int minimumSamplesNeededForUpdate() {
     return 1;
   }
+// end relevant
 
   /**
    * Create an iterable over a given range of the specified
@@ -93,4 +95,6 @@ public interface IModel<X> {
     _Iterator._checkRange(array, start, end);
     return () -> new _SupplierArrayIterator<>(array, start, end);
   }
+// start relevant
 }
+// end relevant

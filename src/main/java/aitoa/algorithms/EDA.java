@@ -105,7 +105,6 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
 // start relevant
   public final void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
-// create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
     final INullarySearchOperator<X> nullary =
@@ -116,8 +115,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     restart: while (!process.shouldTerminate()) {
 // start relevant
 // local variable initialization omitted for brevity
-      Model.initialize(); // initialize model=uniform
-                          // distribution
+      Model.initialize(); // initialize model
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -154,6 +152,6 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     }
 // start relevant
   }
-
+// end relevant
 }
 // end relevant
