@@ -154,4 +154,3 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
   }
 // end relevant
 }
-// end relevant
