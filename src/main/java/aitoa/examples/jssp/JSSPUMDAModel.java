@@ -235,7 +235,11 @@ public class JSSPUMDAModel implements IModel<int[]> {
    */
   static final int find(final long value, final long[] array,
       final int length) {
-    return (Math.abs(//
-        Arrays.binarySearch(array, 0, length, value) + 1));
+    int i = Math.abs(//
+        Arrays.binarySearch(array, 0, length, value) + 1);
+    while (array[i] == value) {
+      ++i;
+    }
+    return i;
   }
 }

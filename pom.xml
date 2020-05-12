@@ -5,7 +5,7 @@
 
 	<groupId>aitoa</groupId>
 	<artifactId>aitoa-code</artifactId>
-	<version>0.8.55</version>
+	<version>0.8.56</version>
 	<packaging>jar</packaging>
 	<name>aitoa-code</name>
 	<description>Example Source Codes from the Book "Introduction to Optimization Algorithms"</description>
@@ -44,7 +44,7 @@
 		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 		<java.source.version>1.8</java.source.version>
 		<junit.version>4.13</junit.version>
-		<oshi.version>4.4.2</oshi.version>
+		<oshi.version>5.0.1</oshi.version>
 		<slf4j.version>1.7.30</slf4j.version>
 		<project.mainClass>aitoa.utils.logs.PostProcessor</project.mainClass>
 	</properties>
