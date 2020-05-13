@@ -59,7 +59,7 @@ public final class NQueensObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     final int kk = this.k;
     final int nn = this.n;
 
@@ -209,13 +209,13 @@ public final class NQueensObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     if (this.m_upper <= 0L) {
       final boolean[] test = new boolean[this.n];
       Arrays.fill(test, true);
@@ -226,7 +226,7 @@ public final class NQueensObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_n(
         NQueensObjectiveFunction.NAME_PREFIX, this.n);
   }

@@ -23,25 +23,25 @@ public final class DiscreteConstant
 
   /** {@inheritDoc} */
   @Override
-  public final int nextInt(final Random random) {
+  public int nextInt(final Random random) {
     return this.m;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ("C=" + this.m); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return this.m;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof DiscreteConstant) {
       return this.m == ((DiscreteConstant) o).m;
     }

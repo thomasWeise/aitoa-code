@@ -17,13 +17,13 @@ public final class BitStringBinaryOperatorUniform
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "uniform"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void apply(final boolean[] x0, final boolean[] x1,
+  public void apply(final boolean[] x0, final boolean[] x1,
       final boolean[] dest, final Random random) {
 // The code of this procedure is equivalent to the following
 // code:

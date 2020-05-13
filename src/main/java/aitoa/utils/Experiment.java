@@ -539,7 +539,7 @@ public class Experiment {
    * @param <M>
    *          the metaheuristic type
    */
-  public static interface IExperimentStage<X, Y,
+  public interface IExperimentStage<X, Y,
       P extends IObjectiveFunction<Y>,
       M extends IMetaheuristic<X, Y>> {
     /**
@@ -549,7 +549,7 @@ public class Experiment {
      * @return the stream of suppliers, each of which can return
      *         one problem instance
      */
-    public abstract Stream<Supplier<P>> getProblems();
+    Stream<Supplier<P>> getProblems();
 
     /**
      * Get the number of runs to be executed for a given problem.
@@ -558,7 +558,7 @@ public class Experiment {
      *          the problem
      * @return the number of runs to be executed
      */
-    public default int getRuns(final P problem) {
+    default int getRuns(final P problem) {
       return 21;
     }
 
@@ -570,8 +570,7 @@ public class Experiment {
      * @return the stream of suppliers
      */
     @SuppressWarnings("unchecked")
-    public default Stream<Supplier<M>>
-        getAlgorithms(final P problem) {
+    default Stream<Supplier<M>> getAlgorithms(final P problem) {
       return Stream.of(() -> ((M) (new RandomSampling<>())));
     }
 
@@ -581,7 +580,7 @@ public class Experiment {
      * @param builder
      *          the builder to configure
      */
-    public default void configureBuilder(
+    default void configureBuilder(
         final BlackBoxProcessBuilder<X, Y> builder) {
       //
     }
@@ -595,7 +594,7 @@ public class Experiment {
      * @param problem
      *          the problem
      */
-    public default void configureBuilderForProblem(
+    default void configureBuilderForProblem(
         final BlackBoxProcessBuilder<X, Y> builder,
         final P problem) {
       //
@@ -612,7 +611,7 @@ public class Experiment {
      * @param algorithm
      *          the algorithm
      */
-    public default void configureBuilderForProblemAndAlgorithm(
+    default void configureBuilderForProblemAndAlgorithm(
         final BlackBoxProcessBuilder<X, Y> builder,
         final P problem, final M algorithm) {
       //
@@ -875,7 +874,7 @@ public class Experiment {
 
     try {
       final Supplier<IExperimentStage>[] stageList =
-          stages.toArray((i) -> new Supplier[i]);
+          stages.toArray(i -> new Supplier[i]);
       if ((stageList == null) || (stageList.length <= 0)) {
         throw new IllegalStateException(
             "Stage stream cannot be empty."); //$NON-NLS-1$
@@ -929,7 +928,7 @@ public class Experiment {
 // Now we take the problem stream and flatten it.
             final Supplier<IObjectiveFunction>[] problems =
                 ((Stream<Supplier>) (stage.getProblems()))
-                    .toArray((i) -> new Supplier[i]);
+                    .toArray(i -> new Supplier[i]);
             if ((problems == null) || (problems.length <= 0)) {
               throw new IllegalStateException(
                   "Experiment stage " + stageString + //$NON-NLS-1$
@@ -961,7 +960,7 @@ public class Experiment {
 // Now it is time to get the list of algorithms.
               final Supplier<IMetaheuristic>[] algorithms =
                   ((Stream<Supplier>) (stage.getAlgorithms(f)))
-                      .toArray((i) -> new Supplier[i]);
+                      .toArray(i -> new Supplier[i]);
               if ((algorithms == null)
                   || (algorithms.length <= 0)) {
                 continue;
@@ -1064,8 +1063,7 @@ public class Experiment {
                     algorithm.solve(process);
                     process.printLogSection(
                         LogFormat.ALGORITHM_SETUP_LOG_SECTION,
-                        (bw) -> algorithm
-                            .printSetup((Writer) bw));
+                        bw -> algorithm.printSetup((Writer) bw));
                   } catch (final IOException
                       | OutOfMemoryError error) {
                     synchronized (done) {
@@ -1394,8 +1392,7 @@ public class Experiment {
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("rawtypes")
-    protected final boolean
-        removeEldestEntry(final Map.Entry eldest) {
+    protected boolean removeEldestEntry(final Map.Entry eldest) {
       return this.size() > __FileSet.MAX_SIZE;
     }
 
@@ -1407,7 +1404,7 @@ public class Experiment {
      * @return {@code true} if the path was new, {@code false}
      *         otherwise
      */
-    public final boolean add(final Path path) {
+    public boolean add(final Path path) {
       return (this.put(path, __FileSet.KEY) == null);
     }
 
@@ -1419,7 +1416,7 @@ public class Experiment {
      * @return {@code true} if the element {@code path} is
      *         present, {@code false} if not
      */
-    public final boolean contains(final Path path) {
+    public boolean contains(final Path path) {
       return this.get(path) != null;
     }
   }

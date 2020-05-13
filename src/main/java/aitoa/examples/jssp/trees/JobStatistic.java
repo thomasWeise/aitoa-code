@@ -75,19 +75,19 @@ public final class JobStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final double[] param) {
+  public double applyAsDouble(final double[] param) {
     return param[this.m_statValue];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final double[] param) {
+  public long applyAsLong(final double[] param) {
     return Math.round(param[this.m_statValue]);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final double[] param) {
+  public int applyAsInt(final double[] param) {
     final long value = Math.round(param[this.m_statValue]);
     if (value >= Integer.MAX_VALUE) {
       return Integer.MAX_VALUE;
@@ -100,14 +100,13 @@ public final class JobStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append(JobStatistic.NAMES[this.m_statValue]);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void asJavaPrintParameters(final Appendable out)
+  public void asJavaPrintParameters(final Appendable out)
       throws IOException {
     out.append(',').append(' ').append(',').append(' ')
         .append(Integer.toString(this.m_statValue));
@@ -115,7 +114,7 @@ public final class JobStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == null) {
       return false;
     }
@@ -131,7 +130,7 @@ public final class JobStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return (0x28947517 ^ Integer.hashCode(this.m_statValue));
   }
 
@@ -140,9 +139,8 @@ public final class JobStatistic
    *
    * @return the node type
    */
-  public static final Function<NodeTypeSet<?>[], NodeType<?>>
-      type() {
-    return (a) -> new __JobStatisticNodeType(a);
+  public static Function<NodeTypeSet<?>[], NodeType<?>> type() {
+    return __JobStatisticNodeType::new;
   }
 
   /** a factory for job statistic node types */
@@ -170,7 +168,7 @@ public final class JobStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final JobStatistic instantiate(final Node[] children,
+    public JobStatistic instantiate(final Node[] children,
         final Random random) {
       if ((children != null) && (children.length > 0)) {
         throw new IllegalArgumentException(
@@ -183,16 +181,15 @@ public final class JobStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final JobStatistic createModifiedCopy(
+    public JobStatistic createModifiedCopy(
         final JobStatistic node, final Random random) {
       return this.instantiate(null, random);
     }
 
     /** {@inheritDoc} */
     @Override
-    public final JobStatistic replaceChild(
-        final JobStatistic original, final Node child,
-        final int index) {
+    public JobStatistic replaceChild(final JobStatistic original,
+        final Node child, final int index) {
       throw new UnsupportedOperationException(
           "job statistics have no children."); //$NON-NLS-1$
     }

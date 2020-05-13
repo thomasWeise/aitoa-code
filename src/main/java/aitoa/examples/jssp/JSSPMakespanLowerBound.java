@@ -49,7 +49,7 @@ public class JSSPMakespanLowerBound
      *
      * @return the data
      */
-    private static final HashMap<String, Integer> __loadData() {
+    private static HashMap<String, Integer> __loadData() {
       final String resource = "instances_with_bks.txt";//$NON-NLS-1$
 
       try {

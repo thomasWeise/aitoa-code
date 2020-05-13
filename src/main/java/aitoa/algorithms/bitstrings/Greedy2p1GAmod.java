@@ -40,7 +40,7 @@ public final class Greedy2p1GAmod<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void
+  public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
     final INullarySearchOperator<boolean[]> nullary =
@@ -252,7 +252,7 @@ public final class Greedy2p1GAmod<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     final String s = "Greedy(2+1)GAmod"; //$NON-NLS-1$
     if (this.c != _Greedy2p1GAmodBase.DEFAULT_C) {
       return s + '_' + Experiment.doubleToStringForName(this.c);

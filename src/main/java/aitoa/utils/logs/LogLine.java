@@ -158,7 +158,7 @@ public final class LogLine implements Comparable<LogLine> {
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     int hc = Long.hashCode(this.fe_last_improvement);
     hc = (31 * hc) + Long.hashCode(this.fe_max);
     hc = (31 * hc) + Long.hashCode(this.time_last_improvement);
@@ -171,7 +171,7 @@ public final class LogLine implements Comparable<LogLine> {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -190,7 +190,7 @@ public final class LogLine implements Comparable<LogLine> {
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final LogLine o) {
+  public int compareTo(final LogLine o) {
     if (o == this) {
       return 0;
     }

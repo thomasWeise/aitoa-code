@@ -187,7 +187,7 @@ public final class BinomialDistribution
    *          the k
    * @return the stirling correction
    */
-  private static final double __stirlingCorrection(final int k) {
+  private static double __stirlingCorrection(final int k) {
 
     double r, rr;
 
@@ -210,7 +210,7 @@ public final class BinomialDistribution
    *          the random number generator
    * @return the random number
    */
-  private static final double __raw(final Random random) {
+  private static double __raw(final Random random) {
     int nextInt;
     do { // accept anything but zero
       nextInt = random.nextInt(); // in
@@ -241,7 +241,7 @@ public final class BinomialDistribution
    * @return the next integer
    */
   @Override
-  public final int nextInt(final Random random) {
+  public int nextInt(final Random random) {
 
     int i, K, Km, nK;
     double f;
@@ -357,20 +357,20 @@ public final class BinomialDistribution
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return (((("Bin(" + this.n) + ',') + this.p) + ')'); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return (31 * Integer.hashCode(this.n))
         + Double.hashCode(this.p);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof BinomialDistribution) {
       final BinomialDistribution b = ((BinomialDistribution) o);
       return (this.n == b.n)

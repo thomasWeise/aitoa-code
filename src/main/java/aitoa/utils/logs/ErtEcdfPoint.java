@@ -91,7 +91,7 @@ public final class ErtEcdfPoint
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     int hc = Double.hashCode(this.ert);
     hc = (31 * hc) + Double.hashCode(this.ecdfRel);
     hc = (31 * hc) + Integer.hashCode(this.ecdfAbs);
@@ -101,7 +101,7 @@ public final class ErtEcdfPoint
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -117,7 +117,7 @@ public final class ErtEcdfPoint
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final ErtEcdfPoint o) {
+  public int compareTo(final ErtEcdfPoint o) {
     int r = Double.compare(this.ert, o.ert);
     if (r != 0) {
       return r;

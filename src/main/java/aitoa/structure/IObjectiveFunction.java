@@ -19,7 +19,7 @@ public interface IObjectiveFunction<Y> {
    *          the candidate solution
    * @return the objective value: smaller values are better
    */
-  public abstract double evaluate(final Y y);
+  double evaluate(final Y y);
 // end relevant
 
   /**
@@ -30,7 +30,7 @@ public interface IObjectiveFunction<Y> {
    * @return the lower bound of the objective value
    */
 // start lowerBound
-  public default double lowerBound() {
+  default double lowerBound() {
     return Double.NEGATIVE_INFINITY;
   }
 // end lowerBound
@@ -44,7 +44,7 @@ public interface IObjectiveFunction<Y> {
    *
    * @return the upper bound of the objective value
    */
-  public default double upperBound() {
+  default double upperBound() {
     return Double.POSITIVE_INFINITY;
   }
 

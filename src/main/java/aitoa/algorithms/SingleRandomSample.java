@@ -23,14 +23,14 @@ public final class SingleRandomSample<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "1rs"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // Allocate data structure for holding 1 point from search space.
     final X x = process.getSearchSpace().create();
 

@@ -24,8 +24,7 @@ public interface IMetaheuristic<X, Y> {
    * @param process
    *          the process with all instance information
    */
-  public abstract void
-      solve(final IBlackBoxProcess<X, Y> process);
+  void solve(final IBlackBoxProcess<X, Y> process);
 // end relevant
 
   /**
@@ -37,7 +36,7 @@ public interface IMetaheuristic<X, Y> {
    * @throws IOException
    *           if i/o fails
    */
-  public default void printSetup(final Writer output)
+  default void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("algorithm", this)); //$NON-NLS-1$
     output.write(System.lineSeparator());
@@ -50,7 +49,7 @@ public interface IMetaheuristic<X, Y> {
    *          the process builder with the setup information
    * @return the setup name
    */
-  public default String
+  default String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return Experiment.nameFromObjectPrepare(this);
   }
@@ -70,7 +69,7 @@ public interface IMetaheuristic<X, Y> {
    * @return the setup name
    * @see #getSetupName(BlackBoxProcessBuilder)
    */
-  public static <X, Y> String getSetupNameWithUnaryOperator(
+  static <X, Y> String getSetupNameWithUnaryOperator(
       final IMetaheuristic<X, Y> algorithm,
       final BlackBoxProcessBuilder<X, Y> builder) {
     return Experiment.nameFromObjectsMerge(algorithm, //
@@ -93,10 +92,9 @@ public interface IMetaheuristic<X, Y> {
    * @return the setup name
    * @see #getSetupName(BlackBoxProcessBuilder)
    */
-  public static <X, Y> String
-      getSetupNameWithUnaryAndBinaryOperator(
-          final IMetaheuristic<X, Y> algorithm,
-          final BlackBoxProcessBuilder<X, Y> builder) {
+  static <X, Y> String getSetupNameWithUnaryAndBinaryOperator(
+      final IMetaheuristic<X, Y> algorithm,
+      final BlackBoxProcessBuilder<X, Y> builder) {
     return Experiment.nameFromObjectsMerge(algorithm, //
         Objects.requireNonNull(//
             builder.getUnarySearchOperator()), //

@@ -72,7 +72,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "ma")); //$NON-NLS-1$
@@ -95,7 +95,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     final String s = ((("ma_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda);
     if (this.maxLSSteps >= Integer.MAX_VALUE) {
@@ -108,7 +108,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // the initialization of local variables is omitted for brevity
 // end relevant
 // create local variables
@@ -152,7 +152,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
         int steps = this.maxLSSteps;
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
-              (point) -> {
+              point -> {
                 final double newQuality =
                     process.evaluate(point);
                 if (newQuality < ind.quality) { // better?
@@ -201,7 +201,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
         this, builder);

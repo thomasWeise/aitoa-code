@@ -152,7 +152,7 @@ public final class JSSPTreeRepresentationMapping implements
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.getClass().getCanonicalName();
   }
 

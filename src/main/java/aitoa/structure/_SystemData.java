@@ -36,7 +36,7 @@ final class _SystemData {
    *
    * @return the system data
    */
-  static final char[] _getSystemData() {
+  static char[] _getSystemData() {
     return __Holder.SYSTEM_DATA;
   }
 
@@ -57,9 +57,8 @@ final class _SystemData {
      * @param rawvalue
      *          the value
      */
-    private static final void __add(
-        final TreeMap<String, String> map, final String key,
-        final String rawvalue) {
+    private static void __add(final TreeMap<String, String> map,
+        final String key, final String rawvalue) {
       if (rawvalue == null) {
         return;
       }
@@ -87,7 +86,7 @@ final class _SystemData {
      * @param threshold
      *          the threshold
      */
-    private static final void __addgt(
+    private static void __addgt(
         final TreeMap<String, String> map, final String key,
         final LongSupplier value, final long threshold) {
       final long l;
@@ -111,7 +110,7 @@ final class _SystemData {
      * @param value
      *          the value
      */
-    private static final void __addgt0(
+    private static void __addgt0(
         final TreeMap<String, String> map, final String key,
         final LongSupplier value) {
       __Holder.__addgt(map, key, value, 0L);
@@ -127,9 +126,8 @@ final class _SystemData {
      * @param value
      *          the value
      */
-    private static final void __add(
-        final TreeMap<String, String> map, final String key,
-        final Supplier<String> value) {
+    private static void __add(final TreeMap<String, String> map,
+        final String key, final Supplier<String> value) {
       final String s;
       try {
         s = value.get();
@@ -146,7 +144,7 @@ final class _SystemData {
      *
      * @return the system data
      */
-    private static final char[] __makeSystemData() {
+    private static char[] __makeSystemData() {
       final StringBuilder out = new StringBuilder();
 
       // print the system information
@@ -445,7 +443,7 @@ final class _SystemData {
      *          the string
      * @return the split string
      */
-    private static final String[] __pciSplit(final String s) {
+    private static String[] __pciSplit(final String s) {
       int firstDots = s.indexOf(':');
 
       if (firstDots > 0) {
@@ -511,7 +509,7 @@ final class _SystemData {
      *          the device or vendor id
      * @return the string
      */
-    private static final String __pciLookup(final String id) {
+    private static String __pciLookup(final String id) {
       for (final String base : new String[] {
           "http://pci-ids.ucw.cz/read/PC/", //$NON-NLS-1$
           "https://pci-ids.ucw.cz/read/PC/" //$NON-NLS-1$
@@ -564,7 +562,7 @@ final class _SystemData {
      * @param map
      *          the destination map
      */
-    private static final void __addGPU(final String vendor,
+    private static void __addGPU(final String vendor,
         final String device, final TreeMap<String, String> map) {
 
       String vendorId = null;
@@ -584,7 +582,7 @@ final class _SystemData {
         deviceId = Integer.toUnsignedString(//
             Integer.parseUnsignedInt(device, 16), 16)
             .toLowerCase();
-        while (vendorId.length() < 4) {
+        while (deviceId.length() < 4) {
           deviceId = '0' + deviceId;
         }
         __Holder.__add(map,
@@ -616,7 +614,7 @@ final class _SystemData {
      * @return {@code true} if a graphics card was detected,
      *         {@code false} otherwise
      */
-    private static final boolean __tryDetectGPULinux(//
+    private static boolean __tryDetectGPULinux(//
         final TreeMap<String, String> map) {
       try {
         final Process p = new ProcessBuilder()//
@@ -702,7 +700,7 @@ final class _SystemData {
      * @return {@code true} if a graphics card was detected,
      *         {@code false} otherwise
      */
-    private static final boolean __tryDetectGPUWindows(
+    private static boolean __tryDetectGPUWindows(
         final TreeMap<String, String> map) {
       try {
         final Path tempFile = Files.createTempFile("gd", //$NON-NLS-1$

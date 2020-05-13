@@ -28,7 +28,7 @@ public final class DiscreteGreaterThanZero
 
   /** {@inheritDoc} */
   @Override
-  public final int nextInt(final Random random) {
+  public int nextInt(final Random random) {
     for (;;) {
       final int res = this.m_inner.nextInt(random);
       if (res > 0) {
@@ -39,19 +39,19 @@ public final class DiscreteGreaterThanZero
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.m_inner.toString() + "_gt0"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return this.m_inner.hashCode() ^ 0x93245878;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof DiscreteGreaterThanZero) {
       return this.m_inner
           .equals(((DiscreteGreaterThanZero) o).m_inner);

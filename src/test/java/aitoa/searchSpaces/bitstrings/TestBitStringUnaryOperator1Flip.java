@@ -31,7 +31,7 @@ public class TestBitStringUnaryOperator1Flip
     final boolean[] has = new boolean[x.length];
 
     this.getInstance().enumerate(ThreadLocalRandom.current(), x,
-        y, (z) -> {
+        y, z -> {
           boolean done = false;
           for (int i = x.length; (--i) >= 0;) {
             if (x[i] != y[i]) {

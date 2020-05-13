@@ -44,7 +44,7 @@ public final class IOUtils {
    *          the path
    * @return the canonical version
    */
-  public static final Path canonicalizePath(final Path p) {
+  public static Path canonicalizePath(final Path p) {
     Path r = p.normalize();
     if ((r == null) || (Objects.equals(p, r))) {
       r = p;
@@ -99,7 +99,7 @@ public final class IOUtils {
    *           if {@code file} does not identify a, existing,
    *           readable, non-empty, regular file
    */
-  public static final Path requireFile(final Path file)
+  public static Path requireFile(final Path file)
       throws IOException {
     final Path ret = IOUtils.canonicalizePath(//
         Objects.requireNonNull(file));
@@ -134,7 +134,7 @@ public final class IOUtils {
    *           if {@code file} does not identify an existing
    *           directory
    */
-  public static final Path requireDirectory(final Path dir)
+  public static Path requireDirectory(final Path dir)
       throws IOException {
     return IOUtils.requireDirectory(dir, false);
   }
@@ -153,7 +153,7 @@ public final class IOUtils {
    *           if {@code file} does not identify an existing
    *           directory
    */
-  public static final Path requireDirectory(final Path dir,
+  public static Path requireDirectory(final Path dir,
       final boolean createIfNotExists) throws IOException {
     final Path ret = IOUtils.canonicalizePath(//
         Objects.requireNonNull(dir));
@@ -184,9 +184,8 @@ public final class IOUtils {
    *          the stream
    * @return the path array
    */
-  public static final Path[]
-      pathArray(final Stream<Path> stream) {
-    return stream.sorted().toArray((i) -> new Path[i]);
+  public static Path[] pathArray(final Stream<Path> stream) {
+    return stream.sorted().toArray(i -> new Path[i]);
   }
 
   /**
@@ -200,7 +199,7 @@ public final class IOUtils {
    * @return {@code true} if {@code inside} is inside
    *         {@code dir}, {@code false} otherwise
    */
-  private static final boolean __inDir(final Path inside,
+  private static boolean __inDir(final Path inside,
       final Path dir) {
     if (dir == inside) {
       return false;
@@ -233,14 +232,14 @@ public final class IOUtils {
    * @throws IOException
    *           if something fails
    */
-  public static final Stream<Path>
-      subDirectoriesStream(final Path dir) throws IOException {
+  public static Stream<Path> subDirectoriesStream(final Path dir)
+      throws IOException {
     final Path p = IOUtils.requireDirectory(dir);
     return Files.list(p)//
         .filter(Files::exists)//
         .filter(Files::isDirectory)//
         .map(IOUtils::canonicalizePath)//
-        .filter((pp) -> IOUtils.__inDir(pp, p));
+        .filter(pp -> IOUtils.__inDir(pp, p));
   }
 
   /**
@@ -253,7 +252,7 @@ public final class IOUtils {
    * @throws IOException
    *           if something fails
    */
-  public static final Path[] subDirectories(final Path dir)
+  public static Path[] subDirectories(final Path dir)
       throws IOException {
     return (IOUtils.pathArray(//
         IOUtils.subDirectoriesStream(dir)));
@@ -267,7 +266,7 @@ public final class IOUtils {
    * @return {@code true} if it is readable, {@code false}
    *         otherwise
    */
-  private static final boolean __isReadableFile(final Path f) {
+  private static boolean __isReadableFile(final Path f) {
     if (!Files.isReadable(f)) {
       return false;
     }
@@ -293,14 +292,14 @@ public final class IOUtils {
    * @throws IOException
    *           if something fails
    */
-  public static final Stream<Path> filesStream(final Path dir)
+  public static Stream<Path> filesStream(final Path dir)
       throws IOException {
     final Path p = IOUtils.requireDirectory(dir);
     return Files.list(p)//
         .filter(Files::exists)//
         .filter(Files::isRegularFile)//
         .map(IOUtils::canonicalizePath)//
-        .filter((pp) -> IOUtils.__inDir(pp, p))//
+        .filter(pp -> IOUtils.__inDir(pp, p))//
         .filter(IOUtils::__isReadableFile);
   }
 
@@ -314,8 +313,7 @@ public final class IOUtils {
    * @throws IOException
    *           if something fails
    */
-  public static final Path[] files(final Path dir)
-      throws IOException {
+  public static Path[] files(final Path dir) throws IOException {
     return IOUtils.pathArray(IOUtils.filesStream(dir));
   }
 
@@ -329,8 +327,7 @@ public final class IOUtils {
    * @throws IOException
    *           if i/o fails
    */
-  public static final void delete(final Path path)
-      throws IOException {
+  public static void delete(final Path path) throws IOException {
     final Path p = IOUtils.canonicalizePath(path);
     if (Files.exists(p)) {
       if (Files.isRegularFile(p)) {
@@ -381,7 +378,7 @@ public final class IOUtils {
    * @throws IOException
    *           if i/o fails
    */
-  public static final void copyResource(final Class<?> clazz,
+  public static void copyResource(final Class<?> clazz,
       final String name, final BufferedWriter out)
       throws IOException {
     final InputStream is = clazz.getResourceAsStream(name);
@@ -408,7 +405,7 @@ public final class IOUtils {
    * @throws IOException
    *           if i/o fails
    */
-  public static final void copy(final BufferedReader in,
+  public static void copy(final BufferedReader in,
       final BufferedWriter out) throws IOException {
     String line;
 
@@ -419,14 +416,14 @@ public final class IOUtils {
   }
 
   /** An I/O runnable */
-  public static interface IORunnable {
+  public interface IORunnable {
     /**
      * Run the I/O job.
      *
      * @throws IOException
      *           if I/O fails
      */
-    public abstract void run() throws IOException;
+    void run() throws IOException;
   }
 
   /**
@@ -435,7 +432,7 @@ public final class IOUtils {
    * @param <T>
    *          the object type
    */
-  public static interface IOConsumer<T> {
+  public interface IOConsumer<T> {
     /**
      * Consume the object
      *
@@ -444,7 +441,7 @@ public final class IOUtils {
      * @throws IOException
      *           if I/O fails
      */
-    public abstract void accept(final T t) throws IOException;
+    void accept(final T t) throws IOException;
   }
 
   /** the I/O synchronizer */
@@ -458,8 +455,8 @@ public final class IOUtils {
    * @throws IOException
    *           if I/O fails
    */
-  public static final void synchronizedIO(
-      final IORunnable runnable) throws IOException {
+  public static void synchronizedIO(final IORunnable runnable)
+      throws IOException {
     synchronized (IOUtils._IO_SYNCH) {
       runnable.run();
     }

@@ -45,7 +45,7 @@ public final class BitStringUnaryOperatorMOverNFlip0To1Dist
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.m_m + "/n-flip01D"; //$NON-NLS-1$
   }
 }

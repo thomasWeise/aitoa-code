@@ -20,7 +20,7 @@ public final class BitStringUnaryOperatorRandFlip
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "Rflip"; //$NON-NLS-1$
   }
 
@@ -37,8 +37,8 @@ public final class BitStringUnaryOperatorRandFlip
    *          {@inheritDoc}
    */
   @Override
-  public final void apply(final boolean[] x,
-      final boolean[] dest, final Random random) {
+  public void apply(final boolean[] x, final boolean[] dest,
+      final Random random) {
     final int len = x.length;
     System.arraycopy(x, 0, dest, 0, len);
     boolean notDone = true;

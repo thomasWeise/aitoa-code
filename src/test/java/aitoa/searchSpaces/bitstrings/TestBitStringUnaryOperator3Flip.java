@@ -36,7 +36,7 @@ public class TestBitStringUnaryOperator3Flip
     final int[] thrice = new int[x.length];
 
     this.getInstance().enumerate(ThreadLocalRandom.current(), x,
-        y, (z) -> {
+        y, z -> {
           int done = 0, first = -1, second = -1, third = -1;
           for (int i = x.length; (--i) >= 0;) {
             if (x[i] != y[i]) {

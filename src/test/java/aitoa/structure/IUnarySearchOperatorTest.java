@@ -129,7 +129,7 @@ public abstract class IUnarySearchOperatorTest<X>
       final long[] count = new long[2];
 
       // perform one complete enumeration
-      Assert.assertFalse(op.enumerate(random, src, dest, (x) -> {
+      Assert.assertFalse(op.enumerate(random, src, dest, x -> {
         Assert.assertSame(dest, x);
         space.check(x);
         Assert.assertTrue(this.equals(src, copy));
@@ -151,7 +151,7 @@ public abstract class IUnarySearchOperatorTest<X>
       TestTools.assertGreater(count[0], 0L);
 
       // test two enumerations have the same number of steps
-      Assert.assertFalse(op.enumerate(random, src, dest, (x) -> {
+      Assert.assertFalse(op.enumerate(random, src, dest, x -> {
         final long l = count[1]++;
         // check that elements do not appear twice
         for (int i = ((int) (Math.min(preserve.length, l)));
@@ -171,7 +171,7 @@ public abstract class IUnarySearchOperatorTest<X>
 
       // assert that stopping works 1
       count[1] = 0L;
-      Assert.assertTrue(op.enumerate(random, src, dest, (x) -> {
+      Assert.assertTrue(op.enumerate(random, src, dest, x -> {
         ++count[1];
         return true;
       }));
@@ -181,10 +181,8 @@ public abstract class IUnarySearchOperatorTest<X>
       if (count[0] > 5L) {
 // assert that stopping works 2
         count[1] = 0L;
-        Assert
-            .assertTrue(op.enumerate(random, src, dest, (x) -> {
-              return ((++count[1]) == 5L);
-            }));
+        Assert.assertTrue(op.enumerate(random, src, dest,
+            x -> ((++count[1]) == 5L)));
         Assert.assertTrue(this.equals(src, copy));
         Assert.assertEquals(5L, count[1]);
       }
@@ -192,7 +190,7 @@ public abstract class IUnarySearchOperatorTest<X>
     } else {
       boolean error = true;
       try {
-        op.enumerate(random, src, dest, (x) -> false);
+        op.enumerate(random, src, dest, x -> false);
       } catch (@SuppressWarnings("unused") final UnsupportedOperationException ex) {
         error = false;
       }

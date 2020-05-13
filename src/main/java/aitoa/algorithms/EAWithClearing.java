@@ -86,7 +86,7 @@ public final class EAWithClearing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "ea")); //$NON-NLS-1$
@@ -106,7 +106,7 @@ public final class EAWithClearing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((("eac_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr);
   }
@@ -115,7 +115,7 @@ public final class EAWithClearing<X, Y>
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // Omitted: Initialize local variables random, unary, nullary,
 // searchSpace, binary, set arrays P and P2 of length mu+lambda,
 // and array T to null. Fill P with random solutions + evaluate.
@@ -178,7 +178,7 @@ public final class EAWithClearing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
         this, builder);

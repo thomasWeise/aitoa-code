@@ -48,7 +48,7 @@ public final class JSSPUnaryOperator1SwapR
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "1swapR"; //$NON-NLS-1$
   }
 
@@ -65,7 +65,7 @@ public final class JSSPUnaryOperator1SwapR
    */
   @Override
 // start relevant
-  public final void apply(final int[] x, final int[] dest,
+  public void apply(final int[] x, final int[] dest,
       final Random random) {
 // copy the source point in search space to the dest
     System.arraycopy(x, 0, dest, 0, x.length);
@@ -113,9 +113,8 @@ public final class JSSPUnaryOperator1SwapR
    */
   @Override
 // start enumerate
-  public final boolean enumerate(final Random random,
-      final int[] x, final int[] dest,
-      final Predicate<int[]> visitor) {
+  public boolean enumerate(final Random random, final int[] x,
+      final int[] dest, final Predicate<int[]> visitor) {
 // end enumerate
     final int[] indexes = this.m_indexes;
 // start enumerate
@@ -146,7 +145,7 @@ public final class JSSPUnaryOperator1SwapR
 
   /** {@inheritDoc} */
   @Override
-  public final boolean canEnumerate() {
+  public boolean canEnumerate() {
     return true;
   }
 // start relevant

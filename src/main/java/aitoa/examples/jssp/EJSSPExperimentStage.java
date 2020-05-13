@@ -49,8 +49,8 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.of(//
-          () -> new SingleRandomSample<>(), //
-          () -> new RandomSampling<>());
+          SingleRandomSample::new, //
+          RandomSampling::new);
     }
   },
 
@@ -627,7 +627,7 @@ public enum EJSSPExperimentStage implements
   public Stream<Supplier<JSSPMakespanObjectiveFunction>>
       getProblems() {
     return Arrays.stream(EJSSPExperimentStage.INSTANCES).map(//
-        (s) -> () -> new JSSPMakespanObjectiveFunction(s));
+        s -> () -> new JSSPMakespanObjectiveFunction(s));
   }
 
   /**
@@ -693,7 +693,7 @@ public enum EJSSPExperimentStage implements
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
             new ArrayList<>();
 
-    list.add(() -> new HillClimber<>());
+    list.add(HillClimber::new);
     for (int i = 7; i <= 18; i++) {
       final int pow = 1 << i;
       list.add(() -> new HillClimberWithRestarts<>(pow));
@@ -748,7 +748,7 @@ public enum EJSSPExperimentStage implements
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
       _hc2() {
     return Stream.of(//
-        () -> new HillClimber2<>(), //
-        () -> new HillClimber2WithRestarts<>());
+        HillClimber2::new, //
+        HillClimber2WithRestarts::new);
   }
 }

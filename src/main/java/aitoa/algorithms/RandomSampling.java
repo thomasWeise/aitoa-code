@@ -29,7 +29,7 @@ public final class RandomSampling<X, Y>
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // Allocate data structure for holding 1 point from search space.
     final X x = process.getSearchSpace().create();
 // Get nullary search operation for creating random point of X.
@@ -49,7 +49,7 @@ public final class RandomSampling<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "rs"; //$NON-NLS-1$
   }
 // start relevant

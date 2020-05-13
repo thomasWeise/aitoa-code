@@ -325,7 +325,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       final long tm = this.m_process.getMaxTime();
       TestTools.assertGreaterOrEqual(ti, 0L);
       TestTools.assertGreaterOrEqual(tc, ti);
-      TestTools.assertGreaterOrEqual(tm, tc);
+      TestTools.assertGreaterOrEqual(tm + 30, tc);
 
       TestTools.assertFinite(this.m_process.m_bestF);
       TestTools.assertGreaterOrEqual(this.m_process.m_bestF,

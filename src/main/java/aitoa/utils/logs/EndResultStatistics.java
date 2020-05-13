@@ -426,7 +426,7 @@ public class EndResultStatistics {
 
     // compute the data
     __Parser p = new __Parser((success == null)
-        ? (x) -> Double.compare(x.bestF, x.goalF) <= 0 : success,
+        ? x -> Double.compare(x.bestF, x.goalF) <= 0 : success,
         (instanceNameMapper != null) ? instanceNameMapper
             : Function.identity(),
         (algorithmNameMapper != null) ? algorithmNameMapper
@@ -2621,7 +2621,7 @@ public class EndResultStatistics {
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final EndResult t) {
+    public void accept(final EndResult t) {
       final String useAlgo =
           this.m_algorithmNameMapper.apply(t.algorithm);
       if (useAlgo == null) {
@@ -2658,10 +2658,10 @@ public class EndResultStatistics {
      *
      * @return the holder array
      */
-    final __Holder[] _finalize() {
+    __Holder[] _finalize() {
       final __Holder[] holders = this.m_holders.values().stream()
-          .flatMap((v) -> v.values().stream()).sorted()
-          .toArray((i) -> new __Holder[i]);
+          .flatMap(v -> v.values().stream()).sorted()
+          .toArray(i -> new __Holder[i]);
       this.m_holders.clear();
       this.m_holders = null;
       this.m_success = null;
@@ -2773,7 +2773,7 @@ public class EndResultStatistics {
 
     /** {@inheritDoc} */
     @Override
-    public final int compareTo(final __Holder o) {
+    public int compareTo(final __Holder o) {
       if (o == this) {
         return 0;
       }
@@ -2793,7 +2793,7 @@ public class EndResultStatistics {
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final EndResult t) {
+    public void accept(final EndResult t) {
       if (!this.m_setups.add(new __InnerSetup(t))) {
         throw new IllegalStateException("Seed '" + //$NON-NLS-1$
             t.seed + "' appears twice for algorithm '"//$NON-NLS-1$
@@ -2848,7 +2848,7 @@ public class EndResultStatistics {
     }
 
     /** finalize */
-    final void _finalize() {
+    void _finalize() {
       if (this.m_finalized) {
         throw new IllegalStateException();
       }
@@ -2910,7 +2910,7 @@ public class EndResultStatistics {
 
       /** {@inheritDoc} */
       @Override
-      public final int hashCode() {
+      public int hashCode() {
         if (__Holder.this.m_finalized) {
           return Double.hashCode(this.m_bestF2);
         }
@@ -2919,7 +2919,7 @@ public class EndResultStatistics {
 
       /** {@inheritDoc} */
       @Override
-      public final boolean equals(final Object o) {
+      public boolean equals(final Object o) {
         if (o == this) {
           return true;
         }
@@ -2932,7 +2932,7 @@ public class EndResultStatistics {
 
       /** {@inheritDoc} */
       @Override
-      public final int compareTo(final Setup s) {
+      public int compareTo(final Setup s) {
         if (__Holder.this.m_finalized) {
           return Double.compare(this.m_bestF2,
               ((__InnerSetup) s).m_bestF2);
@@ -2963,7 +2963,7 @@ public class EndResultStatistics {
    *          the command line arguments
    */
   public static final void main(final String[] args) {
-    ConsoleIO.stdout((s) -> {
+    ConsoleIO.stdout(s -> {
       s.println(
           "Welcome to the End-Result Statistics CSV Table Generator"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$

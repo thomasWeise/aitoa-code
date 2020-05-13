@@ -17,8 +17,7 @@ final class Example {
    *
    * @return the builder
    */
-  static final BlackBoxProcessBuilder<boolean[], boolean[]>
-      problem() {
+  static BlackBoxProcessBuilder<boolean[], boolean[]> problem() {
     final BlackBoxProcessBuilder<boolean[], boolean[]> builder =
         new BlackBoxProcessBuilder<>();
 
@@ -44,7 +43,7 @@ final class Example {
    *
    * @return the example algorithm
    */
-  static final IMetaheuristic<boolean[], boolean[]> algorithm() {
+  static IMetaheuristic<boolean[], boolean[]> algorithm() {
     return new EA1p1<>();
   }
 }

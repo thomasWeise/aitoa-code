@@ -75,7 +75,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "eda")); //$NON-NLS-1$
@@ -93,7 +93,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((("eda_" + //$NON-NLS-1$
         this.model.toString()) + '_') + this.mu) + '+')
         + this.lambda);
@@ -103,7 +103,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();

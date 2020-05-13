@@ -57,7 +57,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void
+  public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
     final INullarySearchOperator<boolean[]> nullary =
@@ -301,13 +301,13 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "SelfAdjusting(1+(LcL))GAmodFFA"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$

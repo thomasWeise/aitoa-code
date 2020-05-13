@@ -17,14 +17,13 @@ public final class BitStringNullaryOperator
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "uniform"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void apply(final boolean[] dest,
-      final Random random) {
+  public void apply(final boolean[] dest, final Random random) {
 // The code of this procedure is equivalent to the code below.
 //
 // // for (int i = dest.length; (--i) >= 0;) {

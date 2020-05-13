@@ -27,7 +27,7 @@ public class PostProcessor {
 
     final String choice = "choice";//$NON-NLS-1$
 
-    ConsoleIO.stdout((s) -> {
+    ConsoleIO.stdout(s -> {
       s.println("Welcome to the AITOA Result Post-Processor"); //$NON-NLS-1$
       for (final String c : choices) {
         s.print(" -choice=");//$NON-NLS-1$

@@ -27,7 +27,7 @@ public final class TreeUnaryOperator extends _TreePathOperator
 
   /** {@inheritDoc} */
   @Override
-  public final void apply(final Node[] x, final Node[] dest,
+  public void apply(final Node[] x, final Node[] dest,
       final Random random) {
     final Node xx = x[0];
 
@@ -53,7 +53,7 @@ public final class TreeUnaryOperator extends _TreePathOperator
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "rep" + this.m_maxDepth;//$NON-NLS-1$
   }
 }

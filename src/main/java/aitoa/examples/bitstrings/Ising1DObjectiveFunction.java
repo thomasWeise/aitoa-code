@@ -32,7 +32,7 @@ public final class Ising1DObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     int last = 0;
     int s = y.length;
     for (int i = s; (--i) >= 0;) {
@@ -46,19 +46,19 @@ public final class Ising1DObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     return this.n;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_n(
         Ising1DObjectiveFunction.NAME_PREFIX, this.n);
   }

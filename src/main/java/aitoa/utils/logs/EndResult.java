@@ -145,7 +145,7 @@ public final class EndResult extends Setup {
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     int hc = this.algorithm.hashCode();
     hc = (31 * hc) + this.instance.hashCode();
     hc = (31 * hc) + Long.hashCode(this.seed);
@@ -163,7 +163,7 @@ public final class EndResult extends Setup {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -188,7 +188,7 @@ public final class EndResult extends Setup {
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final Setup o) {
+  public int compareTo(final Setup o) {
     if (o == this) {
       return 0;
     }
@@ -249,7 +249,7 @@ public final class EndResult extends Setup {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return super.toString() + ':' + this.bestF
         + LogFormat.CSV_SEPARATOR_CHAR + this.lastImprovementFE
         + LogFormat.CSV_SEPARATOR_CHAR

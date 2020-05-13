@@ -1,5 +1,7 @@
 package aitoa.algorithms.jssp;
 
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,6 +28,7 @@ import aitoa.searchSpaces.trees.math.Max;
 import aitoa.searchSpaces.trees.math.Min;
 import aitoa.searchSpaces.trees.math.Multiply;
 import aitoa.searchSpaces.trees.math.Subtract;
+import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.ISpace;
 import aitoa.structure.TestBlackBoxProcessBuilder;
@@ -89,23 +92,31 @@ public abstract class TestTreeMetaheuristicOnJSSP
     final NodeTypeSet<MathFunction<double[][]>> root =
         ntsb.build();
 
-    this.getAlgorithm(instance).solve(//
-        new TestBlackBoxProcessBuilder<Node[],
-            JSSPCandidateSolution>()//
-                .setSearchSpace(searchSpace)//
-                .setSolutionSpace(solutionSpace)//
-                .setObjectiveFunction(
-                    new JSSPMakespanObjectiveFunction(instance))//
-                .setNullarySearchOperator(
-                    new TreeNullaryOperator(root, 7))//
-                .setUnarySearchOperator(new TreeUnaryOperator(7))//
-                .setBinarySearchOperator(
-                    new TreeBinaryOperator(7))//
-                .setRepresentationMapping(
-                    new JSSPTreeRepresentationMapping(instance))
-                .setMaxFEs(maxFEs)//
-                .setMaxTime(maxTime)//
-                .get());
+    try (
+        final IBlackBoxProcess<Node[], JSSPCandidateSolution> p =
+            new TestBlackBoxProcessBuilder<Node[],
+                JSSPCandidateSolution>()//
+                    .setSearchSpace(searchSpace)//
+                    .setSolutionSpace(solutionSpace)//
+                    .setObjectiveFunction(
+                        new JSSPMakespanObjectiveFunction(
+                            instance))//
+                    .setNullarySearchOperator(
+                        new TreeNullaryOperator(root, 7))//
+                    .setUnarySearchOperator(
+                        new TreeUnaryOperator(7))//
+                    .setBinarySearchOperator(
+                        new TreeBinaryOperator(7))//
+                    .setRepresentationMapping(
+                        new JSSPTreeRepresentationMapping(
+                            instance))
+                    .setMaxFEs(maxFEs)//
+                    .setMaxTime(maxTime)//
+                    .get()) {
+      this.getAlgorithm(instance).solve(p);
+    } catch (final IOException ioe) {
+      throw new AssertionError(ioe);
+    }
   }
 
   /**

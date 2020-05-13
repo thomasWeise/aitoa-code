@@ -27,8 +27,7 @@ public interface IUnarySearchOperator<X> {
    * @param random
    *          a random number generator
    */
-  public abstract void apply(final X x, final X dest,
-      final Random random);
+  void apply(final X x, final X dest, final Random random);
 // end relevant
 
   /**
@@ -111,8 +110,8 @@ public interface IUnarySearchOperator<X> {
    *           cannot be enumerated in a reasonable way
    */
 // start enumerate
-  public default boolean enumerate(final Random random,
-      final X x, final X dest, final Predicate<X> visitor) {
+  default boolean enumerate(final Random random, final X x,
+      final X dest, final Predicate<X> visitor) {
     throw new UnsupportedOperationException("The operator " + //$NON-NLS-1$
         this.getClass().getName() + //
         " does not support exhaustive enumeration of neighborhoods.");//$NON-NLS-1$
@@ -132,7 +131,7 @@ public interface IUnarySearchOperator<X> {
    *         {@link java.lang.UnsupportedOperationException}
    * @see #enumerate(java.util.Random, Object, Object, Predicate)
    */
-  public default boolean canEnumerate() {
+  default boolean canEnumerate() {
     return false;
   }
 

@@ -29,7 +29,7 @@ public final class Multiply<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     final double a = this.inner0.applyAsDouble(param);
     if (a == 0d) {
       return 0d;
@@ -43,7 +43,7 @@ public final class Multiply<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     final long l1 = this.inner0.applyAsLong(param);
     if (l1 == 0L) {
       return 0L;
@@ -68,7 +68,7 @@ public final class Multiply<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     final long a = this.inner0.applyAsInt(param);
     if (a == 0L) {
       return 0;
@@ -86,8 +86,7 @@ public final class Multiply<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append('(');
     this.inner0.asText(out);
     out.append('*');

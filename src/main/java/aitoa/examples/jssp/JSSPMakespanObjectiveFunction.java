@@ -41,7 +41,7 @@ public final class JSSPMakespanObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.instance.toString();
   }
 
@@ -53,7 +53,7 @@ public final class JSSPMakespanObjectiveFunction
    *          the Gantt chart / candidate solution
    */
   @Override
-  public final double evaluate(final JSSPCandidateSolution y) {
+  public double evaluate(final JSSPCandidateSolution y) {
     int makespan = 0;
 // look at the schedule for each machine
     for (final int[] machine : y.schedule) {
@@ -78,7 +78,7 @@ public final class JSSPMakespanObjectiveFunction
    * @return the lower bound
    */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     final JSSPInstance inst = this.instance;
 
     final int[] a = new int[inst.m]; // lb inactive time at start
@@ -140,7 +140,7 @@ public final class JSSPMakespanObjectiveFunction
    * sane.
    */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     int sum = 0;
     for (final int[] job : this.instance.jobs) {
       for (int i = job.length - 1; i > 0; i -= 2) {

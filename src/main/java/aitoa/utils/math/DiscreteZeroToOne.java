@@ -28,26 +28,26 @@ public final class DiscreteZeroToOne
 
   /** {@inheritDoc} */
   @Override
-  public final int nextInt(final Random random) {
+  public int nextInt(final Random random) {
     final int res = this.m_inner.nextInt(random);
     return (res > 0) ? res : 1;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.m_inner.toString() + "_0to1"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return this.m_inner.hashCode() ^ 0xdf24a157;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof DiscreteZeroToOne) {
       return this.m_inner
           .equals(((DiscreteZeroToOne) o).m_inner);

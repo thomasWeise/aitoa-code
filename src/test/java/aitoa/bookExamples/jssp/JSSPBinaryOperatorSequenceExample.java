@@ -51,7 +51,7 @@ public final class JSSPBinaryOperatorSequenceExample
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "sequence"; //$NON-NLS-1$
   }
 
@@ -61,7 +61,7 @@ public final class JSSPBinaryOperatorSequenceExample
    */
   @Override
 // start relevant
-  public final void apply(final int[] x0, final int[] x1,
+  public void apply(final int[] x0, final int[] x1,
       final int[] dest, final Random random) {
 // omitted: initialization of arrays done_x0 and done_x1 (that
 // remember the already-assigned sub-jobs from x0 and x1) of
@@ -119,7 +119,7 @@ public final class JSSPBinaryOperatorSequenceExample
    * @throws IOException
    *           should not
    */
-  public static final void main(final String[] args)
+  public static void main(final String[] args)
       throws IOException {
     final JSSPInstance inst = new JSSPInstance("demo"); //$NON-NLS-1$
     final JSSPBinaryOperatorSequenceExample op2 =

@@ -35,7 +35,7 @@ public final class TwoMaxObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     int om = 0;
     for (final boolean b : y) {
       if (b) {
@@ -50,19 +50,19 @@ public final class TwoMaxObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     return this.n + 1;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_n(
         TwoMaxObjectiveFunction.NAME_PREFIX, this.n);
   }

@@ -38,7 +38,7 @@ public final class HillClimber<X, Y>
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random
 // end relevant
     final X x_cur = process.getSearchSpace().create();
@@ -69,13 +69,13 @@ public final class HillClimber<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "hc"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);

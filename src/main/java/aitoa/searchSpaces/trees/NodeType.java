@@ -219,7 +219,6 @@ public abstract class NodeType<T extends Node>
    *          the node type
    * @see Node#asJava(Appendable)
    */
-  @SuppressWarnings("unchecked")
   public static final <T extends Node> NodeType<T> dummy() {
     return NodeType.DUMMY_TYPE;
   }
@@ -233,7 +232,7 @@ public abstract class NodeType<T extends Node>
 
     /** {@inheritDoc} */
     @Override
-    public final Node instantiate(final Node[] children,
+    public Node instantiate(final Node[] children,
         final Random random) {
       throw new UnsupportedOperationException(//
           "this is a dummy node type. it cannot be used for instantiating nodes!"); //$NON-NLS-1$

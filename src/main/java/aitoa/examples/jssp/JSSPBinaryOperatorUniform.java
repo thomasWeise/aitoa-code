@@ -35,13 +35,13 @@ public final class JSSPBinaryOperatorUniform
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "uniform"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void apply(final int[] x0, final int[] x1,
+  public void apply(final int[] x0, final int[] x1,
       final int[] dest, final Random random) {
     final int[] done = this.m_done;
     Arrays.fill(done, 0); // we keep track of completed jobs

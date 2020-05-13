@@ -49,7 +49,7 @@ public final class EA1p1WithFitness<X, Y>
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings("unchecked")
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables pop, nullary, unary, random
 // end relevant
     final FitnessIndividual<X>[] pop = new FitnessIndividual[] {
@@ -88,7 +88,7 @@ public final class EA1p1WithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     if (this.fitness instanceof IntFFA) {
       return "(1+1)-FEA";//$NON-NLS-1$
     }
@@ -98,7 +98,7 @@ public final class EA1p1WithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "fitness_1+1_ea")); //$NON-NLS-1$
@@ -121,7 +121,7 @@ public final class EA1p1WithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryOperator(//
         this, builder);

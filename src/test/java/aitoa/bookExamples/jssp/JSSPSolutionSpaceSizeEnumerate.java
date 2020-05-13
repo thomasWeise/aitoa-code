@@ -156,7 +156,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean test(final int[][] jobMachines) {
+    public boolean test(final int[][] jobMachines) {
       // then test all possible gantt diagrams and count
       // those which are deadlock-free
       this.m_counter.counter = 0L;
@@ -203,7 +203,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean test(final int[][] gantt) {
+    public boolean test(final int[][] gantt) {
       // set all job and machine indices to 0
       Arrays.fill(this.m_jobStage, 0);
       Arrays.fill(this.m_ganttStage, 0);
@@ -300,7 +300,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
     }
 
     @Override
-    public final void run() {
+    public void run() {
       final long res = JSSPSolutionSpaceSizeEnumerate
           .enumerate(this.m_m, this.m_n);
       synchronized (System.out) {

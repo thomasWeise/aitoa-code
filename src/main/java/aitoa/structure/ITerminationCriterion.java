@@ -13,5 +13,5 @@ public interface ITerminationCriterion {
    * @return {@code true} if the optimization process should stop
    *         now, {@code false} if it can continue
    */
-  public abstract boolean shouldTerminate();
+  boolean shouldTerminate();
 }

@@ -40,8 +40,8 @@ public class TemperatureSchedules {
     for (final double d : val) {
       set.add(Double.valueOf(d));
     }
-    return set.stream().mapToDouble((d) -> d.doubleValue())
-        .sorted().toArray();
+    return set.stream().mapToDouble(Double::doubleValue).sorted()
+        .toArray();
   }
 
   /**
@@ -89,23 +89,20 @@ public class TemperatureSchedules {
       }
     }
 
-    final double[] critTS = TemperatureSchedules
-        .__make(new double[] { Ts, 0, (7 * Ts) / 8, (6 * Ts) / 8,
-            (5 * Ts) / 8, (4 * Ts) / 8, (3 * Ts) / 8,
-            (2 * Ts) / 8, (1 * Ts) / 8, (9 * Ts) / 10,
-            (8 * Ts) / 10, (7 * Ts) / 10, (6 * Ts) / 10,
-            (5 * Ts) / 10, (4 * Ts) / 10, (3 * Ts) / 10,
-            (2 * Ts) / 10, (1 * Ts) / 10, (1 * Ts) / 6,
-            (2 * Ts) / 6, (4 * Ts) / 6, (3 * Ts) / 6,
-            (5 * Ts) / 6, (1 * Ts) / 7, (2 * Ts) / 7,
-            (3 * Ts) / 7, (4 * Ts) / 7, (5 * Ts) / 7,
-            (6 * Ts) / 7, (1 * Ts) / 9, (2 * Ts) / 9,
-            (3 * Ts) / 9, (4 * Ts) / 9, (5 * Ts) / 9,
-            (6 * Ts) / 9, (7 * Ts) / 9, (8 * Ts) / 9, 0, 1, 2, 3,
-            4, 5, 6, 7, 8, 9, 10, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-            0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
-            1.8, 1.9, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07,
-            0.08, 0.09 });
+    final double[] critTS = TemperatureSchedules.__make(Ts, 0,
+        (7 * Ts) / 8, (6 * Ts) / 8, (5 * Ts) / 8, (4 * Ts) / 8,
+        (3 * Ts) / 8, (2 * Ts) / 8, (1 * Ts) / 8, (9 * Ts) / 10,
+        (8 * Ts) / 10, (7 * Ts) / 10, (6 * Ts) / 10,
+        (5 * Ts) / 10, (4 * Ts) / 10, (3 * Ts) / 10,
+        (2 * Ts) / 10, (1 * Ts) / 10, (1 * Ts) / 6, (2 * Ts) / 6,
+        (4 * Ts) / 6, (3 * Ts) / 6, (5 * Ts) / 6, (1 * Ts) / 7,
+        (2 * Ts) / 7, (3 * Ts) / 7, (4 * Ts) / 7, (5 * Ts) / 7,
+        (6 * Ts) / 7, (1 * Ts) / 9, (2 * Ts) / 9, (3 * Ts) / 9,
+        (4 * Ts) / 9, (5 * Ts) / 9, (6 * Ts) / 9, (7 * Ts) / 9,
+        (8 * Ts) / 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0.1, 0.2,
+        0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4,
+        1.5, 1.6, 1.7, 1.8, 1.9, 0.01, 0.02, 0.03, 0.04, 0.05,
+        0.06, 0.07, 0.08, 0.09);
     final int[][] idxs = new int[sched.length][critTS.length];
     final double[][] vdxs =
         new double[sched.length][critTS.length];
@@ -133,17 +130,16 @@ public class TemperatureSchedules {
     }
 
     final int[] targets = { 1, 2, 3, 5, 10 };
-    final double[] critProb = TemperatureSchedules.__make(
-        new double[] { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07,
-            0.08, 0.09, 0.01, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
-            0.5, 0.6, 0.7, 0.8, 0.9, 1, 0.25, 0.75, 1 / 8d,
-            3d / 8d, 7d / 8d, 7d / 8d, 1 / 3d, 2d / 3d, 1 / 6d,
-            5d / 6d, 1 / 9d, 2 / 9d, 3 / 9d, 4 / 9d, 5 / 9d,
-            6 / 9d, 7 / 9d, 8 / 9d, 1 / 7d, 2 / 7d, 3 / 7d,
-            4 / 7d, 5 / 7d, 6 / 7d, 1 / 20d, 2 / 20d, 3 / 20d,
-            4 / 20d, 5 / 20d, 6 / 20d, 7 / 20d, 89 / 20d,
-            10 / 20d, 11 / 20d, 12 / 20d, 13 / 20d, 14 / 20d,
-            15 / 20d, 16 / 20d, 17 / 20d, 18 / 20d, 19 / 20d, });
+    final double[] critProb = TemperatureSchedules.__make(0.01,
+        0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.01,
+        0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+        1, 0.25, 0.75, 1 / 8d, 3d / 8d, 7d / 8d, 7d / 8d, 1 / 3d,
+        2d / 3d, 1 / 6d, 5d / 6d, 1 / 9d, 2 / 9d, 3 / 9d, 4 / 9d,
+        5 / 9d, 6 / 9d, 7 / 9d, 8 / 9d, 1 / 7d, 2 / 7d, 3 / 7d,
+        4 / 7d, 5 / 7d, 6 / 7d, 1 / 20d, 2 / 20d, 3 / 20d,
+        4 / 20d, 5 / 20d, 6 / 20d, 7 / 20d, 89 / 20d, 10 / 20d,
+        11 / 20d, 12 / 20d, 13 / 20d, 14 / 20d, 15 / 20d,
+        16 / 20d, 17 / 20d, 18 / 20d, 19 / 20d);
 
     for (final int target : targets) {
       final int[][] nidxs =
@@ -195,7 +191,7 @@ public class TemperatureSchedules {
       ps.println();
 
       for (final int tau : points.stream()
-          .mapToInt((x) -> x.intValue()).sorted().toArray()) {
+          .mapToInt(Integer::intValue).sorted().toArray()) {
         ps.print(tau);
         for (final TemperatureSchedule s : sched) {
           ps.print(',');

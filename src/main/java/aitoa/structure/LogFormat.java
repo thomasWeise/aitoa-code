@@ -260,7 +260,7 @@ public final class LogFormat {
    *          the string
    * @return the character array
    */
-  public static final String asComment(final String str) {
+  public static String asComment(final String str) {
     return (LogFormat.COMMENT_CHAR + (' ' + str));
   }
 
@@ -271,7 +271,7 @@ public final class LogFormat {
    *          the key
    * @return the class version of a keyy
    */
-  public static final String classKey(final String key) {
+  public static String classKey(final String key) {
     return key + LogFormat.CLASS_KEY_EXT;
   }
 
@@ -284,7 +284,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final Object value) {
     if (value == null) {
       return LogFormat.mapEntry(key, LogFormat.NULL);
@@ -308,7 +308,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final String value) {
     return (((((Character.toString(LogFormat.COMMENT_CHAR) + ' ')
         + key) + LogFormat.MAP_SEPARATOR_CHAR) + ' ') + value);
@@ -323,7 +323,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final int value) {
     return LogFormat.mapEntry(key, Integer.toString(value));
   }
@@ -337,7 +337,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final long value) {
     return LogFormat.mapEntry(key, Long.toString(value));
   }
@@ -351,7 +351,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final double value) {
     return LogFormat.mapEntry(key,
         LogFormat.doubleToStringForLog(value))
@@ -369,7 +369,7 @@ public final class LogFormat {
    *          the value
    * @return the map entry string
    */
-  public static final String mapEntry(final String key,
+  public static String mapEntry(final String key,
       final boolean value) {
     return LogFormat.mapEntry(key, Boolean.toString(value));
   }
@@ -381,8 +381,7 @@ public final class LogFormat {
    *          the double value
    * @return the string representation
    */
-  public static final String
-      doubleToStringForLog(final double d) {
+  public static String doubleToStringForLog(final double d) {
     if (Double.isFinite(d)) {
       if ((d >= Long.MIN_VALUE) && (d <= Long.MAX_VALUE)) {
         final long l = Math.round(d);
@@ -401,7 +400,7 @@ public final class LogFormat {
    *          the number object
    * @return the string
    */
-  public static final String
+  public static String
       numberToStringForLog(final Number number) {
     if ((number instanceof Long) || //
         (number instanceof Integer) || //

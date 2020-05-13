@@ -30,15 +30,14 @@ public final class JSSPNullaryOperator
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "uniform"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void apply(final int[] dest,
-      final Random random) {
+  public void apply(final int[] dest, final Random random) {
 // create first sequence of jobs: n-1, n-2, ..., 0
     for (int i = this.n; (--i) >= 0;) {
       dest[i] = i;

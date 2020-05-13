@@ -20,7 +20,7 @@ final class _Cache extends HashMap<String, String> {
    *          the string
    * @return the cached version of the string
    */
-  final String _string(final String s) {
+  String _string(final String s) {
     if (s.isEmpty()) {
       throw new IllegalArgumentException(
           "Cached strings must not be empty."); //$NON-NLS-1$

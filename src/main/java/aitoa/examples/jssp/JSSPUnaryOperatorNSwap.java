@@ -20,14 +20,14 @@ public final class JSSPUnaryOperatorNSwap
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "nswap"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void apply(final int[] x, final int[] dest,
+  public void apply(final int[] x, final int[] dest,
       final Random random) {
 // copy the source point in search space to the dest
     System.arraycopy(x, 0, dest, 0, x.length);

@@ -53,7 +53,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void close() throws IOException {
+  public void close() throws IOException {
     // make sure we are dequeued from terminator
     this._terminate();
 
@@ -88,7 +88,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final X y) {
+  public double evaluate(final X y) {
     if (this.m_terminated) {
       // if we have already terminated, straight quit
       return Double.POSITIVE_INFINITY;
@@ -140,7 +140,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void getBestY(final Y dest) {
+  public void getBestY(final Y dest) {
     if (this.m_consumedFEs > 0L) {
       this.m_solutionSpace.copy(this.m_bestY, dest);
     } else {
@@ -151,7 +151,7 @@ final class _BlackBoxProcess2LogAll<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printLogSection(final String sectionName,
+  public void printLogSection(final String sectionName,
       final IOConsumer<Writer> printer) throws IOException {
     IOUtils.synchronizedIO(() -> {
       this.m_logWriter.write(LogFormat.COMMENT_CHAR);

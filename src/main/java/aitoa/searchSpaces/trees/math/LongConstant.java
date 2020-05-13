@@ -36,19 +36,19 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     return this.value;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     return this.value;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     if (this.value >= Integer.MAX_VALUE) {
       return Integer.MAX_VALUE;
     }
@@ -60,14 +60,13 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append(Long.toString(this.value));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void asJavaPrintParameters(final Appendable out)
+  public void asJavaPrintParameters(final Appendable out)
       throws IOException {
     out.append(',').append(' ').append(Long.toString(this.value))
         .append('L');
@@ -76,7 +75,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
   /** {@inheritDoc} */
   @SuppressWarnings("rawtypes")
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == null) {
       return false;
     }
@@ -91,7 +90,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return (0x7645216 ^ Long.hashCode(this.value));
   }
 
@@ -101,8 +100,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
    *
    * @return the node type
    */
-  public static final Function<NodeTypeSet<?>[], NodeType<?>>
-      type() {
+  public static Function<NodeTypeSet<?>[], NodeType<?>> type() {
     return LongConstant.type(0L, 100L);
   }
 
@@ -115,7 +113,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
    *          the maximum of the valid range for constants
    * @return the node type
    */
-  public static final Function<NodeTypeSet<?>[], NodeType<?>>
+  public static Function<NodeTypeSet<?>[], NodeType<?>>
       type(final long min, final long max) {
 
     if (min >= max) {
@@ -123,7 +121,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
           ((("Invalid constance range [" + //$NON-NLS-1$
               min) + ',') + max) + ']');
     }
-    return (a) -> new __ConstantNodeType<>(a, min, max);
+    return a -> new __ConstantNodeType<>(a, min, max);
   }
 
   /**
@@ -212,7 +210,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
      *          the long value
      * @return the constant
      */
-    private final LongConstant<C> __for(final long l) {
+    private LongConstant<C> __for(final long l) {
       if ((l >= this.m_start) && (l <= this.m_end)) {
         return this.m_privileged[(int) (l - this.m_start)];
       }
@@ -221,8 +219,8 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final LongConstant<C>
-        instantiate(final Node[] children, final Random random) {
+    public LongConstant<C> instantiate(final Node[] children,
+        final Random random) {
       if (random.nextInt(3) <= 0) {
         return this.m_privileged[random
             .nextInt(this.m_privileged.length)];
@@ -233,7 +231,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final LongConstant<C> createModifiedCopy(
+    public LongConstant<C> createModifiedCopy(
         final LongConstant<C> node, final Random random) {
       final long av = Math.abs(node.value);
       if (av < 0L) {
@@ -262,7 +260,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final LongConstant<C> replaceChild(
+    public LongConstant<C> replaceChild(
         final LongConstant<C> original, final Node child,
         final int index) {
       throw new UnsupportedOperationException(

@@ -29,7 +29,7 @@ public final class Divide<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     final double r = this.inner0.applyAsDouble(param)
         / this.inner1.applyAsDouble(param);
     if (r != r) {
@@ -40,7 +40,7 @@ public final class Divide<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     final long l1 = this.inner0.applyAsLong(param);
     final long l2 = this.inner1.applyAsLong(param);
     if (l2 == 0L) {
@@ -57,7 +57,7 @@ public final class Divide<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     final int i1 = this.inner0.applyAsInt(param);
     final int i2 = this.inner1.applyAsInt(param);
     if (i2 == 0) {
@@ -74,8 +74,7 @@ public final class Divide<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append('(');
     this.inner0.asText(out);
     out.append('/');

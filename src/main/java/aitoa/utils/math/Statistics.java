@@ -44,7 +44,7 @@ public final class Statistics {
    * @return the long array with the same data, or null if
    *         conversion is not possible
    */
-  public static final long[]
+  public static long[]
       tryConvertDoublesToLongs(final double[] data) {
     int i = data.length;
     if (i <= 0) {
@@ -77,7 +77,7 @@ public final class Statistics {
    * @param length
    *          the length
    */
-  private static final void __quantileCheck(final double p,
+  private static void __quantileCheck(final double p,
       final int length) {
     if ((!Double.isFinite(p)) || (p < 0d) || (p > 1d)) {
       throw new IllegalArgumentException(
@@ -101,7 +101,7 @@ public final class Statistics {
    *          the length
    * @return the index
    */
-  private static final double __quantileIndex(final double p,
+  private static double __quantileIndex(final double p,
       final int length) {
 
     final double minLimit =
@@ -128,7 +128,7 @@ public final class Statistics {
    *          the double
    * @return the number
    */
-  private static final Number __doubleToNumber(final double d) {
+  private static Number __doubleToNumber(final double d) {
     if (!Double.isFinite(d)) {
       throw new ArithmeticException(String.valueOf(d));
     }
@@ -148,8 +148,7 @@ public final class Statistics {
    *          the big integer
    * @return the simplified version
    */
-  private static final Number
-      __simplifyInteger(final BigInteger bi) {
+  private static Number __simplifyInteger(final BigInteger bi) {
     try {
       return Long.valueOf(bi.longValueExact());
     } catch (@SuppressWarnings("unused") //
@@ -171,7 +170,7 @@ public final class Statistics {
    *          the SORTED data array
    * @return a number trying to be precise about the quantile
    */
-  public static final Number quantile(final double p,
+  public static Number quantile(final double p,
       final long[] data) {
     final int length = data.length;
     Statistics.__quantileCheck(p, length);
@@ -266,7 +265,7 @@ public final class Statistics {
    *          values
    * @return a number trying to be precise about the quantile
    */
-  public static final Number quantile(final double p,
+  public static Number quantile(final double p,
       final double[] data) {
     final int length = data.length;
     Statistics.__quantileCheck(p, length);
@@ -336,7 +335,7 @@ public final class Statistics {
    *          the number below
    * @return the result
    */
-  private static final Number __divideExact(final long a,
+  private static Number __divideExact(final long a,
       final int b) {
     // first we compute the greatest common divisor of a and b
     long x = a;
@@ -375,8 +374,7 @@ public final class Statistics {
    *          the number below
    * @return the result
    */
-  public static final Number divideExact(final Number a,
-      final int b) {
+  public static Number divideExact(final Number a, final int b) {
     if (a instanceof Long) {
       return Statistics.__divideExact(a.longValue(), b);
     }
@@ -404,7 +402,7 @@ public final class Statistics {
    *          the number below
    * @return the result
    */
-  private static final Number __divideExact(final BigInteger a,
+  private static Number __divideExact(final BigInteger a,
       final int b) {
     final BigInteger bib = BigInteger.valueOf(b);
     final BigInteger gcd = a.gcd(bib);
@@ -437,7 +435,7 @@ public final class Statistics {
    *          the data
    * @return the sum
    */
-  public static final Number sum(final long[] data) {
+  public static Number sum(final long[] data) {
     // compute exact sums
     asLong: {
       long lsum = 0L;
@@ -478,7 +476,7 @@ public final class Statistics {
    *          values before adding them up
    * @return the sum
    */
-  public static final Number sum(final long[] data,
+  public static Number sum(final long[] data,
       final LongUnaryOperator transLong,
       final Function<BigInteger, BigInteger> transBigInt) {
     // compute exact sums
@@ -518,7 +516,7 @@ public final class Statistics {
    *         one with the mean, then the one with the standard
    *         deviation
    */
-  public static final Number[]
+  public static Number[]
       sampleMeanAndStandardDeviation(final long[] values) {
 
     // handle simple cases
@@ -543,7 +541,7 @@ public final class Statistics {
     final Number mean =
         Statistics.divideExact(sum, values.length);
     final Number sumOfSquares = Statistics.sum(values,
-        (l) -> Math.multiplyExact(l, l), (l) -> l.multiply(l));
+        l -> Math.multiplyExact(l, l), l -> l.multiply(l));
 
     // ok, we got some exact sums and exact sums of squares
     final BigInteger sumBI =
@@ -578,7 +576,7 @@ public final class Statistics {
    *          the data
    * @return the sum
    */
-  public static final Number sum(final double[] data) {
+  public static Number sum(final double[] data) {
     return Statistics.__doubleToNumber(
         Statistics.__destructiveSum(data.clone()));
   }
@@ -593,7 +591,7 @@ public final class Statistics {
    *          adding
    * @return the sum
    */
-  public static final Number sum(final double[] data,
+  public static Number sum(final double[] data,
       final DoubleUnaryOperator trans) {
     final double[] tmp = data.clone();
     for (int i = tmp.length; (--i) >= 0;) {
@@ -784,7 +782,7 @@ public final class Statistics {
    *          destroyed
    * @return the accurate sum of the elements of {@code summands}
    */
-  private static final double
+  private static double
       __destructiveSum(final double[] summands) {
     int i, j, n, index;
     double x, y, t, xsave, hi, yr, lo, summand;
@@ -910,7 +908,7 @@ public final class Statistics {
    *         one with the mean, then the one with the standard
    *         deviation
    */
-  public static final Number[]
+  public static Number[]
       sampleMeanAndStandardDeviation(final double[] values) {
 
     // handle simple cases
@@ -940,7 +938,7 @@ public final class Statistics {
     final Number mean =
         Statistics.divideExact(sum, values.length);
     final Number sumOfSquares =
-        Statistics.sum(values, (l) -> l * l);
+        Statistics.sum(values, l -> l * l);
 
     // ok, we got some exact sums and exact sums of squares
     final Number sumSquared;

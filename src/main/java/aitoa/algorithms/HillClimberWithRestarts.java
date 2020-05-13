@@ -94,7 +94,7 @@ public final class HillClimberWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     IMetaheuristic.super.printSetup(output);
     output.write(LogFormat.mapEntry("failsBeforeRestart", ///$NON-NLS-1$
@@ -108,7 +108,7 @@ public final class HillClimberWithRestarts<X, Y>
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
     final X x_cur = process.getSearchSpace().create();
     final X x_best = process.getSearchSpace().create();
@@ -146,14 +146,14 @@ public final class HillClimberWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "hc_rs_" + //$NON-NLS-1$
         this.failsBeforeRestartStrategy;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);

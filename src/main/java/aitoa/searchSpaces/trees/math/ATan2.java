@@ -28,14 +28,14 @@ public final class ATan2<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     return Math.atan2(this.inner0.applyAsDouble(param),
         this.inner1.applyAsDouble(param));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     return Math.round(Math.toDegrees(//
         Math.atan2(this.inner0.applyAsLong(param),
             this.inner1.applyAsLong(param))));
@@ -43,7 +43,7 @@ public final class ATan2<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     return ((int) (Math.round(Math.toDegrees(//
         Math.atan2(this.inner0.applyAsInt(param),
             this.inner1.applyAsInt(param))))));
@@ -51,8 +51,7 @@ public final class ATan2<C> extends BinaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append("atan2("); //$NON-NLS-1$
     this.inner0.asText(out);
     out.append(',');

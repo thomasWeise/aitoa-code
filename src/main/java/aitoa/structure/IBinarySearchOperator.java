@@ -28,7 +28,7 @@ public interface IBinarySearchOperator<X> {
    * @param random
    *          a random number generator
    */
-  public abstract void apply(final X x0, final X x1,
-      final X dest, final Random random);
+  void apply(final X x0, final X x1, final X dest,
+      final Random random);
 }
 // end relevant

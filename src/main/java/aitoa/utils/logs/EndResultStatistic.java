@@ -208,7 +208,7 @@ public final class EndResultStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final EndResultStatistic o) {
+  public int compareTo(final EndResultStatistic o) {
     if (o == this) {
       return 0;
     }
@@ -277,7 +277,7 @@ public final class EndResultStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     int hc = this.algorithm.hashCode();
     hc = (31 * hc) + this.instance.hashCode();
     hc = (31 * hc) + Integer.hashCode(this.runs);
@@ -299,7 +299,7 @@ public final class EndResultStatistic
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -623,7 +623,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
       int hc = super.hashCode();
       hc = (31 * hc) + Long.hashCode(this.min);
       hc = (31 * hc) + Long.hashCode(this.max);
@@ -632,7 +632,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int compareTo(final IntStatisticsBig o) {
+    public int compareTo(final IntStatisticsBig o) {
       if (o == this) {
         return 0;
       }
@@ -689,7 +689,7 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsIntStatisticsBig(
+    static boolean _equalsIntStatisticsBig(
         final IntStatisticsBig a, final IntStatisticsBig b) {
       return __StatQuantiles._equalsStatQuantiles(a, b)
           && (a.min == b.min) && (a.max == b.max);
@@ -697,7 +697,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final boolean equals(final Object o) {
+    public boolean equals(final Object o) {
       if (o == this) {
         return true;
       }
@@ -847,7 +847,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
       int hc = super.hashCode();
       hc = (31 * hc) + Double.hashCode(this.min);
       hc = (31 * hc) + Double.hashCode(this.max);
@@ -874,7 +874,7 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsDoubleStatisticsBig(
+    static boolean _equalsDoubleStatisticsBig(
         final DoubleStatisticsBig a,
         final DoubleStatisticsBig b) {
       return __StatQuantiles._equalsStatQuantiles(a, b)//
@@ -894,7 +894,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final boolean equals(final Object o) {
+    public boolean equals(final Object o) {
       if (o == this) {
         return true;
       }
@@ -907,7 +907,7 @@ public final class EndResultStatistic
 
     /** {@inheritDoc} */
     @Override
-    public final int compareTo(final DoubleStatisticsBig o) {
+    public int compareTo(final DoubleStatisticsBig o) {
       if (o == this) {
         return 0;
       }

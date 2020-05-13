@@ -46,7 +46,7 @@ public final class JSSPRepresentationMapping implements
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ("jssp:int[]-to-Gantt"); //$NON-NLS-1$
   }
 

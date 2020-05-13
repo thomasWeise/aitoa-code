@@ -228,8 +228,8 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new EA1p1<>(),
-                      () -> new RandomSampling<>());
+                  return Stream.of(EA1p1::new,
+                      RandomSampling::new);
                 }
 
                 @Override
@@ -280,8 +280,8 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new EA1p1<>(),
-                      () -> new RandomSampling<>());
+                  return Stream.of(EA1p1::new,
+                      RandomSampling::new);
                 }
 
                 @Override
@@ -356,11 +356,11 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new EA1p1<>(),
-                      () -> new RandomSampling<>(),
+                  return Stream.of(EA1p1::new,
+                      RandomSampling::new,
                       () -> new Greedy2p1GAmodFFA<>(
                           ((int) (problem.upperBound()))),
-                      () -> new Greedy2p1GAmod<>());
+                      Greedy2p1GAmod::new);
                 }
 
                 @Override
@@ -411,8 +411,8 @@ public class ExperimentTest {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(() -> new EA1p1<>(),
-                      () -> new RandomSampling<>());
+                  return Stream.of(EA1p1::new,
+                      RandomSampling::new);
                 }
 
                 @Override

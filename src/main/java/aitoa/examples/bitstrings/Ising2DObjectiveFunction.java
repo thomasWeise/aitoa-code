@@ -55,7 +55,7 @@ public final class Ising2DObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     final int kk = this.k;
     int s = this.upperBound;
 
@@ -82,19 +82,19 @@ public final class Ising2DObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     return this.upperBound;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_n(
         Ising2DObjectiveFunction.NAME_PREFIX, this.n);
   }

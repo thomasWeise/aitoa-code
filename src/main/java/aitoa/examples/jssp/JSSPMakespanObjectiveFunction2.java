@@ -60,7 +60,7 @@ public final class JSSPMakespanObjectiveFunction2
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.instance.toString();
   }
 

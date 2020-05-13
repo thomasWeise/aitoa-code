@@ -86,7 +86,7 @@ public final class EAWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "ea")); //$NON-NLS-1$
@@ -109,7 +109,7 @@ public final class EAWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((((("ea_rs_" + //$NON-NLS-1$
         this.mu) + '+') + this.lambda) + '@') + this.cr) + '_')
         + this.generationsUntilRestart);
@@ -118,7 +118,7 @@ public final class EAWithRestarts<X, Y>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
     // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
@@ -193,7 +193,7 @@ public final class EAWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
         this, builder);

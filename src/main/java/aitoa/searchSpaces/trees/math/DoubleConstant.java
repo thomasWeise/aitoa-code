@@ -52,13 +52,13 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     return this.value;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     if (this.value >= Long.MAX_VALUE) {
       return Long.MAX_VALUE;
     }
@@ -70,7 +70,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     if (this.value >= Integer.MAX_VALUE) {
       return Integer.MAX_VALUE;
     }
@@ -82,8 +82,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     final String s = Double.toString(this.value);
     final int l = s.length();
     if (l > 2) {
@@ -97,7 +96,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final void asJavaPrintParameters(final Appendable out)
+  public void asJavaPrintParameters(final Appendable out)
       throws IOException {
     out.append(',').append(' ')
         .append(Double.toString(this.value)).append('d');
@@ -106,7 +105,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
   /** {@inheritDoc} */
   @SuppressWarnings("rawtypes")
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == null) {
       return false;
     }
@@ -123,7 +122,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return (0x25438121 ^ Double.hashCode(this.value));
   }
 
@@ -133,8 +132,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
    *
    * @return the node type
    */
-  public static final Function<NodeTypeSet<?>[], NodeType<?>>
-      type() {
+  public static Function<NodeTypeSet<?>[], NodeType<?>> type() {
     return DoubleConstant.type(-10d, 10d,
         DoubleConstant.DEFAULT_CONSTANTS);
   }
@@ -149,7 +147,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
    *          the maximum of the valid range for constants
    * @return the node type
    */
-  public static final Function<NodeTypeSet<?>[], NodeType<?>>
+  public static Function<NodeTypeSet<?>[], NodeType<?>>
       type(final double min, final double max) {
     final double[] p =
         new double[DoubleConstant.DEFAULT_CONSTANTS.length];
@@ -202,7 +200,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
       }
     }
 
-    return (a) -> new __ConstantNodeType<>(a, min, max, span, r);
+    return a -> new __ConstantNodeType<>(a, min, max, span, r);
   }
 
   /**
@@ -257,8 +255,8 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final DoubleConstant<C>
-        instantiate(final Node[] children, final Random random) {
+    public DoubleConstant<C> instantiate(final Node[] children,
+        final Random random) {
       final int l = this.m_privileged.length;
       final int i = random.nextInt(l + 1);
       double v;
@@ -277,7 +275,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final DoubleConstant<C> createModifiedCopy(
+    public DoubleConstant<C> createModifiedCopy(
         final DoubleConstant<C> node, final Random random) {
       final double value = node.value;
       final double av = Math.abs(value);
@@ -293,7 +291,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
 
     /** {@inheritDoc} */
     @Override
-    public final DoubleConstant<C> replaceChild(
+    public DoubleConstant<C> replaceChild(
         final DoubleConstant<C> original, final Node child,
         final int index) {
       throw new UnsupportedOperationException(

@@ -110,7 +110,7 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final String toString() {
+    public String toString() {
       return ((("exp_" + //$NON-NLS-1$
           Experiment
               .doubleToStringForName(this.startTemperature))
@@ -120,7 +120,7 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final void printSetup(final Writer output)
+    public void printSetup(final Writer output)
         throws IOException {
       super.printSetup(output);
       output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$
@@ -178,7 +178,7 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final String toString() {
+    public String toString() {
       return ((("log_" + //$NON-NLS-1$
           Experiment
               .doubleToStringForName(this.startTemperature))
@@ -188,7 +188,7 @@ public abstract class TemperatureSchedule {
 
     /** {@inheritDoc} */
     @Override
-    public final void printSetup(final Writer output)
+    public void printSetup(final Writer output)
         throws IOException {
       super.printSetup(output);
       output.write(LogFormat.mapEntry("epsilon", ///$NON-NLS-1$

@@ -27,7 +27,7 @@ public final class ConsoleIO {
    * @param print
    *          the stream consumer
    */
-  public static final void
+  public static void
       print(final BiConsumer<PrintStream, PrintStream> print) {
     synchronized (IOUtils._IO_SYNCH) {
       synchronized (System.out) {
@@ -52,8 +52,7 @@ public final class ConsoleIO {
    * @param out
    *          the output
    */
-  public static final void
-      stdout(final Consumer<PrintStream> out) {
+  public static void stdout(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
       ConsoleIO.__printIDandDate(u);
       out.accept(u);
@@ -67,8 +66,8 @@ public final class ConsoleIO {
    * @param line
    *          the line
    */
-  public static final void stdout(final String line) {
-    ConsoleIO.stdout((stdout) -> stdout.println(line));
+  public static void stdout(final String line) {
+    ConsoleIO.stdout(stdout -> stdout.println(line));
   }
 
   /**
@@ -77,8 +76,7 @@ public final class ConsoleIO {
    * @param ps
    *          the stream
    */
-  private static final void
-      __printIDandDate(final PrintStream ps) {
+  private static void __printIDandDate(final PrintStream ps) {
     ps.print(ConsoleIO.__IDS.get());
     ps.print(new Date());
     ps.print('\t');
@@ -91,8 +89,7 @@ public final class ConsoleIO {
    * @param out
    *          the output
    */
-  public static final void
-      stderr(final Consumer<PrintStream> out) {
+  public static void stderr(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
       ConsoleIO.__printIDandDate(v);
       out.accept(v);
@@ -108,9 +105,9 @@ public final class ConsoleIO {
    * @param error
    *          the error
    */
-  public static final void stderr(
-      final Consumer<PrintStream> out, final Throwable error) {
-    ConsoleIO.stderr((stderr) -> {
+  public static void stderr(final Consumer<PrintStream> out,
+      final Throwable error) {
+    ConsoleIO.stderr(stderr -> {
       out.accept(stderr);
       if (error != null) {
         if (error.getClass() == RuntimeException.class) {
@@ -134,9 +131,9 @@ public final class ConsoleIO {
    * @param error
    *          the error
    */
-  public static final void stderr(final String message,
+  public static void stderr(final String message,
       final Throwable error) {
-    ConsoleIO.stderr((stderr) -> {
+    ConsoleIO.stderr(stderr -> {
       if (message != null) {
         stderr.println(message);
       }
@@ -158,7 +155,7 @@ public final class ConsoleIO {
    *          the ID suffix to set
    * @see #clearIDSuffix()
    */
-  public static final void setIDSuffix(final String suffix) {
+  public static void setIDSuffix(final String suffix) {
     ConsoleIO.__IDS.set(ConsoleIO.__computeID(suffix));
   }
 
@@ -167,7 +164,7 @@ public final class ConsoleIO {
    *
    * @see #setIDSuffix(String)
    */
-  public static final void clearIDSuffix() {
+  public static void clearIDSuffix() {
     ConsoleIO.setIDSuffix("");//$NON-NLS-1$
   }
 
@@ -182,7 +179,7 @@ public final class ConsoleIO {
    *          the suffix
    * @return the ID
    */
-  private static final char[] __computeID(final String suffix) {
+  private static char[] __computeID(final String suffix) {
     final String t = suffix.trim();
     String a =
         ((Integer.toUnsignedString(__ID.ID, Character.MAX_RADIX)
@@ -207,7 +204,7 @@ public final class ConsoleIO {
      *
      * @return the prefix
      */
-    private static final int __getID() {
+    private static int __getID() {
       try {
         return new SystemInfo().getOperatingSystem()
             .getProcessId();

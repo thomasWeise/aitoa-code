@@ -39,7 +39,7 @@ public final class HillClimber2<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_cur, x_best, nullary, unary, random,
 // f_best, improved: omitted here for brevity
     final X x_cur = process.getSearchSpace().create();
@@ -59,7 +59,7 @@ public final class HillClimber2<X, Y>
 // repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of x_best and receive them
 // one-by-one in parameter x (for which x_cur is used)
-      improved = unary.enumerate(random, x_best, x_cur, (x) -> {
+      improved = unary.enumerate(random, x_best, x_cur, x -> {
 // map x from X to Y and evaluate candidate solution
         final double f_cur = process.evaluate(x);
         if (f_cur < f_best[0]) { // we found a better solution
@@ -78,13 +78,13 @@ public final class HillClimber2<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "hc2f"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);

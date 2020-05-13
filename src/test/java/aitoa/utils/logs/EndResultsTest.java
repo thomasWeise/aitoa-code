@@ -67,7 +67,7 @@ public class EndResultsTest {
       final Path endResults = EndResults.makeEndResultsTable(
           resultsDir, evalDir, false, false);
 
-      EndResults.parseEndResultsTable(endResults, (a) -> {
+      EndResults.parseEndResultsTable(endResults, a -> {
         a.hashCode();
       }, false);
 
@@ -76,7 +76,7 @@ public class EndResultsTest {
               null, null, null, null, false, false);
 
       EndResultStatistics.parseEndResultStatisticsTable(
-          endResultStatistics, (a) -> {
+          endResultStatistics, a -> {
             a.hashCode();
           }, false);
 
@@ -88,7 +88,7 @@ public class EndResultsTest {
       final Path ertEcdfDir = ertEcdf.get(null);
       Assert.assertNotNull(ertEcdfDir);
 
-      ErtEcdf.parseErtEcdfFiles(ertEcdfDir, (s) -> ((a) -> {
+      ErtEcdf.parseErtEcdfFiles(ertEcdfDir, s -> (a -> {
         /* */ }), false);
     }
   }

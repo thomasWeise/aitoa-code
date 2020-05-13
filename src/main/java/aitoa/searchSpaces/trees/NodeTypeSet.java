@@ -46,7 +46,7 @@ public final class NodeTypeSet<T extends Node> {
    *
    * @return the number of entries
    */
-  public final int getTypeCount() {
+  public int getTypeCount() {
     return this.m_types.length;
   }
 
@@ -57,7 +57,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the index into the information set
    * @return the node type at the specified index
    */
-  public final NodeType<? extends T> getType(final int index) {
+  public NodeType<? extends T> getType(final int index) {
     return this.m_types[index];
   }
 
@@ -66,7 +66,7 @@ public final class NodeTypeSet<T extends Node> {
    *
    * @return the number of terminal node types
    */
-  public final int getTerminalTypeCount() {
+  public int getTerminalTypeCount() {
     return this.m_terminalCount;
   }
 
@@ -77,8 +77,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the index into the information set
    * @return the node type at the specified index
    */
-  public final NodeType<? extends T>
-      getTerminalType(final int index) {
+  public NodeType<? extends T> getTerminalType(final int index) {
     if ((index >= 0) && (index < this.m_terminalCount)) {
       return this.m_types[index];
     }
@@ -94,7 +93,7 @@ public final class NodeTypeSet<T extends Node> {
    *
    * @return the number of non-terminal node types
    */
-  public final int getNonTerminalTypeCount() {
+  public int getNonTerminalTypeCount() {
     return this.m_types.length - this.m_terminalCount;
   }
 
@@ -105,7 +104,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the index into the information set
    * @return the node type at the specified index
    */
-  public final NodeType<? extends T>
+  public NodeType<? extends T>
       getNonTerminalType(final int index) {
     final int tc = this.m_terminalCount;
     final int ts = (this.m_types.length - tc);
@@ -126,8 +125,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the random number generator
    * @return the node type
    */
-  public final NodeType<? extends T>
-      getRandomType(final Random r) {
+  public NodeType<? extends T> getRandomType(final Random r) {
     final int i = this.m_types.length;
     if (i <= 0) {
       return null;
@@ -142,7 +140,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the random number generator
    * @return the terminal node type
    */
-  public final NodeType<? extends T>
+  public NodeType<? extends T>
       getRandomTerminalType(final Random r) {
     final int i = this.m_terminalCount;
     if (i <= 0) {
@@ -158,7 +156,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the random number generator
    * @return the non-terminal node type
    */
-  public final NodeType<? extends T>
+  public NodeType<? extends T>
       getRandomNonTerminalType(final Random r) {
     final int o = this.m_terminalCount;
     final int i = this.m_types.length - o;
@@ -176,7 +174,7 @@ public final class NodeTypeSet<T extends Node> {
    *          the node type
    * @return true if the type is contained, false otherwise
    */
-  public final boolean containsType(final NodeType<?> t) {
+  public boolean containsType(final NodeType<?> t) {
     return ((t != null) && //
         (Arrays.binarySearch(this.m_types, t) >= 0));
   }
@@ -191,7 +189,7 @@ public final class NodeTypeSet<T extends Node> {
    *         of a type in this node type set, {@code false}
    *         otherwise
    */
-  public final boolean containsNode(final Node n) {
+  public boolean containsNode(final Node n) {
     return ((n != null) && //
         (Arrays.binarySearch(this.m_types, n.m_type) >= 0));
   }
@@ -199,7 +197,7 @@ public final class NodeTypeSet<T extends Node> {
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings("rawtypes")
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == null) {
       return false;
     }

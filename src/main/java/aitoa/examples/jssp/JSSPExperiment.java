@@ -33,9 +33,8 @@ public class JSSPExperiment {
             (args.length > 1) ? Integer.parseInt(args[1])
                 : Integer.MAX_VALUE);
 
-    Experiment.executeExperimentInParallel(
-        Arrays.stream(EJSSPExperimentStage.values())
-            .map((s) -> () -> s),
+    Experiment.executeExperimentInParallel(Arrays
+        .stream(EJSSPExperimentStage.values()).map(s -> () -> s),
         out, processors);
   }
 }

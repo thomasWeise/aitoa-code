@@ -29,7 +29,7 @@ public final class TreeSpace implements ISpace<Node[]> {
    *          the maximum depth
    * @return the maximum depth to use
    */
-  static final int _checkMaxDepth(final int md) {
+  static int _checkMaxDepth(final int md) {
     if (md < 2) {
       throw new IllegalArgumentException(
           "maximum depth must be at least 2, but is " //$NON-NLS-1$
@@ -45,19 +45,19 @@ public final class TreeSpace implements ISpace<Node[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final Node[] create() {
+  public Node[] create() {
     return new Node[1];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void copy(final Node[] from, final Node[] to) {
+  public void copy(final Node[] from, final Node[] to) {
     to[0] = from[0];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final Node[] z, final Appendable out)
+  public void print(final Node[] z, final Appendable out)
       throws IOException {
     final Node n = z[0];
     if (n != null) {
@@ -76,7 +76,7 @@ public final class TreeSpace implements ISpace<Node[]> {
    * @param n
    *          the node to check
    */
-  static final void _checkNode(final Node n) {
+  static void _checkNode(final Node n) {
     if (n == null) {
       throw new IllegalArgumentException(
           "Node array must contain a node.");//$NON-NLS-1$
@@ -151,7 +151,7 @@ public final class TreeSpace implements ISpace<Node[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void check(final Node[] z) {
+  public void check(final Node[] z) {
     if ((z == null) || (z.length != 1)) {
       throw new IllegalArgumentException(
           "Node array must not be null and must be of length 1.");//$NON-NLS-1$

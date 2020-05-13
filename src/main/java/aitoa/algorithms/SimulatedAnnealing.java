@@ -61,14 +61,14 @@ public final class SimulatedAnnealing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ("sa_" + //$NON-NLS-1$
         this.schedule.toString());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "sa")); //$NON-NLS-1$
@@ -79,7 +79,7 @@ public final class SimulatedAnnealing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryOperator(this,
         builder);
@@ -88,7 +88,7 @@ public final class SimulatedAnnealing<X, Y>
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables x_new, x_cur, nullary, unary, random
 // end relevant
     final X x_new = process.getSearchSpace().create();

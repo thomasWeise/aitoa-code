@@ -17,7 +17,7 @@ public interface ISpace<Z> {
    *
    * @return the new data structure
    */
-  public abstract Z create();
+  Z create();
 
   /**
    * Copy the data structure {@code from} to the data structure
@@ -29,7 +29,7 @@ public interface ISpace<Z> {
    *          the destination data structure which will be
    *          overwritten with the contents of {@code from}.
    */
-  public abstract void copy(final Z from, final Z to);
+  void copy(final Z from, final Z to);
 // end relevant
 
   /**
@@ -43,7 +43,7 @@ public interface ISpace<Z> {
    * @throws IOException
    *           if i/o fails
    */
-  public default void print(final Z z, final Appendable out)
+  default void print(final Z z, final Appendable out)
       throws IOException {
     out.append(String.valueOf(z));
   }
@@ -62,7 +62,7 @@ public interface ISpace<Z> {
    * @throws IllegalArgumentException
    *           if {@code z} is invalid
    */
-  public default void check(final Z z) {
+  default void check(final Z z) {
     Objects.requireNonNull(z);
   }
 
@@ -72,7 +72,7 @@ public interface ISpace<Z> {
    *
    * @return the scale of the space
    */
-  public default double getScale() {
+  default double getScale() {
     throw new UnsupportedOperationException(
         "Must implement method getScale() of interface ISpace."); //$NON-NLS-1$
   }

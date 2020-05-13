@@ -29,8 +29,8 @@ public final class RandomUtils {
    * @return an array of length {@code code} with the unique
    *         seeds
    */
-  public static final long[]
-      uniqueRandomSeeds(final String string, final int count) {
+  public static long[] uniqueRandomSeeds(final String string,
+      final int count) {
     final long a, b;
 
     if (count <= 0) {
@@ -153,7 +153,7 @@ public final class RandomUtils {
    *          the seed
    * @return the string
    */
-  public static final String randSeedToString(final long seed) {
+  public static String randSeedToString(final long seed) {
     final int l = LogFormat.RANDOM_SEED_PREFIX.length();
     final char[] str = new char[l + 16];
     LogFormat.RANDOM_SEED_PREFIX.getChars(0, l, str, 0);
@@ -172,7 +172,7 @@ public final class RandomUtils {
    *          the random seed string
    * @return the {@code long} representing the string
    */
-  public static final long
+  public static long
       stringToRandSeed(final String randSeedString) {
     if ((!randSeedString
         .startsWith(LogFormat.RANDOM_SEED_PREFIX))
@@ -210,7 +210,7 @@ public final class RandomUtils {
    * @param random
    *          the randomizer
    */
-  public static final void shuffle(final Random random,
+  public static void shuffle(final Random random,
       final java.lang.Object[] array, final int start,
       final int count) {
     if (count > 0) {
@@ -241,7 +241,7 @@ public final class RandomUtils {
    * @param random
    *          the randomizer
    */
-  public static final void shuffle(final Random random,
+  public static void shuffle(final Random random,
       final long[] array, final int start, final int count) {
     if (count > 0) {
       final int n = array.length;
@@ -271,7 +271,7 @@ public final class RandomUtils {
    * @param random
    *          the randomizer
    */
-  public static final void shuffle(final Random random,
+  public static void shuffle(final Random random,
       final int[] array, final int start, final int count) {
     if (count > 0) {
       final int n = array.length;
@@ -297,8 +297,8 @@ public final class RandomUtils {
    *          the exclusive upper bound
    * @return the long
    */
-  public static final long
-      uniformFrom0ToNminus1(final Random random, final long N) {
+  public static long uniformFrom0ToNminus1(final Random random,
+      final long N) {
     long bits, val;
     do {
       bits = (random.nextLong() << 1L) >>> 1L;
@@ -319,7 +319,7 @@ public final class RandomUtils {
    *          the inclusive upper bound
    * @return the long
    */
-  public static final long uniformFromMtoN(final Random random,
+  public static long uniformFromMtoN(final Random random,
       final long M, final long N) {
 
     long r = random.nextLong();

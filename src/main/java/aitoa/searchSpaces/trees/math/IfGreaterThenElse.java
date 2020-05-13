@@ -29,7 +29,7 @@ public final class IfGreaterThenElse<C>
 
   /** {@inheritDoc} */
   @Override
-  public final double applyAsDouble(final C param) {
+  public double applyAsDouble(final C param) {
     return (this.inner0.applyAsDouble(param) > this.inner1
         .applyAsDouble(param)) ? this.inner2.applyAsDouble(param)
             : this.inner3.applyAsDouble(param);
@@ -37,7 +37,7 @@ public final class IfGreaterThenElse<C>
 
   /** {@inheritDoc} */
   @Override
-  public final long applyAsLong(final C param) {
+  public long applyAsLong(final C param) {
     return (this.inner0.applyAsLong(param) > this.inner1
         .applyAsLong(param)) ? this.inner2.applyAsLong(param)
             : this.inner3.applyAsLong(param);
@@ -45,7 +45,7 @@ public final class IfGreaterThenElse<C>
 
   /** {@inheritDoc} */
   @Override
-  public final int applyAsInt(final C param) {
+  public int applyAsInt(final C param) {
     return (this.inner0.applyAsInt(param) > this.inner1
         .applyAsInt(param)) ? this.inner2.applyAsInt(param)
             : this.inner3.applyAsInt(param);
@@ -53,8 +53,7 @@ public final class IfGreaterThenElse<C>
 
   /** {@inheritDoc} */
   @Override
-  public final void asText(final Appendable out)
-      throws IOException {
+  public void asText(final Appendable out) throws IOException {
     out.append('(');
     out.append('(');
     this.inner0.asText(out);

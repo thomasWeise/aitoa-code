@@ -74,9 +74,8 @@ public final class EndResults {
    * @throws IOException
    *           if i/o fails
    */
-  public static final Path makeEndResultsTable(
-      final Path inputFolder, final Path outputFolder)
-      throws IOException {
+  public static Path makeEndResultsTable(final Path inputFolder,
+      final Path outputFolder) throws IOException {
     return EndResults.makeEndResultsTable(inputFolder,
         outputFolder, true);
   }
@@ -95,9 +94,9 @@ public final class EndResults {
    * @throws IOException
    *           if i/o fails
    */
-  public static final Path makeEndResultsTable(
-      final Path inputFolder, final Path outputFolder,
-      final boolean keepExisting) throws IOException {
+  public static Path makeEndResultsTable(final Path inputFolder,
+      final Path outputFolder, final boolean keepExisting)
+      throws IOException {
     return EndResults.makeEndResultsTable(inputFolder,
         outputFolder, keepExisting, true);
   }
@@ -118,9 +117,8 @@ public final class EndResults {
    * @throws IOException
    *           if i/o fails
    */
-  public static final Path makeEndResultsTable(
-      final Path inputFolder, final Path outputFolder,
-      final boolean keepExisting,
+  public static Path makeEndResultsTable(final Path inputFolder,
+      final Path outputFolder, final boolean keepExisting,
       final boolean logProgressToConsole) throws IOException {
 
     final Path in = IOUtils.requireDirectory(inputFolder);
@@ -193,13 +191,13 @@ public final class EndResults {
 
           for (final Path file : IOUtils
               .pathArray(IOUtils.filesStream(instance) //
-                  .filter((ff) -> ff.getFileName().toString()
+                  .filter(ff -> ff.getFileName().toString()
                       .endsWith(".txt"))//$NON-NLS-1$
               )) {
 
             final __Line line = new __Line();
             LogParser.parseLogFile(file, line,
-                (s) -> line._acceptSetup(s));
+                s -> line._acceptSetup(s));
 
             bw.write(algoName);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
@@ -247,7 +245,7 @@ public final class EndResults {
    *          the double
    * @return the string
    */
-  private static final String __str(final double d) {
+  private static String __str(final double d) {
     if (Double.isNaN(d)) {
       throw new IllegalStateException("NaN value encountered."); //$NON-NLS-1$
     }
@@ -281,7 +279,7 @@ public final class EndResults {
      * @param setup
      *          the setup
      */
-    final void _acceptSetup(//
+    void _acceptSetup(//
         final SetupData setup) {
       this.m_budgetFEs = setup.budgetFEs;
       this.m_seed = setup.randSeedString;
@@ -291,7 +289,7 @@ public final class EndResults {
 
     /** {@inheritDoc} */
     @Override
-    public final void accept(final LogLine t) {
+    public void accept(final LogLine t) {
       this.m_lastLine = Objects.requireNonNull(t);
     }
   }
@@ -308,7 +306,7 @@ public final class EndResults {
    * @throws IOException
    *           if i/o fails
    */
-  public static final void parseEndResultsTable(final Path path,
+  public static void parseEndResultsTable(final Path path,
       final Consumer<EndResult> consumer,
       final boolean logProgressToConsole) throws IOException {
 
@@ -537,7 +535,7 @@ public final class EndResults {
    * @param s
    *          the print stream
    */
-  static final void _printArgs(final PrintStream s) {
+  static void _printArgs(final PrintStream s) {
     _CommandLineArgs._printSourceDir(s);
     _CommandLineArgs._printDestDir(s);
   }
@@ -548,8 +546,8 @@ public final class EndResults {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
-    ConsoleIO.stdout((s) -> {
+  public static void main(final String[] args) {
+    ConsoleIO.stdout(s -> {
       s.println("Welcome to the End-Result CSV Table Generator"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
       EndResults._printArgs(s);

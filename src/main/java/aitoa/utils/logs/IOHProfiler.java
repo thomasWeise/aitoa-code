@@ -392,18 +392,18 @@ public class IOHProfiler {
 
         for (final Path file : IOUtils
             .pathArray(IOUtils.filesStream(instance) //
-                .filter((ff) -> ff.getFileName().toString()
+                .filter(ff -> ff.getFileName().toString()
                     .endsWith(".txt"))//$NON-NLS-1$
             )) {
 
           lastFE[0] = -1L;
-          LogParser.parseLogFile(file, (l) -> {
+          LogParser.parseLogFile(file, l -> {
             final long curFE = l.fe_max;
             if (curFE > lastFE[0]) {
               lines.add(new __Point(curFE, l.f_min));
               lastFE[0] = curFE;
             }
-          }, (s) -> setup[0] = Objects.requireNonNull(s));
+          }, s -> setup[0] = Objects.requireNonNull(s));
 
           if (setup[0] == null) {
             throw new IllegalStateException(
@@ -418,7 +418,7 @@ public class IOHProfiler {
 
           final FunctionMetaData functionMetaData =
               functionMetaDatas.computeIfAbsent(instName,
-                  (n) -> Objects.requireNonNull(
+                  n -> Objects.requireNonNull(
                       _getFunctionMetaData.apply(n, setup[0])));
           final String functionId =
               Objects.requireNonNull(functionMetaData.id);
@@ -797,7 +797,7 @@ public class IOHProfiler {
      *          the instance
      * @return the dimension as {@code long}
      */
-    private static final long __conv(final String _id,
+    private static long __conv(final String _id,
         final double _dimension, final long _instance) {
       if (Double.isFinite(_dimension) && (_dimension > 0d)
           && (_dimension < Long.MAX_VALUE)) {
@@ -813,7 +813,7 @@ public class IOHProfiler {
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
       return (((this.id.hashCode() * 31)
           + Long.hashCode(this.dimension)) * 31)
           + Long.hashCode(this.instance);
@@ -821,7 +821,7 @@ public class IOHProfiler {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean equals(final Object o) {
+    public boolean equals(final Object o) {
       if (o instanceof FunctionMetaData) {
         final FunctionMetaData f = ((FunctionMetaData) o);
         return ((this.id.equals(f.id))
@@ -833,7 +833,7 @@ public class IOHProfiler {
 
     /** {@inheritDoc} */
     @Override
-    public final int compareTo(final FunctionMetaData o) {
+    public int compareTo(final FunctionMetaData o) {
       int r = this.id.compareTo(o.id);
       if (r != 0) {
         return r;
@@ -864,7 +864,7 @@ public class IOHProfiler {
    *          the command line arguments
    */
   public static final void main(final String[] args) {
-    ConsoleIO.stdout((s) -> {
+    ConsoleIO.stdout(s -> {
       s.println("Welcome to the IOHprofiler Data Converter"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
       EndResults._printArgs(s);

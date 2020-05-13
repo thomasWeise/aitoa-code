@@ -20,7 +20,7 @@ final class _Doubles extends _Statistic {
 
   /** {@inheritDoc} */
   @Override
-  final void _add(final double value) {
+  void _add(final double value) {
     final int size = this.m_size;
     double[] data = this.m_data;
 
@@ -41,7 +41,7 @@ final class _Doubles extends _Statistic {
 
   /** {@inheritDoc} */
   @Override
-  final _Statistic _finalize() {
+  _Statistic _finalize() {
     if (this.m_size <= 0) {
       throw new IllegalStateException("empty data array?"); //$NON-NLS-1$
     }
@@ -59,26 +59,26 @@ final class _Doubles extends _Statistic {
 
   /** {@inheritDoc} */
   @Override
-  final int size() {
+  int size() {
     return this.m_size;
   }
 
   /** {@inheritDoc} */
   @Override
-  final Number _quantile(final double p) {
+  Number _quantile(final double p) {
     return Statistics.quantile(p, this.m_data);
   }
 
   /** {@inheritDoc} */
   @Override
-  final Number[] _meanAndStdDev() {
+  Number[] _meanAndStdDev() {
     return Statistics
         .sampleMeanAndStandardDeviation(this.m_data);
   }
 
   /** {@inheritDoc} */
   @Override
-  final Number _divideSumBy(final int by) {
+  Number _divideSumBy(final int by) {
     return Statistics.divideExact(Statistics.sum(this.m_data),
         by);
   }

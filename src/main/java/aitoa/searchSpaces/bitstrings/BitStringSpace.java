@@ -36,7 +36,7 @@ public final class BitStringSpace implements ISpace<boolean[]> {
    *          the length
    * @return the length
    */
-  static final int _checkLength(final int length) {
+  static int _checkLength(final int length) {
     if (length < 1) {
       throw new IllegalArgumentException(
           "bit string length must be at least 1, but is " //$NON-NLS-1$
@@ -47,21 +47,20 @@ public final class BitStringSpace implements ISpace<boolean[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean[] create() {
+  public boolean[] create() {
     return new boolean[this.length];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void copy(final boolean[] from,
-      final boolean[] to) {
+  public void copy(final boolean[] from, final boolean[] to) {
     System.arraycopy(from, 0, to, 0, this.length);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final boolean[] z,
-      final Appendable out) throws IOException {
+  public void print(final boolean[] z, final Appendable out)
+      throws IOException {
     for (final boolean b : z) {
       out.append(b ? '1' : '0');
     }
@@ -80,7 +79,7 @@ public final class BitStringSpace implements ISpace<boolean[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void check(final boolean[] z) {
+  public void check(final boolean[] z) {
     if (z.length != this.length) {
       throw new IllegalArgumentException(
           "Boolean array must have length "//$NON-NLS-1$
@@ -91,13 +90,13 @@ public final class BitStringSpace implements ISpace<boolean[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return (("boolean[" + this.length) + ']');//$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double getScale() {
+  public double getScale() {
     return this.length;
   }
 }

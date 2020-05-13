@@ -48,14 +48,14 @@ public final class JSSPSolutionSpace
    */
   @Override
 // start relevant
-  public final JSSPCandidateSolution create() {
+  public JSSPCandidateSolution create() {
     return new JSSPCandidateSolution(this.instance.m,
         this.instance.n);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void copy(final JSSPCandidateSolution from,
+  public void copy(final JSSPCandidateSolution from,
       final JSSPCandidateSolution to) {
     final int n = this.instance.n * 3;
     int i = 0;
@@ -67,7 +67,7 @@ public final class JSSPSolutionSpace
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final JSSPCandidateSolution z,
+  public void print(final JSSPCandidateSolution z,
       final Appendable out) throws IOException {
     JSSPSolutionSpace.__printJava(z, out);
     out.append(System.lineSeparator());
@@ -87,7 +87,7 @@ public final class JSSPSolutionSpace
    * @throws IOException
    *           if i/o fails
    */
-  private static final void __printGanttData(
+  private static void __printGanttData(
       final JSSPCandidateSolution z, final Appendable out)
       throws IOException {
     out.append("if(!(require(\"aitoaEvaluate\"))) {");//$NON-NLS-1$
@@ -146,9 +146,8 @@ public final class JSSPSolutionSpace
    * @throws IOException
    *           if i/o fails
    */
-  private static final void __printJava(
-      final JSSPCandidateSolution z, final Appendable out)
-      throws IOException {
+  private static void __printJava(final JSSPCandidateSolution z,
+      final Appendable out) throws IOException {
     out.append("new ");//$NON-NLS-1$
     out.append(JSSPCandidateSolution.class.getCanonicalName());
     out.append("(new int[][] ");//$NON-NLS-1$
@@ -170,7 +169,7 @@ public final class JSSPSolutionSpace
 
   /** {@inheritDoc} */
   @Override
-  public final void check(final JSSPCandidateSolution z) {
+  public void check(final JSSPCandidateSolution z) {
     if (z.schedule.length != this.instance.m) {
       throw new IllegalArgumentException(//
           "Schedule for " + //$NON-NLS-1$
@@ -258,14 +257,14 @@ public final class JSSPSolutionSpace
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ("jssp:gantt:" //$NON-NLS-1$
         + this.instance.toString());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double getScale() {
+  public double getScale() {
     return this.instance.getScale();
   }
 

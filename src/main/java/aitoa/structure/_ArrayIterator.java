@@ -25,7 +25,7 @@ final class _ArrayIterator<X> extends _Iterator<X, X> {
 
   /** {@inheritDoc} */
   @Override
-  public final X next() {
+  public X next() {
     final int i = this.m_index;
     if (i >= this.m_end) {
       _Iterator._endError(i);

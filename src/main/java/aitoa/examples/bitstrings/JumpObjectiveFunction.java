@@ -62,7 +62,7 @@ public final class JumpObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     int res = 0;
     for (final boolean b : y) {
       if (b) {
@@ -79,19 +79,19 @@ public final class JumpObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     return (this.n + this.k);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_nk(
         JumpObjectiveFunction.NAME_PREFIX, this.n, this.k);
   }

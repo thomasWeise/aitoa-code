@@ -45,7 +45,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
    * @param maxDepth
    *          the maximum depth
    */
-  private final void __collectCuts(final Node root,
+  private void __collectCuts(final Node root,
       final NodeTypeSet<?> allowed, final int maxDepth) {
     if ((root.depth() <= maxDepth)
         && (allowed.containsNode(root))) {
@@ -62,7 +62,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
 
   /** {@inheritDoc} */
   @Override
-  public final void apply(final Node[] x0, final Node[] x1,
+  public void apply(final Node[] x0, final Node[] x1,
       final Node[] dest, final Random random) {
 
     Node p0 = x0[0];
@@ -111,7 +111,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "rec" + this.m_maxDepth;//$NON-NLS-1$
   }
 }

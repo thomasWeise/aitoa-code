@@ -25,13 +25,13 @@ public final class IntFFA
 
   /** {@inheritDoc} */
   @Override
-  public final void initialize() {
+  public void initialize() {
     Arrays.fill(this.m_frequencies, 0L);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void assignFitness(
+  public void assignFitness(
       final FitnessIndividual<? extends Object>[] P) {
     for (final FitnessIndividual<? extends Object> ind : P) {
       ++this.m_frequencies[((int) (ind.quality))];
@@ -43,7 +43,7 @@ public final class IntFFA
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "ffa"; //$NON-NLS-1$
   }
 }

@@ -39,7 +39,7 @@ public final class BitStringUnaryOperatorMOverNFlip0To1
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return this.m_m + "/n-flip_01"; //$NON-NLS-1$
   }
 
@@ -55,8 +55,8 @@ public final class BitStringUnaryOperatorMOverNFlip0To1
    *          {@inheritDoc}
    */
   @Override
-  public final void apply(final boolean[] x,
-      final boolean[] dest, final Random random) {
+  public void apply(final boolean[] x, final boolean[] dest,
+      final Random random) {
     final int n = x.length;
     boolean neeedFlip = true;
 
@@ -75,7 +75,7 @@ public final class BitStringUnaryOperatorMOverNFlip0To1
 
   /** {@inheritDoc} */
   @Override
-  public final boolean canEnumerate() {
+  public boolean canEnumerate() {
     return false;
   }
 }

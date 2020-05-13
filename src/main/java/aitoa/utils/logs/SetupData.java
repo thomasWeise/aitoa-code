@@ -91,7 +91,7 @@ public final class SetupData implements Comparable<SetupData> {
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     int hc = Long.hashCode(this.randSeedLong);
     hc = (31 * hc) + Long.hashCode(this.budgetFEs);
     hc = (31 * hc) + Long.hashCode(this.budgetTime);
@@ -102,7 +102,7 @@ public final class SetupData implements Comparable<SetupData> {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -121,7 +121,7 @@ public final class SetupData implements Comparable<SetupData> {
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final SetupData s) {
+  public int compareTo(final SetupData s) {
     if (s == null) {
       return -1;
     }

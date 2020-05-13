@@ -77,7 +77,6 @@ abstract class _CommandLineArgs {
    *
    * @return the success predicate
    */
-  @SuppressWarnings("unchecked")
   static final Predicate<EndResult> _getSuccess() {
     final String goalFunc = Configuration.getString(//
         _CommandLineArgs.PARAM_GOAL_FUNC);
@@ -104,16 +103,16 @@ abstract class _CommandLineArgs {
     if (goal != null) {
       final double threshold = goal.doubleValue();
       if (func == null) {
-        return (x) -> (x.bestF <= threshold);
+        return x -> (x.bestF <= threshold);
       }
-      return (x) -> {
+      return x -> {
         final double d = func.applyAsDouble(x.instance);
         return (x.bestF <= (Double.isFinite(d) ? d : threshold));
       };
     }
 
     if (func != null) {
-      return (x) -> (x.bestF <= func.applyAsDouble(x.instance));
+      return x -> (x.bestF <= func.applyAsDouble(x.instance));
     }
     return null;
   }
@@ -191,7 +190,7 @@ abstract class _CommandLineArgs {
     if (i < 0) {
       final Predicate<String> p =
           Pattern.compile(src).asPredicate();
-      return (s) -> (p.test(s) ? s : null);
+      return s -> (p.test(s) ? s : null);
     }
     final String a = src.substring(0, i).trim();
     final String b = src.substring(i + 2).trim();
@@ -203,11 +202,11 @@ abstract class _CommandLineArgs {
 
     final Pattern pa = Pattern.compile(a);
     final Function<String, String> func =
-        (s) -> pa.matcher(s).replaceAll(b);
+        s -> pa.matcher(s).replaceAll(b);
 
     if (omitOthers) {
       final Predicate<String> paa = pa.asPredicate();
-      return (s) -> paa.test(s) ? func.apply(s) : null;
+      return s -> paa.test(s) ? func.apply(s) : null;
     }
 
     return func;

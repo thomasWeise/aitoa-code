@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public interface IModel<X> {
 
   /** initialize the model */
-  public abstract void initialize();
+  void initialize();
 
   /**
    * Update the model. The internal data structures of the model
@@ -25,7 +25,7 @@ public interface IModel<X> {
    *          the array with the points in the search space that
    *          have been selected
    */
-  public abstract void update(final Iterable<X> selected);
+  void update(final Iterable<X> selected);
 
   /**
    * Sample the model and fill the destination point in the
@@ -37,14 +37,14 @@ public interface IModel<X> {
    * @param random
    *          the random number generator
    */
-  public abstract void sample(final X dest, final Random random);
+  void sample(final X dest, final Random random);
 
   /**
    * The minimum number of samples needed to perform an update
    *
    * @return the minimum number of samples needed for an update
    */
-  public default int minimumSamplesNeededForUpdate() {
+  default int minimumSamplesNeededForUpdate() {
     return 1;
   }
 // end relevant
@@ -65,8 +65,8 @@ public interface IModel<X> {
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
-  public static <X> Iterable<X> use(final X[] array,
-      final int start, final int end) {
+  static <X> Iterable<X> use(final X[] array, final int start,
+      final int end) {
     _Iterator._checkRange(array, start, end);
     return () -> new _ArrayIterator<>(array, start, end);
   }
@@ -90,7 +90,7 @@ public interface IModel<X> {
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
-  public static <X> Iterable<X> use(final Supplier<X>[] array,
+  static <X> Iterable<X> use(final Supplier<X>[] array,
       final int start, final int end) {
     _Iterator._checkRange(array, start, end);
     return () -> new _SupplierArrayIterator<>(array, start, end);

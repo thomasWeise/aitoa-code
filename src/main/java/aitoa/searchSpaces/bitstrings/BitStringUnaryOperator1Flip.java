@@ -32,7 +32,7 @@ public final class BitStringUnaryOperator1Flip
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "1flip"; //$NON-NLS-1$
   }
 
@@ -48,8 +48,8 @@ public final class BitStringUnaryOperator1Flip
    *          {@inheritDoc}
    */
   @Override
-  public final void apply(final boolean[] x,
-      final boolean[] dest, final Random random) {
+  public void apply(final boolean[] x, final boolean[] dest,
+      final Random random) {
     System.arraycopy(x, 0, dest, 0, x.length);
     dest[random.nextInt(dest.length)] ^= true;
   }
@@ -72,7 +72,7 @@ public final class BitStringUnaryOperator1Flip
    *          {@inheritDoc}
    */
   @Override
-  public final boolean enumerate(final Random random,
+  public boolean enumerate(final Random random,
       final boolean[] x, final boolean[] dest,
       final Predicate<boolean[]> visitor) {
     final int[] indexes = this.m_indexes;
@@ -92,7 +92,7 @@ public final class BitStringUnaryOperator1Flip
 
   /** {@inheritDoc} */
   @Override
-  public final boolean canEnumerate() {
+  public boolean canEnumerate() {
     return true;
   }
 }

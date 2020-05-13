@@ -80,7 +80,7 @@ public final class EAWithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final void printSetup(final Writer output)
+  public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
         "fitness_ea")); //$NON-NLS-1$
@@ -103,7 +103,7 @@ public final class EAWithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((((((("ea_" + //$NON-NLS-1$
         this.fitness.toString()) + '_') + this.mu) + '+')
         + this.lambda) + '@') + this.cr);
@@ -113,7 +113,7 @@ public final class EAWithFitness<X, Y>
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
-  public final void solve(final IBlackBoxProcess<X, Y> process) {
+  public void solve(final IBlackBoxProcess<X, Y> process) {
 // omitted: initialize local variables random, searchSpace,
 // nullary, unary, binary, and array P of length mu+lambda
 // end relevant
@@ -184,7 +184,7 @@ public final class EAWithFitness<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public final String
+  public String
       getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
     return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
         this, builder);

@@ -79,7 +79,7 @@ public final class DiscretePowerLawDistribution
 
   /** {@inheritDoc} */
   @Override
-  public final int nextInt(final Random random) {
+  public int nextInt(final Random random) {
     return ((int) (Math.pow(//
         ((this.m_powMaxMinDiv * random.nextDouble())
             + this.m_powMin),
@@ -88,14 +88,14 @@ public final class DiscretePowerLawDistribution
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return (((((("Pow(" + this.minInclusive) + ',') //$NON-NLS-1$
         + this.maxExclusive) + ',') + this.alpha) + ')');
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return ((31 * (31 * Integer.hashCode(this.minInclusive)))
         + Integer.hashCode(this.maxExclusive))
         + Double.hashCode(this.alpha);
@@ -103,7 +103,7 @@ public final class DiscretePowerLawDistribution
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof DiscretePowerLawDistribution) {
       final DiscretePowerLawDistribution b =
           ((DiscretePowerLawDistribution) o);

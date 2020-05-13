@@ -45,14 +45,14 @@ public final class JSSPBinaryOperatorSequence
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "sequence"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
 // start relevant
-  public final void apply(final int[] x0, final int[] x1,
+  public void apply(final int[] x0, final int[] x1,
       final int[] dest, final Random random) {
 // omitted: initialization of arrays done_x0 and done_x1 (that
 // remember the already-assigned sub-jobs from x0 and x1) of

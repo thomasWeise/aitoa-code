@@ -39,7 +39,7 @@ public final class LogParser {
    * @param budgetTime
    *          the time budget
    */
-  static final void _checkTime(final long time,
+  static void _checkTime(final long time,
       final long budgetTime) {
     if (time <= budgetTime) {
       return;
@@ -85,7 +85,7 @@ public final class LogParser {
    *           the sanity checks
    */
   @SuppressWarnings("null")
-  public static final void parseLogFile(final Path file,
+  public static void parseLogFile(final Path file,
       final Consumer<LogLine> logConsumer,
       final Consumer<SetupData> setupConsumer)
       throws IOException {

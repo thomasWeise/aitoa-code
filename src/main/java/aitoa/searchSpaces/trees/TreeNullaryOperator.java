@@ -45,7 +45,7 @@ public final class TreeNullaryOperator extends _TreeOperator
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return "create" + this.m_maxDepth;//$NON-NLS-1$
   }
 }

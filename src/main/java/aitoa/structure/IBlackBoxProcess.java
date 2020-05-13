@@ -32,38 +32,35 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the random number generator to be used by this
    *         process
    */
-  public abstract Random getRandom();
+  Random getRandom();
 
   /**
    * Get the search space
    *
    * @return the search space
    */
-  public abstract ISpace<X> getSearchSpace();
+  ISpace<X> getSearchSpace();
 
   /**
    * Get the nullary search operator
    *
    * @return the nullary search operator
    */
-  public abstract INullarySearchOperator<X>
-      getNullarySearchOperator();
+  INullarySearchOperator<X> getNullarySearchOperator();
 
   /**
    * Get the unary search operator
    *
    * @return the unary search operator
    */
-  public abstract IUnarySearchOperator<X>
-      getUnarySearchOperator();
+  IUnarySearchOperator<X> getUnarySearchOperator();
 
   /**
    * Get the binary search operator
    *
    * @return the binary search operator
    */
-  public abstract IBinarySearchOperator<X>
-      getBinarySearchOperator();
+  IBinarySearchOperator<X> getBinarySearchOperator();
 
   // end relevant
   /**
@@ -71,8 +68,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *
    * @return the ternary search operator
    */
-  public abstract ITernarySearchOperator<X>
-      getTernarySearchOperator();
+  ITernarySearchOperator<X> getTernarySearchOperator();
 
   // start relevant
   /**
@@ -82,7 +78,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *         {@link Double#POSITIVE_INFINITY} if
    *         {@link #evaluate(Object)} was not invoked yet
    */
-  public abstract double getBestF();
+  double getBestF();
 
   /**
    * Get the goal objective value,
@@ -92,7 +88,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *         {@link Double#NEGATIVE_INFINITY} if no goal is
    *         specified
    */
-  public abstract double getGoalF();
+  double getGoalF();
 
   /**
    * Get the best point in the search space encountered so far.
@@ -104,7 +100,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *           if {@link #evaluate(Object)} has not yet been
    *           called
    */
-  public abstract void getBestX(final X dest);
+  void getBestX(final X dest);
 
   /**
    * Get the best candidate solution encountered so far.
@@ -116,7 +112,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *           if {@link #evaluate(Object)} has not yet been
    *           called
    */
-  public abstract void getBestY(final Y dest);
+  void getBestY(final Y dest);
 
   /**
    * Get the total number of times {@link #evaluate(Object)} was
@@ -125,7 +121,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the total number of times {@link #evaluate(Object)}
    *         was invoked.
    */
-  public abstract long getConsumedFEs();
+  long getConsumedFEs();
 
   /**
    * Get the last time a call to {@link #evaluate(Object)} has
@@ -134,7 +130,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the last time an improvement was made, or {@code 0L}
    *         if {@link #evaluate(Object)} has not yet been called
    */
-  public abstract long getLastImprovementFE();
+  long getLastImprovementFE();
 
   /**
    * Get the maximum allowed FEs, {@link Long#MAX_VALUE} for
@@ -143,7 +139,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the maximum allowed FEs, {@link Long#MAX_VALUE} for
    *         unlimited
    */
-  public abstract long getMaxFEs();
+  long getMaxFEs();
 
   /**
    * Get the time in milliseconds that has elapsed since the
@@ -152,7 +148,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the time in milliseconds that has elapsed since the
    *         creation of this object.
    */
-  public abstract long getConsumedTime();
+  long getConsumedTime();
 
   /**
    * Get the time in milliseconds that has elapsed since the last
@@ -165,7 +161,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *         so far, {@code 0L} if {@link #evaluate(Object)} has
    *         not yet been called
    */
-  public abstract long getLastImprovementTime();
+  long getLastImprovementTime();
 
   /**
    * Get the maximum allowed runtime in milliseconds,
@@ -174,7 +170,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @return the maximum allowed runtime in milliseconds,
    *         {@link Long#MAX_VALUE} for unlimited
    */
-  public abstract long getMaxTime();
+  long getMaxTime();
 // end relevant
 
   /**
@@ -186,7 +182,7 @@ public interface IBlackBoxProcess<X, Y> extends
    *           if some I/O fails
    */
   @Override
-  public abstract void close() throws IOException;
+  void close() throws IOException;
 
   /**
    * Print a section into the log, if logging is supported
@@ -198,7 +194,7 @@ public interface IBlackBoxProcess<X, Y> extends
    * @throws IOException
    *           if I/O fails
    */
-  public default void printLogSection(final String sectionName,
+  default void printLogSection(final String sectionName,
       final IOConsumer<Writer> printer) throws IOException {
     // does nothing
   }

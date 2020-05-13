@@ -10,7 +10,7 @@ public final class ReflectionUtils {
    *          the object
    * @return its class name
    */
-  public static final String className(final Object object) {
+  public static String className(final Object object) {
     return (object != null)
         ? ReflectionUtils.className(object.getClass()) : "null"; //$NON-NLS-1$
   }
@@ -22,7 +22,7 @@ public final class ReflectionUtils {
    *          the class
    * @return its name
    */
-  public static final String className(final Class<?> clazz) {
+  public static String className(final Class<?> clazz) {
     String s = clazz.getCanonicalName();
     if (s != null) {
       return s;

@@ -81,7 +81,6 @@ public class TestJSSPUnaryOperator1SwapU
   @Test(timeout = 3600000)
   public final void testCanonical() {
     final Random random = ThreadLocalRandom.current();
-    new HashSet<>();
     for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
       final JSSPUnaryOperator1SwapU op =
           new JSSPUnaryOperator1SwapU(inst);
@@ -157,7 +156,7 @@ public class TestJSSPUnaryOperator1SwapU
    * method works correctly and respects the return values of the
    * visitor
    */
-  @SuppressWarnings({ "static-method", "unchecked" })
+  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testEnumerate2() {
     final JSSPSearchSpace space =
@@ -175,7 +174,7 @@ public class TestJSSPUnaryOperator1SwapU
 
     for (int i = 10; (--i) >= 0;) {
       Assert.assertFalse(
-          op.enumerate(random, src, dest, (x) -> false));
+          op.enumerate(random, src, dest, x -> false));
       final HashSet<Long> set = new HashSet<>();
       TestJSSPUnaryOperator1SwapU.__checkUnique(op, set);
       Assert.assertTrue(this.equals(src, copy));

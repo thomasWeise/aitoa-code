@@ -61,7 +61,7 @@ abstract class _StructureTest<T> extends ObjectTest<T> {
 
     /** do the test */
     @Override
-    public final void accept(final Object t, final Runnable u) {
+    public void accept(final Object t, final Runnable u) {
       if (this.m_depth < 20) {
         if ((t == null) || this.m_done.add(t)) {
           ++this.m_depth;

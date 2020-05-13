@@ -28,7 +28,7 @@ public final class Utils {
    *         retained, will be {@code 1<=u<=max}
    */
 // start qualityClearing
-  public static final int qualityBasedClearing(
+  public static int qualityBasedClearing(
       final Individual<?>[] array, final int max) {
 
     Arrays.sort(array, Individual.BY_QUALITY);// best -> first

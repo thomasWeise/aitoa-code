@@ -49,20 +49,20 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
    * @return the empty instance
    */
   @Override
-  public final int[] create() {
+  public int[] create() {
     return new int[this.length];
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void copy(final int[] from, final int[] to) {
+  public void copy(final int[] from, final int[] to) {
     System.arraycopy(from, 0, to, 0, this.length);
   }
 // end relevant
 
   /** {@inheritDoc} */
   @Override
-  public final void print(final int[] z, final Appendable out)
+  public void print(final int[] z, final Appendable out)
       throws IOException {
     out.append("new int[] "); //$NON-NLS-1$
     char ch = '{';
@@ -76,7 +76,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final void check(final int[] z) {
+  public void check(final int[] z) {
     final int[] times = new int[this.instance.n];
     for (final int i : z) {
       times[i]++;
@@ -100,7 +100,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
    * @return the solution space scale
    */
   @Override
-  public final double getScale() {
+  public double getScale() {
     final BigInteger mm = BigInteger.valueOf(this.instance.m);
     final BigInteger nn = BigInteger.valueOf(this.instance.n);
 
@@ -113,7 +113,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return ((("jssp:int[" + //$NON-NLS-1$
         this.length) + "]:") //$NON-NLS-1$
         + this.instance.toString());

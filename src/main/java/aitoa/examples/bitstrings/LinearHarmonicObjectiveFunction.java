@@ -39,7 +39,7 @@ public final class LinearHarmonicObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double evaluate(final boolean[] y) {
+  public double evaluate(final boolean[] y) {
     long s = this.upperBound;
     int last = y.length;
     for (int i = last; (--i) >= 0;) {
@@ -53,19 +53,19 @@ public final class LinearHarmonicObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public final double lowerBound() {
+  public double lowerBound() {
     return 0;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final double upperBound() {
+  public double upperBound() {
     return this.upperBound;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return BitStringObjectiveFunction._make_name_n(
         LinearHarmonicObjectiveFunction.NAME_PREFIX, this.n);
   }

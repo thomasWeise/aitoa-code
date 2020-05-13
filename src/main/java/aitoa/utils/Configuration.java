@@ -29,7 +29,7 @@ public final class Configuration {
    * @param value
    *          the value
    */
-  public static final void putString(final String key,
+  public static void putString(final String key,
       final String value) {
     final String k = Objects.requireNonNull(key);
     final String v = Objects.requireNonNull(value);
@@ -46,7 +46,7 @@ public final class Configuration {
    * @param value
    *          the value
    */
-  public static final void putBoolean(final String key,
+  public static void putBoolean(final String key,
       final boolean value) {
     final String k = Objects.requireNonNull(key);
     final Boolean b = Boolean.valueOf(value);
@@ -63,7 +63,7 @@ public final class Configuration {
    * @param value
    *          the value
    */
-  public static final void putInteger(final String key,
+  public static void putInteger(final String key,
       final Integer value) {
     final String k = Objects.requireNonNull(key);
     final Integer b = Objects.requireNonNull(value);
@@ -80,7 +80,7 @@ public final class Configuration {
    * @param value
    *          the value
    */
-  public static final void putInteger(final String key,
+  public static void putInteger(final String key,
       final int value) {
     Configuration.putInteger(key, Integer.valueOf(value));
   }
@@ -94,7 +94,7 @@ public final class Configuration {
    * @param s
    *          the string
    */
-  public static final void putCommandLine(final String s) {
+  public static void putCommandLine(final String s) {
     String t;
     int i, j;
     final int len;
@@ -155,7 +155,7 @@ public final class Configuration {
    * @param key
    *          the key to delete
    */
-  public static final void delete(final String key) {
+  public static void delete(final String key) {
     final String k = Objects.requireNonNull(key);
     synchronized (Configuration.CONFIGURATION) {
       Configuration.CONFIGURATION.remove(k);
@@ -169,7 +169,7 @@ public final class Configuration {
    *          the key
    * @return the value
    */
-  public static final String getString(final String key) {
+  public static String getString(final String key) {
     final String k = Objects.requireNonNull(key);
     final Object res;
     synchronized (Configuration.CONFIGURATION) {
@@ -185,7 +185,7 @@ public final class Configuration {
    *          the key
    * @return the value
    */
-  public static final boolean getBoolean(final String key) {
+  public static boolean getBoolean(final String key) {
     final String k = Objects.requireNonNull(key);
     final Object res;
     synchronized (Configuration.CONFIGURATION) {
@@ -216,7 +216,7 @@ public final class Configuration {
    *          the key
    * @return the value
    */
-  public static final Path getPath(final String key) {
+  public static Path getPath(final String key) {
     return Configuration.getPath(key, null);
   }
 
@@ -229,7 +229,7 @@ public final class Configuration {
    *          the supplier if no path was found
    * @return the value
    */
-  public static final Path getPath(final String key,
+  public static Path getPath(final String key,
       final Supplier<Path> ifNotSet) {
     final String k = Objects.requireNonNull(key);
     final Object res;
@@ -268,7 +268,7 @@ public final class Configuration {
    *          the key
    * @return the value
    */
-  public static final Integer getInteger(final String key) {
+  public static Integer getInteger(final String key) {
     final String k = Objects.requireNonNull(key);
     final Object res;
     synchronized (Configuration.CONFIGURATION) {
@@ -308,7 +308,7 @@ public final class Configuration {
    *          the key
    * @return the value
    */
-  public static final Double getDouble(final String key) {
+  public static Double getDouble(final String key) {
     final String k = Objects.requireNonNull(key);
     final Object res;
     synchronized (Configuration.CONFIGURATION) {
@@ -349,7 +349,7 @@ public final class Configuration {
    *          the enum class
    * @return the enum constant
    */
-  private static final <E extends Enum<E>> E
+  private static <E extends Enum<E>> E
       __parseEnum(final String s, final Class<E> clazz) {
     try {
       return Enum.valueOf(clazz, s);
@@ -386,8 +386,8 @@ public final class Configuration {
    * @param <E>
    *          the enumeration type
    */
-  public static final <E extends Enum<E>> E
-      getEnum(final String key, final Class<E> clazz) {
+  public static <E extends Enum<E>> E getEnum(final String key,
+      final Class<E> clazz) {
     final String k = Objects.requireNonNull(key);
     final Object res;
     synchronized (Configuration.CONFIGURATION) {
@@ -421,7 +421,7 @@ public final class Configuration {
    * @param value
    *          the path
    */
-  public static final void putPath(final String key,
+  public static void putPath(final String key,
       final Path value) {
     final String k = Objects.requireNonNull(key);
     final Path p = IOUtils.canonicalizePath(value);
@@ -522,8 +522,8 @@ public final class Configuration {
   }
 
   /** Print the whole configuration to stdout */
-  public static final void print() {
-    ConsoleIO.stdout((stdout) -> {
+  public static void print() {
+    ConsoleIO.stdout(stdout -> {
       stdout.println("The current full configuration is:"); //$NON-NLS-1$
       synchronized (Configuration.CONFIGURATION) {
         for (final Entry<String,

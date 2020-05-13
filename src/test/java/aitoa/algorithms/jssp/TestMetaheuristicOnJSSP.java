@@ -1,5 +1,7 @@
 package aitoa.algorithms.jssp;
 
+import java.io.IOException;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,6 +15,7 @@ import aitoa.examples.jssp.JSSPRepresentationMapping;
 import aitoa.examples.jssp.JSSPSearchSpace;
 import aitoa.examples.jssp.JSSPSolutionSpace;
 import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
+import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.ISpace;
 import aitoa.structure.TestBlackBoxProcessBuilder;
@@ -56,7 +59,7 @@ public abstract class TestMetaheuristicOnJSSP
     final ISpace<JSSPCandidateSolution> solutionSpace =
         new JSSPSolutionSpace(instance);
 
-    this.getAlgorithm(instance).solve(//
+    try (final IBlackBoxProcess<int[], JSSPCandidateSolution> p =
         new TestBlackBoxProcessBuilder<int[],
             JSSPCandidateSolution>()//
                 .setSearchSpace(searchSpace)//
@@ -73,7 +76,12 @@ public abstract class TestMetaheuristicOnJSSP
                     new JSSPRepresentationMapping(instance))
                 .setMaxFEs(maxFEs)//
                 .setMaxTime(maxTime)//
-                .get());
+                .get()) {
+      this.getAlgorithm(instance).solve(//
+          p);
+    } catch (final IOException ioe) {
+      throw new AssertionError(ioe);
+    }
   }
 
   /**

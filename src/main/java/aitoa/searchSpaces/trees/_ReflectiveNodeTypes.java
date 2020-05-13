@@ -36,7 +36,7 @@ final class _ReflectiveNodeTypes<T extends Node>
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
-  public final NodeType<T> apply(final NodeTypeSet<?>[] t) {
+  public NodeType<T> apply(final NodeTypeSet<?>[] t) {
     final boolean hasChildren = (t.length > 0);
     try {
       final Constructor<T>[] cs =
@@ -149,7 +149,7 @@ final class _ReflectiveNodeTypes<T extends Node>
 
     /** {@inheritDoc} */
     @Override
-    public final T instantiate(final Node[] children,
+    public T instantiate(final Node[] children,
         final Random random) {
       try {
         return this.m_constructor.newInstance(this.m_params);
@@ -183,11 +183,10 @@ final class _ReflectiveNodeTypes<T extends Node>
 
     /** {@inheritDoc} */
     @Override
-    public final T instantiate(final Node[] children,
+    public T instantiate(final Node[] children,
         final Random random) {
       try {
-        return this.m_constructor.newInstance(//
-            new Object[] { this, children });
+        return this.m_constructor.newInstance(this, children);
       } catch (final Throwable error) {
         throw this._throw(error);
       }

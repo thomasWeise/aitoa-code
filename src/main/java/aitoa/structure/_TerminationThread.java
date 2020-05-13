@@ -47,8 +47,7 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static final void
-      _enqueue(final _BlackBoxProcessBase<?, ?> f) {
+  static void _enqueue(final _BlackBoxProcessBase<?, ?> f) {
     final long t;
     _BlackBoxProcessBase<?, ?> prev, next;
 
@@ -104,8 +103,7 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static final void
-      _dequeue(final _BlackBoxProcessBase<?, ?> f) {
+  static void _dequeue(final _BlackBoxProcessBase<?, ?> f) {
     _BlackBoxProcessBase<?, ?> cur, next;
 
     if (f == null) {
@@ -138,7 +136,7 @@ final class _TerminationThread extends Thread {
 
   /** {@inheritDoc} */
   @Override
-  public final void run() {
+  public void run() {
     // main loop
     for (;;) {
       final long time = System.currentTimeMillis();

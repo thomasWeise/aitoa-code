@@ -22,7 +22,7 @@ public final class QuickOptimizers {
    *          the argument
    * @return the result
    */
-  private static final double __call(final DoubleUnaryOperator f,
+  private static double __call(final DoubleUnaryOperator f,
       final double x) {
     final double r = f.applyAsDouble(x);
     if (Double.isFinite(r)) {
@@ -57,7 +57,7 @@ public final class QuickOptimizers {
    * @param fineAdjust
    *          should we perform fine-adjustment?
    */
-  public static final void unimodal1Dminimization(
+  public static void unimodal1Dminimization(
       final DoubleUnaryOperator f,
       final BooleanSupplier shouldTerminate, final double lower,
       final double upper, final double[] dest,
@@ -246,7 +246,7 @@ public final class QuickOptimizers {
    * @param fineAdjust
    *          should we perform fine-adjustment?
    */
-  public static final void unimodal1Dminimization(
+  public static void unimodal1Dminimization(
       final DoubleUnaryOperator f, final double lower,
       final double upper, final double[] dest,
       final boolean fineAdjust) {

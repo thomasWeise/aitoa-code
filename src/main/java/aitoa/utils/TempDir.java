@@ -46,13 +46,13 @@ public final class TempDir implements Closeable {
    *
    * @return the path to the directory
    */
-  public final Path getPath() {
+  public Path getPath() {
     return this.m_dir;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void close() throws IOException {
+  public void close() throws IOException {
     try {
       IOUtils.delete(this.m_dir);
     } catch (@SuppressWarnings("unused") final Throwable error) {

@@ -35,7 +35,7 @@ public class TestBitStringUnaryOperator2Flip
     final int[] twice = new int[x.length];
 
     this.getInstance().enumerate(ThreadLocalRandom.current(), x,
-        y, (z) -> {
+        y, z -> {
           int done = 0, first = -1, second = -1;
           for (int i = x.length; (--i) >= 0;) {
             if (x[i] != y[i]) {
