@@ -19,7 +19,7 @@ public interface IObjectiveFunction<Y> {
    *          the candidate solution
    * @return the objective value: smaller values are better
    */
-  double evaluate(final Y y);
+  double evaluate(Y y);
 // end relevant
 
   /**

@@ -26,6 +26,6 @@ public interface IRepresentationMapping<X, Y> {
    *          the destination: the candidate solution in the
    *          solution space (will be overwritten)
    */
-  void map(final Random random, final X x, final Y y);
+  void map(Random random, X x, final Y y);
 }
 // end relevant

@@ -24,6 +24,6 @@ public interface INullarySearchOperator<X> {
    * @param random
    *          a random number generator
    */
-  void apply(final X dest, final Random random);
+  void apply(X dest, Random random);
 }
 // end relevant

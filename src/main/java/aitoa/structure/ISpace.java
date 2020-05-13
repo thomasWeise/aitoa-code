@@ -29,7 +29,7 @@ public interface ISpace<Z> {
    *          the destination data structure which will be
    *          overwritten with the contents of {@code from}.
    */
-  void copy(final Z from, final Z to);
+  void copy(Z from, Z to);
 // end relevant
 
   /**

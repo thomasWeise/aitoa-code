@@ -27,7 +27,7 @@ public interface IUnarySearchOperator<X> {
    * @param random
    *          a random number generator
    */
-  void apply(final X x, final X dest, final Random random);
+  void apply(X x, X dest, Random random);
 // end relevant
 
   /**

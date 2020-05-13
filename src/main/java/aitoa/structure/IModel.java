@@ -25,7 +25,7 @@ public interface IModel<X> {
    *          the array with the points in the search space that
    *          have been selected
    */
-  void update(final Iterable<X> selected);
+  void update(Iterable<X> selected);
 
   /**
    * Sample the model and fill the destination point in the
@@ -37,7 +37,7 @@ public interface IModel<X> {
    * @param random
    *          the random number generator
    */
-  void sample(final X dest, final Random random);
+  void sample(X dest, Random random);
 
   /**
    * The minimum number of samples needed to perform an update

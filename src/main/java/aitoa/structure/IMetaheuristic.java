@@ -24,7 +24,7 @@ public interface IMetaheuristic<X, Y> {
    * @param process
    *          the process with all instance information
    */
-  void solve(final IBlackBoxProcess<X, Y> process);
+  void solve(IBlackBoxProcess<X, Y> process);
 // end relevant
 
   /**
