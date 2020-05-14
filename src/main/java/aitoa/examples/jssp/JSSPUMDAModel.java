@@ -235,11 +235,16 @@ public class JSSPUMDAModel implements IModel<int[]> {
    */
   static final int find(final long value, final long[] array,
       final int length) {
-    int i = Math.abs(//
+    final int i = Math.abs(//
         Arrays.binarySearch(array, 0, length, value) + 1);
-    while (array[i] == value) {
-      ++i;
-    }
+// The code below would be needed if there could be two elements
+// in array with the same value. This can only happen if one
+// index would have probability 0.
+// This is not possible in the current configuration, so it is
+// commented out.
+// while (array[i] == value) {
+// ++i;
+// }
     return i;
   }
 }

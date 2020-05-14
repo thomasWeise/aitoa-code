@@ -127,92 +127,95 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
     Assert.assertEquals(3, JSSPUMDAModel.find(7, array, 4));
   }
 
-  /**
-   * Test whether the internal find function works correct with
-   * 0s
-   */
-  @SuppressWarnings("static-method")
-  @Test(timeout = 3600000)
-  public final void testFind2() {
-    final long[] data = { 0, 0, 1, 2, 3 };
-    final long[] array = new long[data.length];
-
-    long sum = 0L;
-    for (int i = 0; i < array.length; i++) {
-      sum += data[i];
-      array[i] = sum;
-    }
-    Assert.assertEquals(6, sum);
-
-    Assert.assertEquals(2,
-        JSSPUMDAModel.find(0, array, array.length));
-    Assert.assertEquals(3,
-        JSSPUMDAModel.find(1, array, array.length));
-    Assert.assertEquals(3,
-        JSSPUMDAModel.find(2, array, array.length));
-    Assert.assertEquals(4,
-        JSSPUMDAModel.find(3, array, array.length));
-    Assert.assertEquals(4,
-        JSSPUMDAModel.find(4, array, array.length));
-    Assert.assertEquals(4,
-        JSSPUMDAModel.find(5, array, array.length));
-  }
-
-  /**
-   * Test whether the internal find function works correct with
-   * 0s
-   */
-  @SuppressWarnings("static-method")
-  @Test(timeout = 3600000)
-  public final void testFind3() {
-    final long[] data = { 0, 0, 1, 0, 1, 0, 1 };
-    final long[] array = new long[data.length];
-
-    long sum = 0L;
-    for (int i = 0; i < array.length; i++) {
-      sum += data[i];
-      array[i] = sum;
-    }
-    Assert.assertEquals(3, sum);
-
-    Assert.assertEquals(2,
-        JSSPUMDAModel.find(0, array, array.length));
-    Assert.assertEquals(4,
-        JSSPUMDAModel.find(1, array, array.length));
-    Assert.assertEquals(6,
-        JSSPUMDAModel.find(2, array, array.length));
-  }
-
-  /**
-   * Test whether the internal find function works correct with
-   * 0s
-   */
-  @SuppressWarnings("static-method")
-  @Test(timeout = 3600000)
-  public final void testFind4() {
-    final long[] data = { 0, 0, 1, 0, 0, 0, 3, 0, 1, 0, 2, 0 };
-    final long[] array = new long[data.length];
-
-    long sum = 0L;
-    for (int i = 0; i < array.length; i++) {
-      sum += data[i];
-      array[i] = sum;
-    }
-    Assert.assertEquals(7, sum);
-
-    Assert.assertEquals(2,
-        JSSPUMDAModel.find(0, array, array.length));
-    Assert.assertEquals(6,
-        JSSPUMDAModel.find(1, array, array.length));
-    Assert.assertEquals(6,
-        JSSPUMDAModel.find(2, array, array.length));
-    Assert.assertEquals(6,
-        JSSPUMDAModel.find(3, array, array.length));
-    Assert.assertEquals(8,
-        JSSPUMDAModel.find(4, array, array.length));
-    Assert.assertEquals(10,
-        JSSPUMDAModel.find(5, array, array.length));
-    Assert.assertEquals(10,
-        JSSPUMDAModel.find(6, array, array.length));
-  }
+// The tests below are only relevant in cases where an index
+// could have zero probability. This is not possible in the
+// current implementation.
+// /**
+// * Test whether the internal find function works correct with
+// * 0s
+// */
+// @SuppressWarnings("static-method")
+// @Test(timeout = 3600000)
+// public final void testFind2() {
+// final long[] data = { 0, 0, 1, 2, 3 };
+// final long[] array = new long[data.length];
+//
+// long sum = 0L;
+// for (int i = 0; i < array.length; i++) {
+// sum += data[i];
+// array[i] = sum;
+// }
+// Assert.assertEquals(6, sum);
+//
+// Assert.assertEquals(2,
+// JSSPUMDAModel.find(0, array, array.length));
+// Assert.assertEquals(3,
+// JSSPUMDAModel.find(1, array, array.length));
+// Assert.assertEquals(3,
+// JSSPUMDAModel.find(2, array, array.length));
+// Assert.assertEquals(4,
+// JSSPUMDAModel.find(3, array, array.length));
+// Assert.assertEquals(4,
+// JSSPUMDAModel.find(4, array, array.length));
+// Assert.assertEquals(4,
+// JSSPUMDAModel.find(5, array, array.length));
+// }
+//
+// /**
+// * Test whether the internal find function works correct with
+// * 0s
+// */
+// @SuppressWarnings("static-method")
+// @Test(timeout = 3600000)
+// public final void testFind3() {
+// final long[] data = { 0, 0, 1, 0, 1, 0, 1 };
+// final long[] array = new long[data.length];
+//
+// long sum = 0L;
+// for (int i = 0; i < array.length; i++) {
+// sum += data[i];
+// array[i] = sum;
+// }
+// Assert.assertEquals(3, sum);
+//
+// Assert.assertEquals(2,
+// JSSPUMDAModel.find(0, array, array.length));
+// Assert.assertEquals(4,
+// JSSPUMDAModel.find(1, array, array.length));
+// Assert.assertEquals(6,
+// JSSPUMDAModel.find(2, array, array.length));
+// }
+//
+// /**
+// * Test whether the internal find function works correct with
+// * 0s
+// */
+// @SuppressWarnings("static-method")
+// @Test(timeout = 3600000)
+// public final void testFind4() {
+// final long[] data = { 0, 0, 1, 0, 0, 0, 3, 0, 1, 0, 2, 0 };
+// final long[] array = new long[data.length];
+//
+// long sum = 0L;
+// for (int i = 0; i < array.length; i++) {
+// sum += data[i];
+// array[i] = sum;
+// }
+// Assert.assertEquals(7, sum);
+//
+// Assert.assertEquals(2,
+// JSSPUMDAModel.find(0, array, array.length));
+// Assert.assertEquals(6,
+// JSSPUMDAModel.find(1, array, array.length));
+// Assert.assertEquals(6,
+// JSSPUMDAModel.find(2, array, array.length));
+// Assert.assertEquals(6,
+// JSSPUMDAModel.find(3, array, array.length));
+// Assert.assertEquals(8,
+// JSSPUMDAModel.find(4, array, array.length));
+// Assert.assertEquals(10,
+// JSSPUMDAModel.find(5, array, array.length));
+// Assert.assertEquals(10,
+// JSSPUMDAModel.find(6, array, array.length));
+// }
 }
