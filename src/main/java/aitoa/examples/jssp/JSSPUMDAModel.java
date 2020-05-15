@@ -15,8 +15,8 @@ import aitoa.utils.RandomUtils;
  */
 public class JSSPUMDAModel implements IModel<int[]> {
 
-  /** the counters */
-  private final long[][] m_counts;
+  /** the counters, i.e., the model */
+  private final long[][] m_M;
   /**
    * the permutation used for picking indices to fill in a random
    * order
@@ -70,7 +70,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
     int n = instance.n;
     this.m_m = instance.m;
     int l = this.m_m * n;
-    this.m_counts = new long[l][n];
+    this.m_M = new long[l][n];
     this.m_perm = new int[l];
     for (; (--l) >= 0;) {
       this.m_perm[l] = l;
@@ -116,7 +116,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public final void initialize() {
-    for (final long[] l : this.m_counts) {
+    for (final long[] l : this.m_M) {
       Arrays.fill(l, 1L);
     }
   }
@@ -125,17 +125,17 @@ public class JSSPUMDAModel implements IModel<int[]> {
   @Override
 // start update
   public void update(final Iterable<int[]> selected) {
-    final int l = this.m_counts.length;
+    final int l = this.m_M.length; // == m*n
 
-// First set nearest occurrence to maximum distance.
-    for (final long[] a : this.m_counts) {
+// Make sure that all values are >= 1
+    for (final long[] a : this.m_M) {
       Arrays.fill(a, 1L);
     }
 
-// Assign probability.
-    for (final int[] sel : selected) {
-      for (int j = l; (--j) >= 0;) {
-        this.m_counts[j][sel[j]] += this.base;
+// For each encountered job, add the large value this.base
+    for (final int[] sel : selected) { // selected points
+      for (int j = l; (--j) >= 0;) { // valid indices
+        this.m_M[j][sel[j]] += this.base;
       }
     }
   }
@@ -146,17 +146,16 @@ public class JSSPUMDAModel implements IModel<int[]> {
 // start sampling
   public final void sample(final int[] dest,
       final Random random) {
-    final int[] perm = this.m_perm;
+    final int[] perm = this.m_perm; // all indices
 // each job occurs m times
     final int[] jobRemainingTimes = this.m_jobRemainingTimes;
     Arrays.fill(jobRemainingTimes, this.m_m);
-// the jobs we can choose from
+// the jobs we can choose from:
     final int[] jobChooseFrom = this.m_jobChoseFrom;
-    final long[] prob = this.m_prob;
-    final long[][] counts = this.m_counts;
-
+    final long[] prob = this.m_prob; // used for cumulative sum
+    final long[][] M = this.m_M; // the model
 // we can choose from n jobs
-    int jobChooseLength = jobChooseFrom.length;
+    int jobChooseLength = jobChooseFrom.length; // = n
 
 // permute the indexes for which we pick jobs
     RandomUtils.shuffle(random, perm, 0, perm.length);
@@ -167,11 +166,12 @@ public class JSSPUMDAModel implements IModel<int[]> {
 
 // build the cumulative frequency vector, N be the overall sum
       for (int j = 0; j < jobChooseLength; ++j) {
-        N += counts[index][jobChooseFrom[j]];
+        N += M[index][jobChooseFrom[j]];
         prob[j] = N;
       }
 
-// pick index with probability proportional to stored frequency
+// pick index with probability proportional to cumulative sum via
+// modified binary search.
       final int select = JSSPUMDAModel.find(
           RandomUtils.uniformFrom0ToNminus1(random, N), prob,
           jobChooseLength);
