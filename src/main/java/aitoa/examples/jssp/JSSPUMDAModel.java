@@ -134,8 +134,8 @@ public class JSSPUMDAModel implements IModel<int[]> {
 
 // For each encountered job, add the large value this.base
     for (final int[] sel : selected) { // selected points
-      for (int j = l; (--j) >= 0;) { // valid indices
-        this.m_M[j][sel[j]] += this.base;
+      for (int k = l; (--k) >= 0;) { // valid indices
+        this.m_M[k][sel[k]] += this.base;
       }
     }
   }
@@ -161,12 +161,12 @@ public class JSSPUMDAModel implements IModel<int[]> {
     RandomUtils.shuffle(random, perm, 0, perm.length);
 
 // iterate over the indices into the array (in random order)
-    for (final int index : perm) {
+    for (final int k : perm) {
       long N = 0L;
 
 // build the cumulative frequency vector, N be the overall sum
       for (int j = 0; j < jobChooseLength; ++j) {
-        N += M[index][jobChooseFrom[j]];
+        N += M[k][jobChooseFrom[j]];
         prob[j] = N;
       }
 
@@ -177,7 +177,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
           jobChooseLength);
 
       final int job = jobChooseFrom[select]; // get selected job
-      dest[index] = job; // store job in result
+      dest[k] = job; // store job in result
       if ((--jobRemainingTimes[job]) == 0) { // job completed?
         jobChooseFrom[select] = jobChooseFrom[--jobChooseLength];
         jobChooseFrom[jobChooseLength] = job;
