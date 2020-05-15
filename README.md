@@ -4,6 +4,7 @@
 [<img alt="AppVeyor Build Status" src="https://img.shields.io/appveyor/ci/thomasWeise/aitoa-code.svg" height="20"/>](https://ci.appveyor.com/project/thomasWeise/aitoa-code)
 [<img alt="drone.io Build Status" src="https://cloud.drone.io/api/badges/thomasWeise/aitoa-code/status.svg" height="20">](https://cloud.drone.io/thomasWeise/aitoa-code)
 [![Release](https://jitpack.io/v/thomasWeise/aitoa-code.svg)](https://jitpack.io/#thomasWeise/aitoa-code)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 
 ## 1. Introduction
 
