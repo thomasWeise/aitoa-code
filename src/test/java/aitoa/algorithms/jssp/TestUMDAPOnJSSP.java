@@ -3,20 +3,17 @@ package aitoa.algorithms.jssp;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import aitoa.algorithms.EDAWithFitness;
-import aitoa.algorithms.IntFFA;
+import aitoa.algorithms.EDA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
-import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 import aitoa.examples.jssp.JSSPUMDAModelP;
 import aitoa.structure.IMetaheuristic;
 
 /**
- * Test the {@linkplain aitoa.algorithms.EDAWithFitness
- * estimation of distribution algorithm} with fitness on the JSSP
+ * Test the {@linkplain aitoa.algorithms.EDA estimation of
+ * distribution algorithm} on the JSSP
  */
-public class TestUMDAWithFitnessOnJSSP
-    extends TestMetaheuristicOnJSSP {
+public class TestUMDAPOnJSSP extends TestMetaheuristicOnJSSP {
 
   /** {@inheritDoc} */
   @Override
@@ -26,10 +23,7 @@ public class TestUMDAWithFitnessOnJSSP
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new EDAWithFitness<>(mu, lambda,
-        new JSSPUMDAModelP(instance, 1 + rand.nextInt(2)),
-        new IntFFA(
-            (int) (new JSSPMakespanObjectiveFunction(instance)
-                .upperBound())));
+    return new EDA<>(mu, lambda,
+        new JSSPUMDAModelP(instance, 1 + rand.nextInt(2)));
   }
 }

@@ -523,6 +523,8 @@ public enum EJSSPExperimentStage implements
             new JSSPUMDAModel(problem.instance)));
         list.add(() -> new EDAWithClearing<>(mu, 4096, //
             new JSSPUMDAModel(problem.instance)));
+        list.add(() -> new EDAWithClearing<>(mu, 4096, //
+            new JSSPUMDAModelP(problem.instance)));
 
         for (int lambdaShift = 4; lambdaShift <= 18;
             lambdaShift++) {
@@ -542,10 +544,48 @@ public enum EJSSPExperimentStage implements
   },
 
   /**
-   * the twelfth stage: estimation of distribution algorithm with
-   * local search
+   * the twelfth stage: estimation of distribution algorithm
    */
   STAGE_12 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+
+      final ArrayList<Supplier<
+          IMetaheuristic<int[], JSSPCandidateSolution>>> list =
+              new ArrayList<>();
+
+      for (int muShift = 4; muShift <= 12; muShift += 2) {
+        final int mu = 1 << muShift;
+        for (int lambdaShift = 10; lambdaShift <= 18;
+            lambdaShift++) {
+          final int lambda = 1 << lambdaShift;
+          if (mu < lambda) {
+            list.add(() -> new EDA<>(mu, lambda, //
+                new JSSPUMDAModelP(problem.instance)));
+          }
+        }
+      }
+      return list.stream();
+    }
+  },
+
+  /**
+   * the thirteenth stage: estimation of distribution algorithm
+   * with local search
+   */
+  STAGE_13 {
 
     /**
      * Get a stream of algorithm suppliers for a given problem
