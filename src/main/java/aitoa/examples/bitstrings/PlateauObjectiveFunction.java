@@ -26,9 +26,9 @@ public final class PlateauObjectiveFunction
    */
   public PlateauObjectiveFunction(final int _n, final int _k) {
     super(_n);
-    if ((_k > 0) && (_k >= (_n >>> 1))) {
+    if ((_k <= 1) || (_k >= (_n >>> 1))) {
       throw new IllegalArgumentException(
-          "k must be greater than 0 and less than half of n, but we got k=" //$NON-NLS-1$
+          "k must be greater than 1 and less than half of n, but we got k=" //$NON-NLS-1$
               + _k + " and n=" + _n);//$NON-NLS-1$
     }
     this.k = _k;
