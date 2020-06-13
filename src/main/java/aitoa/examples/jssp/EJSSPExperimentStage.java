@@ -566,9 +566,10 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      for (int muShift = 4; muShift <= 12; muShift += 2) {
+      for (final int muShift : new int[] { 4, 6, 7, 8, 9, 10,
+          12 }) {
         final int mu = 1 << muShift;
-        for (int lambdaShift = 10; lambdaShift <= 18;
+        for (int lambdaShift = 5; lambdaShift <= 18;
             lambdaShift++) {
           final int lambda = 1 << lambdaShift;
           if (mu < lambda) {
@@ -577,6 +578,22 @@ public enum EJSSPExperimentStage implements
           }
         }
       }
+
+      for (final int mu : new int[] { 2, 3, 4, 5, 8, 10 }) {
+        for (int lambdaShift = 4; lambdaShift <= 18;
+            lambdaShift++) {
+          final int lambda = 1 << lambdaShift;
+          if (mu < lambda) {
+            if (lambda <= 256) {
+              list.add(() -> new EDAWithClearing<>(mu, lambda, //
+                  new JSSPUMDAModelP(problem.instance)));
+            }
+            list.add(() -> new EDA<>(mu, lambda, //
+                new JSSPUMDAModelP(problem.instance)));
+          }
+        }
+      }
+
       return list.stream();
     }
   },
