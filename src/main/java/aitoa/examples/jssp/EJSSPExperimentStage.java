@@ -579,16 +579,12 @@ public enum EJSSPExperimentStage implements
         }
       }
 
-      for (final int mu : new int[] { 2, 3, 4, 5, 8, 10 }) {
-        for (int lambdaShift = 4; lambdaShift <= 18;
+      for (final int mu : new int[] { 2, 3, 4, 7, 10 }) {
+        for (int lambdaShift = 4; lambdaShift <= 8;
             lambdaShift++) {
           final int lambda = 1 << lambdaShift;
           if (mu < lambda) {
-            if (lambda <= 256) {
-              list.add(() -> new EDAWithClearing<>(mu, lambda, //
-                  new JSSPUMDAModelP(problem.instance)));
-            }
-            list.add(() -> new EDA<>(mu, lambda, //
+            list.add(() -> new EDAWithClearing<>(mu, lambda, //
                 new JSSPUMDAModelP(problem.instance)));
           }
         }
