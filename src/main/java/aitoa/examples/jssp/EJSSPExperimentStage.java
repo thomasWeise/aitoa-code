@@ -544,7 +544,8 @@ public enum EJSSPExperimentStage implements
   },
 
   /**
-   * the twelfth stage: estimation of distribution algorithm
+   * the twelfth stage: estimation of distribution algorithm with
+   * local search
    */
   STAGE_12 {
 
@@ -566,82 +567,18 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      for (final int muShift : new int[] { 4, 6, 7, 8, 9, 10,
-          12 }) {
-        final int mu = 1 << muShift;
-        for (int lambdaShift = 5; lambdaShift <= 18;
-            lambdaShift++) {
-          final int lambda = 1 << lambdaShift;
+      for (int lambdaShift = 2; lambdaShift <= 6;
+          lambdaShift++) {
+        final int lambda = 1 << lambdaShift;
+        for (final int mu : new int[] { 2, 4, 8, 16 }) {
           if (mu < lambda) {
-            list.add(() -> new EDA<>(mu, lambda, //
-                new JSSPUMDAModelP(problem.instance)));
+            list.add(() -> new HybridEDAWithClearing<>(mu,
+                lambda, Integer.MAX_VALUE, //
+                new JSSPUMDAModel(problem.instance)));
           }
         }
       }
-
-      for (final int mu : new int[] { 2, 3, 4, 7, 10 }) {
-        for (int lambdaShift = 4; lambdaShift <= 8;
-            lambdaShift++) {
-          final int lambda = 1 << lambdaShift;
-          if (mu < lambda) {
-            list.add(() -> new EDAWithClearing<>(mu, lambda, //
-                new JSSPUMDAModelP(problem.instance)));
-          }
-        }
-      }
-
       return list.stream();
-    }
-  },
-
-  /**
-   * the thirteenth stage: estimation of distribution algorithm
-   * with local search
-   */
-  STAGE_13 {
-
-    /**
-     * Get a stream of algorithm suppliers for a given problem
-     *
-     * @param problem
-     *          the problem
-     * @return the stream of suppliers
-     */
-    @Override
-    public
-        Stream<Supplier<
-            IMetaheuristic<int[], JSSPCandidateSolution>>>
-        getAlgorithms(//
-            final JSSPMakespanObjectiveFunction problem) {
-
-      return Stream.of(//
-          () -> new HybridEDAWithClearing<>(2, 16,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(4, 16,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(8, 16,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(2, 32,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(4, 32,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(8, 32,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(16, 32,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(4, 8,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)), //
-          () -> new HybridEDAWithClearing<>(2, 4,
-              Integer.MAX_VALUE, //
-              new JSSPUMDAModel(problem.instance)));
     }
 
     /**
