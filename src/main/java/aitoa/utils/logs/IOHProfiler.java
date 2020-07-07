@@ -17,7 +17,6 @@ import aitoa.examples.bitstrings.JumpObjectiveFunction;
 import aitoa.examples.bitstrings.PlateauObjectiveFunction;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
-import aitoa.examples.jssp.JSSPMakespanObjectiveFunction2;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
@@ -287,10 +286,6 @@ public class IOHProfiler {
       JSSPInstance inst = null;
       if (f instanceof JSSPMakespanObjectiveFunction) {
         inst = ((JSSPMakespanObjectiveFunction) f).instance;
-      } else {
-        if (f instanceof JSSPMakespanObjectiveFunction2) {
-          inst = ((JSSPMakespanObjectiveFunction2) f).instance;
-        }
       }
       if (inst != null) {
         return new FunctionMetaData(inst.toString(),

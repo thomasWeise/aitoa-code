@@ -523,8 +523,6 @@ public enum EJSSPExperimentStage implements
             new JSSPUMDAModel(problem.instance)));
         list.add(() -> new EDAWithClearing<>(mu, 4096, //
             new JSSPUMDAModel(problem.instance)));
-        list.add(() -> new EDAWithClearing<>(mu, 4096, //
-            new JSSPUMDAModelP(problem.instance)));
 
         for (int lambdaShift = 4; lambdaShift <= 18;
             lambdaShift++) {
