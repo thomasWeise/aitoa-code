@@ -91,7 +91,6 @@ public abstract class TestBitStringMetaheuristic
    * @throws IOException
    *           if i/o fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testOneMax() throws IOException {
     for (int i = 100; (--i) >= 10;) {
@@ -105,7 +104,6 @@ public abstract class TestBitStringMetaheuristic
    * @throws IOException
    *           if i/o fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testLeadingOnes() throws IOException {
     for (int i = 30; (--i) >= 10;) {
@@ -119,7 +117,6 @@ public abstract class TestBitStringMetaheuristic
    * @throws IOException
    *           if i/o fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testTwoMax() throws IOException {
     for (int i = 30; (--i) >= 10;) {
@@ -133,7 +130,6 @@ public abstract class TestBitStringMetaheuristic
    * @throws IOException
    *           if i/o fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testTrap() throws IOException {
     for (int i = 70; (--i) >= 10;) {

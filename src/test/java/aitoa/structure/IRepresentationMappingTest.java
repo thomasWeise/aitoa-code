@@ -47,7 +47,6 @@ public abstract class IRepresentationMappingTest<X, Y>
   /**
    * test applying the map function
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testMap() {
     final Y dest = this.createY();

@@ -97,7 +97,6 @@ public abstract class TestMetaheuristicOnJSSP
   /**
    * test the application of the algorithm to the demo instance
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testDemo() {
     this.runTest(new JSSPInstance("demo"), //$NON-NLS-1$
@@ -107,7 +106,6 @@ public abstract class TestMetaheuristicOnJSSP
   /**
    * test the application of the algorithm to the abz7 instance
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testABZ7() {
     this.runTest(new JSSPInstance("abz7")); //$NON-NLS-1$
@@ -116,7 +114,6 @@ public abstract class TestMetaheuristicOnJSSP
   /**
    * test the application of the algorithm to the abz7 instance
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testYN3() {
     this.runTest(new JSSPInstance("yn3")); //$NON-NLS-1$

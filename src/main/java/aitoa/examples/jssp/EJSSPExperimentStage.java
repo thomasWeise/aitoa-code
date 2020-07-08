@@ -15,6 +15,7 @@ import aitoa.algorithms.HillClimber;
 import aitoa.algorithms.HillClimber2;
 import aitoa.algorithms.HillClimber2WithRestarts;
 import aitoa.algorithms.HillClimberWithRestarts;
+import aitoa.algorithms.HybridEDA;
 import aitoa.algorithms.HybridEDAWithClearing;
 import aitoa.algorithms.MA;
 import aitoa.algorithms.MAWithClearing;
@@ -572,6 +573,9 @@ public enum EJSSPExperimentStage implements
           if (mu < lambda) {
             list.add(() -> new HybridEDAWithClearing<>(mu,
                 lambda, Integer.MAX_VALUE, //
+                new JSSPUMDAModel(problem.instance)));
+            list.add(() -> new HybridEDA<>(mu, lambda,
+                Integer.MAX_VALUE, //
                 new JSSPUMDAModel(problem.instance)));
           }
         }

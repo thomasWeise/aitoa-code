@@ -65,7 +65,6 @@ public abstract class INullarySearchOperatorTest<X>
    * works and produces at least two different results within 100
    * calls
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testCreateValidAndDifferent() {
     final ISpace<X> space = this.getSpace();

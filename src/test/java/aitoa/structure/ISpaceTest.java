@@ -80,7 +80,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#create()} method does not return
    * {@code null}
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 10000)
   public final void testCreateNotNull() {
     Assert.assertNotNull(this.getInstance().create());
@@ -90,7 +89,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#create()} method returns objects
    * of the same class
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 10000)
   public final void testCreateTwiceSameClass() {
     final ISpace<X> space = this.getInstance();
@@ -102,7 +100,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#create()} method returns objects
    * different objects when called twice
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 10000)
   public final void testCreateNotSameInstance() {
     final ISpace<X> space = this.getInstance();
@@ -113,7 +110,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#copy(Object, Object)} method
    * works
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public final void testCopy() {
     final ISpace<X> space = this.getInstance();
@@ -131,7 +127,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#copy(Object, Object)} method
    * works with the instance returned by {@link #createValid()}
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public final void testCopyValid() {
     final ISpace<X> space = this.getInstance();
@@ -159,7 +154,6 @@ public abstract class ISpaceTest<X>
    * assumptions and checks as the {@link ISpace#check(Object)}
    * method of the space
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 1000000)
   public final void testCheckAgreesWithAssertValid() {
     X d;
@@ -186,7 +180,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#check(Object)} method works with
    * the valid instance
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public final void testCheckValid() {
     this.getInstance().check(this.createValid());
@@ -196,7 +189,6 @@ public abstract class ISpaceTest<X>
    * test that the {@link ISpace#check(Object)} method works with
    * the invalid instance
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 1000000)
   public final void testCheckInvalid() {
     final ISpace<X> space = this.getInstance();
@@ -236,7 +228,6 @@ public abstract class ISpaceTest<X>
    * @throws IOException
    *           if i/o fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public final void testPrintValid() throws IOException {
     final StringBuilder sb = new StringBuilder();

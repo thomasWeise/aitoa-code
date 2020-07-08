@@ -61,7 +61,6 @@ public class TestTreeNullaryOperator
    * Ensure that sufficient different nodes are created and that
    * the depth of the trees is correct
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testApplyValidAndDifferentAndDepthTest() {
     final TreeSpace space = this.getSpace();

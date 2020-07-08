@@ -75,7 +75,6 @@ public abstract class IBinarySearchOperatorTest<X>
    * method works and produces different, valid results while not
    * altering the source objects
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testApplyValidAndDifferent() {
     final ISpace<X> space = this.getSpace();

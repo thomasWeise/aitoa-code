@@ -71,7 +71,6 @@ public abstract class IModelTest<X>
    * Test whether the model creates valid and different points
    * directly after initialization.
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testValidAndDifferentAfterInitialize() {
     final ISpace<X> space = this.getSpace();
@@ -100,7 +99,6 @@ public abstract class IModelTest<X>
   /**
    * Test whether the model creates valid points after update.
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testValidAfterUpdate() {
     final ISpace<X> space = this.getSpace();

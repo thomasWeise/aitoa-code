@@ -156,7 +156,6 @@ public class TestJSSPUnaryOperator1SwapU
    * method works correctly and respects the return values of the
    * visitor
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testEnumerate2() {
     final JSSPSearchSpace space =

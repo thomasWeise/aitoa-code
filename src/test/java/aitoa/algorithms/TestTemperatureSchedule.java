@@ -11,7 +11,6 @@ import aitoa.TestTools;
 public abstract class TestTemperatureSchedule
     extends ObjectTest<TemperatureSchedule> {
   /** test the temperature schedule */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testTemperature() {
     final TemperatureSchedule ts = this.getInstance();

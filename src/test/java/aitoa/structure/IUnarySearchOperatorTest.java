@@ -76,7 +76,6 @@ public abstract class IUnarySearchOperatorTest<X>
    * method works and produces different, valid results while not
    * altering the source objects
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testApplyValidAndDifferent() {
     final ISpace<X> space = this.getSpace();
@@ -111,7 +110,7 @@ public abstract class IUnarySearchOperatorTest<X>
    * method works correctly and respects the return values of the
    * visitor
    */
-  @SuppressWarnings({ "static-method", "unchecked" })
+  @SuppressWarnings( "unchecked" )
   @Test(timeout = 3600000)
   public void testEnumerate() {
     final ISpace<X> space = this.getSpace();

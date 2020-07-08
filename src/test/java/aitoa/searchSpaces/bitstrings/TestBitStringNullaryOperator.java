@@ -48,7 +48,6 @@ public class TestBitStringNullaryOperator
   }
 
   /** test whether all options are sampled */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testRandom() {
     if (this.m_space.length > 12) {

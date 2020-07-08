@@ -29,7 +29,6 @@ public abstract class IObjectiveFunctionTest<Y>
    * test that the {@link IObjectiveFunction#evaluate(Object)}
    * method works
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testApplyValidAndDifferent() {
     final IObjectiveFunction<Y> f = this.getInstance();

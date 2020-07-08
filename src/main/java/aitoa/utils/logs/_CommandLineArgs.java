@@ -84,9 +84,9 @@ abstract class _CommandLineArgs {
     final ToDoubleFunction<String> func;
     if (goalFunc != null) {
       try {
-        func =
-            ToDoubleFunction.class.cast(Class.forName(goalFunc)
-                .getDeclaredConstructor().newInstance());
+        func = ToDoubleFunction.class.cast(//
+            Class.forName(goalFunc).getDeclaredConstructor()
+                .newInstance());
       } catch (final Throwable error) {
         throw new IllegalArgumentException(
             "Cannot instantiate class '" //$NON-NLS-1$

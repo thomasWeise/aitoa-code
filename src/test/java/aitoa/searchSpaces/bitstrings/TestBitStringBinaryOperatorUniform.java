@@ -39,7 +39,6 @@ public class TestBitStringBinaryOperatorUniform
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   @Override
   public void testApplyValidAndDifferent() {
@@ -83,7 +82,6 @@ public class TestBitStringBinaryOperatorUniform
    * test that the uniform crossover produces all possible
    * results
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public void testAllResultsPossible() {
     if (this.m_space.length > 12) {

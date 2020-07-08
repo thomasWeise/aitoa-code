@@ -31,7 +31,6 @@ public abstract class TestMetaheuristic<X, Y>
    * @throws IOException
    *           if the method fails
    */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testPrintSetup() throws IOException {
     char[] text = null;
