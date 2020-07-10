@@ -299,6 +299,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
       this.m_n = n;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run() {
       final long res = JSSPSolutionSpaceSizeEnumerate

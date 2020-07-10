@@ -1,12 +1,10 @@
 package aitoa.structure;
 
-import java.util.Objects;
 import java.util.Random;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import aitoa.ObjectTest;
 import aitoa.TestTools;
 
 /**
@@ -18,14 +16,7 @@ import aitoa.TestTools;
  */
 @Ignore
 public abstract class IModelTest<X>
-    extends ObjectTest<IModel<X>> {
-
-  /**
-   * get an instance of the space backing the operator
-   *
-   * @return the space
-   */
-  protected abstract ISpace<X> getSpace();
+    extends INullarySearchOperatorTest<X> {
 
   /**
    * Get the model corresponding to the space
@@ -39,22 +30,15 @@ public abstract class IModelTest<X>
 
   /** {@inheritDoc} */
   @Override
-  protected IModel<X> getInstance() {
-    return this.getModel(this.getSpace());
+  protected INullarySearchOperator<X>
+      getOperator(final ISpace<X> space) {
+    return this.getModel(space);
   }
 
-  /**
-   * check if two instances of the data structure {@code X} are
-   * equal or not
-   *
-   * @param a
-   *          the first instance
-   * @param b
-   *          the second instance
-   * @return {@code true} if they are equal, {@code false} if not
-   */
-  protected boolean equals(final X a, final X b) {
-    return Objects.deepEquals(a, b);
+  /** {@inheritDoc} */
+  @Override
+  protected IModel<X> getInstance() {
+    return this.getModel(this.getSpace());
   }
 
   /**
@@ -83,7 +67,7 @@ public abstract class IModelTest<X>
     int diff = 0;
     outer: for (int i = array.length; (--i) >= 0;) {
       array[i] = space.create();
-      model.sample(array[i], random);
+      model.apply(array[i], random);
       space.check(array[i]);
       for (int j = array.length; (--j) > i;) {
         if (this.equals(array[i], array[j])) {
@@ -94,6 +78,19 @@ public abstract class IModelTest<X>
     }
 
     TestTools.assertGreaterOrEqual(diff, array.length >>> 3);
+  }
+
+  /**
+   * test that the
+   * {@link INullarySearchOperator#apply(Object, Random)} method
+   * works and produces at least two different results within 100
+   * calls
+   */
+  @Test(timeout = 3600000)
+  @Override
+  public void testCreateValidAndDifferent() {
+    this.getInstance().initialize();
+    super.testCreateValidAndDifferent();
   }
 
   /**
@@ -123,7 +120,7 @@ public abstract class IModelTest<X>
       model.update(IModel.use(array, 0, selectedEnd));
 
       dest[j] = space.create();
-      model.sample(dest[j], random);
+      model.apply(dest[j], random);
       space.check(dest[j]);
 
       for (int k = 0; k < j; ++k) {

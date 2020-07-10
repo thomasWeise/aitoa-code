@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  *          the search space
  */
 // start relevant
-public interface IModel<X> {
+public interface IModel<X> extends INullarySearchOperator<X> {
 
   /** initialize the model */
   void initialize();
@@ -29,7 +29,22 @@ public interface IModel<X> {
 
   /**
    * Sample the model and fill the destination point in the
-   * search space with new, valid content
+   * search space with new, valid content.
+   * <p>
+   * This is the <em>same</em> method as
+   * {@linkplain INullarySearchOperator#apply(Object, Random)
+   * apply} of {@link INullarySearchOperator}. Using this method
+   * also here is a small trick: In the EDA, we can use an
+   * unbiased nullary search operator to sample the first set of
+   * solutions. Or we could use the freshly
+   * {@linkplain #initialize() initialized} model &ndash; which
+   * may have a bias. If we implement Ant Colony Optimization as
+   * EDA, then we would use the model, as it has a bias, namely
+   * the heuristic values. We would then provide the model both
+   * in the algorithm constructor as model as well as in the
+   * black-box process configration as nullary search operator.
+   * In the "normal" EDAs, we would, of course, use the unbiased
+   * (uniformly random) nullary search operators instead.
    *
    * @param dest
    *          the point in the search space to be overwritten
@@ -37,7 +52,8 @@ public interface IModel<X> {
    * @param random
    *          the random number generator
    */
-  void sample(X dest, Random random);
+  @Override
+  void apply(X dest, Random random);
 
   /**
    * The minimum number of samples needed to perform an update

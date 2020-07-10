@@ -143,7 +143,7 @@ public class JSSPUMDAModelP implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
 // start sampling
-  public final void sample(final int[] dest,
+  public final void apply(final int[] dest,
       final Random random) {
     final int[] perm = this.m_perm; // all indices
 // the jobs we can choose from:

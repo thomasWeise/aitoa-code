@@ -184,7 +184,7 @@ public final class HybridEDAWithClearing<X, Y>
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-          Model.sample(dest.x, random);
+          Model.apply(dest.x, random);
           dest.quality = process.evaluate(dest.x);
         } // the end of the new points generation
       } // the end of the main loop

@@ -69,7 +69,7 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
       final int[] dest = new int[demo.m * demo.n];
       checker: {
         for (int i = 10; (--i) >= 0;) {
-          model.sample(dest, ThreadLocalRandom.current());
+          model.apply(dest, ThreadLocalRandom.current());
           if (Arrays.equals(template, dest)) {
             break checker;
           }

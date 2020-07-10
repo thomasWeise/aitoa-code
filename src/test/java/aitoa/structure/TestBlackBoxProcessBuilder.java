@@ -305,6 +305,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       return m;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final void close() throws IOException {
       if (this.m_knowsThatClosed) {

@@ -140,7 +140,7 @@ public final class EDAWithClearing<X, Y>
 
 // sample new population
         for (final Individual<X> dest : P) {
-          Model.sample(dest.x, random); // create new solution
+          Model.apply(dest.x, random); // create new solution
           dest.quality = process.evaluate(dest.x);
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process

@@ -66,7 +66,7 @@ public abstract class INullarySearchOperatorTest<X>
    * calls
    */
   @Test(timeout = 3600000)
-  public final void testCreateValidAndDifferent() {
+  public void testCreateValidAndDifferent() {
     final ISpace<X> space = this.getSpace();
     final INullarySearchOperator<X> op = this.getOperator(space);
     final Random random = ThreadLocalRandom.current();
