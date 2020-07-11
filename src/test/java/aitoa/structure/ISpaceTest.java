@@ -145,6 +145,7 @@ public abstract class ISpaceTest<X>
    *
    * @return the number of times
    */
+  @SuppressWarnings("static-method")
   protected int testCheckValidityTimes() {
     return 100;
   }

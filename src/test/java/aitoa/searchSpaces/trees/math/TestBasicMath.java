@@ -14,7 +14,7 @@ import aitoa.searchSpaces.trees.TestNode;
 public class TestBasicMath {
 
   /** test the creation of an addition */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings({ "rawtypes", "unchecked", "static-method" })
   @Test(timeout = 3600000)
   public void testAdd2Typed() {
     final NodeTypeSetBuilder nts = new NodeTypeSetBuilder();

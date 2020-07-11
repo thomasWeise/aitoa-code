@@ -6,27 +6,64 @@ import java.util.Random;
 /**
  * The population-based Ant Colony Optimization (PACO),
  * implemented as an EDA model.
+ * <p>
+ * The population of the ants is managed in an age-based manner.
+ * The population will hold at most {@link #K} "ants"
+ * (permutations). Initially, it is empty. In each iteration, new
+ * ants may enter the population (via a call of
+ * {@link #update(Iterable)}). If adding a new ant (permutation)
+ * would lead to exceeding the maximum population size
+ * {@link #K}, the "oldest" ant, i.e., the ant in the population
+ * which entered the population at the earliest time, will be
+ * removed. In this sense, the population is basically a ring
+ * buffer.
+ * <p>
+ * The amount of pheromone on an sequence (called edge)
+ * {@code (a, b)} is determined by how often {@code b} directly
+ * follows {@code a} in the ants in the population. If the
+ * sequence {@code (a, b)} does not occur in any permutation in
+ * the population, the pheromone is a very small value
+ * {@link #tau0} (where {@code tau0=1/(L-1)}, with {@link #L}
+ * being the length of the permutations). If {@code (a, b)}
+ * occurs {@code t} times, the pheromone is
+ * {@code tau0 + t(tauMax-tauMin)/K}, where {@link #tauMax} is
+ * the maximum pheromone.
+ * <p>
+ * In this model implementation, the choice of the starting node
+ * is also modeled. This means that if the model is sampled, new
+ * ants will start their paths more likely at good starting
+ * points of the previous ants. This makes sense in problems such
+ * as the Job Shop Scheduling Problem (JSSP), asymmetric
+ * Traveling Salesman Problems or in vehicle routing problems
+ * with time windows, where the "direction" of visiting nodes or
+ * permutations is important. In symmetric Traveling Salesman
+ * Problems, on the other hand, you could perform a tour forward
+ * or backwards, and it would not matter. In that case, the
+ * initial starting node would not need to be modeled. Anyway,
+ * here we also model the starting node.
  *
  * @param <X>
  *          the search space
  */
 public class PACOModelAge<X> extends ACOModel<X> {
   /**
-   * the fraction of edges to be chosen directly based on the
-   * heuristic
+   * the fraction of edges to be chosen greedily, i.e., directly
+   * based on the best pheromone-cost combination (instead of
+   * randomly but proportionally on the pheromone-cost)
    */
   public final double q0;
 
-  /** the power to be applied to the heuristic value */
+  /** the power to be applied to the cost value */
   public final double beta;
 
-  /** the minimal tau value */
+  /** the minimal pheromone value */
   public final double tau0;
-
   /** the maximum pheromone that can be assigned to any edge */
   public final double tauMax;
+  /** the pheromone multiplier */
+  private final double m_pheroMultiplier;
 
-  /** the size of the population */
+  /** the maximum size of the population */
   public final int K;
 
   /** the edge matrix used for pheromones */
@@ -34,21 +71,30 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** the node set managing the nodes */
   private final NodeSet m_nodes;
 
-  /** the pheromone multiplier */
-  private final double m_pheroMultiplier;
-
   /** the population of size of at most {@link #K} */
   private final int[][] m_population;
 
-  /** the actual size of the population */
+  /**
+   * the actual size of the population: will initially be
+   * {@code 0}, the increase every time an ant reaches the
+   * population, until it eventually remains fixed at {@link #K}
+   * once the population is full
+   */
   private int m_popSize;
   /**
    * the index where the next permutation can be stored in the
-   * population
+   * population: The population is a ring buffer, where the
+   * oldest ant is overwritten with new ants coming in.
+   * {@link #m_popIndex} therefore increases by {@code 1} and is
+   * modulo-divided by {@link #K} every time an ant enters the
+   * population.
    */
   private int m_popIndex;
 
-  /** the values */
+  /**
+   * the temporary storage of the edge values, used when
+   * random-proportional node choices are done
+   */
   private final double[] m_vs;
 
   /**
@@ -59,8 +105,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
    * @param _K
    *          the size of the population
    * @param _q0
-   *          the fraction of edges to be chosen directly based
-   *          on the heuristic
+   *          the fraction of edges to be chosen greedily based
+   *          on the pheromone-cost combination
    * @param _beta
    *          the power to be applied to the heuristic value
    * @param _tauMax
@@ -73,8 +119,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
     super(_L);
 
     if (_K <= 0) {
-      throw new IllegalArgumentException("K must be > 0, but is "//$NON-NLS-1$
-          + _K);
+      throw new IllegalArgumentException(//
+          "K must be > 0, but is " + _K);//$NON-NLS-1$
     }
     this.K = _K;
 
@@ -128,6 +174,13 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
     this.m_population = new int[this.K][this.L];
     this.m_vs = new double[this.L];
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return (((("paco_age_" + this.K) + '_') //$NON-NLS-1$
+        + this.q0) + '_') + this.tauMax;
   }
 
   /** {@inheritDoc} */
