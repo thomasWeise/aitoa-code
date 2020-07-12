@@ -18,7 +18,10 @@ abstract class _BlackBoxProcessBase<X, Y>
     implements IBlackBoxProcess<X, Y> {
   /** the random number generator */
   final Random m_random;
-  /** the end time */
+  /**
+   * the end time, i.e., the time when the process should
+   * terminate
+   */
   final long m_endTime;
   /** the start time */
   final long m_startTime;
@@ -34,6 +37,13 @@ abstract class _BlackBoxProcessBase<X, Y>
   final X m_bestX;
   /** the best objective value */
   double m_bestF;
+  /**
+   * the time when the process was actually terminated:
+   * <em>must</em> be set by subclasses in their overwritten
+   * {@link #close()} method (and before doing any
+   * synchronization stuff)!
+   */
+  long m_terminationTime;
 
   /** a linked list link */
   volatile transient _BlackBoxProcessBase<?, ?> m_next;
@@ -136,6 +146,9 @@ abstract class _BlackBoxProcessBase<X, Y>
   /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
+    if (this.m_terminationTime <= 0L) {
+      this.m_terminationTime = System.currentTimeMillis();
+    }
     this._terminate();
   }
 
@@ -234,7 +247,12 @@ abstract class _BlackBoxProcessBase<X, Y>
   /** {@inheritDoc} */
   @Override
   void _printInfos(final Writer out) throws IOException {
-    final long time = System.currentTimeMillis();
+    if ((this.m_terminationTime <= 0L) || //
+        (this.m_terminationTime > System.currentTimeMillis())) {
+      throw new IllegalStateException(//
+          "Invalid termination time: " + //$NON-NLS-1$
+              this.m_terminationTime);
+    }
     super._printInfos(out);
     out.write(_BlackBoxProcessBase.BEGIN_STATE);
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
@@ -244,7 +262,7 @@ abstract class _BlackBoxProcessBase<X, Y>
         this.m_lastImprovementFE));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
-        time - this.m_startTime));
+        this.m_terminationTime - this.m_startTime));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
         this.getLastImprovementTime()));

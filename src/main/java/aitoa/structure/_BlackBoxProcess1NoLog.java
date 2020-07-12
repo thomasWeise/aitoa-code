@@ -30,6 +30,9 @@ final class _BlackBoxProcess1NoLog<X>
   /** {@inheritDoc} */
   @Override
   public void close() {
+    if (this.m_terminationTime <= 0L) {
+      this.m_terminationTime = System.currentTimeMillis();
+    }
     // make sure we are dequeued from terminator
     this._terminate();
 

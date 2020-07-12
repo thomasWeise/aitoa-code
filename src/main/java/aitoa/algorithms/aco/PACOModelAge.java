@@ -183,8 +183,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return (((("paco_age_" + this.K) + '_') //$NON-NLS-1$
-        + this.q0) + '_') + this.tauMax;
+    return (((((("paco_age_" + this.K) + '_') //$NON-NLS-1$
+        + this.q0) + '_') + this.beta) + '_') + this.tauMax;
   }
 
   /** {@inheritDoc} */
@@ -282,7 +282,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
 // This is needed to later make a value-proportional choice.
 // Otherwise, if we decide deterministically anyway, we don't do
 // this to save runtime.
-          vSum += v;
+          vSum = Math.nextUp(vSum + v); // ensure increase
           vs[j] = vSum;
         }
       }
