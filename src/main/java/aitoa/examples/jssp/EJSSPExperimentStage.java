@@ -743,4 +743,15 @@ public enum EJSSPExperimentStage implements
         HillClimber2::new, //
         HillClimber2WithRestarts::new);
   }
+
+  /**
+   * Get the stream of the experiment stages defined here
+   *
+   * @return the stream
+   */
+  static final Stream<Supplier<IExperimentStage<?, ?, ?, ?>>>
+      stream() {
+    return Arrays.stream(EJSSPExperimentStage.values())
+        .map(s -> () -> s);
+  }
 }

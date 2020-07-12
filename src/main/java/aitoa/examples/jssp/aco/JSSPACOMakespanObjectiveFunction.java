@@ -30,6 +30,15 @@ public final class JSSPACOMakespanObjectiveFunction
   }
 
   /**
+   * Get the JSSP instance
+   *
+   * @return the JSSP instance
+   */
+  public JSSPInstance getInstance() {
+    return this.m_inner.instance;
+  }
+
+  /**
    * create
    *
    * @param _instance
@@ -43,7 +52,7 @@ public final class JSSPACOMakespanObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "aco:" + this.m_inner.toString(); //$NON-NLS-1$
+    return this.m_inner.toString();
   }
 
   /** {@inheritDoc} */

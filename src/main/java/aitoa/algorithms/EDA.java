@@ -89,6 +89,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
     output.write(System.lineSeparator());
+    this.model.printSetup(output);
   }
 
   /** {@inheritDoc} */

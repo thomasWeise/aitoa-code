@@ -13,7 +13,6 @@ import aitoa.examples.jssp.JSSPInstance;
  */
 public final class JSSPPACOModelAge
     extends PACOModelAge<JSSPACOIndividual> {
-
   /** the current time at a given machine */
   private final int[] m_machineTime;
   /** the current step index at a given machine */
@@ -100,11 +99,8 @@ public final class JSSPPACOModelAge
 
   /**
    * The cost for appending a certain job is how much it will
-   * increase the makespan plus 1. If adding the job does not
-   * increase the makespan, the result is 1. If the makespan is
-   * increased by 1 time unit, the result is 2. If the makespan
-   * is increased by 2 time units, the result is 3. And so
-   * on&hellip;
+   * increase the makespan and whether it causes a machine to
+   * idle plus 1.
    *
    * @param value
    *          the permutation index
@@ -140,11 +136,16 @@ public final class JSSPPACOModelAge
 // becomes idle and the time we have already spent on the job.
 // The end time is simply the start time plus the time the job
 // needs to spend on the machine.
-    final int end = Math.max(this.m_machineTime[machine],
-        this.m_jobTime[nextJob]) + jobSteps[jobStep + 1];
+    final int machineStart = this.m_machineTime[machine];
+    final int start =
+        Math.max(machineStart, this.m_jobTime[nextJob]);
+    final int end = start + jobSteps[jobStep + 1];
 
-// Compute how much this add to the makespan (then add 1)
-    return 1 + Math.max(0, end - this.m_currentMakespan);
+// Compute how much this add to the makespan and machine idle
+// time (then add 1)
+    return 2d //
+        + Math.max(0, end - this.m_currentMakespan) // makespan
+        - (1d / (1d + (start - machineStart))); // idle time
   }
 
   /** {@inheritDoc} */

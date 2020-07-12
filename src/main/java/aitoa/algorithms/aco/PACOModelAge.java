@@ -1,7 +1,11 @@
 package aitoa.algorithms.aco;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
+
+import aitoa.structure.LogFormat;
 
 /**
  * The population-based Ant Colony Optimization (PACO),
@@ -305,5 +309,25 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
 // Add the last node: There only is one choice.
     this.append(x[i] = this.m_nodes.deleteLast(), dest);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void printSetup(final Writer output)
+      throws IOException {
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("K", this.K)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("tau0", this.tau0)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("tauMax", this.tauMax)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("beta", this.beta)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("q0", this.q0)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("pruningStrategy", //$NON-NLS-1$
+        "age")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
   }
 }

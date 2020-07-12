@@ -2,7 +2,7 @@ package aitoa.examples.jssp;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import aitoa.utils.Experiment;
 import aitoa.utils.IOUtils;
@@ -33,8 +33,9 @@ public class JSSPExperiment {
             (args.length > 1) ? Integer.parseInt(args[1])
                 : Integer.MAX_VALUE);
 
-    Experiment.executeExperimentInParallel(Arrays
-        .stream(EJSSPExperimentStage.values()).map(s -> () -> s),
+    Experiment.executeExperimentInParallel(//
+        Stream.concat(EJSSPExperimentStage.stream(),
+            EJSSPExperimentStageACO.stream()),
         out, processors);
   }
 }

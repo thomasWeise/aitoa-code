@@ -89,6 +89,7 @@ public final class EDAWithClearing<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("clearing", true));//$NON-NLS-1$
     output.write(System.lineSeparator());
+    this.model.printSetup(output);
   }
 
   /** {@inheritDoc} */

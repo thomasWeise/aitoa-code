@@ -28,8 +28,7 @@ public interface IMetaheuristic<X, Y> {
 // end relevant
 
   /**
-   * Print the setup of this algorithm to the provided buffered
-   * writer
+   * Print the setup of this algorithm to the provided writer
    *
    * @param output
    *          the writer to write to

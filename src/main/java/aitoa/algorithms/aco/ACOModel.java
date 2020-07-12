@@ -1,6 +1,10 @@
 package aitoa.algorithms.aco;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import aitoa.structure.IModel;
+import aitoa.structure.LogFormat;
 
 /**
  * A base class for implementing Ant Colony Optimization
@@ -91,5 +95,14 @@ public abstract class ACOModel<X> implements IModel<X> {
    */
   protected void append(final int value, final X dest) {
     // nothing
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void printSetup(final Writer output)
+      throws IOException {
+    IModel.super.printSetup(output);
+    output.write(LogFormat.mapEntry("L", this.L)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
   }
 }

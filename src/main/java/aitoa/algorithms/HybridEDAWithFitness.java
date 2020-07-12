@@ -101,6 +101,7 @@ public final class HybridEDAWithFitness<X, Y>
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("clearing", false));//$NON-NLS-1$
     output.write(System.lineSeparator());
+    this.model.printSetup(output);
   }
 
   /** {@inheritDoc} */
