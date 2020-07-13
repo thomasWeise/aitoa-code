@@ -1,9 +1,12 @@
 package aitoa.examples.jssp;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.IModel;
+import aitoa.structure.LogFormat;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -246,5 +249,13 @@ public class JSSPUMDAModel implements IModel<int[]> {
 // ++i;
 // }
     return i;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void printSetup(final Writer output)
+      throws IOException {
+    IModel.super.printSetup(output);
+    output.write(LogFormat.mapEntry("baseIncrement", this.base)); //$NON-NLS-1$
   }
 }
