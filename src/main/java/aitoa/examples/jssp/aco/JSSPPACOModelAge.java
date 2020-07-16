@@ -10,6 +10,36 @@ import aitoa.examples.jssp.JSSPInstance;
  * A Population-based Ant Colony Optimization (PACO) model with
  * age-based pruning for the JSSP. This model samples solutions
  * and performs a GPM at the same time.
+ * <p>
+ * We treat the solutions to the JSSP as special permutations.
+ * The length {@code L} of these permutations is {@code m*n},
+ * where {@code m} is the number of machines and {@code n} is the
+ * number of jobs. The value {@code i} then stands for the job
+ * {@code i/m} and the {@code i%m}<sup>th</sup> operation of that
+ * job. These values form the nodes in a "network" and the ants
+ * can walk from node to node. When an ant arrives at a node
+ * {@code i}, the corresponding operation of the corresponding
+ * job is added to the solution, i.e., {@code i} is appended to
+ * the permutation and the {@code i%m}<sup>th</sup> operation of
+ * job {@code i/m} is scheduled to its corresponding machine,
+ * i.e., inserted into the Gantt chart.
+ * <p>
+ * This, of course, means that the "nodes" where an ant can go to
+ * change. For instance, when an ant starts, it can only pick
+ * among the <em>first operations</em> of any job, i.e., the
+ * nodes {@code 0, m, 2m, 3m, ..., (n-1)m}. After one such first
+ * operation of a job is done, the second operation of the
+ * corresponding job becomes available, and so on. "Becomes
+ * available" here means that it is added to the set of nodes in
+ * the PACOModel. More generally: If an ant has picked a value
+ * {@code i} among these available nodes, the operation
+ * {@code i%m} of the corresponding job is done and node
+ * {@code i} is removed from the network. If the job has more
+ * operations, i.e., {@code i%m < m-1}, then the node {@code i+1}
+ * will be added to the network, as it marks the next operation
+ * (as then {@code i/m=(i+1)/m} and {@code 1+i%m = (i+1)%m}). and
+ * so on. Of course, eventually all nodes will disappear from the
+ * network, as the jobs are completed.
  */
 public final class JSSPPACOModelAge
     extends PACOModelAge<JSSPACOIndividual> {
@@ -98,6 +128,20 @@ public final class JSSPPACOModelAge
   }
 
   /**
+   * Add the first operation of each job to the nodeset
+   *
+   * @param random
+   *          the random number generator
+   */
+  @Override
+  protected void initNodeSet(final Random random) {
+    for (int i = this.m_jobState.length; (--i) >= 0;) {
+      this.m_nodes.add(i * this.m_m);
+    }
+    this.m_nodes.randomize(random);
+  }
+
+  /**
    * The cost for appending a certain job is how much it will
    * increase the makespan and whether it causes a machine to
    * idle plus 1.
@@ -120,9 +164,8 @@ public final class JSSPPACOModelAge
 // jobState tells us the index of the next step to do.
     int jobStep = this.m_jobState[nextJob];
     if (jobStep != (value % this.m_m)) {
-// If the permutation suggests jumping over job steps, we
-// discourage this in the hope of getting better permutations.
-      return Integer.MAX_VALUE;
+      throw new IllegalStateException("Invalid step" //$NON-NLS-1$
+          + jobStep + " of job " + nextJob);//$NON-NLS-1$
     }
 
 // Since the list contains machine/time pairs, we multiply by 2
@@ -143,9 +186,9 @@ public final class JSSPPACOModelAge
 
 // Compute how much this add to the makespan and machine idle
 // time (then add 1)
-    return 2d //
+    return (2d //
         + Math.max(0, end - this.m_currentMakespan) // makespan
-        - (1d / (1d + (start - machineStart))); // idle time
+    ) - (1d / (1d + (start - machineStart))); // idle time
   }
 
   /** {@inheritDoc} */
@@ -157,14 +200,23 @@ public final class JSSPPACOModelAge
     final int[] jobTime = this.m_jobTime;
 
     final int nextJob = value / this.m_m;
+    int jobStep = value % this.m_m;
 // get the definition of the steps that we need to take for
 // nextJob from the instance data stored in this.m_jobs
     final int[] jobSteps = this.m_jobs[nextJob];
 
 // jobState tells us the index in this list for the next step to
-// do, but since the list contains machine/time pairs, we
+// do, but since the list contains machine/time pairs, we later
 // multiply by 2 (by left-shifting by 1)
-    final int jobStep = (this.m_jobState[nextJob]++) << 1;
+    if (jobStep != ((this.m_jobState[nextJob]++))) {
+      throw new IllegalStateException("Invalid step" //$NON-NLS-1$
+          + jobStep + " of job " + nextJob);//$NON-NLS-1$
+    }
+    if (jobStep < (this.m_m - 1)) {
+      // make next job step available, if any
+      this.m_nodes.add(value + 1);
+    }
+    jobStep <<= 1;
 
 // so we know the machine where the job needs to go next
     final int machine = jobSteps[jobStep]; // get machine

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.LogFormat;
+import aitoa.utils.IntSet;
 
 /**
  * The population-based Ant Colony Optimization (PACO),
@@ -73,7 +74,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** the edge matrix used for pheromones */
   private final EdgeMultiSetLK m_matrix;
   /** the node set managing the nodes */
-  private final NodeSet m_nodes;
+  protected final IntSet m_nodes;
 
   /** the population of size of at most {@link #K} */
   private final int[][] m_population;
@@ -173,7 +174,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
               + this.K + " at L=" + this.L); //$NON-NLS-1$
     }
 
-    this.m_nodes = new NodeSet(this.L);
+    this.m_nodes = new IntSet(this.L);
     this.m_matrix = new EdgeMultiSetLK(this.L, this.K);
 
     this.m_population = new int[this.K][this.L];
@@ -230,10 +231,23 @@ public class PACOModelAge<X> extends ACOModel<X> {
     }
   }
 
+  /**
+   * initialize the node set: This method fills all the node IDs
+   * that can be appended to the permutation in the first step
+   * into the set.
+   *
+   * @param random
+   *          the random number generator
+   */
+  protected void initNodeSet(final Random random) {
+    this.m_nodes.fill();
+    this.m_nodes.randomize(random);
+  }
+
   /** {@inheritDoc} */
   @Override
   public void apply(final X dest, final Random random) {
-    this.m_nodes.fill(random);
+    this.initNodeSet(random);
 
 // Build one new candidate solution by simulating the behavior of
 // one ant moving through the graph.
@@ -244,71 +258,76 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
 // Visit the nodes, after starting at a random node (skipping the
 // last node as there is no choice for the last node).
-    for (int nodesLeft = this.L; nodesLeft > 1; --nodesLeft) {
+    int nodesLeft = -1;
+    while ((nodesLeft = this.m_nodes.size()) > 0) {
       final int lastNode = bestNode;
 
+      if (nodesLeft <= 1) {
+// Only one node can be chosen: Pick it directly
+        bestNode = this.m_nodes.get(0);
+      } else { // multiple choices: compute costs and pheromones
+
 // With probability q0, always choose best node directly.
-      final boolean decideRandomly =
-          (random.nextDouble() >= this.q0);
+        final boolean decideRandomly =
+            (random.nextDouble() >= this.q0);
 
 // Ok, calculate the pheromones and heuristic values.
 // First: setup the best values.
-      double vBest = Double.NEGATIVE_INFINITY;
-      double vSum = 0d;
+        double vBest = Double.NEGATIVE_INFINITY;
+        double vSum = 0d;
 
 // Then: for each node which is not yet assigned...
-      for (int j = 0; j < nodesLeft; j++) {
-        final int curNode = this.m_nodes.getNodeAt(j);
+        for (int j = 0; j < nodesLeft; j++) {
+          final int curNode = this.m_nodes.get(j);
 
 // Get the cost of adding the node: Must be >= 0
-        final double cost =
-            this.getCostOfAppending(curNode, dest);
+          final double cost =
+              this.getCostOfAppending(curNode, dest);
 
 // Compute the value v = [pheromone^1 * (1/cost)^beta].
-        final double v = (this.tau0
-            + (this.m_matrix.getEdgeCount(lastNode, curNode)
-                * this.m_pheroMultiplier)) // compute pheromone
-            * Math.pow(cost, -this.beta); // compute cost impact
+          final double v = (this.tau0
+              + (this.m_matrix.getEdgeCount(lastNode, curNode)
+                  * this.m_pheroMultiplier)) // compute pheromone
+              * Math.pow(cost, -this.beta); // compute cost
+                                            // impact
 
 // Is v the best pheromone/heuristic value?
-        if (v >= vBest) { // Then remember it.
-          vBest = v;
-          bestNode = curNode;
-        }
+          if (v >= vBest) { // Then remember it.
+            vBest = v;
+            bestNode = curNode;
+          }
 
-        if (decideRandomly) {
+          if (decideRandomly) {
 // Only if we actually are going to use the table we need to add
 // up the pheromone/heuristic values and remember them.
 // This is needed to later make a value-proportional choice.
 // Otherwise, if we decide deterministically anyway, we don't do
 // this to save runtime.
-          vSum = Math.nextUp(vSum + v); // ensure increase
-          vs[j] = vSum;
+            vSum = Math.nextUp(vSum + v); // ensure increase
+            vs[j] = vSum;
+          }
         }
-      }
 
 // Ok, by now we have either found the best node to add (in case
 // of !decideRandomly) or built the complete heuristic/pheromone
 // decision table (in case of decideRandomly). After this,
 // bestNode is the selected node.
-      if (decideRandomly) {
-        vs[nodesLeft - 1] = Double.POSITIVE_INFINITY;
-        int j = Arrays.binarySearch(vs, 0, nodesLeft, //
-            random.nextDouble() * vSum);
-        if (j < 0) {
-          j = (-(j + 1));
-        }
-        bestNode = this.m_nodes.getNodeAt(j);
-      } // else: No random decision: choose the best.
+        if (decideRandomly) {
+          vs[nodesLeft - 1] = Double.POSITIVE_INFINITY;
+          int j = Arrays.binarySearch(vs, 0, nodesLeft, //
+              random.nextDouble() * vSum);
+          if (j < 0) {
+            j = (-(j + 1));
+          }
+          bestNode = this.m_nodes.get(j);
+        } // else: No random decision: keep the best.
+      } // bestNode is either only possible node or chosen node
 
 // Visit the chosen node by adding it to the permutation.
       x[i++] = bestNode;// Store node in solution.
+      this.m_nodes.delete(bestNode);// bestNode done
       this.append(bestNode, dest); // potential internal update
-      this.m_nodes.deleteNode(bestNode);// bestNode done
     }
-
-// Add the last node: There only is one choice.
-    this.append(x[i] = this.m_nodes.deleteLast(), dest);
   }
 
   /** {@inheritDoc} */
