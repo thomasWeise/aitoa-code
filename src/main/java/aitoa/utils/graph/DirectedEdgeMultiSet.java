@@ -112,7 +112,7 @@ public abstract class DirectedEdgeMultiSet {
    */
   public static final DirectedEdgeMultiSet create(final int L,
       final int K) {
-    if ((((L + 1L) * L) / 2L) >= Integer.MAX_VALUE) {
+    if ((((L + 1L) * L) * 2L) >= Integer.MAX_VALUE) {
       return new _CompactDirectedEdgeMultiSet(L, K);
     }
     return new _FastDirectedEdgeMultiSet(L, K);
