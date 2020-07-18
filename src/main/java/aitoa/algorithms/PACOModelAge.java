@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.LogFormat;
+import aitoa.utils.ReflectionUtils;
 import aitoa.utils.graph.DirectedEdgeMultiSet;
 import aitoa.utils.graph.IntSet;
 
@@ -348,6 +349,10 @@ public class PACOModelAge<X> extends ACOModel<X> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("pruningStrategy", //$NON-NLS-1$
         "age")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry(//
+        LogFormat.classKey("edgeSet"), //$NON-NLS-1$
+        ReflectionUtils.className(this.m_matrix)));
     output.write(System.lineSeparator());
   }
 }
