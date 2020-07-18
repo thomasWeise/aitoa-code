@@ -1,28 +1,31 @@
-package aitoa.algorithms.aco;
+package aitoa.utils.graph;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import aitoa.utils.RandomUtils;
 
-/** Test the {@link EdgeMultiSetLK} */
-public class TestEdgeMultiSetLK {
+/** Test the {@link DirectedEdgeMultiSet} */
+@Ignore
+public abstract class TestDirectedEdgeMultiSet {
 
   /**
    * Test the edge multi set of a given L-K combination
    *
-   * @param L
-   *          the length of the permutations
-   * @param K
-   *          the size of the per-node set
+   * @param e
+   *          the set
    */
-  private static final void __testForLK(final int L,
-      final int K) {
-    final EdgeMultiSetLK e = new EdgeMultiSetLK(L, K);
+  private static final void
+      __testForLK(final DirectedEdgeMultiSet e) {
     e.clear();
+
+    final ThreadLocalRandom r = ThreadLocalRandom.current();
+
+    final int L = e.L;
+    final int K = e.K;
 
 // check for each individual edge
     for (int a = -1; a < L; a++) {
@@ -56,7 +59,7 @@ public class TestEdgeMultiSetLK {
       }
 
       // remove the last K added edges again
-      final int down = L - K;
+      final int down = Math.max(0, L - K);
       for (int b = L; (--b) >= down;) {
         Assert.assertEquals(1, e.getEdgeCount(a, b));
         e.removeEdge(a, b);
@@ -76,7 +79,7 @@ public class TestEdgeMultiSetLK {
       }
 
       // finally, remove last K edges again
-      for (int b = K; (--b) >= 0;) {
+      for (int b = Math.min(L, K); (--b) >= 0;) {
         Assert.assertEquals(1, e.getEdgeCount(a, b));
         e.removeEdge(a, b);
         Assert.assertEquals(0, e.getEdgeCount(a, b));
@@ -91,7 +94,6 @@ public class TestEdgeMultiSetLK {
     }
 
 // check for random edges
-    final Random r = ThreadLocalRandom.current();
     final int[][] matrix = new int[L + 1][L + 1];
 
     for (int i = 100000; (--i) >= 0;) {
@@ -162,94 +164,99 @@ public class TestEdgeMultiSetLK {
     }
   }
 
+  /**
+   * Create the directed edge multiset
+   *
+   * @param L
+   *          the highest node id
+   * @param K
+   *          the maximum number of edges per node
+   * @return the set
+   */
+  protected abstract DirectedEdgeMultiSet create(final int L,
+      final int K);
+
   /** test the set */
-  @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testFor_2_1() {
-    TestEdgeMultiSetLK.__testForLK(2, 1);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(2, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_2_2() {
-    TestEdgeMultiSetLK.__testForLK(2, 2);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(2, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_3_1() {
-    TestEdgeMultiSetLK.__testForLK(3, 1);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_3_2() {
-    TestEdgeMultiSetLK.__testForLK(3, 2);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_3_3() {
-    TestEdgeMultiSetLK.__testForLK(3, 3);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 3));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_4_1() {
-    TestEdgeMultiSetLK.__testForLK(4, 1);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_4_2() {
-    TestEdgeMultiSetLK.__testForLK(4, 2);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_4_3() {
-    TestEdgeMultiSetLK.__testForLK(4, 3);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 3));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_4_4() {
-    TestEdgeMultiSetLK.__testForLK(4, 4);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 4));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_10_2() {
-    TestEdgeMultiSetLK.__testForLK(10, 2);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(10, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_10_5() {
-    TestEdgeMultiSetLK.__testForLK(10, 5);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(10, 5));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_100_30() {
-    TestEdgeMultiSetLK.__testForLK(100, 30);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(100, 30));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  @SuppressWarnings("static-method")
   public final void testFor_200_200() {
-    TestEdgeMultiSetLK.__testForLK(200, 200);
+    TestDirectedEdgeMultiSet.__testForLK(this.create(200, 200));
+  }
+
+  /** test the set */
+  @Test(timeout = 3600000)
+  public final void testFor_70_200() {
+    TestDirectedEdgeMultiSet.__testForLK(this.create(70, 200));
   }
 }

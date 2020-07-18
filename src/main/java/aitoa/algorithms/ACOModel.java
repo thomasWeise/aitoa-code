@@ -1,4 +1,4 @@
-package aitoa.algorithms.aco;
+package aitoa.algorithms;
 
 import java.io.IOException;
 import java.io.Writer;

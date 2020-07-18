@@ -1,4 +1,4 @@
-package aitoa.algorithms.aco;
+package aitoa.algorithms;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -6,7 +6,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.LogFormat;
-import aitoa.utils.IntSet;
+import aitoa.utils.graph.DirectedEdgeMultiSet;
+import aitoa.utils.graph.IntSet;
 
 /**
  * The population-based Ant Colony Optimization (PACO),
@@ -72,7 +73,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
   public final int K;
 
   /** the edge matrix used for pheromones */
-  private final EdgeMultiSetLK m_matrix;
+  private final DirectedEdgeMultiSet m_matrix;
   /** the node set managing the nodes */
   protected final IntSet m_nodes;
 
@@ -175,7 +176,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
     }
 
     this.m_nodes = new IntSet(this.L);
-    this.m_matrix = new EdgeMultiSetLK(this.L, this.K);
+    this.m_matrix = DirectedEdgeMultiSet.create(this.L, this.K);
 
     this.m_population = new int[this.K][this.L];
     this.m_vs = new double[this.L];

@@ -3,7 +3,7 @@ package aitoa.examples.jssp.aco;
 import java.util.Arrays;
 import java.util.Random;
 
-import aitoa.algorithms.aco.PACOModelAge;
+import aitoa.algorithms.PACOModelAge;
 import aitoa.examples.jssp.JSSPInstance;
 
 /**

@@ -1,7 +1,9 @@
-package aitoa.utils;
+package aitoa.utils.graph;
 
 import java.util.Arrays;
 import java.util.Random;
+
+import aitoa.utils.RandomUtils;
 
 /**
  * This is an utility class that can keep track on a set of

@@ -20,8 +20,8 @@ import aitoa.structure.TestBlackBoxProcessBuilder;
 /**
  * Test the {@linkplain aitoa.algorithms.EDA estimation of
  * distribution algorithm} using a
- * {@linkplain aitoa.algorithms.aco.PACOModelAge age-base PACO
- * model} on the JSSP
+ * {@linkplain aitoa.algorithms.PACOModelAge age-base PACO model}
+ * on the JSSP
  */
 public class TestPACOAgeOnJSSP extends
     TestMetaheuristic<JSSPACOIndividual, JSSPACOIndividual> {

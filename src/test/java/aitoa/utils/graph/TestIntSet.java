@@ -1,4 +1,4 @@
-package aitoa.utils;
+package aitoa.utils.graph;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import aitoa.utils.RandomUtils;
 
 /** Test the {@link IntSet} */
 public class TestIntSet {
