@@ -7,6 +7,17 @@ package aitoa.utils.graph;
  * {@code L-1}, with a special node of id {@code -1} being
  * permitted only as starting node for edges but never at edge
  * ends.
+ * <p>
+ * This here is an abstract base class, which is instantiated via
+ * the {@link #create(int, int)} method. This method decides
+ * based on its two parameters {@code L} and {@code K} which
+ * implementation to use. If {@code L} is small enough, then we
+ * can just store one integer for each possible edge an
+ * add/remove edges in O(1). This will be the most commonly used
+ * implementation in reasonably-sized scenarios with, say, at
+ * most some 10'000 nodes. If {@code L} is big, we use a more
+ * compact representation which needed {@code (L+1)*K} integers
+ * and allows adding/removing of edges in O(NK ln(K)).
  */
 public abstract class DirectedEdgeMultiSet {
 

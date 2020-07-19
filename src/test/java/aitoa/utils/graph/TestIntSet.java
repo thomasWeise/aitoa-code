@@ -26,7 +26,7 @@ public class TestIntSet {
 
     // delete the last one
     n.fill();
-    n.randomize(r);
+    n.shuffle(r);
     Arrays.fill(avail, true);
     for (int i = L; i > 0;) {
       for (int j = avail.length; (--j) >= 0;) {
@@ -49,7 +49,7 @@ public class TestIntSet {
 
     // delete the nodes in forward direction
     n.fill();
-    n.randomize(r);
+    n.shuffle(r);
     Arrays.fill(avail, true);
     for (int i = 0; i < L; i++) {
       for (int j = avail.length; (--j) >= 0;) {
@@ -75,7 +75,7 @@ public class TestIntSet {
 
     // delete the nodes in backwards direction
     n.fill();
-    n.randomize(r);
+    n.shuffle(r);
     Arrays.fill(avail, true);
     for (int i = L; (--i) >= 0;) {
       for (int j = avail.length; (--j) >= 0;) {
@@ -101,7 +101,7 @@ public class TestIntSet {
 
     // delete a random node
     n.fill();
-    n.randomize(r);
+    n.shuffle(r);
     Arrays.fill(avail, true);
     for (int i = L; i > 0;) {
       Assert.assertEquals(i, n.size());
@@ -127,7 +127,7 @@ public class TestIntSet {
 
     // check the nodes at the indices
     n.fill();
-    n.randomize(r);
+    n.shuffle(r);
     boolean toggle = true;
     for (int i = L; i > 0; i--) {
       for (int j = i; (--j) >= 0;) {

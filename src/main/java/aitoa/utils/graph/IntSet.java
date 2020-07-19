@@ -9,7 +9,13 @@ import aitoa.utils.RandomUtils;
  * This is an utility class that can keep track on a set of
  * integer values from {@code 0..L-1}. You can check in O(1) if a
  * given integer is in the set / available and you can add and
- * delete integer in O(1).
+ * delete integers in O(1).
+ * <p>
+ * This class is suitable to keep track of which nodes in a graph
+ * have been visited and which can be visited next. Whenever a
+ * node was visited, it can be removed from the set. If the graph
+ * is not fully-connected, then at the same time, you can add the
+ * new nodes that become reachable.
  */
 public final class IntSet {
 
@@ -56,7 +62,7 @@ public final class IntSet {
    * @param random
    *          a random number generator
    */
-  public void randomize(final Random random) {
+  public void shuffle(final Random random) {
     RandomUtils.shuffle(random, this.m_values, 0, this.m_size);
     for (int i = this.m_size; (--i) >= 0;) {
       this.m_positions[this.m_values[i]] = i;

@@ -30,7 +30,7 @@ public abstract class ACOModel<X> implements IModel<X> {
    */
   protected ACOModel(final int _L) {
     super();
-    if ((_L < 2) || (_L > 1000_000)) {
+    if ((_L < 2) || (_L > 1_000_000)) {
       throw new IllegalArgumentException(
           "L should be from 2..1'000'000, but is " //$NON-NLS-1$
               + _L);

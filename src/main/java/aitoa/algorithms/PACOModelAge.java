@@ -22,11 +22,11 @@ import aitoa.utils.graph.IntSet;
  * would lead to exceeding the maximum population size
  * {@link #K}, the "oldest" ant, i.e., the ant in the population
  * which entered the population at the earliest time, will be
- * removed. In this sense, the population is basically a ring
- * buffer.
+ * removed. The population is basically a ring buffer of size
+ * {@link #K}.
  * <p>
- * The amount of pheromone on an sequence (called edge)
- * {@code (a, b)} is determined by how often {@code b} directly
+ * The amount of pheromone on an sub-sequence {@code (a, b)}
+ * (called edge) is determined by how often {@code b} directly
  * follows {@code a} in the ants in the population. If the
  * sequence {@code (a, b)} does not occur in any permutation in
  * the population, the pheromone is a very small value
@@ -40,14 +40,14 @@ import aitoa.utils.graph.IntSet;
  * is also modeled. This means that if the model is sampled, new
  * ants will start their paths more likely at good starting
  * points of the previous ants. This makes sense in problems such
- * as the Job Shop Scheduling Problem (JSSP), asymmetric
- * Traveling Salesman Problems or in vehicle routing problems
- * with time windows, where the "direction" of visiting nodes or
- * permutations is important. In symmetric Traveling Salesman
- * Problems, on the other hand, you could perform a tour forward
- * or backwards, and it would not matter. In that case, the
- * initial starting node would not need to be modeled. Anyway,
- * here we also model the starting node.
+ * as the Job Shop Scheduling Problem (JSSP) or in vehicle
+ * routing problems with time windows, where both the choice of
+ * the first node and the "direction" of tours that visit nodes
+ * is important. In symmetric Traveling Salesman Problems, on the
+ * other hand, you could perform a tour forward or backwards, and
+ * it would not matter. In that case, the initial starting node
+ * would not need to be modeled. Anyway, here we also model the
+ * starting node.
  *
  * @param <X>
  *          the search space
@@ -131,7 +131,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
     }
     this.K = _K;
 
-    if (Double.isFinite(_q0) && (_q0 >= 0d) && (_q0 <= 1)) {
+    if (Double.isFinite(_q0) && (_q0 >= 0d) && (_q0 <= 1d)) {
       this.q0 = _q0;
     } else {
       throw new IllegalArgumentException(
@@ -155,14 +155,14 @@ public class PACOModelAge<X> extends ACOModel<X> {
     }
 
     if (Double.isFinite(_tauMax)
-        && (_tauMax >= (1d / (this.L - 1)))) {
+        && (_tauMax > (1d / (this.L - 1)))) {
       this.tauMax = _tauMax;
     } else {
-      throw new IllegalArgumentException(//
-          "tauMax must be >= 1/(L-1), i.e., >= 1/"//$NON-NLS-1$
-              + (this.L - 1) + ", i.e., >= "//$NON-NLS-1$
-              + this.tau0 + ", but is "//$NON-NLS-1$
-              + _tauMax);
+      throw new IllegalArgumentException(((//
+      "tauMax must be > 1/(L-1), i.e., > 1/"//$NON-NLS-1$
+          + (this.L - 1)) + ", i.e., > "//$NON-NLS-1$
+          + this.tau0) + ", but is "//$NON-NLS-1$
+          + _tauMax);
     }
 
     this.m_pheroMultiplier = (this.tauMax - this.tau0) / this.K;
@@ -218,18 +218,18 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** {@inheritDoc} */
   @Override
   public final void update(final Iterable<X> selected) {
-    for (final X x : selected) {
+    for (final X x : selected) { // for each ant to be added
       final int[] pi = this.permutationFromX(x);
       final int size = this.m_popSize;
       final int index = this.m_popIndex;
       final int[] dest = this.m_population[index];
-      if (size >= this.K) {
+      if (size >= this.K) { // population is full: remove oldest
         this.m_matrix.removePermutation(dest);
       }
-      System.arraycopy(pi, 0, dest, 0, this.L);
-      this.m_matrix.addPermutation(pi);
+      System.arraycopy(pi, 0, dest, 0, this.L); // copy
+      this.m_matrix.addPermutation(pi); // add edges to pheros
       this.m_popSize = Math.min(this.K, size + 1);
-      this.m_popIndex = (index + 1) % this.K;
+      this.m_popIndex = (index + 1) % this.K; // move index
     }
   }
 
@@ -237,32 +237,40 @@ public class PACOModelAge<X> extends ACOModel<X> {
    * initialize the node set: This method fills all the node IDs
    * that can be appended to the permutation in the first step
    * into the set.
+   * <p>
+   * In this default implementation, all nodes in {@code 0..L-1}
+   * are added, but you could overwrite this method to only add a
+   * reachable subset.
    *
    * @param random
    *          the random number generator
    */
   protected void initNodeSet(final Random random) {
     this.m_nodes.fill();
-    this.m_nodes.randomize(random);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Build one new candidate solution by simulating the behavior
+   * of one ant moving through the graph.
+   *
+   * @param dest
+   *          {@inheritDoc}
+   * @param random
+   *          {@inheritDoc}
+   */
   @Override
   public void apply(final X dest, final Random random) {
-    this.initNodeSet(random);
+    this.initNodeSet(random); // get all potential first nodes
+    this.m_nodes.shuffle(random); // shuffle them
 
-// Build one new candidate solution by simulating the behavior of
-// one ant moving through the graph.
     int i = 0;
     final int[] x = this.permutationFromX(dest);
-    int bestNode = -1;
     final double[] vs = this.m_vs;
-
-// Visit the nodes, after starting at a random node (skipping the
-// last node as there is no choice for the last node).
     int nodesLeft = -1;
+
+    int bestNode = -1; // we start at virtual node -1
     while ((nodesLeft = this.m_nodes.size()) > 0) {
-      final int lastNode = bestNode;
+      final int lastNode = bestNode; // previously chosen node
 
       if (nodesLeft <= 1) {
 // Only one node can be chosen: Pick it directly
@@ -291,7 +299,6 @@ public class PACOModelAge<X> extends ACOModel<X> {
               + (this.m_matrix.getEdgeCount(lastNode, curNode)
                   * this.m_pheroMultiplier)) // compute pheromone
               * Math.pow(cost, -this.beta); // compute cost
-                                            // impact
 
 // Is v the best pheromone/heuristic value?
           if (v >= vBest) { // Then remember it.

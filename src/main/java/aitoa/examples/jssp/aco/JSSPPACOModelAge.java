@@ -128,7 +128,7 @@ public final class JSSPPACOModelAge
   }
 
   /**
-   * Add the first operation of each job to the nodeset
+   * Add the first operation of each job to the node set
    *
    * @param random
    *          the random number generator
@@ -138,7 +138,6 @@ public final class JSSPPACOModelAge
     for (int i = this.m_jobState.length; (--i) >= 0;) {
       this.m_nodes.add(i * this.m_m);
     }
-    this.m_nodes.randomize(random);
   }
 
   /**
@@ -187,8 +186,8 @@ public final class JSSPPACOModelAge
 // Compute how much this add to the makespan and machine idle
 // time (then add 1)
     return (2d //
-        + Math.max(0, end - this.m_currentMakespan) // makespan
-    ) - (1d / (1d + (start - machineStart))); // idle time
+        + Math.max(0, end - this.m_currentMakespan)) // makespan
+        - (1d / (1d + (start - machineStart))); // idle time
   }
 
   /** {@inheritDoc} */
