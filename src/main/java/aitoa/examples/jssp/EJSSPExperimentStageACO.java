@@ -46,8 +46,10 @@ public enum EJSSPExperimentStageACO implements
           JSSPACOIndividual>>> list = new ArrayList<>();
 
       for (final int mu : new int[] { 1 }) {
-        for (final int lambda : new int[] { 10, 100, 1000 }) {
-          for (final int K : new int[] { 5, 10, 20 }) {
+        for (final int lambda : new int[] { 10, 100, 1000,
+            10000 }) {
+          for (final int K : new int[] { 2, 3, 4, 5, 10, 20,
+              40 }) {
             for (final double beta : new double[] { 2d, 5d }) {
               for (final double q0 : new double[] { 0.9d }) {
                 for (final double tauMax : new double[] { 1d }) {
