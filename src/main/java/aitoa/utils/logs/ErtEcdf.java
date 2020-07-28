@@ -796,6 +796,7 @@ public final class ErtEcdf {
       ConsoleIO.stderr(
           "An error occured while creating the ERT-ECDF data.", //$NON-NLS-1$
           error);
+      System.exit(1);
     }
   }
 }

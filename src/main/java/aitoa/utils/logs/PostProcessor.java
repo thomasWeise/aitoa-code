@@ -62,6 +62,7 @@ public class PostProcessor {
         ConsoleIO.stderr("Error when invoking the '"//$NON-NLS-1$
             + selected + "' tool.", //$NON-NLS-1$
             error);
+        System.exit(1);
       }
     }
   }

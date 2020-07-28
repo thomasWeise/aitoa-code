@@ -568,6 +568,7 @@ public final class EndResults {
       ConsoleIO.stderr(
           "An error occured while creating the end result tables.", //$NON-NLS-1$
           error);
+      System.exit(1);
     }
   }
 }

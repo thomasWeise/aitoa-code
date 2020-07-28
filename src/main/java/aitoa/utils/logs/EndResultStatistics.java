@@ -2998,6 +2998,7 @@ public class EndResultStatistics {
       ConsoleIO.stderr(
           "An error occured while creating the end result statistics tables.", //$NON-NLS-1$
           error);
+      System.exit(1);
     }
   }
 }

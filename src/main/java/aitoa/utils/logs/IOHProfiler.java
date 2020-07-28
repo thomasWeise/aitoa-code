@@ -880,6 +880,7 @@ public class IOHProfiler {
       ConsoleIO.stderr(
           "An error occured while converting the data.", //$NON-NLS-1$
           error);
+      System.exit(1);
     }
   }
 }
