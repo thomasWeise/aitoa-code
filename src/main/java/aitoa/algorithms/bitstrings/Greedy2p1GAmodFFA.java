@@ -147,7 +147,7 @@ public final class Greedy2p1GAmodFFA<Y>
           } // end copy from y
         } // end crossover
         zIsNew = zIsNotx && zIsNoty;
-      } // end fx == fy
+      } // end H[fx] == H[fy]
 
 // zIsNew is true only if zprime != x and zprime != y
 // Line 5: sample number l of bits to flip
@@ -158,8 +158,8 @@ public final class Greedy2p1GAmodFFA<Y>
 // If no bits will be flipped, we can set z=zprime.
 // If we get here, then zprime != x and zprime != y
 // (element-wise) and zIsNew must be true, because only if zIsNew
-// is true we may have chosen from binDist directly and only then
-// we may have gotten l=0.
+// is true, we may have chosen from binDist directly and only
+// then we may have gotten l=0.
         z = zprime;
       } else {
 // At least one bit needs to be flipped, i.e., we perform the

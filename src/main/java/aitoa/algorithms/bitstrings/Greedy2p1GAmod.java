@@ -134,8 +134,8 @@ public final class Greedy2p1GAmod<Y>
 // If no bits will be flipped, we can set z=zprime.
 // If we get here, then zprime != x and zprime != y
 // (element-wise) and zIsNew must be true, because only if zIsNew
-// is true we may have chosen from binDist directly and only then
-// we may have gotten l=0.
+// is true, we may have chosen from binDist directly and only
+// then we may have gotten l=0.
         z = zprime;
       } else {
 // At least one bit needs to be flipped, i.e., we perform the
@@ -229,6 +229,7 @@ public final class Greedy2p1GAmod<Y>
 // fz > fy and thus also fz > fx: discard!
         continue;
       }
+// if we get here, either x or y will definitely be replaced
 
       if ((fy > fx)// line 9: replace y with z
           || random.nextBoolean()) {// line 10: randomly chose y
