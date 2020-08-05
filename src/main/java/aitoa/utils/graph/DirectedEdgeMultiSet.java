@@ -123,9 +123,13 @@ public abstract class DirectedEdgeMultiSet {
    */
   public static final DirectedEdgeMultiSet create(final int L,
       final int K) {
-    if ((((L + 1L) * L) * 2L) >= Integer.MAX_VALUE) {
-      return new _CompactDirectedEdgeMultiSet(L, K);
+    if ((((L + 1L) * L) * 2L) < Integer.MAX_VALUE) {
+      try {
+        return new _FastDirectedEdgeMultiSet(L, K);
+      } catch (@SuppressWarnings("unused") final OutOfMemoryError oome) {
+        // ignore
+      }
     }
-    return new _FastDirectedEdgeMultiSet(L, K);
+    return new _CompactDirectedEdgeMultiSet(L, K);
   }
 }

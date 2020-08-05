@@ -43,6 +43,7 @@ import aitoa.examples.jssp.JSSPInstance;
  */
 public final class JSSPPACOModelAge
     extends PACOModelAge<JSSPACOIndividual> {
+
   /** the current time at a given machine */
   private final int[] m_machineTime;
   /** the current step index at a given machine */
@@ -154,26 +155,15 @@ public final class JSSPPACOModelAge
   @Override
   protected double getCostOfAppending(final int value,
       final JSSPACOIndividual x) {
+// extract job id
     final int nextJob = value / this.m_m;
-
 // get the definition of the steps that we need to take for
 // nextJob from the instance data stored in this.m_jobs
     final int[] jobSteps = this.m_jobs[nextJob];
-
 // jobState tells us the index of the next step to do.
-    int jobStep = this.m_jobState[nextJob];
-    if (jobStep != (value % this.m_m)) {
-      throw new IllegalStateException("Invalid step" //$NON-NLS-1$
-          + jobStep + " of job " + nextJob);//$NON-NLS-1$
-    }
-
-// Since the list contains machine/time pairs, we multiply by 2
-// (by left-shifting by 1).
-    jobStep <<= 1;
-
+    final int jobStep = this.m_jobState[nextJob] << 1;
 // so we know the machine where the job needs to go next
     final int machine = jobSteps[jobStep]; // get machine
-
 // The start time is maximum of the next time when the machine
 // becomes idle and the time we have already spent on the job.
 // The end time is simply the start time plus the time the job
@@ -183,11 +173,9 @@ public final class JSSPPACOModelAge
         Math.max(machineStart, this.m_jobTime[nextJob]);
     final int end = start + jobSteps[jobStep + 1];
 
-// Compute how much this add to the makespan and machine idle
-// time (then add 1)
-    return (2d //
-        + Math.max(0, end - this.m_currentMakespan)) // makespan
-        - (1d / (1d + (start - machineStart))); // idle time
+    return (2 // ensure > 0
+        + Math.max(end - this.m_currentMakespan, 0)) // makespan
+        - (1d / ((start - machineStart) + 1));// idle time
   }
 
   /** {@inheritDoc} */
@@ -229,7 +217,8 @@ public final class JSSPPACOModelAge
     final int end = start + jobSteps[jobStep + 1]; // end time
 // it holds for both the machine (it will become idle after end)
 // and the job (it can go to the next station after end)
-    jobTime[nextJob] = machineTime[machine] = end;
+    jobTime[nextJob] = end;
+    machineTime[machine] = end;
 
 // update the schedule with the data we have just computed
     final int[] schedule = dest.solution.schedule[machine];
@@ -237,9 +226,8 @@ public final class JSSPPACOModelAge
     schedule[machineState[machine]++] = start;
     schedule[machineState[machine]++] = end;
 
-// update the current makespan
     if (end > this.m_currentMakespan) {
-      this.m_currentMakespan = end;
+      this.m_currentMakespan = end;// update the current makespan
     }
   }
 }

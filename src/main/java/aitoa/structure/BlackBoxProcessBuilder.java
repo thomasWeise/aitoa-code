@@ -356,6 +356,20 @@ public class BlackBoxProcessBuilder<X, Y>
           "No log path is provided, while logging is set to ALL."); //$NON-NLS-1$
     }
 
+    if (this.m_logPath != null) {
+// Try to pre-load the system data to avoid any timing issues
+// later. If we load the system data while flushing the first log
+// file after the first run, this might have an impact on other
+// runs running in parallel... ...better to load the system data
+// now. (The problem which can cause delays is the resolution of
+// the Graphics Adapater via the PCI ID which works via a web
+// page.)
+      if (_SystemData._getSystemData().length < 256) {
+        throw new IllegalStateException(
+            "Could not load system data?"); //$NON-NLS-1$
+      }
+    }
+
     if (this.m_mapping == null) {
       // search space == solution space
       if (this.m_logPath == null) {
