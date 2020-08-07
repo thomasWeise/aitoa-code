@@ -29,7 +29,7 @@ public final class ConsoleIO {
    */
   public static void
       print(final BiConsumer<PrintStream, PrintStream> print) {
-    synchronized (IOUtils._IO_SYNCH) {
+    synchronized (IOUtils.IO_SYNCH) {
       synchronized (System.out) {
         synchronized (System.err) {
           synchronized (System.in) {
@@ -54,7 +54,7 @@ public final class ConsoleIO {
    */
   public static void stdout(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
-      ConsoleIO.__printIDandDate(u);
+      ConsoleIO.printIDandDate(u);
       out.accept(u);
     });
   }
@@ -76,8 +76,8 @@ public final class ConsoleIO {
    * @param ps
    *          the stream
    */
-  private static void __printIDandDate(final PrintStream ps) {
-    ps.print(ConsoleIO.__IDS.get());
+  private static void printIDandDate(final PrintStream ps) {
+    ps.print(ConsoleIO.IDS.get());
     ps.print(new Date());
     ps.print('\t');
   }
@@ -91,7 +91,7 @@ public final class ConsoleIO {
    */
   public static void stderr(final Consumer<PrintStream> out) {
     ConsoleIO.print((u, v) -> {
-      ConsoleIO.__printIDandDate(v);
+      ConsoleIO.printIDandDate(v);
       out.accept(v);
     });
   }
@@ -156,7 +156,7 @@ public final class ConsoleIO {
    * @see #clearIDSuffix()
    */
   public static void setIDSuffix(final String suffix) {
-    ConsoleIO.__IDS.set(ConsoleIO.__computeID(suffix));
+    ConsoleIO.IDS.set(ConsoleIO.computeID(suffix));
   }
 
   /**
@@ -169,8 +169,8 @@ public final class ConsoleIO {
   }
 
   /** get the ID of the current thread */
-  private static final ThreadLocal<char[]> __IDS =
-      ThreadLocal.withInitial(() -> ConsoleIO.__computeID("")); //$NON-NLS-1$
+  private static final ThreadLocal<char[]> IDS =
+      ThreadLocal.withInitial(() -> ConsoleIO.computeID("")); //$NON-NLS-1$
 
   /**
    * compute the ID based on a suffix
@@ -179,14 +179,12 @@ public final class ConsoleIO {
    *          the suffix
    * @return the ID
    */
-  private static char[] __computeID(final String suffix) {
+  private static char[] computeID(final String suffix) {
     final String t = suffix.trim();
-    String a =
-        ((Integer.toUnsignedString(__ID.ID, Character.MAX_RADIX)
-            + ':')
-            + Long.toUnsignedString(
-                Thread.currentThread().getId(),
-                Character.MAX_RADIX));
+    String a = ((Integer.toUnsignedString(ID.USE_ID,
+        Character.MAX_RADIX) + ':')
+        + Long.toUnsignedString(Thread.currentThread().getId(),
+            Character.MAX_RADIX));
     if (t.length() > 0) {
       a = a + ':' + t;
     }
@@ -194,17 +192,17 @@ public final class ConsoleIO {
   }
 
   /** the ID holder */
-  private static final class __ID {
+  private static final class ID {
 
     /** the internal id */
-    static final int ID = __ID.__getID();
+    static final int USE_ID = ID.getID();
 
     /**
      * get the prefix to be used for log entries
      *
      * @return the prefix
      */
-    private static int __getID() {
+    private static int getID() {
       try {
         return new SystemInfo().getOperatingSystem()
             .getProcessId();

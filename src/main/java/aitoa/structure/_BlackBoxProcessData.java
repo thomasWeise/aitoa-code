@@ -18,10 +18,10 @@ import aitoa.utils.RandomUtils;
  */
 abstract class _BlackBoxProcessData<X, Y> {
   /** the session start */
-  private static final Instant __SESSION_START;
+  private static final Instant SESSION_START;
 
   static {
-    __SESSION_START = Instant.now();
+    SESSION_START = Instant.now();
   }
 
   /** the random number generator seed */
@@ -313,6 +313,6 @@ abstract class _BlackBoxProcessData<X, Y> {
    * @return the session start time in milliseconds
    */
   static final Instant _getSessionStart() {
-    return _BlackBoxProcessData.__SESSION_START;
+    return _BlackBoxProcessData.SESSION_START;
   }
 }

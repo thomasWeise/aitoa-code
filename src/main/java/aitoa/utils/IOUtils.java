@@ -199,7 +199,7 @@ public final class IOUtils {
    * @return {@code true} if {@code inside} is inside
    *         {@code dir}, {@code false} otherwise
    */
-  private static boolean __inDir(final Path inside,
+  private static boolean inDir(final Path inside,
       final Path dir) {
     if (dir == inside) {
       return false;
@@ -239,7 +239,7 @@ public final class IOUtils {
         .filter(Files::exists)//
         .filter(Files::isDirectory)//
         .map(IOUtils::canonicalizePath)//
-        .filter(pp -> IOUtils.__inDir(pp, p));
+        .filter(pp -> IOUtils.inDir(pp, p));
   }
 
   /**
@@ -266,7 +266,7 @@ public final class IOUtils {
    * @return {@code true} if it is readable, {@code false}
    *         otherwise
    */
-  private static boolean __isReadableFile(final Path f) {
+  private static boolean isReadableFile(final Path f) {
     if (!Files.isReadable(f)) {
       return false;
     }
@@ -299,8 +299,8 @@ public final class IOUtils {
         .filter(Files::exists)//
         .filter(Files::isRegularFile)//
         .map(IOUtils::canonicalizePath)//
-        .filter(pp -> IOUtils.__inDir(pp, p))//
-        .filter(IOUtils::__isReadableFile);
+        .filter(pp -> IOUtils.inDir(pp, p))//
+        .filter(IOUtils::isReadableFile);
   }
 
   /**
@@ -445,7 +445,7 @@ public final class IOUtils {
   }
 
   /** the I/O synchronizer */
-  static final Object _IO_SYNCH = new Object();
+  static final Object IO_SYNCH = new Object();
 
   /**
    * Execute a synchronized I/O job
@@ -457,7 +457,7 @@ public final class IOUtils {
    */
   public static void synchronizedIO(final IORunnable runnable)
       throws IOException {
-    synchronized (IOUtils._IO_SYNCH) {
+    synchronized (IOUtils.IO_SYNCH) {
       runnable.run();
     }
   }

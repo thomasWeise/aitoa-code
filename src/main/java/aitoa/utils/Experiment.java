@@ -51,7 +51,7 @@ public class Experiment {
    */
   public static final String
       nameStringPrepare(final String part) {
-    final Object res = Experiment.__processNamePart(part);
+    final Object res = Experiment.processNamePart(part);
     if (res == null) {
       return part;
     }
@@ -90,7 +90,7 @@ public class Experiment {
           } else {
             sb.append('_');
           }
-          final Object res = Experiment.__processNamePart(part);
+          final Object res = Experiment.processNamePart(part);
           if (res == null) {
             sb.append(part);
           } else {
@@ -147,7 +147,7 @@ public class Experiment {
    *          the character
    * @return {@code true} if it is, {@code false} if it isn't
    */
-  private static final boolean __isWhiteSpace(final char ch) {
+  private static final boolean isWhiteSpace(final char ch) {
     return (ch <= 32) || (ch == '_')//
         || (ch == '\u00A0') || (ch == '\u2007')
         || (ch == '\u202F')//
@@ -165,7 +165,7 @@ public class Experiment {
    * @param lengthMinusOne
    *          the length - 1
    */
-  private static final void __delete(final char[] data,
+  private static final void delete(final char[] data,
       final int index, final int lengthMinusOne) {
     if (index < lengthMinusOne) {
       System.arraycopy(data, index + 1, data, index,
@@ -184,7 +184,7 @@ public class Experiment {
    *         one an int array of length 1 with the array length
    *         of the first array
    */
-  private static final Object __processNamePart(final String s) {
+  private static final Object processNamePart(final String s) {
     final char[] chars = s.toCharArray();
     boolean unchanged = true;
     int length = chars.length;
@@ -196,7 +196,7 @@ public class Experiment {
 
     trimRight: for (;;) { // trim right
       final int next = length - 1;
-      if (Experiment.__isWhiteSpace(chars[next])) {
+      if (Experiment.isWhiteSpace(chars[next])) {
         if (next <= 0) {
           throw new IllegalArgumentException("name part '"//$NON-NLS-1$
               + s + "' only consists of white space!");//$NON-NLS-1$
@@ -208,8 +208,8 @@ public class Experiment {
     }
 
     trimLeft: for (;;) { // trim left
-      if (Experiment.__isWhiteSpace(chars[0])) {
-        Experiment.__delete(chars, 0, --length);
+      if (Experiment.isWhiteSpace(chars[0])) {
+        Experiment.delete(chars, 0, --length);
       } else {
         break trimLeft;
       }
@@ -248,7 +248,7 @@ public class Experiment {
         } //$FALL-THROUGH$
         case '_': {
           if (!acceptSpace) {
-            Experiment.__delete(chars, i, --length);
+            Experiment.delete(chars, i, --length);
           }
           acceptSpace = false;
           continue looper;
@@ -260,12 +260,12 @@ public class Experiment {
           continue looper;
         }
         default: {
-          if (Experiment.__isWhiteSpace(ch)) {
+          if (Experiment.isWhiteSpace(ch)) {
             if (acceptSpace) {
               chars[i] = '_';
               acceptSpace = false;
             } else {
-              Experiment.__delete(chars, i, --length);
+              Experiment.delete(chars, i, --length);
             }
             continue looper;
           }
@@ -277,7 +277,7 @@ public class Experiment {
 
     trimRight: for (;;) { // trim right
       final int next = length - 1;
-      if (Experiment.__isWhiteSpace(chars[next])) {
+      if (Experiment.isWhiteSpace(chars[next])) {
         if (next <= 0) {
           throw new IllegalArgumentException("name part '"//$NON-NLS-1$
               + s
@@ -328,7 +328,7 @@ public class Experiment {
       final String algorithm, final String instance,
       final long randSeed, final boolean onlyComputePath)
       throws IOException {
-    return Experiment.__logFile(root, algorithm, instance,
+    return Experiment.logFile(root, algorithm, instance,
         randSeed, null, onlyComputePath);
   }
 
@@ -381,12 +381,12 @@ public class Experiment {
    * @throws IOException
    *           if I/O fails
    */
-  private static final Path __logFile(final Path root,
+  private static final Path logFile(final Path root,
       final String algorithm, final String instance,
-      final long randSeed, final __FileSet done,
+      final long randSeed, final FileSet done,
       final boolean onlyComputePath) throws IOException {
 
-    synchronized (IOUtils._IO_SYNCH) {
+    synchronized (IOUtils.IO_SYNCH) {
 
       final Path r = IOUtils.canonicalizePath(root);
       final String algo =
@@ -626,7 +626,7 @@ public class Experiment {
    * @param random
    *          the randomizer
    */
-  private static final void __sleep(final long min,
+  private static final void sleep(final long min,
       final ThreadLocalRandom random) {
     Thread.yield();
     if (min > 0L) {
@@ -800,13 +800,13 @@ public class Experiment {
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
       final boolean waitAfterIOError) {
-    Experiment._executeExperiment(stages, outputDir,
+    Experiment.executeExperiment(stages, outputDir,
         writeLogInfos, waitAfterSkippedRuns,
-        waitAfterWorkWasDone, waitAfterIOError, new __FileSet());
+        waitAfterWorkWasDone, waitAfterIOError, new FileSet());
   }
 
   /** perform garbage collection */
-  private static final void __doGc() {
+  private static final void doGc() {
     final Runtime runtime = Runtime.getRuntime();
 
     for (int i = 10; (--i) >= 0;) {
@@ -864,13 +864,13 @@ public class Experiment {
    * @see #executeExperiment(Stream, Path)
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  static final <X, Y> void _executeExperiment(
+  static final <X, Y> void executeExperiment(
       final Stream<Supplier<IExperimentStage<? extends X,
           ? extends Y, ?, ?>>> stages,
       final Path outputDir, final boolean writeLogInfos,
       final boolean waitAfterSkippedRuns,
       final boolean waitAfterWorkWasDone,
-      final boolean waitAfterIOError, final __FileSet done) {
+      final boolean waitAfterIOError, final FileSet done) {
 
     try {
       final Supplier<IExperimentStage>[] stageList =
@@ -1023,7 +1023,7 @@ public class Experiment {
                   final boolean runNotLocallyDone;
                   synchronized (done) {
                     final int currentSize = done.size();
-                    logFile = Experiment.__logFile(useDir,
+                    logFile = Experiment.logFile(useDir,
                         algoName, instName, seed, done, false);
                     runNotLocallyDone =
                         (done.size() > currentSize);
@@ -1038,7 +1038,7 @@ public class Experiment {
 // by querying the file system. If we do this very often a shared
 // drive, this may annoy the file server. In this case, we may
 // want to wait a bit to relief the file system.
-                      Experiment.__sleep(tryIndex - 1L, random);
+                      Experiment.sleep(tryIndex - 1L, random);
                     }
                     // nothing to do here
                     continue;
@@ -1076,7 +1076,7 @@ public class Experiment {
                         done.remove(logFile);
                       }
                     }
-                    Experiment.__doGc();
+                    Experiment.doGc();
 
                     if (writeLogInfos) {
                       if (error instanceof OutOfMemoryError) {
@@ -1094,11 +1094,11 @@ public class Experiment {
                       }
                     }
                     if (waitAfterIOError) {
-                      Experiment.__sleep(10_000L * tryIndex,
+                      Experiment.sleep(10_000L * tryIndex,
                           random);
                     }
 
-                    Experiment.__doGc();
+                    Experiment.doGc();
 
 // If we got here, there must have been an error when writing out
 // the result. This means the data of the run was lost. But the
@@ -1120,7 +1120,7 @@ public class Experiment {
                       }
                     }
 
-                    Experiment.__doGc();
+                    Experiment.doGc();
 
                     throw error;
                   }
@@ -1129,12 +1129,12 @@ public class Experiment {
                 } // run
 
                 if (waitAfterWorkWasDone) {
-                  Experiment.__sleep(tryIndex - 1L, random);
+                  Experiment.sleep(tryIndex - 1L, random);
                 }
               } // end of the algorithm
 
               if (waitAfterWorkWasDone) {
-                Experiment.__sleep(tryIndex - 1L, random);
+                Experiment.sleep(tryIndex - 1L, random);
               }
             } // end of the problem
 
@@ -1155,7 +1155,7 @@ public class Experiment {
           }
           return; // successful end of the trial
         } catch (final IOException | OutOfMemoryError error) {
-          Experiment.__doGc();
+          Experiment.doGc();
 
           if (writeLogInfos) {
             if (error instanceof OutOfMemoryError) {
@@ -1173,13 +1173,13 @@ public class Experiment {
             }
           }
           if (waitAfterIOError) {
-            Experiment.__sleep(10_000L * tryIndex, random);
+            Experiment.sleep(10_000L * tryIndex, random);
           }
-          Experiment.__doGc();
+          Experiment.doGc();
         }
       } // end trial
     } catch (final Throwable error) {
-      Experiment.__doGc();
+      Experiment.doGc();
 
       final String message =
           "An unrecoverable error has appeared during the experiment."; //$NON-NLS-1$
@@ -1333,11 +1333,11 @@ public class Experiment {
           + cores + " worker threads.");//$NON-NLS-1$
     }
 
-    final __FileSet done = new __FileSet();
+    final FileSet done = new FileSet();
 
     for (int i = threads.length; (--i) >= 0;) {
       final Thread t = threads[i] = new Thread(
-          () -> Experiment._executeExperiment(stageList.stream(),
+          () -> Experiment.executeExperiment(stageList.stream(),
               outputDir, writeLogInfos, waitAfterSkippedRuns,
               waitAfterWorkWasDone, waitAfterIOError, done),
           "ExperimentWorker_" + (i + 1)); //$NON-NLS-1$
@@ -1375,7 +1375,7 @@ public class Experiment {
   }
 
   /** the set of paths */
-  private static final class __FileSet
+  private static final class FileSet
       extends LinkedHashMap<Path, Object> {
     /** the serial version uid */
     private static final long serialVersionUID = 1L;
@@ -1385,7 +1385,7 @@ public class Experiment {
     private static final int MAX_SIZE = 1024 * 1024;
 
     /** create */
-    __FileSet() {
+    FileSet() {
       super();
     }
 
@@ -1393,7 +1393,7 @@ public class Experiment {
     @Override
     @SuppressWarnings("rawtypes")
     protected boolean removeEldestEntry(final Map.Entry eldest) {
-      return this.size() > __FileSet.MAX_SIZE;
+      return this.size() > FileSet.MAX_SIZE;
     }
 
     /**
@@ -1405,7 +1405,7 @@ public class Experiment {
      *         otherwise
      */
     public boolean add(final Path path) {
-      return (this.put(path, __FileSet.KEY) == null);
+      return (this.put(path, FileSet.KEY) == null);
     }
 
     /**

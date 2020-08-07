@@ -22,7 +22,7 @@ public class JSSPMakespanBKS
   /** {@inheritDoc} */
   @Override
   public final int applyAsInt(final String value) {
-    final Integer i = __Holder._DATA.get(value);
+    final Integer i = Holder.DATA.get(value);
     if (i != null) {
       return i.intValue();
     }
@@ -38,18 +38,18 @@ public class JSSPMakespanBKS
   }
 
   /** the data holder */
-  private static final class __Holder {
+  private static final class Holder {
 
     /** the data */
-    static final HashMap<String, Integer> _DATA =
-        __Holder.__loadData();
+    static final HashMap<String, Integer> DATA =
+        Holder.loadData();
 
     /**
      * Load the data
      *
      * @return the data
      */
-    private static HashMap<String, Integer> __loadData() {
+    private static HashMap<String, Integer> loadData() {
       final String resource = "instances_with_bks.txt";//$NON-NLS-1$
 
       try {
