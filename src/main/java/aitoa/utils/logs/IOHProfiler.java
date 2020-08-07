@@ -862,7 +862,7 @@ public class IOHProfiler {
     ConsoleIO.stdout(s -> {
       s.println("Welcome to the IOHprofiler Data Converter"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
-      EndResults._printArgs(s);
+      EndResults.printArgs(s);
       s.println(
           "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
     });

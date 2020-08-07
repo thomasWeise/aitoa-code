@@ -39,7 +39,7 @@ public final class HybridEDAWithFitness<X, Y>
   public final FitnessAssignmentProcess<? super X> fitness;
 
   /**
-   * Create a new instance of the estimation of distribution
+   * Create a new instance of the estimation of distribution.
    *
    * @param _mu
    *          the number of solution to be selected

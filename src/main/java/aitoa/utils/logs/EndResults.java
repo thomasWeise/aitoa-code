@@ -195,36 +195,35 @@ public final class EndResults {
                       .endsWith(".txt"))//$NON-NLS-1$
               )) {
 
-            final __Line line = new __Line();
+            final Line line = new Line();
             LogParser.parseLogFile(file, line,
-                s -> line._acceptSetup(s));
+                s -> line.acceptSetup(s));
 
             bw.write(algoName);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(instName);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(line.m_seed);
+            bw.write(line.seed);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResults.__str(line.m_lastLine.f_min));
+            bw.write(EndResults.str(line.lastLine.f_min));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_lastLine.time_max));
+            bw.write(Long.toString(line.lastLine.time_max));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_lastLine.fe_max));
+            bw.write(Long.toString(line.lastLine.fe_max));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(
-                line.m_lastLine.time_last_improvement));
+            bw.write(Long
+                .toString(line.lastLine.time_last_improvement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long.toString(//
-                line.m_lastLine.fe_last_improvement));
+                line.lastLine.fe_last_improvement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(
-                Long.toString(line.m_lastLine.improvements));
+            bw.write(Long.toString(line.lastLine.improvements));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_budgetTime));
+            bw.write(Long.toString(line.budgetTime));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.m_budgetFEs));
+            bw.write(Long.toString(line.budgetFEs));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResults.__str(line.m_goalF));
+            bw.write(EndResults.str(line.goalF));
             bw.newLine();
           }
         }
@@ -239,13 +238,13 @@ public final class EndResults {
   }
 
   /**
-   * an NaN value was encountered
+   * A NaN value was encountered.
    *
    * @param d
    *          the double
    * @return the string
    */
-  private static String __str(final double d) {
+  private static String str(final double d) {
     if (Double.isNaN(d)) {
       throw new IllegalStateException("NaN value encountered."); //$NON-NLS-1$
     }
@@ -254,22 +253,21 @@ public final class EndResults {
   }
 
   /** the holder for a line */
-  private static final class __Line
-      implements Consumer<LogLine> {
+  private static final class Line implements Consumer<LogLine> {
 
     /** the random seed */
-    String m_seed;
+    String seed;
     /** the last log line */
-    LogLine m_lastLine;
+    LogLine lastLine;
     /** the FEs budget */
-    long m_budgetFEs;
+    long budgetFEs;
     /** the time budget */
-    long m_budgetTime;
+    long budgetTime;
     /** the goal objective value */
-    double m_goalF;
+    double goalF;
 
     /** create */
-    __Line() {
+    Line() {
       super();
     }
 
@@ -279,18 +277,18 @@ public final class EndResults {
      * @param setup
      *          the setup
      */
-    void _acceptSetup(//
+    void acceptSetup(//
         final SetupData setup) {
-      this.m_budgetFEs = setup.budgetFEs;
-      this.m_seed = setup.randSeedString;
-      this.m_budgetTime = setup.budgetTime;
-      this.m_goalF = setup.goalF;
+      this.budgetFEs = setup.budgetFEs;
+      this.seed = setup.randSeedString;
+      this.budgetTime = setup.budgetTime;
+      this.goalF = setup.goalF;
     }
 
     /** {@inheritDoc} */
     @Override
     public void accept(final LogLine t) {
-      this.m_lastLine = Objects.requireNonNull(t);
+      this.lastLine = Objects.requireNonNull(t);
     }
   }
 
@@ -314,7 +312,7 @@ public final class EndResults {
 
     if (consumer == null) {
       throw new NullPointerException(//
-          "null end result consumer");//$NON-NLS-1$
+          "null end result consumer"); //$NON-NLS-1$
     }
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
@@ -427,7 +425,7 @@ public final class EndResults {
             throw new IllegalArgumentException(
                 "Last last improvement time " //$NON-NLS-1$
                     + lastImprovementTime
-                    + " cannot be bigger than total time "//$NON-NLS-1$
+                    + " cannot be bigger than total time " //$NON-NLS-1$
                     + totalTime);
 
           }
@@ -535,7 +533,7 @@ public final class EndResults {
    * @param s
    *          the print stream
    */
-  static void _printArgs(final PrintStream s) {
+  static void printArgs(final PrintStream s) {
     _CommandLineArgs._printSourceDir(s);
     _CommandLineArgs._printDestDir(s);
   }
@@ -549,10 +547,10 @@ public final class EndResults {
   public static void main(final String[] args) {
     ConsoleIO.stdout(s -> {
       s.println("Welcome to the End-Result CSV Table Generator"); //$NON-NLS-1$
-      s.println("The command line arguments are as follows: ");//$NON-NLS-1$
-      EndResults._printArgs(s);
+      s.println("The command line arguments are as follows: "); //$NON-NLS-1$
+      EndResults.printArgs(s);
       s.println(
-          "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
+          "If you do not set the arguments, defaults will be used."); //$NON-NLS-1$
     });
 
     Configuration.putCommandLine(args);

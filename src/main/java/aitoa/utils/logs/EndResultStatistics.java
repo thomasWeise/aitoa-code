@@ -2949,7 +2949,7 @@ public class EndResultStatistics {
    *          the print stream
    */
   static final void _printArgs(final PrintStream s) {
-    EndResults._printArgs(s);
+    EndResults.printArgs(s);
     _CommandLineArgs._printEndResultsStatFile(s);
     _CommandLineArgs._printSuccess(s);
     _CommandLineArgs._printAlgorithmNameMapper(s);
