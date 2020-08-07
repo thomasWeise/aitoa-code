@@ -71,13 +71,15 @@
 
 		<!-- Checks for Javadoc comments. -->
 		<!-- See https://checkstyle.org/config_javadoc.html -->
-		<module name="InvalidJavadocPosition" />
+		<!-- <module name="InvalidJavadocPosition" /> <- Only possible at CheckStyle 
+			3.1.1 -->
 		<module name="JavadocMethod" />
 		<module name="JavadocType" />
 		<module name="JavadocVariable" />
 		<!-- <module name="JavadocStyle" /> -->
 
-		<module name="MissingJavadocMethod" />
+		<!-- <module name="MissingJavadocMethod" /> <- Only possible at CheckStyle 
+			3.1.1 -->
 
 		<!-- Checks for Naming Conventions. -->
 		<!-- See https://checkstyle.org/config_naming.html -->
