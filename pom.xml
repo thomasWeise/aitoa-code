@@ -59,25 +59,6 @@
 
 	<inceptionYear>2018</inceptionYear>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>central</id>
-			<url>https://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -151,7 +132,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.1.0</version>
 				<configuration>
 					<configLocation>${basedir}/meta/checkstyle.xml</configLocation>
 					<encoding>UTF-8</encoding>
@@ -195,7 +176,7 @@
 				<!-- The JavaDoc generating and packaging plugin. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1 </version>
+				<version>3.1.1</version>
 				<configuration>
 					<show>private</show>
 					<detectLinks>true</detectLinks>
