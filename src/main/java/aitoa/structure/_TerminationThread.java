@@ -30,10 +30,10 @@ final class _TerminationThread extends Thread {
   private static final Object SYNC = new Object();
 
   /** the queue */
-  private static volatile _BlackBoxProcessBase<?, ?> s_queue =
+  private static volatile _BlackBoxProcessBase<?, ?> queue =
       null;
   /** the instance */
-  private static volatile _TerminationThread s_instance = null;
+  private static volatile _TerminationThread instance = null;
 
   /** create */
   private _TerminationThread() {
@@ -61,7 +61,7 @@ final class _TerminationThread extends Thread {
     // find right place for insertion
     synchronized (_TerminationThread.SYNC) {
       prev = null;
-      next = _TerminationThread.s_queue;
+      next = _TerminationThread.queue;
 
       while (next != null) {
         if (next == f) {
@@ -83,12 +83,12 @@ final class _TerminationThread extends Thread {
         return;
       }
 
-      _TerminationThread.s_queue = f;
+      _TerminationThread.queue = f;
 
-      if (_TerminationThread.s_instance == null) {
+      if (_TerminationThread.instance == null) {
         // create thread if necessary
-        _TerminationThread.s_instance = new _TerminationThread();
-        _TerminationThread.s_instance.start();
+        _TerminationThread.instance = new _TerminationThread();
+        _TerminationThread.instance.start();
         return;
       }
 
@@ -113,14 +113,14 @@ final class _TerminationThread extends Thread {
 
     synchronized (_TerminationThread.SYNC) {
       cur = null;
-      next = _TerminationThread.s_queue;
+      next = _TerminationThread.queue;
 
       // find element in queue
       while (next != null) {
         if (next == f) {
           if (cur == null) {
             // delete first element
-            _TerminationThread.s_queue = next.m_next;
+            _TerminationThread.queue = next.m_next;
             _TerminationThread.SYNC.notifyAll();
             return;
           }
@@ -144,17 +144,17 @@ final class _TerminationThread extends Thread {
       synchronized (_TerminationThread.SYNC) {
 
         inner: for (;;) {
-          if (_TerminationThread.s_queue == null) {
+          if (_TerminationThread.queue == null) {
             // nothing pending anymore: quit thread
-            _TerminationThread.s_instance = null;
+            _TerminationThread.instance = null;
             return;
           }
 
-          if (_TerminationThread.s_queue.m_endTime <= time) {
+          if (_TerminationThread.queue.m_endTime <= time) {
             // terminate one element from queue
-            _TerminationThread.s_queue.m_terminated = true;
-            _TerminationThread.s_queue =
-                _TerminationThread.s_queue.m_next;
+            _TerminationThread.queue.m_terminated = true;
+            _TerminationThread.queue =
+                _TerminationThread.queue.m_next;
           } else {
             break inner;
           }
@@ -162,7 +162,7 @@ final class _TerminationThread extends Thread {
 
         try {
           _TerminationThread.SYNC.wait(Math.max(0L,
-              (_TerminationThread.s_queue.m_endTime - time)));
+              (_TerminationThread.queue.m_endTime - time)));
         } catch (@SuppressWarnings("unused") //
         final InterruptedException ie) {
           continue;

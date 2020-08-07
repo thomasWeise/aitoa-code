@@ -18,7 +18,7 @@ public final class NQueensObjectiveFunction
   public final int k;
 
   /** the internal upper bound */
-  private long m_upper;
+  private long upper;
 
   /**
    * create
@@ -43,7 +43,7 @@ public final class NQueensObjectiveFunction
           + this.n) + "!=") + this.k) + '*') + this.k) + '.');//$NON-NLS-1$
     }
 
-    this.m_upper = -1L;
+    this.upper = -1L;
   }
 
   /**
@@ -216,12 +216,12 @@ public final class NQueensObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public double upperBound() {
-    if (this.m_upper <= 0L) {
+    if (this.upper <= 0L) {
       final boolean[] test = new boolean[this.n];
       Arrays.fill(test, true);
-      this.m_upper = Math.round(Math.ceil(this.evaluate(test)));
+      this.upper = Math.round(Math.ceil(this.evaluate(test)));
     }
-    return this.m_upper;
+    return this.upper;
   }
 
   /** {@inheritDoc} */
