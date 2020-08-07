@@ -1,6 +1,6 @@
 package aitoa.utils.graph;
 
-/** Test the {@link _CompactDirectedEdgeMultiSet} */
+/** Test the {@link CompactDirectedEdgeMultiSet} */
 public class TestCompactDirectedEdgeMultiSet
     extends TestDirectedEdgeMultiSet {
 
@@ -8,6 +8,6 @@ public class TestCompactDirectedEdgeMultiSet
   @Override
   protected final DirectedEdgeMultiSet create(final int L,
       final int K) {
-    return new _CompactDirectedEdgeMultiSet(L, K);
+    return new CompactDirectedEdgeMultiSet(L, K);
   }
 }

@@ -16,7 +16,7 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-abstract class _Greedy2p1GAmodBase<Y>
+abstract class Greedy2p1GAmodBase<Y>
     implements IMetaheuristic<boolean[], Y> {
 
   /** The default value {@code 1.618033989} for {@link #c} */
@@ -33,7 +33,7 @@ abstract class _Greedy2p1GAmodBase<Y>
    *          the constant above n to define the mutation
    *          probability
    */
-  _Greedy2p1GAmodBase(final double _c) {
+  Greedy2p1GAmodBase(final double _c) {
     super();
     if ((!(Double.isFinite(_c))) || (_c <= 0d) || (_c > 1e5d)) {
       throw new IllegalArgumentException(
@@ -61,7 +61,7 @@ abstract class _Greedy2p1GAmodBase<Y>
     output.write(LogFormat.mapEntry("c", this.c)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cIsDefault", //$NON-NLS-1$
-        this.c == _Greedy2p1GAmodBase.DEFAULT_C));
+        this.c == Greedy2p1GAmodBase.DEFAULT_C));
     output.write(System.lineSeparator());
   }
 }

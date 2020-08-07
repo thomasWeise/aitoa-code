@@ -97,8 +97,8 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    */
   static <X> Iterable<X> use(final X[] array, final int start,
       final int end) {
-    _Iterator._checkRange(array, start, end);
-    return () -> new _ArrayIterator<>(array, start, end);
+    IteratorBase.checkRange(array, start, end);
+    return () -> new ArrayIterator<>(array, start, end);
   }
 
   /**
@@ -122,8 +122,8 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    */
   static <X> Iterable<X> use(final Supplier<X>[] array,
       final int start, final int end) {
-    _Iterator._checkRange(array, start, end);
-    return () -> new _SupplierArrayIterator<>(array, start, end);
+    IteratorBase.checkRange(array, start, end);
+    return () -> new SupplierArrayIterator<>(array, start, end);
   }
 // start relevant
 }

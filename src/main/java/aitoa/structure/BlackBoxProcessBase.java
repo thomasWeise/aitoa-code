@@ -13,9 +13,8 @@ import java.util.Random;
  * @param <Y>
  *          the solution space
  */
-abstract class _BlackBoxProcessBase<X, Y>
-    extends _BlackBoxProcessData<X, Y>
-    implements IBlackBoxProcess<X, Y> {
+abstract class BlackBoxProcessBase<X, Y> extends
+    BlackBoxProcessData<X, Y> implements IBlackBoxProcess<X, Y> {
   /** the random number generator */
   final Random m_random;
   /**
@@ -46,7 +45,7 @@ abstract class _BlackBoxProcessBase<X, Y>
   long m_terminationTime;
 
   /** a linked list link */
-  volatile transient _BlackBoxProcessBase<?, ?> m_next;
+  volatile transient BlackBoxProcessBase<?, ?> m_next;
 
   /**
    * Create the base class of the black box problem
@@ -54,7 +53,7 @@ abstract class _BlackBoxProcessBase<X, Y>
    * @param builder
    *          the builder to copy the data from
    */
-  _BlackBoxProcessBase(
+  BlackBoxProcessBase(
       final BlackBoxProcessBuilder<X, Y> builder) {
     super(builder);
 
@@ -82,12 +81,12 @@ abstract class _BlackBoxProcessBase<X, Y>
   }
 
   /** terminate this problem */
-  final void _terminate() {
+  final void terminate() {
     final boolean term = this.m_terminated;
     this.m_terminated = true;
     if (!term) {
       if (this.m_maxTime < Long.MAX_VALUE) {
-        _TerminationThread._dequeue(this);
+        TerminationThread.dequeue(this);
       }
     }
   }
@@ -126,7 +125,7 @@ abstract class _BlackBoxProcessBase<X, Y>
   public final long getConsumedTime() {
     final long time = System.currentTimeMillis();
     if (time >= this.m_endTime) {
-      this._terminate();
+      this.terminate();
     }
     return (time - this.m_startTime);
   }
@@ -149,7 +148,7 @@ abstract class _BlackBoxProcessBase<X, Y>
     if (this.m_terminationTime <= 0L) {
       this.m_terminationTime = System.currentTimeMillis();
     }
-    this._terminate();
+    this.terminate();
   }
 
   /** {@inheritDoc} */
@@ -165,7 +164,7 @@ abstract class _BlackBoxProcessBase<X, Y>
    *          the log array
    * @return the new log array
    */
-  static final long[] _growLog(final long[] log) {
+  static final long[] growLog(final long[] log) {
     return Arrays.copyOf(log,
         Math.addExact(log.length, log.length));
   }
@@ -199,12 +198,12 @@ abstract class _BlackBoxProcessBase<X, Y>
    * @throws IOException
    *           if an i/o error occurs
    */
-  static final void _writeLog(final long[] log, final int size,
+  static final void writeLog(final long[] log, final int size,
       final long startTime, final Writer out)
       throws IOException {
-    out.write(_BlackBoxProcessBase.BEGIN_LOG);
+    out.write(BlackBoxProcessBase.BEGIN_LOG);
     out.write(System.lineSeparator());
-    out.write(_BlackBoxProcessBase.LOG_HEADER);
+    out.write(BlackBoxProcessBase.LOG_HEADER);
     out.write(System.lineSeparator());
     for (int i = 0; i < size;) {
       final double f = Double.longBitsToDouble(log[i++]);
@@ -230,7 +229,7 @@ abstract class _BlackBoxProcessBase<X, Y>
       out.write(Long.toString(time));
       out.write(System.lineSeparator());
     }
-    out.write(_BlackBoxProcessBase.END_OF_LOG);
+    out.write(BlackBoxProcessBase.END_OF_LOG);
     out.write(System.lineSeparator());
   }
 
@@ -246,15 +245,15 @@ abstract class _BlackBoxProcessBase<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  void _printInfos(final Writer out) throws IOException {
+  void printInfos(final Writer out) throws IOException {
     if ((this.m_terminationTime <= 0L) || //
         (this.m_terminationTime > System.currentTimeMillis())) {
       throw new IllegalStateException(//
           "Invalid termination time: " + //$NON-NLS-1$
               this.m_terminationTime);
     }
-    super._printInfos(out);
-    out.write(_BlackBoxProcessBase.BEGIN_STATE);
+    super.printInfos(out);
+    out.write(BlackBoxProcessBase.BEGIN_STATE);
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
         this.m_consumedFEs));
     out.write(System.lineSeparator());
@@ -269,7 +268,7 @@ abstract class _BlackBoxProcessBase<X, Y>
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.BEST_F,
         LogFormat.doubleToStringForLog(this.m_bestF)));
-    out.write(_BlackBoxProcessBase.END_STATE);
+    out.write(BlackBoxProcessBase.END_STATE);
   }
 
   /** {@inheritDoc} */

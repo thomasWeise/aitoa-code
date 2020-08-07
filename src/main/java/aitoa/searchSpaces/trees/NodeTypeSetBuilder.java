@@ -182,7 +182,7 @@ public class NodeTypeSetBuilder {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public final void add(final Class<?> clazz,
         final Builder... childTypes) {
-      this.add(new _ReflectiveNodeTypes<>((Class) clazz),
+      this.add(new ReflectiveNodeTypes<>((Class) clazz),
           childTypes);
     }
   }

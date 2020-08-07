@@ -9,8 +9,8 @@ import java.util.function.Supplier;
  * @param <X>
  *          the array type
  */
-final class _SupplierArrayIterator<X>
-    extends _Iterator<Supplier<X>, X> {
+final class SupplierArrayIterator<X>
+    extends IteratorBase<Supplier<X>, X> {
 
   /**
    * create
@@ -22,7 +22,7 @@ final class _SupplierArrayIterator<X>
    * @param end
    *          the end index
    */
-  _SupplierArrayIterator(final Supplier<X>[] array,
+  SupplierArrayIterator(final Supplier<X>[] array,
       final int start, final int end) {
     super(array, start, end);
   }
@@ -32,7 +32,7 @@ final class _SupplierArrayIterator<X>
   public X next() {
     final int i = this.m_index;
     if (i >= this.m_end) {
-      _Iterator._endError(i);
+      IteratorBase.endError(i);
     }
     final X x = this.m_array[i].get();
     this.m_index = (i + 1);

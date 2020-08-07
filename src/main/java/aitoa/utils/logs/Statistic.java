@@ -1,7 +1,7 @@
 package aitoa.utils.logs;
 
 /** the base class for internal statistics */
-abstract class _Statistic {
+abstract class Statistic {
 
   /**
    * get the next size for the buffer
@@ -10,7 +10,7 @@ abstract class _Statistic {
    *          the original size
    * @return the next size
    */
-  static final int _incSize(final int orig) {
+  static final int incSize(final int orig) {
     return Math.max(orig + 1, orig << 1);
   }
 
@@ -21,7 +21,7 @@ abstract class _Statistic {
    *
    * @return the statistic object to use
    */
-  abstract _Statistic _finalize();
+  abstract Statistic doFinalize();
 
   /**
    * the number of stored elements
@@ -37,14 +37,14 @@ abstract class _Statistic {
    *          the quantile value
    * @return the quantile number
    */
-  abstract Number _quantile(final double p);
+  abstract Number quantile(final double p);
 
   /**
    * compute the mean and standard deviation of the data
    *
    * @return an array with the mean and standard deviation
    */
-  abstract Number[] _meanAndStdDev();
+  abstract Number[] meanAndStdDev();
 
   /**
    * divide the sum of the data by an integer value
@@ -53,7 +53,7 @@ abstract class _Statistic {
    *          the divisor
    * @return the result
    */
-  abstract Number _divideSumBy(final int by);
+  abstract Number divideSumBy(final int by);
 
   /**
    * add a value to the list
@@ -62,7 +62,7 @@ abstract class _Statistic {
    *          the value
    */
   @SuppressWarnings("static-method")
-  void _add(final long value) {
+  void add(final long value) {
     throw new UnsupportedOperationException();
   }
 
@@ -73,7 +73,7 @@ abstract class _Statistic {
    *          the value
    */
   @SuppressWarnings("static-method")
-  void _add(final double value) {
+  void add(final double value) {
     throw new UnsupportedOperationException();
   }
 }

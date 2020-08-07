@@ -5,7 +5,7 @@ import java.util.Arrays;
 import aitoa.utils.math.Statistics;
 
 /** a store of longs */
-final class _Longs extends _Statistic {
+final class Longs extends Statistic {
 
   /** the internal data */
   private long[] m_data;
@@ -14,7 +14,7 @@ final class _Longs extends _Statistic {
   private int m_size;
 
   /** create */
-  _Longs() {
+  Longs() {
     this.m_data = new long[10];
   }
 
@@ -24,14 +24,14 @@ final class _Longs extends _Statistic {
    * @param data
    *          the data
    */
-  _Longs(final long[] data) {
+  Longs(final long[] data) {
     this.m_data = data;
     this.m_size = data.length;
   }
 
   /** {@inheritDoc} */
   @Override
-  void _add(final long value) {
+  void add(final long value) {
     final int size = this.m_size;
     long[] data = this.m_data;
 
@@ -43,7 +43,7 @@ final class _Longs extends _Statistic {
 
     if (size >= data.length) {
       this.m_data =
-          data = Arrays.copyOf(data, _Statistic._incSize(size));
+          data = Arrays.copyOf(data, Statistic.incSize(size));
     }
 
     data[size] = value;
@@ -52,7 +52,7 @@ final class _Longs extends _Statistic {
 
   /** {@inheritDoc} */
   @Override
-  _Longs _finalize() {
+  Longs doFinalize() {
     if (this.m_size <= 0) {
       throw new IllegalStateException("empty data array?"); //$NON-NLS-1$
     }
@@ -69,20 +69,20 @@ final class _Longs extends _Statistic {
 
   /** {@inheritDoc} */
   @Override
-  Number _quantile(final double p) {
+  Number quantile(final double p) {
     return Statistics.quantile(p, this.m_data);
   }
 
   /** {@inheritDoc} */
   @Override
-  Number[] _meanAndStdDev() {
+  Number[] meanAndStdDev() {
     return Statistics
         .sampleMeanAndStandardDeviation(this.m_data);
   }
 
   /** {@inheritDoc} */
   @Override
-  Number _divideSumBy(final int by) {
+  Number divideSumBy(final int by) {
     return Statistics.divideExact(Statistics.sum(this.m_data),
         by);
   }

@@ -69,7 +69,7 @@ public final class ErtEcdf {
    * @throws IOException
    *           if i/o fails
    */
-  private static void __line(final double time, final int ecdfA,
+  private static void line(final double time, final int ecdfA,
       final int instances, final BufferedWriter bw)
       throws IOException {
     bw.write(LogFormat.doubleToStringForLog(time));
@@ -164,13 +164,13 @@ public final class ErtEcdf {
               + in + "'.");//$NON-NLS-1$
     }
 
-    __Parser parser = new __Parser(timeGetter,
+    Parser parser = new Parser(timeGetter,
         ((useInstance == null) ? x -> true : useInstance),
         (useAlgorithm == null) ? x -> true : useAlgorithm);
     EndResultStatistics.parseEndResultStatisticsTable(
         endResultStatistics, parser, logProgressToConsole);
 
-    final __Result result = parser._finalize();
+    final Result result = parser.doFinalize();
     parser = null;
 
     if (logProgressToConsole) {
@@ -182,7 +182,7 @@ public final class ErtEcdf {
 
     double maxErt = Double.NEGATIVE_INFINITY;
     double minErt = Double.POSITIVE_INFINITY;
-    for (final __Algorithm a : result.algorithms) {
+    for (final Algorithm a : result.algorithms) {
       if (a.solutions.length > 0) {
         minErt = Math.min(minErt, a.solutions[0]);
         maxErt = Math.max(maxErt,
@@ -206,7 +206,7 @@ public final class ErtEcdf {
         ertName, ErtEcdf.COL_ECDF_REL, ErtEcdf.COL_ECDF_ABS,
         ErtEcdf.COL_INSTANCES);
 
-    for (final __Algorithm algo : result.algorithms) {
+    for (final Algorithm algo : result.algorithms) {
       final Path path = IOUtils.canonicalizePath(
           endFolder.resolve(algo.algorithm + ".txt"));//$NON-NLS-1$
 
@@ -219,14 +219,14 @@ public final class ErtEcdf {
         int ecdf = 0;
         for (final double d : algo.solutions) {
           if (d > time) {
-            ErtEcdf.__line(time, ecdf, result.instances, bw);
+            ErtEcdf.line(time, ecdf, result.instances, bw);
           }
           ++ecdf;
           time = d;
         }
-        ErtEcdf.__line(time, ecdf, result.instances, bw);
+        ErtEcdf.line(time, ecdf, result.instances, bw);
         if (time < maxErt) {
-          ErtEcdf.__line(maxErt, ecdf, result.instances, bw);
+          ErtEcdf.line(maxErt, ecdf, result.instances, bw);
         } else {
           if (time > maxErt) {
             throw new IllegalStateException(//
@@ -256,7 +256,7 @@ public final class ErtEcdf {
   }
 
   /** the internal parser class */
-  private static final class __Parser
+  private static final class Parser
       implements Consumer<EndResultStatistic> {
     /** which instance to use */
     private final Predicate<String> m_useInstance;
@@ -266,7 +266,7 @@ public final class ErtEcdf {
     private final ToDoubleFunction<
         EndResultStatistic> m_timeGetter;
     /** the data */
-    private HashMap<String, ArrayList<__Solution>> m_data;
+    private HashMap<String, ArrayList<Solution>> m_data;
     /** the instance counters */
     private HashMap<String, int[]> m_instanceCounters;
 
@@ -284,8 +284,7 @@ public final class ErtEcdf {
      *          be included in the diagram; if this is
      *          {@code null}, all algorithms will be considered
      */
-    __Parser(
-        final ToDoubleFunction<EndResultStatistic> timeGetter,
+    Parser(final ToDoubleFunction<EndResultStatistic> timeGetter,
         final Predicate<String> useInstance,
         final Predicate<String> useAlgorithm) {
       super();
@@ -318,13 +317,13 @@ public final class ErtEcdf {
             throw new IllegalArgumentException(//
                 "time cannot be <0, but is " + time); //$NON-NLS-1$
           }
-          ArrayList<__Solution> sols =
+          ArrayList<Solution> sols =
               this.m_data.get(t.algorithm);
           if (sols == null) {
             sols = new ArrayList<>();
             this.m_data.put(t.algorithm, sols);
           }
-          sols.add(new __Solution(t.instance, time));
+          sols.add(new Solution(t.instance, time));
         }
       }
     }
@@ -334,7 +333,7 @@ public final class ErtEcdf {
      *
      * @return the results
      */
-    __Result _finalize() {
+    Result doFinalize() {
       if (this.m_data.isEmpty()) {
         throw new IllegalStateException("no algorithm found."); //$NON-NLS-1$
       }
@@ -355,9 +354,9 @@ public final class ErtEcdf {
       }
 
       // filter the algorithms
-      final __Algorithm[] algorithms =
+      final Algorithm[] algorithms =
           this.m_data.entrySet().stream()//
-              .map(e -> new __Algorithm(e.getKey(), //
+              .map(e -> new Algorithm(e.getKey(), //
                   e.getValue().stream()//
                       // keep only those instances to which
                       // all algorithms were applied
@@ -365,13 +364,12 @@ public final class ErtEcdf {
                           .containsKey(v.instance)))//
                       .mapToDouble(s -> s.ert)//
                       .toArray())//
-              ).toArray(i -> new __Algorithm[i]);
+              ).toArray(i -> new Algorithm[i]);
 
       this.m_data.clear();
       this.m_data = null;
 
-      final __Result result =
-          new __Result(instances, algorithms);
+      final Result result = new Result(instances, algorithms);
       this.m_instanceCounters.clear();
       this.m_instanceCounters = null;
 
@@ -380,11 +378,11 @@ public final class ErtEcdf {
   }
 
   /** the algorithm data */
-  private static final class __Result {
+  private static final class Result {
     /** the instances */
     final int instances;
     /** the algorithms */
-    final __Algorithm[] algorithms;
+    final Algorithm[] algorithms;
 
     /**
      * create
@@ -394,7 +392,7 @@ public final class ErtEcdf {
      * @param a
      *          the algorithm data
      */
-    __Result(final int i, final __Algorithm[] a) {
+    Result(final int i, final Algorithm[] a) {
       super();
       this.instances = i;
       if (i <= 0) {
@@ -409,8 +407,8 @@ public final class ErtEcdf {
   }
 
   /** the algorithm data */
-  private static final class __Algorithm
-      implements Comparable<__Algorithm> {
+  private static final class Algorithm
+      implements Comparable<Algorithm> {
     /** the algorithm */
     final String algorithm;
     /** the data */
@@ -424,7 +422,7 @@ public final class ErtEcdf {
      * @param d
      *          the data
      */
-    __Algorithm(final String a, final double[] d) {
+    Algorithm(final String a, final double[] d) {
       super();
       this.algorithm = Objects.requireNonNull(a);
       this.solutions = Objects.requireNonNull(d);
@@ -433,14 +431,14 @@ public final class ErtEcdf {
 
     /** {@inheritDoc} */
     @Override
-    public int compareTo(final __Algorithm o) {
+    public int compareTo(final Algorithm o) {
       return this.algorithm.compareTo(o.algorithm);
     }
   }
 
   /** a record of a solution */
-  private static final class __Solution
-      implements Comparable<__Solution> {
+  private static final class Solution
+      implements Comparable<Solution> {
     /** the solved instance */
     final String instance;
     /** the ert */
@@ -454,7 +452,7 @@ public final class ErtEcdf {
      * @param e
      *          the ert
      */
-    __Solution(final String i, final double e) {
+    Solution(final String i, final double e) {
       super();
       this.instance = Objects.requireNonNull(i);
       if ((!Double.isFinite(e)) || (e < 0d)) {
@@ -465,7 +463,7 @@ public final class ErtEcdf {
 
     /** {@inheritDoc} */
     @Override
-    public int compareTo(final __Solution o) {
+    public int compareTo(final Solution o) {
       final int i = Double.compare(this.ert, o.ert);
       if (i != 0) {
         return i;
@@ -740,10 +738,10 @@ public final class ErtEcdf {
    * @param s
    *          the print stream
    */
-  static void _printArgs(final PrintStream s) {
-    EndResultStatistics._printArgs(s);
-    _CommandLineArgs._printUseFEs(s);
-    _CommandLineArgs._printErtEcdfFileName(s);
+  static void printArgs(final PrintStream s) {
+    EndResultStatistics.printArgs(s);
+    CommandLineArgs.printUseFEs(s);
+    CommandLineArgs.printErtEcdfFileName(s);
   }
 
   /**
@@ -756,26 +754,25 @@ public final class ErtEcdf {
     ConsoleIO.stdout(s -> {
       s.println("Welcome to the ERT-ECDF Generator"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
-      ErtEcdf._printArgs(s);
+      ErtEcdf.printArgs(s);
       s.println(
           "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
     });
 
     Configuration.putCommandLine(args);
 
-    final Path in = _CommandLineArgs._getSourceDir();
-    final Path out = _CommandLineArgs._getDestDir();
+    final Path in = CommandLineArgs.getSourceDir();
+    final Path out = CommandLineArgs.getDestDir();
     final String endname =
-        _CommandLineArgs._getEndResultsStatFile();
+        CommandLineArgs.getEndResultsStatFile();
     final Function<String, String> algoNameMap =
-        _CommandLineArgs._getAlgorithmNameMapper();
+        CommandLineArgs.getAlgorithmNameMapper();
     final Function<String, String> instNameMap =
-        _CommandLineArgs._getInstanceNameMapper();
+        CommandLineArgs.getInstanceNameMapper();
     final Predicate<EndResult> success =
-        _CommandLineArgs._getSuccess();
-    final boolean useFEs = _CommandLineArgs._getUseFEs();
-    final String ertname =
-        _CommandLineArgs._getErtEcdfFileName();
+        CommandLineArgs.getSuccess();
+    final boolean useFEs = CommandLineArgs.getUseFEs();
+    final String ertname = CommandLineArgs.getErtEcdfFileName();
 
     Configuration.print();
 

@@ -14,8 +14,8 @@ import aitoa.utils.IOUtils.IOConsumer;
  * @param <X>
  *          the search and solution space
  */
-final class _BlackBoxProcess1LogAll<X>
-    extends _BlackBoxProcessBase<X, X> {
+final class BlackBoxProcess1LogAll<X>
+    extends BlackBoxProcessBase<X, X> {
 
   /** the log file */
   private final Writer m_logWriter;
@@ -30,17 +30,17 @@ final class _BlackBoxProcess1LogAll<X>
    * @param builder
    *          the builder to copy the data from
    */
-  _BlackBoxProcess1LogAll(
+  BlackBoxProcess1LogAll(
       final BlackBoxProcessBuilder<X, X> builder) {
     super(builder);
 
-    this.m_logWriter = builder._createLogWriter();
-    this.m_log = builder._createLog();
+    this.m_logWriter = builder.createLogWriter();
+    this.m_log = builder.createLog();
 
     // enqueue into terminator thread if needed only after
     // initialization is complete
     if (this.m_maxTime < Long.MAX_VALUE) {
-      _TerminationThread._enqueue(this);
+      TerminationThread.enqueue(this);
     }
   }
 
@@ -51,15 +51,15 @@ final class _BlackBoxProcess1LogAll<X>
       this.m_terminationTime = System.currentTimeMillis();
     }
     // make sure we are dequeued from terminator
-    this._terminate();
+    this.terminate();
 
     // write the log information and then close log
     IOUtils.synchronizedIO(() -> {
       try (final Writer out = this.m_logWriter) {
-        _BlackBoxProcessBase._writeLog(this.m_log,
-            this.m_logSize, this.m_startTime, out);
+        BlackBoxProcessBase.writeLog(this.m_log, this.m_logSize,
+            this.m_startTime, out);
         this.m_log = null;
-        this._printInfos(out);
+        this.printInfos(out);
         if (this.m_consumedFEs > 0L) {
           out.write("# BEST_X"); //$NON-NLS-1$
           out.write(System.lineSeparator());
@@ -91,7 +91,7 @@ final class _BlackBoxProcess1LogAll<X>
     final int size = this.m_logSize;
     final int newSize = Math.addExact(size, 3);
     if (newSize > this.m_log.length) { // grow log
-      this.m_log = _BlackBoxProcessBase._growLog(this.m_log);
+      this.m_log = BlackBoxProcessBase.growLog(this.m_log);
     }
     // store log point
     this.m_log[size] = Double.doubleToLongBits(result);
@@ -112,13 +112,13 @@ final class _BlackBoxProcess1LogAll<X>
       // reached the quality goal
       if ((this.m_lastImprovementTime >= this.m_endTime)
           || (result <= this.m_goalF)) {
-        this._terminate();// terminate: we are finished
+        this.terminate();// terminate: we are finished
       }
     }
 
     // check if we have exhausted the granted FEs
     if (fes >= this.m_maxFEs) {
-      this._terminate();// terminate: no more FEs
+      this.terminate();// terminate: no more FEs
     }
     // return result
     return result;

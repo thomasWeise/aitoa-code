@@ -16,7 +16,7 @@ import aitoa.utils.ReflectionUtils;
  * @param <T>
  *          the node type
  */
-final class _ReflectiveNodeTypes<T extends Node>
+final class ReflectiveNodeTypes<T extends Node>
     implements Function<NodeTypeSet<?>[], NodeType<T>> {
 
   /** the class */
@@ -28,7 +28,7 @@ final class _ReflectiveNodeTypes<T extends Node>
    * @param clazz
    *          the class
    */
-  _ReflectiveNodeTypes(final Class<T> clazz) {
+  ReflectiveNodeTypes(final Class<T> clazz) {
     super();
     this.m_clazz = Objects.requireNonNull(clazz);
   }
@@ -64,9 +64,9 @@ final class _ReflectiveNodeTypes<T extends Node>
           if (!(Node[].class.isAssignableFrom(p[1]))) {
             continue outer;
           }
-          return new __ReflectiveNodeType1<>(t, cx);
+          return new ReflectiveNodeType1<>(t, cx);
         }
-        return new __ReflectiveNodeType0<>(t, cx);
+        return new ReflectiveNodeType0<>(t, cx);
       }
 
       throw new IllegalArgumentException("class " + //$NON-NLS-1$
@@ -86,7 +86,7 @@ final class _ReflectiveNodeTypes<T extends Node>
    * @param <T>
    *          the node type
    */
-  private abstract static class __ReflectiveNodeType<
+  private abstract static class ReflectiveNodeType<
       T extends Node> extends NodeType<T> {
 
     /** the constructor */
@@ -100,7 +100,7 @@ final class _ReflectiveNodeTypes<T extends Node>
      * @param childTypes
      *          the child types
      */
-    __ReflectiveNodeType(final NodeTypeSet<?>[] childTypes,
+    ReflectiveNodeType(final NodeTypeSet<?>[] childTypes,
         final Constructor<T> constr) {
       super(childTypes);
       this.m_constructor = Objects.requireNonNull(constr);
@@ -113,7 +113,7 @@ final class _ReflectiveNodeTypes<T extends Node>
      *          the error
      * @return the error
      */
-    final IllegalStateException _throw(final Throwable error) {
+    final IllegalStateException doThrow(final Throwable error) {
       return new IllegalStateException(//
           "reflective node instantiation failed to invoke " + //$NON-NLS-1$
               this.m_constructor,
@@ -127,8 +127,8 @@ final class _ReflectiveNodeTypes<T extends Node>
    * @param <T>
    *          the node type
    */
-  private static final class __ReflectiveNodeType0<
-      T extends Node> extends __ReflectiveNodeType<T> {
+  private static final class ReflectiveNodeType0<T extends Node>
+      extends ReflectiveNodeType<T> {
 
     /** the parameters */
     private final Object[] m_params;
@@ -141,7 +141,7 @@ final class _ReflectiveNodeTypes<T extends Node>
      * @param childTypes
      *          the child types
      */
-    __ReflectiveNodeType0(final NodeTypeSet<?>[] childTypes,
+    ReflectiveNodeType0(final NodeTypeSet<?>[] childTypes,
         final Constructor<T> constr) {
       super(childTypes, constr);
       this.m_params = new Object[] { this };
@@ -154,7 +154,7 @@ final class _ReflectiveNodeTypes<T extends Node>
       try {
         return this.m_constructor.newInstance(this.m_params);
       } catch (final Throwable error) {
-        throw this._throw(error);
+        throw this.doThrow(error);
       }
     }
   }
@@ -165,8 +165,8 @@ final class _ReflectiveNodeTypes<T extends Node>
    * @param <T>
    *          the node type
    */
-  private static final class __ReflectiveNodeType1<
-      T extends Node> extends __ReflectiveNodeType<T> {
+  private static final class ReflectiveNodeType1<T extends Node>
+      extends ReflectiveNodeType<T> {
 
     /**
      * create the node factory
@@ -176,7 +176,7 @@ final class _ReflectiveNodeTypes<T extends Node>
      * @param childTypes
      *          the child types
      */
-    __ReflectiveNodeType1(final NodeTypeSet<?>[] childTypes,
+    ReflectiveNodeType1(final NodeTypeSet<?>[] childTypes,
         final Constructor<T> constr) {
       super(childTypes, constr);
     }
@@ -188,7 +188,7 @@ final class _ReflectiveNodeTypes<T extends Node>
       try {
         return this.m_constructor.newInstance(this, children);
       } catch (final Throwable error) {
-        throw this._throw(error);
+        throw this.doThrow(error);
       }
     }
   }

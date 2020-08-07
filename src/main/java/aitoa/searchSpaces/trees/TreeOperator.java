@@ -3,7 +3,7 @@ package aitoa.searchSpaces.trees;
 import java.util.Random;
 
 /** A base class for tree-based search operations */
-class _TreeOperator {
+class TreeOperator {
 
   /** the maximum number of trials before failing */
   static final int MAX_TRIALS = 1000;
@@ -17,7 +17,7 @@ class _TreeOperator {
    * @param maxDepth
    *          the maximum tree depth
    */
-  _TreeOperator(final int maxDepth) {
+  TreeOperator(final int maxDepth) {
     super();
     this.m_maxDepth = TreeSpace._checkMaxDepth(maxDepth);
   }
@@ -35,7 +35,7 @@ class _TreeOperator {
    *          the random number generator
    * @return the new tree
    */
-  static final Node _createTree(final NodeTypeSet<?> types,
+  static final Node createTree(final NodeTypeSet<?> types,
       final int maxDepth, final Random rand) {
 
     final NodeType<?> t = ((maxDepth <= 1)//
@@ -52,7 +52,7 @@ class _TreeOperator {
     int i = t.m_childTypes.length;
     final Node[] x = new Node[i];
     for (; (--i) >= 0;) {
-      if ((x[i] = _TreeOperator._createTree(t.m_childTypes[i],
+      if ((x[i] = TreeOperator.createTree(t.m_childTypes[i],
           maxDepth - 1, rand)) == null) {
         return null;
       }

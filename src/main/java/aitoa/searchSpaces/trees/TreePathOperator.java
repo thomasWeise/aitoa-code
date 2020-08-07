@@ -7,7 +7,7 @@ import java.util.Random;
  * A base class for tree-based search operations that work on
  * tree paths
  */
-class _TreePathOperator extends _TreeOperator {
+class TreePathOperator extends TreeOperator {
 
   /** the path */
   private final Node[] m_path;
@@ -24,7 +24,7 @@ class _TreePathOperator extends _TreeOperator {
    * @param md
    *          the maximum tree depth
    */
-  _TreePathOperator(final int md) {
+  TreePathOperator(final int md) {
     super(md);
     this.m_path = new Node[md];
     this.m_indexInParent = new int[md];
@@ -35,7 +35,7 @@ class _TreePathOperator extends _TreeOperator {
    *
    * @return the element
    */
-  final Node _getEnd() {
+  final Node getEnd() {
     return this.m_path[this.m_length - 1];
   }
 
@@ -44,7 +44,7 @@ class _TreePathOperator extends _TreeOperator {
    *
    * @return the choices for the end element of the path
    */
-  final NodeTypeSet<?> _getEndChoices() {
+  final NodeTypeSet<?> getEndChoices() {
     return this.m_path[this.m_length - 1].m_type.m_typeSet;
   }
 
@@ -60,12 +60,12 @@ class _TreePathOperator extends _TreeOperator {
    *         modified, or {@code null} if the modification failed
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  final Node _tryModifyEnd(final Random random) {
+  final Node tryModifyEnd(final Random random) {
     final Node end = this.m_path[this.m_length - 1];
     final Node newEnd = ((NodeType) (end.m_type))
         .createModifiedCopy(end, random);
     if ((newEnd != null) && (!Objects.equals(end, newEnd))) {
-      return this._replaceEnd(newEnd);
+      return this.replaceEnd(newEnd);
     }
     return null;
   }
@@ -80,7 +80,7 @@ class _TreePathOperator extends _TreeOperator {
    *          the randomizer
    * @return the path length
    */
-  final int _randomPath(final Node start, final Random random) {
+  final int randomPath(final Node start, final Random random) {
     int length = 0;
     int parentIndex = -1;
     final Node[] path = this.m_path;
@@ -116,7 +116,7 @@ class _TreePathOperator extends _TreeOperator {
    *         change
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  final Node _replaceEnd(final Node newNode) {
+  final Node replaceEnd(final Node newNode) {
     int i = this.m_length;
     final Node[] path = this.m_path;
     final int[] parentIndexes = this.m_indexInParent;

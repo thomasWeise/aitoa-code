@@ -14,7 +14,7 @@ import aitoa.utils.Configuration;
  * A class just defining command line arguments to be used by
  * many tools inside this package
  */
-abstract class _CommandLineArgs {
+abstract class CommandLineArgs {
 
   /** the source directory parameter */
   private static final String PARAM_SRC_DIR = "src"; //$NON-NLS-1$
@@ -27,9 +27,9 @@ abstract class _CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void _printSourceDir(final PrintStream s) {
+  static final void printSourceDir(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_SRC_DIR);
+    s.print(CommandLineArgs.PARAM_SRC_DIR);
     s.println(
         "=dir: is the directory with the recorded experiment results (log file root dir).");//$NON-NLS-1$
   }
@@ -39,8 +39,8 @@ abstract class _CommandLineArgs {
    *
    * @return the input path
    */
-  static final Path _getSourceDir() {
-    return Configuration.getPath(_CommandLineArgs.PARAM_SRC_DIR,
+  static final Path getSourceDir() {
+    return Configuration.getPath(CommandLineArgs.PARAM_SRC_DIR,
         () -> Paths.get("results"));//$NON-NLS-1$ ;
   }
 
@@ -50,9 +50,9 @@ abstract class _CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void _printDestDir(final PrintStream s) {
+  static final void printDestDir(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_DST_DIR);
+    s.print(CommandLineArgs.PARAM_DST_DIR);
     s.println(
         "=dir: is the directory where the output should be written to.");//$NON-NLS-1$
   }
@@ -62,8 +62,8 @@ abstract class _CommandLineArgs {
    *
    * @return the output path
    */
-  static final Path _getDestDir() {
-    return Configuration.getPath(_CommandLineArgs.PARAM_DST_DIR,
+  static final Path getDestDir() {
+    return Configuration.getPath(CommandLineArgs.PARAM_DST_DIR,
         () -> Paths.get("evaluation"));//$NON-NLS-1$ ;
   }
 
@@ -77,9 +77,9 @@ abstract class _CommandLineArgs {
    *
    * @return the success predicate
    */
-  static final Predicate<EndResult> _getSuccess() {
+  static final Predicate<EndResult> getSuccess() {
     final String goalFunc = Configuration.getString(//
-        _CommandLineArgs.PARAM_GOAL_FUNC);
+        CommandLineArgs.PARAM_GOAL_FUNC);
 
     final ToDoubleFunction<String> func;
     if (goalFunc != null) {
@@ -91,7 +91,7 @@ abstract class _CommandLineArgs {
         throw new IllegalArgumentException(
             "Cannot instantiate class '" //$NON-NLS-1$
                 + goalFunc + "' from parameter '" + //$NON-NLS-1$
-                _CommandLineArgs.PARAM_GOAL_FUNC + "'.", //$NON-NLS-1$
+                CommandLineArgs.PARAM_GOAL_FUNC + "'.", //$NON-NLS-1$
             error);
       }
     } else {
@@ -99,7 +99,7 @@ abstract class _CommandLineArgs {
     }
 
     final Double goal =
-        Configuration.getDouble(_CommandLineArgs.PARAM_GOAL);
+        Configuration.getDouble(CommandLineArgs.PARAM_GOAL);
     if (goal != null) {
       final double threshold = goal.doubleValue();
       if (func == null) {
@@ -124,23 +124,23 @@ abstract class _CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void _printSuccess(final PrintStream s) {
+  static final void printSuccess(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_GOAL);
+    s.print(CommandLineArgs.PARAM_GOAL);
     s.println(
         "=value: is the objective value at which a run is considered as success.");//$NON-NLS-1$
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_GOAL_FUNC);
+    s.print(CommandLineArgs.PARAM_GOAL_FUNC);
     s.println(
         "=classname: the canonical classname of a function accepting an instance name and returning a goal objective value.");//$NON-NLS-1$
     s.print(" If both "); //$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_GOAL);
+    s.print(CommandLineArgs.PARAM_GOAL);
     s.print(" and "); //$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_GOAL_FUNC);
+    s.print(CommandLineArgs.PARAM_GOAL_FUNC);
     s.print(" are specified, "); //$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_GOAL);
+    s.print(CommandLineArgs.PARAM_GOAL);
     s.print(" will be used when ");//$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_GOAL_FUNC);
+    s.print(CommandLineArgs.PARAM_GOAL_FUNC);
     s.print(" returns a non-finite value.");//$NON-NLS-1$
     s.print(
         " If neither is provided, goalF from the log files we be used.");//$NON-NLS-1$
@@ -157,9 +157,9 @@ abstract class _CommandLineArgs {
    *          the print stream
    */
   static final void
-      _printEndResultsStatFile(final PrintStream s) {
+      printEndResultsStatFile(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
+    s.print(CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
     s.println(
         "=file name: is the name for the end result statistics file; if not provided, the default is used.");//$NON-NLS-1$
   }
@@ -169,9 +169,9 @@ abstract class _CommandLineArgs {
    *
    * @return the end result statistics file name
    */
-  static final String _getEndResultsStatFile() {
+  static final String getEndResultsStatFile() {
     final String s = Configuration
-        .getString(_CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
+        .getString(CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
     return (s == null) ? EndResultStatistics.FILE_NAME : s;
   }
 
@@ -185,7 +185,7 @@ abstract class _CommandLineArgs {
    * @return the name mapping function
    */
   private static final Function<String, String>
-      __nameMap(final String src, final boolean omitOthers) {
+      nameMap(final String src, final boolean omitOthers) {
     final int i = src.indexOf("->"); //$NON-NLS-1$
     if (i < 0) {
       final Predicate<String> p =
@@ -228,13 +228,12 @@ abstract class _CommandLineArgs {
    * @return the algorithm name mapper
    */
   static final Function<String, String>
-      _getAlgorithmNameMapper() {
+      getAlgorithmNameMapper() {
     final String s = Configuration
-        .getString(_CommandLineArgs.PARAM_ALGO_NAME_MAP);
+        .getString(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     if (s != null) {
-      return _CommandLineArgs.__nameMap(s,
-          Configuration.getBoolean(
-              _CommandLineArgs.PARAM_ALGO_NAME_MAP_OMIT_OTHERS));
+      return CommandLineArgs.nameMap(s, Configuration.getBoolean(
+          CommandLineArgs.PARAM_ALGO_NAME_MAP_OMIT_OTHERS));
     }
     return Function.identity();
   }
@@ -246,21 +245,21 @@ abstract class _CommandLineArgs {
    *          the print stream
    */
   static final void
-      _printAlgorithmNameMapper(final PrintStream s) {
+      printAlgorithmNameMapper(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_ALGO_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     s.println(
         "=in->out: map the algorithm names that match regular expression 'in' to 'out'.");//$NON-NLS-1$
 
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_ALGO_NAME_MAP_OMIT_OTHERS);
+    s.print(CommandLineArgs.PARAM_ALGO_NAME_MAP_OMIT_OTHERS);
     s.print(
         "=true|false: omit all algorithms not matching to 'in' given in ");//$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_ALGO_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     s.println('.');
     s.print(
         " Is assumed to be true if no '->' is contained in ");//$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_ALGO_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     s.println('.');
   }
 
@@ -279,14 +278,12 @@ abstract class _CommandLineArgs {
    *
    * @return the instance name mapper
    */
-  static final Function<String, String>
-      _getInstanceNameMapper() {
+  static final Function<String, String> getInstanceNameMapper() {
     final String s = Configuration
-        .getString(_CommandLineArgs.PARAM_INST_NAME_MAP);
+        .getString(CommandLineArgs.PARAM_INST_NAME_MAP);
     if (s != null) {
-      return _CommandLineArgs.__nameMap(s,
-          Configuration.getBoolean(
-              _CommandLineArgs.PARAM_INST_NAME_MAP_OMIT_OTHERS));
+      return CommandLineArgs.nameMap(s, Configuration.getBoolean(
+          CommandLineArgs.PARAM_INST_NAME_MAP_OMIT_OTHERS));
     }
     return Function.identity();
   }
@@ -298,21 +295,21 @@ abstract class _CommandLineArgs {
    *          the print stream
    */
   static final void
-      _printInstanceNameMapper(final PrintStream s) {
+      printInstanceNameMapper(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_INST_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_INST_NAME_MAP);
     s.println(
         "=in->out: map the instance names that match regular expression 'in' to 'out'.");//$NON-NLS-1$
 
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_INST_NAME_MAP_OMIT_OTHERS);
+    s.print(CommandLineArgs.PARAM_INST_NAME_MAP_OMIT_OTHERS);
     s.println(
         "=true|false: omit all instance not matching to 'in' given in ");//$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_INST_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_INST_NAME_MAP);
     s.println('.');
     s.print(
         " Is assumed to be true if no '->' is contained in ");//$NON-NLS-1$
-    s.print(_CommandLineArgs.PARAM_INST_NAME_MAP);
+    s.print(CommandLineArgs.PARAM_INST_NAME_MAP);
     s.println('.');
   }
 
@@ -329,12 +326,12 @@ abstract class _CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void _printUseFEs(final PrintStream s) {
+  static final void printUseFEs(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_USE_FES);
+    s.print(CommandLineArgs.PARAM_USE_FES);
     s.println(": use FEs as time measure (default).");//$NON-NLS-1$
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_USE_TIME);
+    s.print(CommandLineArgs.PARAM_USE_TIME);
     s.println(": use runtime as time measure.");//$NON-NLS-1$
   }
 
@@ -343,13 +340,13 @@ abstract class _CommandLineArgs {
    *
    * @return the whether FEs should be used
    */
-  static final boolean _getUseFEs() {
+  static final boolean getUseFEs() {
     if (Configuration
-        .getBoolean(_CommandLineArgs.PARAM_USE_FES)) {
+        .getBoolean(CommandLineArgs.PARAM_USE_FES)) {
       return true;
     }
     if (Configuration
-        .getBoolean(_CommandLineArgs.PARAM_USE_TIME)) {
+        .getBoolean(CommandLineArgs.PARAM_USE_TIME)) {
       return false;
     }
     return true;
@@ -360,9 +357,9 @@ abstract class _CommandLineArgs {
    *
    * @return the name
    */
-  static final String _getErtEcdfFileName() {
+  static final String getErtEcdfFileName() {
     final String s = Configuration
-        .getString(_CommandLineArgs.PARAM_ERTECDF_NAME);
+        .getString(CommandLineArgs.PARAM_ERTECDF_NAME);
     return (s != null) ? s : ErtEcdf.ERT_ECDF_DIAGRAM_BASE_NAME;
   }
 
@@ -372,9 +369,9 @@ abstract class _CommandLineArgs {
    * @param s
    *          the print stream to write to
    */
-  static final void _printErtEcdfFileName(final PrintStream s) {
+  static final void printErtEcdfFileName(final PrintStream s) {
     s.print(' ');
-    s.print(_CommandLineArgs.PARAM_ERTECDF_NAME);
+    s.print(CommandLineArgs.PARAM_ERTECDF_NAME);
     s.println(": the name of the ERT-ECDF diagram file.");//$NON-NLS-1$
   }
 }

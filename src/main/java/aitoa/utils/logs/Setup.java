@@ -80,7 +80,7 @@ public class Setup implements Comparable<Setup> {
    *          the string
    */
   public Setup(final String s) {
-    this(Setup.__split(s));
+    this(Setup.split(s));
   }
 
   /**
@@ -90,7 +90,7 @@ public class Setup implements Comparable<Setup> {
    *          the string
    * @return the split string
    */
-  private static final String[] __split(final String s) {
+  private static final String[] split(final String s) {
     final String u = s.trim();
     final int i = u.indexOf('/');
     final int j = u.lastIndexOf('/');

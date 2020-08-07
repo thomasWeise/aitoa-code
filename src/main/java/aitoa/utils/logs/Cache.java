@@ -3,13 +3,13 @@ package aitoa.utils.logs;
 import java.util.HashMap;
 
 /** a quick and dirty internal cache */
-final class _Cache extends HashMap<String, String> {
+final class Cache extends HashMap<String, String> {
 
   /** ignore */
   private static final long serialVersionUID = 1L;
 
   /** create */
-  _Cache() {
+  Cache() {
     super();
   }
 
@@ -20,7 +20,7 @@ final class _Cache extends HashMap<String, String> {
    *          the string
    * @return the cached version of the string
    */
-  String _string(final String s) {
+  String string(final String s) {
     if (s.isEmpty()) {
       throw new IllegalArgumentException(
           "Cached strings must not be empty."); //$NON-NLS-1$

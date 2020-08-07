@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
  * @param <Y>
  *          the element type
  */
-abstract class _Iterator<X, Y> implements Iterator<Y> {
+abstract class IteratorBase<X, Y> implements Iterator<Y> {
   /** the array */
   final X[] m_array;
   /** the index */
@@ -29,7 +29,7 @@ abstract class _Iterator<X, Y> implements Iterator<Y> {
    * @param end
    *          the end index
    */
-  _Iterator(final X[] array, final int start, final int end) {
+  IteratorBase(final X[] array, final int start, final int end) {
     super();
     this.m_array = array;
     this.m_index = start;
@@ -48,7 +48,7 @@ abstract class _Iterator<X, Y> implements Iterator<Y> {
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
-  static final void _checkRange(final Object[] array,
+  static final void checkRange(final Object[] array,
       final int start, final int end) {
     if ((start < 0) || (start >= end) || (end > array.length)) {
       throw new IllegalArgumentException(
@@ -63,7 +63,7 @@ abstract class _Iterator<X, Y> implements Iterator<Y> {
    * @param i
    *          the end index
    */
-  static final void _endError(final int i) {
+  static final void endError(final int i) {
     throw new NoSuchElementException("reached end index " //$NON-NLS-1$
         + i);
   }

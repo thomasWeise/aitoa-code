@@ -1,6 +1,6 @@
 package aitoa.utils.graph;
 
-/** Test the {@link _CompactDirectedEdgeMultiSet} */
+/** Test the {@link CompactDirectedEdgeMultiSet} */
 public class TestDefaultDirectedEdgeMultiSet
     extends TestDirectedEdgeMultiSet {
 

@@ -349,7 +349,7 @@ public class IOHProfiler {
           " potential algorithm directories.");//$NON-NLS-1$
     }
 
-    final ArrayList<__Point> lines = new ArrayList<>();
+    final ArrayList<Point> lines = new ArrayList<>();
     final SetupData[] setup = new SetupData[1];
     final long[] lastFE = { -1L };
     final HashMap<String, FunctionMetaData> functionMetaDatas =
@@ -357,7 +357,7 @@ public class IOHProfiler {
 
     final HashMap<String,
         HashMap<Long,
-            HashMap<Long, ArrayList<__Point[]>>>> traces =
+            HashMap<Long, ArrayList<Point[]>>>> traces =
                 new HashMap<>();
 
     final BiFunction<String, SetupData,
@@ -395,7 +395,7 @@ public class IOHProfiler {
           LogParser.parseLogFile(file, l -> {
             final long curFE = l.fe_max;
             if (curFE > lastFE[0]) {
-              lines.add(new __Point(curFE, l.f_min));
+              lines.add(new Point(curFE, l.f_min));
               lastFE[0] = curFE;
             }
           }, s -> setup[0] = Objects.requireNonNull(s));
@@ -426,16 +426,16 @@ public class IOHProfiler {
           // as valid dimensions
 
           final HashMap<Long,
-              HashMap<Long, ArrayList<__Point[]>>> insts =
+              HashMap<Long, ArrayList<Point[]>>> insts =
                   traces.computeIfAbsent(functionId,
                       i -> new HashMap<>());
 
-          final HashMap<Long, ArrayList<__Point[]>> dims = insts
+          final HashMap<Long, ArrayList<Point[]>> dims = insts
               .computeIfAbsent(instanceId, i -> new HashMap<>());
 
-          final ArrayList<__Point[]> dim = dims.computeIfAbsent(
+          final ArrayList<Point[]> dim = dims.computeIfAbsent(
               functionDim, i -> new ArrayList<>());
-          dim.add(lines.toArray(new __Point[lines.size()]));
+          dim.add(lines.toArray(new Point[lines.size()]));
 
           lines.clear();
           setup[0] = null;
@@ -477,7 +477,7 @@ public class IOHProfiler {
             algoDir.resolve(dataFolderName), true);
 
         final HashMap<Long,
-            HashMap<Long, ArrayList<__Point[]>>> insts =
+            HashMap<Long, ArrayList<Point[]>>> insts =
                 Objects.requireNonNull(traces
                     .remove(Objects.requireNonNull(functionId)));
         final Long[] insts2 =
@@ -499,7 +499,7 @@ public class IOHProfiler {
           try (final BufferedWriter metaData =
               Files.newBufferedWriter(metaFile)) {
 
-            final HashMap<Long, ArrayList<__Point[]>> dims =
+            final HashMap<Long, ArrayList<Point[]>> dims =
                 Objects.requireNonNull(insts.remove(instanceId));
             final Long[] dims2 =
                 dims.keySet().toArray(new Long[dims.size()]);
@@ -536,7 +536,7 @@ public class IOHProfiler {
               metaData.write(IOHProfiler.META_FOLDER_SEPARATOR);
               metaData.write(datFileName);
 
-              final ArrayList<__Point[]> allPoints = Objects
+              final ArrayList<Point[]> allPoints = Objects
                   .requireNonNull(dims.remove(functionDim));
               if (allPoints.isEmpty()) {
                 throw new IllegalStateException(
@@ -544,8 +544,8 @@ public class IOHProfiler {
               }
 
               // sort the data a bit for aesthetic reasons
-              final __Point[][] allPoints2 = allPoints
-                  .toArray(new __Point[allPoints.size()][]);
+              final Point[][] allPoints2 = allPoints
+                  .toArray(new Point[allPoints.size()][]);
               allPoints.clear();
               Arrays.sort(allPoints2, (p1, p2) -> {
                 final int p1l = p1.length - 1;
@@ -583,11 +583,11 @@ public class IOHProfiler {
 
               try (final BufferedWriter rawData =
                   Files.newBufferedWriter(datFile)) {
-                for (final __Point[] points : allPoints2) {
+                for (final Point[] points : allPoints2) {
 
                   rawData.write(IOHProfiler.DAT_HEADER);
                   rawData.newLine();
-                  for (final __Point p : points) {
+                  for (final Point p : points) {
                     rawData.write(Long.toString(p.fes));
                     rawData.write(IOHProfiler.RAW_SEPARATOR);
                     rawData.write(
@@ -599,7 +599,7 @@ public class IOHProfiler {
                   metaData.write(instanceIdStr);
                   metaData.write(
                       IOHProfiler.META_BETWEEN_INST_AND_FES);
-                  final __Point e = Objects
+                  final Point e = Objects
                       .requireNonNull(points[points.length - 1]);
                   metaData.write(Long.toString(e.fes));
                   metaData
@@ -629,7 +629,7 @@ public class IOHProfiler {
   }
 
   /** the log point */
-  private static final class __Point {
+  private static final class Point {
     /** the FEs */
     final long fes;
     /** the objective value */
@@ -643,7 +643,7 @@ public class IOHProfiler {
      * @param _f
      *          the f
      */
-    __Point(final long _fes, final double _f) {
+    Point(final long _fes, final double _f) {
       super();
       this.fes = _fes;
       this.f = _f;
@@ -847,9 +847,9 @@ public class IOHProfiler {
    * @param s
    *          the print stream
    */
-  static final void _printArgs(final PrintStream s) {
-    _CommandLineArgs._printSourceDir(s);
-    _CommandLineArgs._printDestDir(s);
+  static final void printArgs(final PrintStream s) {
+    CommandLineArgs.printSourceDir(s);
+    CommandLineArgs.printDestDir(s);
   }
 
   /**
@@ -869,8 +869,8 @@ public class IOHProfiler {
 
     Configuration.putCommandLine(args);
 
-    final Path in = _CommandLineArgs._getSourceDir();
-    final Path out = _CommandLineArgs._getDestDir();
+    final Path in = CommandLineArgs.getSourceDir();
+    final Path out = CommandLineArgs.getDestDir();
 
     Configuration.print();
 

@@ -65,7 +65,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
   /** {@inheritDoc} */
   @Override
   final BlackBoxProcessBuilder<X, Y>
-      _setLogPath(final Path path) {
+      doSetLogPath(final Path path) {
     throw new UnsupportedOperationException(//
         "Test instances cannot create logs."); //$NON-NLS-1$
   }
@@ -79,14 +79,14 @@ public class TestBlackBoxProcessBuilder<X, Y>
    */
   @Override
   @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
-  final IBlackBoxProcess<X, Y> _get() {
+  final IBlackBoxProcess<X, Y> doGet() {
     if (this.m_mapping == null) {
       return new __BlackBoxProcessWrapper1(
-          new _BlackBoxProcess1NoLog(this));
+          new BlackBoxProcess1NoLog(this));
     }
 
     return new __BlackBoxProcessWrapper2(
-        new _BlackBoxProcess2NoLog(this));
+        new BlackBoxProcess2NoLog(this));
   }
 
   /**
@@ -101,7 +101,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
    *          the base type
    */
   private static class __BlackBoxProcessWrapper<X, Y,
-      P extends _BlackBoxProcessBase<X, Y>>
+      P extends BlackBoxProcessBase<X, Y>>
       implements IBlackBoxProcess<X, Y> {
 
     /** the wrapped process */
@@ -345,7 +345,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
    */
   private static class __BlackBoxProcessWrapper2<X, Y>
       extends __BlackBoxProcessWrapper<X, Y,
-          _BlackBoxProcess2NoLog<X, Y>> {
+          BlackBoxProcess2NoLog<X, Y>> {
 
     /**
      * create
@@ -354,7 +354,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
      *          the wrapped process
      */
     __BlackBoxProcessWrapper2(
-        final _BlackBoxProcess2NoLog<X, Y> process) {
+        final BlackBoxProcess2NoLog<X, Y> process) {
       super(process);
     }
 
@@ -402,13 +402,13 @@ public class TestBlackBoxProcessBuilder<X, Y>
         // reached the quality goal
         if ((this.m_process.m_lastImprovementTime >= this.m_process.m_endTime)
             || (result <= this.m_process.m_goalF)) {
-          this.m_process._terminate();// terminate
+          this.m_process.terminate();// terminate
         }
       }
 
       // check if we have exhausted the granted FEs
       if (fes >= this.m_process.m_maxFEs) {
-        this.m_process._terminate();// terminate: no more FEs
+        this.m_process.terminate();// terminate: no more FEs
       }
       // return result
       return result;
@@ -423,7 +423,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
    *          the search- and solution space
    */
   private static class __BlackBoxProcessWrapper1<X> extends
-      __BlackBoxProcessWrapper<X, X, _BlackBoxProcess1NoLog<X>> {
+      __BlackBoxProcessWrapper<X, X, BlackBoxProcess1NoLog<X>> {
     /**
      * create
      *
@@ -431,7 +431,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
      *          the wrapped process
      */
     __BlackBoxProcessWrapper1(
-        final _BlackBoxProcess1NoLog<X> process) {
+        final BlackBoxProcess1NoLog<X> process) {
       super(process);
     }
 
@@ -467,14 +467,14 @@ public class TestBlackBoxProcessBuilder<X, Y>
         // reached the quality goal
         if ((this.m_process.m_lastImprovementTime >= this.m_process.m_endTime)
             || (result <= this.m_process.m_goalF)) {
-          this.m_process._terminate();// terminate: we are
-                                      // finished
+          this.m_process.terminate();// terminate: we are
+                                     // finished
         }
       }
 
       // check if we have exhausted the granted FEs
       if (fes >= this.m_process.m_maxFEs) {
-        this.m_process._terminate();// terminate: no more FEs
+        this.m_process.terminate();// terminate: no more FEs
       }
       // return result
       return result;

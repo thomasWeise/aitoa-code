@@ -6,7 +6,7 @@ package aitoa.structure;
  * @param <X>
  *          the array type
  */
-final class _ArrayIterator<X> extends _Iterator<X, X> {
+final class ArrayIterator<X> extends IteratorBase<X, X> {
 
   /**
    * create
@@ -18,7 +18,7 @@ final class _ArrayIterator<X> extends _Iterator<X, X> {
    * @param end
    *          the end index
    */
-  _ArrayIterator(final X[] array, final int start,
+  ArrayIterator(final X[] array, final int start,
       final int end) {
     super(array, start, end);
   }
@@ -28,7 +28,7 @@ final class _ArrayIterator<X> extends _Iterator<X, X> {
   public X next() {
     final int i = this.m_index;
     if (i >= this.m_end) {
-      _Iterator._endError(i);
+      IteratorBase.endError(i);
     }
     final X x = this.m_array[i];
     this.m_index = (i + 1);

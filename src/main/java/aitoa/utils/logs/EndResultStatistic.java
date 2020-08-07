@@ -340,7 +340,7 @@ public final class EndResultStatistic
   }
 
   /** the statistic base */
-  private static class __StatBase {
+  private static class StatBase {
     /** the arithmetic mean */
     public final double mean;
     /** the standard deviation */
@@ -358,7 +358,7 @@ public final class EndResultStatistic
      * @param _median
      *          the median
      */
-    __StatBase(final double _mean, final double _sd,
+    StatBase(final double _mean, final double _sd,
         final double _median) {
       super();
 
@@ -411,8 +411,8 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsStatBase(final __StatBase a,
-        final __StatBase b) {
+    static final boolean _equalsStatBase(final StatBase a,
+        final StatBase b) {
       return (Double.compare(a.mean, b.mean) == 0)
           && (Double.compare(a.sd, b.sd) == 0)
           && (Double.compare(a.median, b.median) == 0);
@@ -420,7 +420,7 @@ public final class EndResultStatistic
   }
 
   /** the statistic quantiles */
-  private static class __StatQuantiles extends __StatBase {
+  private static class StatQuantiles extends StatBase {
     /** the 5% quantile */
     public final double q050;
     /** the 15.9% quantile */
@@ -456,7 +456,7 @@ public final class EndResultStatistic
      * @param _median
      *          the median
      */
-    __StatQuantiles(final double _q050, final double _q159,
+    StatQuantiles(final double _q050, final double _q159,
         final double _q250, final double _median,
         final double _q750, final double _q841,
         final double _q950, final double _mean,
@@ -547,8 +547,8 @@ public final class EndResultStatistic
      *         not
      */
     static final boolean _equalsStatQuantiles(
-        final __StatQuantiles a, final __StatQuantiles b) {
-      return __StatBase._equalsStatBase(a, b)
+        final StatQuantiles a, final StatQuantiles b) {
+      return StatBase._equalsStatBase(a, b)
           && (Double.compare(a.q050, b.q050) == 0)
           && (Double.compare(a.q159, b.q159) == 0)
           && (Double.compare(a.q250, b.q250) == 0)
@@ -560,7 +560,7 @@ public final class EndResultStatistic
 
   /** the integer statistics */
   public static final class IntStatisticsBig extends
-      __StatQuantiles implements Comparable<IntStatisticsBig> {
+      StatQuantiles implements Comparable<IntStatisticsBig> {
     /** the minimum */
     public final long min;
     /** the maximum */
@@ -691,7 +691,7 @@ public final class EndResultStatistic
      */
     static boolean _equalsIntStatisticsBig(
         final IntStatisticsBig a, final IntStatisticsBig b) {
-      return __StatQuantiles._equalsStatQuantiles(a, b)
+      return StatQuantiles._equalsStatQuantiles(a, b)
           && (a.min == b.min) && (a.max == b.max);
     }
 
@@ -710,9 +710,8 @@ public final class EndResultStatistic
   }
 
   /** the double statistics */
-  public static final class DoubleStatisticsBig
-      extends __StatQuantiles
-      implements Comparable<DoubleStatisticsBig> {
+  public static final class DoubleStatisticsBig extends
+      StatQuantiles implements Comparable<DoubleStatisticsBig> {
 
     /** the minimum */
     public final double min;
@@ -877,7 +876,7 @@ public final class EndResultStatistic
     static boolean _equalsDoubleStatisticsBig(
         final DoubleStatisticsBig a,
         final DoubleStatisticsBig b) {
-      return __StatQuantiles._equalsStatQuantiles(a, b)//
+      return StatQuantiles._equalsStatQuantiles(a, b)//
           && (Double.compare(a.min, b.min) == 0)//
           && (Double.compare(a.max, b.max) == 0) //
           && a.minSetup.equals(b.minSetup)//
@@ -997,7 +996,7 @@ public final class EndResultStatistic
   }
 
   /** the integer statistics */
-  public static class IntStatisticsSmall extends __StatBase
+  public static class IntStatisticsSmall extends StatBase
       implements Comparable<IntStatisticsSmall> {
     /** the minimum */
     public final long min;
@@ -1091,7 +1090,7 @@ public final class EndResultStatistic
      */
     static final boolean _equalsIntStatisticsSmall(
         final IntStatisticsSmall a, final IntStatisticsSmall b) {
-      return __StatBase._equalsStatBase(a, b) && (a.min == b.min)
+      return StatBase._equalsStatBase(a, b) && (a.min == b.min)
           && (a.max == b.max);
     }
 

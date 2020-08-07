@@ -140,11 +140,11 @@ public final class JobStatistic
    * @return the node type
    */
   public static Function<NodeTypeSet<?>[], NodeType<?>> type() {
-    return __JobStatisticNodeType::new;
+    return JobStatisticNodeType::new;
   }
 
   /** a factory for job statistic node types */
-  private final static class __JobStatisticNodeType
+  private final static class JobStatisticNodeType
       extends NodeType<JobStatistic> {
 
     /** a set of statistics */
@@ -156,7 +156,7 @@ public final class JobStatistic
      * @param children
      *          the child node types
      */
-    __JobStatisticNodeType(final NodeTypeSet<?>[] children) {
+    JobStatisticNodeType(final NodeTypeSet<?>[] children) {
       super(children);
 
       this.m_statistics =

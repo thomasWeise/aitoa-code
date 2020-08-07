@@ -125,11 +125,11 @@ public abstract class DirectedEdgeMultiSet {
       final int K) {
     if ((((L + 1L) * L) * 2L) < Integer.MAX_VALUE) {
       try {
-        return new _FastDirectedEdgeMultiSet(L, K);
+        return new FastDirectedEdgeMultiSet(L, K);
       } catch (@SuppressWarnings("unused") final OutOfMemoryError oome) {
         // ignore
       }
     }
-    return new _CompactDirectedEdgeMultiSet(L, K);
+    return new CompactDirectedEdgeMultiSet(L, K);
   }
 }

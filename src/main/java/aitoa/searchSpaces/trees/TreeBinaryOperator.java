@@ -15,7 +15,7 @@ import aitoa.structure.IBinarySearchOperator;
  * it also respects the type system of the strongly-typed GP
  * system.
  */
-public final class TreeBinaryOperator extends _TreePathOperator
+public final class TreeBinaryOperator extends TreePathOperator
     implements IBinarySearchOperator<Node[]> {
 
   /** the collector for child nodes */
@@ -45,7 +45,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
    * @param maxDepth
    *          the maximum depth
    */
-  private void __collectCuts(final Node root,
+  private void collectCuts(final Node root,
       final NodeTypeSet<?> allowed, final int maxDepth) {
     if ((root.depth() <= maxDepth)
         && (allowed.containsNode(root))) {
@@ -56,7 +56,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
       this.m_cuts[this.m_cutsSize++] = root;
     }
     for (int i = root.getChildCount(); (--i) >= 0;) {
-      this.__collectCuts(root.getChild(i), allowed, maxDepth);
+      this.collectCuts(root.getChild(i), allowed, maxDepth);
     }
   }
 
@@ -80,7 +80,7 @@ public final class TreeBinaryOperator extends _TreePathOperator
       }
       final boolean canSwap = !(p0IsTerminal || p1IsTerminal);
 
-      for (int trials = _TreeOperator.MAX_TRIALS;
+      for (int trials = TreeOperator.MAX_TRIALS;
           (--trials) >= 0;) {
         if (canSwap) {
           final Node t = p0;
@@ -88,13 +88,13 @@ public final class TreeBinaryOperator extends _TreePathOperator
           p1 = t;
         }
 
-        final int length = this._randomPath(p0, random);
-        final NodeTypeSet<?> allowed = this._getEndChoices();
+        final int length = this.randomPath(p0, random);
+        final NodeTypeSet<?> allowed = this.getEndChoices();
         this.m_cutsSize = 0;
-        this.__collectCuts(p1, allowed,
+        this.collectCuts(p1, allowed,
             (this.m_maxDepth - length) + 1);
         if (this.m_cutsSize > 0) {
-          final Node yy = this._replaceEnd(
+          final Node yy = this.replaceEnd(
               this.m_cuts[random.nextInt(this.m_cutsSize)]);
           if ((yy != null) && (!(Objects.equals(yy, p0)
               || Objects.equals(yy, p1)))) {

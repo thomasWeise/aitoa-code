@@ -77,7 +77,7 @@ public final class JSSPUnaryOperator1Swap
    * {@code i>j}.
    * <p>
    * This operator is very similar to
-   * {@link aitoa.examples.jssp.JSSPUnaryOperator1SwapR} and it
+   * {@link aitoa.examples.jssp.JSSPUnaryOperator1SwapU} and it
    * spans the exactly same neighborhood. Its
    * {@link #apply(int[], int[], Random)} operator thus is
    * identical. Its

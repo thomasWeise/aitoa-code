@@ -121,7 +121,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
           ((("Invalid constance range [" + //$NON-NLS-1$
               min) + ',') + max) + ']');
     }
-    return a -> new __ConstantNodeType<>(a, min, max);
+    return a -> new ConstantNodeType<>(a, min, max);
   }
 
   /**
@@ -130,7 +130,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
    * @param <C>
    *          the parameter type
    */
-  private final static class __ConstantNodeType<C>
+  private final static class ConstantNodeType<C>
       extends NodeType<LongConstant<C>> {
 
     /** the minimum value */
@@ -157,7 +157,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
      *          the maximum
      */
     @SuppressWarnings("unchecked")
-    __ConstantNodeType(final NodeTypeSet<?>[] children,
+    ConstantNodeType(final NodeTypeSet<?>[] children,
         final long min, final long max) {
       super(children);
 

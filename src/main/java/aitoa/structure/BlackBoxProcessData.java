@@ -16,7 +16,7 @@ import aitoa.utils.RandomUtils;
  * @param <Y>
  *          the solution space
  */
-abstract class _BlackBoxProcessData<X, Y> {
+abstract class BlackBoxProcessData<X, Y> {
   /** the session start */
   private static final Instant SESSION_START;
 
@@ -50,7 +50,7 @@ abstract class _BlackBoxProcessData<X, Y> {
   ITernarySearchOperator<X> m_ternary;
 
   /** Create the base class of the black box problem */
-  _BlackBoxProcessData() {
+  BlackBoxProcessData() {
     super();
     this.m_goalF = Double.NEGATIVE_INFINITY;
     this.m_maxFEs = Long.MAX_VALUE;
@@ -65,7 +65,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    *          the instance to copy
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  _BlackBoxProcessData(final _BlackBoxProcessData<X, Y> copy) {
+  BlackBoxProcessData(final BlackBoxProcessData<X, Y> copy) {
     super();
     this.m_searchSpace =
         Objects.requireNonNull(copy.m_searchSpace);
@@ -80,11 +80,10 @@ abstract class _BlackBoxProcessData<X, Y> {
     }
     this.m_f = Objects.requireNonNull(copy.m_f);
     this.m_maxFEs =
-        _BlackBoxProcessData._checkMaxFEs(copy.m_maxFEs);
+        BlackBoxProcessData.checkMaxFEs(copy.m_maxFEs);
     this.m_maxTime =
-        _BlackBoxProcessData._checkMaxTime(copy.m_maxTime);
-    this.m_goalF =
-        _BlackBoxProcessData._checkGoalF(copy.m_goalF);
+        BlackBoxProcessData.checkMaxTime(copy.m_maxTime);
+    this.m_goalF = BlackBoxProcessData.checkGoalF(copy.m_goalF);
     this.m_nullary = copy.m_nullary;
     this.m_unary = copy.m_unary;
     this.m_binary = copy.m_binary;
@@ -99,7 +98,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    *          the maximum FEs
    * @return the maximum FEs
    */
-  static final long _checkMaxFEs(final long maxFEs) {
+  static final long checkMaxFEs(final long maxFEs) {
     if (maxFEs <= 0L) {
       throw new IllegalArgumentException(
           "Maximum FEs must be positive, but is " //$NON-NLS-1$
@@ -115,7 +114,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    *          the maximum time
    * @return the maximum time
    */
-  static final long _checkMaxTime(final long maxTime) {
+  static final long checkMaxTime(final long maxTime) {
     if (maxTime <= 0L) {
       throw new IllegalArgumentException(
           "Maximum time must be positive, but is "//$NON-NLS-1$
@@ -131,7 +130,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    *          the goal objective value
    * @return the goal objective value
    */
-  static final double _checkGoalF(final double goalF) {
+  static final double checkGoalF(final double goalF) {
     if (Double.isFinite(goalF)
         || (goalF <= Double.NEGATIVE_INFINITY)) {
       return (goalF);
@@ -149,7 +148,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    * @throws IOException
    *           if i/o fails
    */
-  void _printInfos(final Writer out) throws IOException {
+  void printInfos(final Writer out) throws IOException {
     out.write(LogFormat.asComment(LogFormat.BEGIN_SETUP));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SEARCH_SPACE,
@@ -192,14 +191,14 @@ abstract class _BlackBoxProcessData<X, Y> {
     out.write(System.lineSeparator());
 
     // print the system information
-    out.write(_SystemData._getSystemData());
+    out.write(SystemData.getSystemData());
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
     try (final StringWriter sw = new StringWriter()) {
-      this._printInfos(sw);
+      this.printInfos(sw);
       return sw.toString();
     } catch (final IOException ioe) {
       throw new RuntimeException(ioe);
@@ -312,7 +311,7 @@ abstract class _BlackBoxProcessData<X, Y> {
    *
    * @return the session start time in milliseconds
    */
-  static final Instant _getSessionStart() {
-    return _BlackBoxProcessData.SESSION_START;
+  static final Instant getSessionStart() {
+    return BlackBoxProcessData.SESSION_START;
   }
 }

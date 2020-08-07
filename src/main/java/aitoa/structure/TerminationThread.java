@@ -13,9 +13,9 @@ package aitoa.structure;
  * Thus, instead, we have this thread which
  * {@link java.lang.Object#wait(long) sleeps} until the time
  * limit of an objective function is reached and then updates its
- * {@link _BlackBoxProcessBase#shouldTerminate() termination
+ * {@link BlackBoxProcessBase#shouldTerminate() termination
  * criterion}. As one thread is shared for all instances of
- * {@link _BlackBoxProcessBase}, this method is very
+ * {@link BlackBoxProcessBase}, this method is very
  * resource-friendly and saves runtime.
  * <p>
  * The thread works as a very simple, sorted queue. It is assumed
@@ -24,19 +24,18 @@ package aitoa.structure;
  * to update and work on the queue. The elements in the queue are
  * sorted according to their termination time.
  */
-final class _TerminationThread extends Thread {
+final class TerminationThread extends Thread {
 
   /** the synchronizer */
   private static final Object SYNC = new Object();
 
   /** the queue */
-  private static volatile _BlackBoxProcessBase<?, ?> queue =
-      null;
+  private static volatile BlackBoxProcessBase<?, ?> queue = null;
   /** the instance */
-  private static volatile _TerminationThread instance = null;
+  private static volatile TerminationThread instance = null;
 
   /** create */
-  private _TerminationThread() {
+  private TerminationThread() {
     super();
     this.setDaemon(true);
   }
@@ -47,9 +46,9 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static void _enqueue(final _BlackBoxProcessBase<?, ?> f) {
+  static void enqueue(final BlackBoxProcessBase<?, ?> f) {
     final long t;
-    _BlackBoxProcessBase<?, ?> prev, next;
+    BlackBoxProcessBase<?, ?> prev, next;
 
     t = f.m_endTime; // throw NullPointerException if null
     if ((t >= Long.MAX_VALUE) || (t <= 0L)) {
@@ -59,9 +58,9 @@ final class _TerminationThread extends Thread {
     }
 
     // find right place for insertion
-    synchronized (_TerminationThread.SYNC) {
+    synchronized (TerminationThread.SYNC) {
       prev = null;
-      next = _TerminationThread.queue;
+      next = TerminationThread.queue;
 
       while (next != null) {
         if (next == f) {
@@ -83,17 +82,17 @@ final class _TerminationThread extends Thread {
         return;
       }
 
-      _TerminationThread.queue = f;
+      TerminationThread.queue = f;
 
-      if (_TerminationThread.instance == null) {
+      if (TerminationThread.instance == null) {
         // create thread if necessary
-        _TerminationThread.instance = new _TerminationThread();
-        _TerminationThread.instance.start();
+        TerminationThread.instance = new TerminationThread();
+        TerminationThread.instance.start();
         return;
       }
 
       // we have new first element, wake up thread to check
-      _TerminationThread.SYNC.notifyAll();
+      TerminationThread.SYNC.notifyAll();
     }
   }
 
@@ -103,25 +102,25 @@ final class _TerminationThread extends Thread {
    * @param f
    *          the function
    */
-  static void _dequeue(final _BlackBoxProcessBase<?, ?> f) {
-    _BlackBoxProcessBase<?, ?> cur, next;
+  static void dequeue(final BlackBoxProcessBase<?, ?> f) {
+    BlackBoxProcessBase<?, ?> cur, next;
 
     if (f == null) {
       throw new NullPointerException(//
           "null function?"); //$NON-NLS-1$
     }
 
-    synchronized (_TerminationThread.SYNC) {
+    synchronized (TerminationThread.SYNC) {
       cur = null;
-      next = _TerminationThread.queue;
+      next = TerminationThread.queue;
 
       // find element in queue
       while (next != null) {
         if (next == f) {
           if (cur == null) {
             // delete first element
-            _TerminationThread.queue = next.m_next;
-            _TerminationThread.SYNC.notifyAll();
+            TerminationThread.queue = next.m_next;
+            TerminationThread.SYNC.notifyAll();
             return;
           }
           // delete element which is not the first one
@@ -141,28 +140,28 @@ final class _TerminationThread extends Thread {
     for (;;) {
       final long time = System.currentTimeMillis();
 
-      synchronized (_TerminationThread.SYNC) {
+      synchronized (TerminationThread.SYNC) {
 
         inner: for (;;) {
-          if (_TerminationThread.queue == null) {
+          if (TerminationThread.queue == null) {
             // nothing pending anymore: quit thread
-            _TerminationThread.instance = null;
+            TerminationThread.instance = null;
             return;
           }
 
-          if (_TerminationThread.queue.m_endTime <= time) {
+          if (TerminationThread.queue.m_endTime <= time) {
             // terminate one element from queue
-            _TerminationThread.queue.m_terminated = true;
-            _TerminationThread.queue =
-                _TerminationThread.queue.m_next;
+            TerminationThread.queue.m_terminated = true;
+            TerminationThread.queue =
+                TerminationThread.queue.m_next;
           } else {
             break inner;
           }
         }
 
         try {
-          _TerminationThread.SYNC.wait(Math.max(0L,
-              (_TerminationThread.queue.m_endTime - time)));
+          TerminationThread.SYNC.wait(Math.max(0L,
+              (TerminationThread.queue.m_endTime - time)));
         } catch (@SuppressWarnings("unused") //
         final InterruptedException ie) {
           continue;

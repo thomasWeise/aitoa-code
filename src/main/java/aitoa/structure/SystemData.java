@@ -29,25 +29,25 @@ import oshi.software.os.OperatingSystem.OSVersionInfo;
  * The system data is queried only exactly once and then stored
  * for the rest of the session.
  */
-final class _SystemData {
+final class SystemData {
 
   /**
    * get the system data
    *
    * @return the system data
    */
-  static char[] _getSystemData() {
-    return __Holder.SYSTEM_DATA;
+  static char[] getSystemData() {
+    return Holder.SYSTEM_DATA;
   }
 
   /** the internal holder class */
-  private static final class __Holder {
+  private static final class Holder {
 
     /** make the system data */
-    static final char[] SYSTEM_DATA = __Maker._makeSystemData();
+    static final char[] SYSTEM_DATA = Maker.makeSystemData();
 
     /** the internal maker class */
-    private static final class __Maker {
+    private static final class Maker {
       /**
        * add a value to the map
        *
@@ -58,9 +58,8 @@ final class _SystemData {
        * @param rawvalue
        *          the value
        */
-      private static void __add(
-          final TreeMap<String, String> map, final String key,
-          final String rawvalue) {
+      private static void add(final TreeMap<String, String> map,
+          final String key, final String rawvalue) {
         if (rawvalue == null) {
           return;
         }
@@ -89,7 +88,7 @@ final class _SystemData {
        * @param threshold
        *          the threshold
        */
-      private static void __addgt(
+      private static void addgt(
           final TreeMap<String, String> map, final String key,
           final LongSupplier value, final long threshold) {
         final long l;
@@ -99,7 +98,7 @@ final class _SystemData {
           return;
         }
         if (l > threshold) {
-          __Maker.__add(map, key, Long.toString(l));
+          Maker.add(map, key, Long.toString(l));
         }
       }
 
@@ -113,10 +112,10 @@ final class _SystemData {
        * @param value
        *          the value
        */
-      private static void __addgt0(
+      private static void addgt0(
           final TreeMap<String, String> map, final String key,
           final LongSupplier value) {
-        __Maker.__addgt(map, key, value, 0L);
+        Maker.addgt(map, key, value, 0L);
       }
 
       /**
@@ -129,9 +128,8 @@ final class _SystemData {
        * @param value
        *          the value
        */
-      private static void __add(
-          final TreeMap<String, String> map, final String key,
-          final Supplier<String> value) {
+      private static void add(final TreeMap<String, String> map,
+          final String key, final Supplier<String> value) {
         final String s;
         try {
           s = value.get();
@@ -139,7 +137,7 @@ final class _SystemData {
           return;
         }
         if (s != null) {
-          __Maker.__add(map, key, s);
+          Maker.add(map, key, s);
         }
       }
 
@@ -148,7 +146,7 @@ final class _SystemData {
        *
        * @return the system data
        */
-      static char[] _makeSystemData() {
+      static char[] makeSystemData() {
         final StringBuilder out = new StringBuilder();
 
         // print the system information
@@ -156,32 +154,31 @@ final class _SystemData {
         out.append(System.lineSeparator());
 
         final TreeMap<String, String> data = new TreeMap<>();
-        __Maker.__add(data, LogFormat.SYSTEM_INFO_JAVA_VERSION,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_VERSION,
             System.getProperty("java.version"));//$NON-NLS-1$
-        __Maker.__add(data, LogFormat.SYSTEM_INFO_JAVA_VENDOR,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_VENDOR,
             System.getProperty("java.vendor"));//$NON-NLS-1$
-        __Maker.__add(data,
-            LogFormat.SYSTEM_INFO_JAVA_VM_VERSION,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_VM_VERSION,
             System.getProperty("java.vm.version"));//$NON-NLS-1$
-        __Maker.__add(data, LogFormat.SYSTEM_INFO_JAVA_VM_VENDOR,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_VM_VENDOR,
             System.getProperty("java.vm.vendor"));//$NON-NLS-1$
-        __Maker.__add(data, LogFormat.SYSTEM_INFO_JAVA_VM_NAME,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_VM_NAME,
             System.getProperty("java.vm.name"));//$NON-NLS-1$
-        __Maker.__add(data,
+        Maker.add(data,
             LogFormat.SYSTEM_INFO_JAVA_SPECIFICATION_VERSION,
             System.getProperty("java.specification.version"));//$NON-NLS-1$
-        __Maker.__add(data,
+        Maker.add(data,
             LogFormat.SYSTEM_INFO_JAVA_SPECIFICATION_VENDOR,
             System.getProperty("java.specification.vendor"));//$NON-NLS-1$
-        __Maker.__add(data,
+        Maker.add(data,
             LogFormat.SYSTEM_INFO_JAVA_SPECIFICATION_NAME,
             System.getProperty("java.specification.name"));//$NON-NLS-1$
-        __Maker.__add(data, LogFormat.SYSTEM_INFO_JAVA_COMPILER,
+        Maker.add(data, LogFormat.SYSTEM_INFO_JAVA_COMPILER,
             System.getProperty("java.compiler"));//$NON-NLS-1$
 
-        __Maker.__add(data,
+        Maker.add(data,
             LogFormat.SYSTEM_INFO_SESSION_START_DATE_TIME,
-            _BlackBoxProcessData._getSessionStart().toString());
+            BlackBoxProcessData.getSessionStart().toString());
 
         final String osInfo[] = new String[2];
 
@@ -194,13 +191,13 @@ final class _SystemData {
             if (hal != null) {
               try {
                 final CentralProcessor cpu = hal.getProcessor();
-                __Maker.__addgt0(data,
+                Maker.addgt0(data,
                     LogFormat.SYSTEM_INFO_CPU_LOGICAL_CORES,
                     () -> cpu.getLogicalProcessorCount());
-                __Maker.__addgt0(data,
+                Maker.addgt0(data,
                     LogFormat.SYSTEM_INFO_CPU_PHYSICAL_CORES,
                     () -> cpu.getPhysicalProcessorCount());
-                __Maker.__addgt0(data,
+                Maker.addgt0(data,
                     LogFormat.SYSTEM_INFO_CPU_PHYSICAL_SLOTS,
                     () -> cpu.getPhysicalPackageCount());
 
@@ -208,28 +205,27 @@ final class _SystemData {
                   final ProcessorIdentifier pi =
                       cpu.getProcessorIdentifier();
                   if (pi != null) {
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_NAME,
                         () -> pi.getName());
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_FAMILY,
                         () -> pi.getFamily());
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_IDENTIFIER,
                         () -> pi.getIdentifier());
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_MODEL,
                         () -> pi.getModel());
-                    __Maker.__add(data,
-                        LogFormat.SYSTEM_INFO_CPU_ID,
+                    Maker.add(data, LogFormat.SYSTEM_INFO_CPU_ID,
                         () -> pi.getProcessorID());
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_VENDOR,
                         () -> pi.getVendor());
-                    __Maker.__addgt0(data,
+                    Maker.addgt0(data,
                         LogFormat.SYSTEM_INFO_CPU_FREQUENCY,
                         () -> pi.getVendorFreq());
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_CPU_IS_64_BIT,
                         () -> Boolean.toString(pi.isCpu64bit()));
                   }
@@ -243,10 +239,10 @@ final class _SystemData {
               try {
                 final GlobalMemory mem = hal.getMemory();
                 if (mem != null) {
-                  __Maker.__addgt(data,
+                  Maker.addgt(data,
                       LogFormat.SYSTEM_INFO_MEM_PAGE_SIZE,
                       () -> mem.getPageSize(), 1L);
-                  __Maker.__addgt0(data,
+                  Maker.addgt0(data,
                       LogFormat.SYSTEM_INFO_MEM_TOTAL,
                       () -> mem.getTotal());
                 }
@@ -258,26 +254,26 @@ final class _SystemData {
                 final ComputerSystem cs =
                     hal.getComputerSystem();
                 if (cs != null) {
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_COMPUTER_MANUFACTURER,
                       () -> cs.getManufacturer());
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_COMPUTER_MODEL,
                       () -> cs.getModel());
 
                   try {
                     final Baseboard bb = cs.getBaseboard();
                     if (bb != null) {
-                      __Maker.__add(data,
+                      Maker.add(data,
                           LogFormat.SYSTEM_INFO_MAINBOARD_MANUFACTURER,
                           () -> bb.getManufacturer());
-                      __Maker.__add(data,
+                      Maker.add(data,
                           LogFormat.SYSTEM_INFO_MAINBOARD_MODEL,
                           () -> bb.getModel());
-                      __Maker.__add(data,
+                      Maker.add(data,
                           LogFormat.SYSTEM_INFO_MAINBOARD_SERIAL_NUMBER,
                           () -> bb.getSerialNumber());
-                      __Maker.__add(data,
+                      Maker.add(data,
                           LogFormat.SYSTEM_INFO_MAINBOARD_VERSION,
                           () -> bb.getVersion());
                     }
@@ -296,23 +292,21 @@ final class _SystemData {
           try {
             final OperatingSystem os = sys.getOperatingSystem();
             if (os != null) {
-              __Maker.__add(data,
-                  LogFormat.SYSTEM_INFO_OS_FAMILY, () -> {
+              Maker.add(data, LogFormat.SYSTEM_INFO_OS_FAMILY,
+                  () -> {
                     final String s = os.getFamily();
                     osInfo[0] = s;
                     return s;
                   });
-              __Maker.__addgt0(data,
-                  LogFormat.SYSTEM_INFO_OS_BITS,
+              Maker.addgt0(data, LogFormat.SYSTEM_INFO_OS_BITS,
                   () -> os.getBitness());
-              __Maker.__add(data,
+              Maker.add(data,
                   LogFormat.SYSTEM_INFO_OS_MANUFACTURER, () -> {
                     final String s = os.getManufacturer();
                     osInfo[1] = s;
                     return s;
                   });
-              __Maker.__addgt(data,
-                  LogFormat.SYSTEM_INFO_PROCESS_ID,
+              Maker.addgt(data, LogFormat.SYSTEM_INFO_PROCESS_ID,
                   () -> os.getProcessId(), Long.MIN_VALUE);
 
               try {
@@ -327,7 +321,7 @@ final class _SystemData {
                             .replaceAll("\\p{C}", " ")//$NON-NLS-1$ //$NON-NLS-2$
                             .replaceAll("[\\p{C}\\p{Z}]", " ") //$NON-NLS-1$ //$NON-NLS-2$
                             .trim();
-                    __Maker.__add(data,
+                    Maker.add(data,
                         LogFormat.SYSTEM_INFO_PROCESS_COMMAND_LINE,
                         usecmd);
                   }
@@ -339,13 +333,12 @@ final class _SystemData {
               try {
                 final OSVersionInfo ovi = os.getVersionInfo();
                 if (ovi != null) {
-                  __Maker.__add(data,
-                      LogFormat.SYSTEM_INFO_OS_BUILD,
+                  Maker.add(data, LogFormat.SYSTEM_INFO_OS_BUILD,
                       () -> ovi.getBuildNumber());
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_OS_CODENAME,
                       () -> ovi.getCodeName());
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_OS_VERSION,
                       () -> ovi.getVersion());
                 }
@@ -356,10 +349,10 @@ final class _SystemData {
               try {
                 final NetworkParams net = os.getNetworkParams();
                 if (net != null) {
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_NET_DOMAIN_NAME,
                       () -> net.getDomainName());
-                  __Maker.__add(data,
+                  Maker.add(data,
                       LogFormat.SYSTEM_INFO_NET_HOST_NAME,
                       () -> net.getHostName());
                 }
@@ -375,7 +368,7 @@ final class _SystemData {
         } // end system
 
         try (
-            final InputStream is = _SystemData.class
+            final InputStream is = SystemData.class
                 .getResourceAsStream("versions.txt"); //$NON-NLS-1$
             final InputStreamReader isr =
                 new InputStreamReader(is);
@@ -399,7 +392,7 @@ final class _SystemData {
             if (b.isEmpty()) {
               continue;
             }
-            __Maker.__add(data, a, b);
+            Maker.add(data, a, b);
           }
 
         } catch (@SuppressWarnings("unused") final Throwable ignore) {
@@ -415,11 +408,11 @@ final class _SystemData {
           if (os.isEmpty() || //
               os.contains("linux") || //$NON-NLS-1$
               os.contains("unbuntu")) {//$NON-NLS-1$
-            detected = __Maker.__tryDetectGPULinux(data);
+            detected = Maker.tryDetectGPULinux(data);
           }
           if ((!detected) && (os.isEmpty() || //
               os.contains("win"))) {//$NON-NLS-1$
-            detected = __Maker.__tryDetectGPUWindows(data);
+            detected = Maker.tryDetectGPUWindows(data);
           }
 
         } catch (@SuppressWarnings("unused") final Throwable ignore) {
@@ -450,7 +443,7 @@ final class _SystemData {
        *          the string
        * @return the split string
        */
-      private static String[] __pciSplit(final String s) {
+      private static String[] pciSplit(final String s) {
         int firstDots = s.indexOf(':');
 
         if (firstDots > 0) {
@@ -517,7 +510,7 @@ final class _SystemData {
        *          the device or vendor id
        * @return the string
        */
-      private static String __pciLookup(final String id) {
+      private static String pciLookup(final String id) {
         for (final String base : new String[] {
             "https://pci-ids.ucw.cz/read/PC/", //$NON-NLS-1$
             "http://pci-ids.ucw.cz/read/PC/" //$NON-NLS-1$
@@ -570,7 +563,7 @@ final class _SystemData {
        * @param map
        *          the destination map
        */
-      private static void __addGPU(final String vendor,
+      private static void addGPU(final String vendor,
           final String device,
           final TreeMap<String, String> map) {
 
@@ -583,8 +576,8 @@ final class _SystemData {
           while (vendorId.length() < 4) {
             vendorId = '0' + vendorId;
           }
-          __Maker.__add(map,
-              LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID, vendorId);
+          Maker.add(map, LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR_ID,
+              vendorId);
         }
 
         if (device != null) {
@@ -594,21 +587,21 @@ final class _SystemData {
           while (deviceId.length() < 4) {
             deviceId = '0' + deviceId;
           }
-          __Maker.__add(map,
-              LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID, deviceId);
+          Maker.add(map, LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE_ID,
+              deviceId);
         }
 
         if (vendorId != null) {
-          final String vn = __Maker.__pciLookup(vendorId);
+          final String vn = Maker.pciLookup(vendorId);
           if (vn != null) {
-            __Maker.__add(map,
-                LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR, vn);
+            Maker.add(map, LogFormat.SYSTEM_INFO_GPU_PCI_VENDOR,
+                vn);
           }
           if (deviceId != null) {
             final String dc =
-                __Maker.__pciLookup(vendorId + '/' + deviceId);
+                Maker.pciLookup(vendorId + '/' + deviceId);
             if (dc != null) {
-              __Maker.__add(map,
+              Maker.add(map,
                   LogFormat.SYSTEM_INFO_GPU_PCI_DEVICE, dc);
             }
           }
@@ -623,7 +616,7 @@ final class _SystemData {
        * @return {@code true} if a graphics card was detected,
        *         {@code false} otherwise
        */
-      private static boolean __tryDetectGPULinux(//
+      private static boolean tryDetectGPULinux(//
           final TreeMap<String, String> map) {
         try {
           final Process p = new ProcessBuilder()//
@@ -648,7 +641,7 @@ final class _SystemData {
                   s = s.trim();
                   final String t = s.toLowerCase();
                   if (t.contains("vga compatible controller")) { //$NON-NLS-1$
-                    final String[] q = __Maker.__pciSplit(s);
+                    final String[] q = Maker.pciSplit(s);
                     if ((q != null) && ((vga == null)
                         || (vga.length < q.length))) {
                       vga = q;
@@ -660,7 +653,7 @@ final class _SystemData {
                     }
                   } else {
                     if (t.contains("display controller")) { //$NON-NLS-1$
-                      final String[] q = __Maker.__pciSplit(s);
+                      final String[] q = Maker.pciSplit(s);
                       if ((q != null)
                           && ((displayController == null)
                               || (displayController.length < q.length))) {
@@ -679,10 +672,10 @@ final class _SystemData {
                 vga = displayController;
               }
               if (vga != null) {
-                __Maker.__add(map,
-                    LogFormat.SYSTEM_INFO_GPU_NAME, vga[0]);
+                Maker.add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
+                    vga[0]);
                 if (vga.length > 1) {
-                  __Maker.__addGPU(vga[1],
+                  Maker.addGPU(vga[1],
                       (vga.length > 2) ? vga[2] : null, map);
                 }
                 return true;
@@ -709,7 +702,7 @@ final class _SystemData {
        * @return {@code true} if a graphics card was detected,
        *         {@code false} otherwise
        */
-      private static boolean __tryDetectGPUWindows(
+      private static boolean tryDetectGPUWindows(
           final TreeMap<String, String> map) {
         try {
           final Path tempFile = Files.createTempFile("gd", //$NON-NLS-1$
@@ -875,9 +868,9 @@ final class _SystemData {
 
               // write back the infos
               if (name != null) {
-                __Maker.__add(map,
-                    LogFormat.SYSTEM_INFO_GPU_NAME, name);
-                __Maker.__addGPU(vendorId, deviceId, map);
+                Maker.add(map, LogFormat.SYSTEM_INFO_GPU_NAME,
+                    name);
+                Maker.addGPU(vendorId, deviceId, map);
                 return true;
               }
 

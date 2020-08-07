@@ -13,7 +13,7 @@ import aitoa.structure.IUnarySearchOperator;
  * with the extension that it also respects the type system of
  * the strongly-typed GP system.
  */
-public final class TreeUnaryOperator extends _TreePathOperator
+public final class TreeUnaryOperator extends TreePathOperator
     implements IUnarySearchOperator<Node[]> {
   /**
    * Create a new tree mutation operation
@@ -31,13 +31,13 @@ public final class TreeUnaryOperator extends _TreePathOperator
       final Random random) {
     final Node xx = x[0];
 
-    for (int trials = _TreeOperator.MAX_TRIALS;
+    for (int trials = TreeOperator.MAX_TRIALS;
         (--trials) >= 0;) {
-      final int length = this._randomPath(xx, random);
+      final int length = this.randomPath(xx, random);
       final Node yy = random.nextBoolean()//
-          ? this._tryModifyEnd(random)//
-          : this._replaceEnd(
-              _TreeOperator._createTree(this._getEndChoices(),
+          ? this.tryModifyEnd(random)//
+          : this.replaceEnd(
+              TreeOperator.createTree(this.getEndChoices(),
                   (this.m_maxDepth - length) + 1, random));
       if ((yy != null) && (!Objects.equals(xx, yy))) {
         dest[0] = yy;
@@ -48,7 +48,7 @@ public final class TreeUnaryOperator extends _TreePathOperator
     throw new IllegalArgumentException(//
         "failed to modify tree " + //$NON-NLS-1$
             xx.toString() + " after trying "//$NON-NLS-1$
-            + _TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
+            + TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */

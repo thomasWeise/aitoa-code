@@ -96,7 +96,7 @@ public class EndResultStatistics {
    *          should we add setup columns?
    * @return the header
    */
-  private static String __makeHeaderBig(final String key,
+  private static String makeHeaderBig(final String key,
       final boolean addSetupCols) {
     String[] cols = { key + EndResultStatistics.COL_MIN, //
         key + EndResultStatistics.COL_Q050, //
@@ -136,9 +136,9 @@ public class EndResultStatistics {
    *          the list of unique setups
    * @return the chosen, closest value
    */
-  private static final Setup __closestSetup(//
+  private static final Setup closestSetup(//
       final double value, //
-      final __Holder.__InnerSetup[] unique) {//
+      final Holder.InnerSetup[] unique) {//
 
     int lower = 0;
     int upper = unique.length - 1;
@@ -147,7 +147,7 @@ public class EndResultStatistics {
     // first, do binary search
     while (lower <= upper) {
       mid = (lower + upper) >>> 1;
-      final __Holder.__InnerSetup midVal = unique[mid];
+      final Holder.InnerSetup midVal = unique[mid];
       if (midVal.m_bestF2 < value) {
         lower = mid + 1;
       } else {
@@ -160,7 +160,7 @@ public class EndResultStatistics {
     }
 
     // second: try to re-adjust
-    __Holder.__InnerSetup best = unique[mid];
+    Holder.InnerSetup best = unique[mid];
     double testVal = best.m_bestF2;
     if (testVal == value) {
       return best;
@@ -175,7 +175,7 @@ public class EndResultStatistics {
     // test towards lower indices
     int lenience = 2;
     while ((--lower) >= 0) {
-      final __Holder.__InnerSetup test = unique[lower];
+      final Holder.InnerSetup test = unique[lower];
       testVal = test.m_bestF2;
       if (testVal == value) {
         return test;
@@ -196,7 +196,7 @@ public class EndResultStatistics {
     // test towards higher indices
     lenience = 2;
     while ((++upper) < unique.length) {
-      final __Holder.__InnerSetup test = unique[upper];
+      final Holder.InnerSetup test = unique[upper];
       testVal = test.m_bestF2;
       if (testVal == value) {
         return test;
@@ -236,19 +236,19 @@ public class EndResultStatistics {
    * @throws IOException
    *           if i/o fails
    */
-  private static final Number __printStat(//
-      final _Statistic data, //
+  private static final Number printStat(//
+      final Statistic data, //
       final double[] quantiles, //
-      final __Holder.__InnerSetup[] unique, //
+      final Holder.InnerSetup[] unique, //
       final Setup min, //
       final Setup max, //
       final BufferedWriter bw) throws IOException {
     for (final double d : quantiles) {
-      final Number quantile = data._quantile(d);
+      final Number quantile = data.quantile(d);
       bw.write(LogFormat.numberToStringForLog(quantile));
       bw.write(LogFormat.CSV_SEPARATOR_CHAR);
       if (unique != null) {
-        bw.write(EndResultStatistics.__closestSetup(//
+        bw.write(EndResultStatistics.closestSetup(//
             quantile.doubleValue(), unique).toString());
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
       } else {
@@ -263,12 +263,12 @@ public class EndResultStatistics {
         }
       }
     }
-    final Number[] res = data._meanAndStdDev();
+    final Number[] res = data.meanAndStdDev();
     final Number mean = Objects.requireNonNull(res[0]);
     bw.write(LogFormat.numberToStringForLog(mean));
     bw.write(LogFormat.CSV_SEPARATOR_CHAR);
     if (unique != null) {
-      bw.write(EndResultStatistics.__closestSetup(//
+      bw.write(EndResultStatistics.closestSetup(//
           mean.doubleValue(), unique).toString());
       bw.write(LogFormat.CSV_SEPARATOR_CHAR);
     }
@@ -290,7 +290,7 @@ public class EndResultStatistics {
    *          do we need the setup columns?
    * @return the header
    */
-  private static String __makeHeaderSmall(final String key,
+  private static String makeHeaderSmall(final String key,
       final boolean addSetupCols) {
 
     if (addSetupCols) {
@@ -318,28 +318,28 @@ public class EndResultStatistics {
       EndResults.COL_ALGORITHM, //
       EndResults.COL_INSTANCE, //
       EndResultStatistics.COL_RUNS,
-      EndResultStatistics.__makeHeaderBig(EndResults.COL_BEST_F,
+      EndResultStatistics.makeHeaderBig(EndResults.COL_BEST_F,
           true), //
       EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_TOTAL_TIME, false), //
-      EndResultStatistics
-          .__makeHeaderBig(EndResults.COL_TOTAL_FES, false), //
-      EndResultStatistics.__makeHeaderBig(
+          .makeHeaderBig(EndResults.COL_TOTAL_TIME, false), //
+      EndResultStatistics.makeHeaderBig(EndResults.COL_TOTAL_FES,
+          false), //
+      EndResultStatistics.makeHeaderBig(
           EndResults.COL_LAST_IMPROVEMENT_TIME, false), //
-      EndResultStatistics.__makeHeaderBig(
+      EndResultStatistics.makeHeaderBig(
           EndResults.COL_LAST_IMPROVEMENT_FES, false), //
-      EndResultStatistics.__makeHeaderBig(
+      EndResultStatistics.makeHeaderBig(
           EndResults.COL_NUMBER_OF_IMPROVEMENTS, false), //
       EndResultStatistics
-          .__makeHeaderSmall(EndResults.COL_BUDGET_TIME, false), //
+          .makeHeaderSmall(EndResults.COL_BUDGET_TIME, false), //
       EndResultStatistics
-          .__makeHeaderSmall(EndResults.COL_BUDGET_FES, false), //
+          .makeHeaderSmall(EndResults.COL_BUDGET_FES, false), //
       EndResultStatistics.COL_SUCCESSES, //
       EndResultStatistics.COL_ERT_TIME, //
       EndResultStatistics.COL_ERT_FES, //
-      EndResultStatistics.__makeHeaderSmall(
+      EndResultStatistics.makeHeaderSmall(
           EndResultStatistics.COL_SUCCESS_TIME, true), //
-      EndResultStatistics.__makeHeaderSmall(
+      EndResultStatistics.makeHeaderSmall(
           EndResultStatistics.COL_SUCCESS_FES, true)//
   );
 
@@ -425,14 +425,14 @@ public class EndResultStatistics {
     }
 
     // compute the data
-    __Parser p = new __Parser((success == null)
+    Parser p = new Parser((success == null)
         ? x -> Double.compare(x.bestF, x.goalF) <= 0 : success,
         (instanceNameMapper != null) ? instanceNameMapper
             : Function.identity(),
         (algorithmNameMapper != null) ? algorithmNameMapper
             : Function.identity());
     EndResults.parseEndResultsTable(in, p, logProgressToConsole);
-    final __Holder[] results = p._finalize();
+    final Holder[] results = p.doFinalize();
     p = null;
 
     if (logProgressToConsole) {
@@ -450,7 +450,7 @@ public class EndResultStatistics {
       bw.newLine();
 
       for (int i = 0; i < results.length; i++) {
-        __Holder h = results[i];
+        Holder h = results[i];
         results[i] = null;
 
         if (!h.m_finalized) {
@@ -480,7 +480,7 @@ public class EndResultStatistics {
         bw.write(Integer.toString(runs));
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_bestF, //
             EndResultStatistics.QUANTILES_BIG, //
             h.m_uniqueBestF, null, null, //
@@ -493,7 +493,7 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_totalTime, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
@@ -505,7 +505,7 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_totalFEs, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
@@ -518,7 +518,7 @@ public class EndResultStatistics {
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         final Number lastImprovementTimeMean = //
-            EndResultStatistics.__printStat(//
+            EndResultStatistics.printStat(//
                 h.m_lastImprovementTime, //
                 EndResultStatistics.QUANTILES_BIG, //
                 null, null, null, //
@@ -531,7 +531,7 @@ public class EndResultStatistics {
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         final Number lastImprovementFEMean =
-            EndResultStatistics.__printStat(//
+            EndResultStatistics.printStat(//
                 h.m_lastImprovementFE, //
                 EndResultStatistics.QUANTILES_BIG, //
                 null, null, null, //
@@ -543,7 +543,7 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_numberOfImprovements, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
@@ -555,7 +555,7 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_budgetTime, //
             EndResultStatistics.QUANTILES_SMALL, //
             null, null, null, //
@@ -567,7 +567,7 @@ public class EndResultStatistics {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
-        EndResultStatistics.__printStat(//
+        EndResultStatistics.printStat(//
             h.m_budgetFEs, //
             EndResultStatistics.QUANTILES_SMALL, //
             null, null, null, //
@@ -587,14 +587,14 @@ public class EndResultStatistics {
                 lastImprovementFEMean));
           } else {
             bw.write(LogFormat.numberToStringForLog(
-                h.m_ertTime._divideSumBy(h.m_successes)));
+                h.m_ertTime.divideSumBy(h.m_successes)));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(LogFormat.numberToStringForLog(
-                h.m_ertFEs._divideSumBy(h.m_successes)));
+                h.m_ertFEs.divideSumBy(h.m_successes)));
           }
 
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-          EndResultStatistics.__printStat(//
+          EndResultStatistics.printStat(//
               h.m_successTime, //
               EndResultStatistics.QUANTILES_SMALL, //
               null, //
@@ -606,7 +606,7 @@ public class EndResultStatistics {
           h.m_slowestSuccessTimeSetup = null;
 
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-          EndResultStatistics.__printStat(//
+          EndResultStatistics.printStat(//
               h.m_successFEs, //
               EndResultStatistics.QUANTILES_SMALL, //
               null, //
@@ -682,7 +682,7 @@ public class EndResultStatistics {
     }
 
     try (final BufferedReader br = Files.newBufferedReader(p)) {
-      final _Cache cache = new _Cache();
+      final Cache cache = new Cache();
       String line2;
       int lineIndex = 0;
       String algorithm = null;
@@ -825,7 +825,7 @@ public class EndResultStatistics {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
-          algorithm = cache._string(algorithm);
+          algorithm = cache.string(algorithm);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -835,7 +835,7 @@ public class EndResultStatistics {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
-          instance = cache._string(instance);
+          instance = cache.string(instance);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -2586,10 +2586,10 @@ public class EndResultStatistics {
   }
 
   /** the internal parser class */
-  private static final class __Parser
+  private static final class Parser
       implements Consumer<EndResult> {
     /** the holders */
-    private HashMap<String, HashMap<String, __Holder>> m_holders;
+    private HashMap<String, HashMap<String, Holder>> m_holders;
     /** the success predicate */
     private Predicate<EndResult> m_success;
     /** the instance name mapper */
@@ -2607,7 +2607,7 @@ public class EndResultStatistics {
      * @param algorithmNameMapper
      *          he algorithm name mapper
      */
-    __Parser(final Predicate<EndResult> success,
+    Parser(final Predicate<EndResult> success,
         final Function<String, String> instanceNameMapper,
         final Function<String, String> algorithmNameMapper) {
       super();
@@ -2633,8 +2633,7 @@ public class EndResultStatistics {
         return;
       }
 
-      HashMap<String, __Holder> ifa =
-          this.m_holders.get(useAlgo);
+      HashMap<String, Holder> ifa = this.m_holders.get(useAlgo);
       if (ifa == null) {
         ifa = new HashMap<>();
         if (this.m_holders.put(useAlgo, ifa) != null) {
@@ -2642,9 +2641,9 @@ public class EndResultStatistics {
         }
       }
 
-      __Holder h = ifa.get(useInst);
+      Holder h = ifa.get(useInst);
       if (h == null) {
-        h = new __Holder(useAlgo, useInst, this.m_success);
+        h = new Holder(useAlgo, useInst, this.m_success);
         if (ifa.put(useInst, h) != null) {
           throw new ConcurrentModificationException();
         }
@@ -2658,23 +2657,23 @@ public class EndResultStatistics {
      *
      * @return the holder array
      */
-    __Holder[] _finalize() {
-      final __Holder[] holders = this.m_holders.values().stream()
+    Holder[] doFinalize() {
+      final Holder[] holders = this.m_holders.values().stream()
           .flatMap(v -> v.values().stream()).sorted()
-          .toArray(i -> new __Holder[i]);
+          .toArray(i -> new Holder[i]);
       this.m_holders.clear();
       this.m_holders = null;
       this.m_success = null;
-      for (final __Holder h : holders) {
-        h._finalize();
+      for (final Holder h : holders) {
+        h.doFinalize();
       }
       return holders;
     }
   }
 
   /** the data holder */
-  private static final class __Holder
-      implements Comparable<__Holder>, Consumer<EndResult> {
+  private static final class Holder
+      implements Comparable<Holder>, Consumer<EndResult> {
     /** the algorithm */
     final String algorithm;
 
@@ -2682,9 +2681,9 @@ public class EndResultStatistics {
     final String instance;
 
     /** the setups */
-    private HashSet<__InnerSetup> m_setups;
+    private HashSet<InnerSetup> m_setups;
     /** the unique best f setups */
-    __InnerSetup[] m_uniqueBestF;
+    InnerSetup[] m_uniqueBestF;
 
     /** the success predicate */
     private Predicate<EndResult> m_success;
@@ -2707,29 +2706,29 @@ public class EndResultStatistics {
     long m_slowestSuccessFEs;
 
     /** the best-f statistic */
-    _Statistic m_bestF;
+    Statistic m_bestF;
     /** the total time statistic */
-    _Statistic m_totalTime;
+    Statistic m_totalTime;
     /** the total FEs statistic */
-    _Statistic m_totalFEs;
+    Statistic m_totalFEs;
     /** the last improvement time statistic */
-    _Statistic m_lastImprovementTime;
+    Statistic m_lastImprovementTime;
     /** the last improvement FEs statistic */
-    _Statistic m_lastImprovementFE;
+    Statistic m_lastImprovementFE;
     /** the number of improvements statistic */
-    _Statistic m_numberOfImprovements;
+    Statistic m_numberOfImprovements;
     /** the budget time statistic */
-    _Statistic m_budgetTime;
+    Statistic m_budgetTime;
     /** the budget FEs statistic */
-    _Statistic m_budgetFEs;
+    Statistic m_budgetFEs;
     /** the empirical expected running time statistic */
-    _Statistic m_ertTime;
+    Statistic m_ertTime;
     /** the empirical expected running FEs statistic */
-    _Statistic m_ertFEs;
+    Statistic m_ertFEs;
     /** the success FEs */
-    _Statistic m_successFEs;
+    Statistic m_successFEs;
     /** the success time */
-    _Statistic m_successTime;
+    Statistic m_successTime;
 
     /** the number of successes */
     int m_successes;
@@ -2746,24 +2745,24 @@ public class EndResultStatistics {
      * @param success
      *          the success predicate
      */
-    __Holder(final String _algo, final String _inst,
+    Holder(final String _algo, final String _inst,
         final Predicate<EndResult> success) {
       this.algorithm = Objects.requireNonNull(_algo);
       this.instance = Objects.requireNonNull(_inst);
       this.m_setups = new HashSet<>();
 
-      this.m_bestF = new _Doubles();
-      this.m_totalTime = new _Longs();
-      this.m_totalFEs = new _Longs();
-      this.m_lastImprovementTime = new _Longs();
-      this.m_lastImprovementFE = new _Longs();
-      this.m_numberOfImprovements = new _Longs();
-      this.m_budgetTime = new _Longs();
-      this.m_budgetFEs = new _Longs();
-      this.m_ertTime = new _Longs();
-      this.m_ertFEs = new _Longs();
-      this.m_successFEs = new _Longs();
-      this.m_successTime = new _Longs();
+      this.m_bestF = new Doubles();
+      this.m_totalTime = new Longs();
+      this.m_totalFEs = new Longs();
+      this.m_lastImprovementTime = new Longs();
+      this.m_lastImprovementFE = new Longs();
+      this.m_numberOfImprovements = new Longs();
+      this.m_budgetTime = new Longs();
+      this.m_budgetFEs = new Longs();
+      this.m_ertTime = new Longs();
+      this.m_ertFEs = new Longs();
+      this.m_successFEs = new Longs();
+      this.m_successTime = new Longs();
       this.m_success = Objects.requireNonNull(success);
       this.m_fastestSuccessFEs = Long.MAX_VALUE;
       this.m_slowestSuccessFEs = Long.MIN_VALUE;
@@ -2773,7 +2772,7 @@ public class EndResultStatistics {
 
     /** {@inheritDoc} */
     @Override
-    public int compareTo(final __Holder o) {
+    public int compareTo(final Holder o) {
       if (o == this) {
         return 0;
       }
@@ -2794,28 +2793,28 @@ public class EndResultStatistics {
     /** {@inheritDoc} */
     @Override
     public void accept(final EndResult t) {
-      if (!this.m_setups.add(new __InnerSetup(t))) {
+      if (!this.m_setups.add(new InnerSetup(t))) {
         throw new IllegalStateException("Seed '" + //$NON-NLS-1$
             t.seed + "' appears twice for algorithm '"//$NON-NLS-1$
             + t.algorithm + "' on instance '"//$NON-NLS-1$
             + t.instance + "'.");//$NON-NLS-1$
       }
 
-      this.m_bestF._add(t.bestF);
-      this.m_totalTime._add(t.totalTime);
-      this.m_totalFEs._add(t.totalFEs);
-      this.m_lastImprovementTime._add(t.lastImprovementTime);
-      this.m_lastImprovementFE._add(t.lastImprovementFE);
-      this.m_numberOfImprovements._add(t.numberOfImprovements);
-      this.m_budgetTime._add(t.budgetTime);
-      this.m_budgetFEs._add(t.budgetFEs);
+      this.m_bestF.add(t.bestF);
+      this.m_totalTime.add(t.totalTime);
+      this.m_totalFEs.add(t.totalFEs);
+      this.m_lastImprovementTime.add(t.lastImprovementTime);
+      this.m_lastImprovementFE.add(t.lastImprovementFE);
+      this.m_numberOfImprovements.add(t.numberOfImprovements);
+      this.m_budgetTime.add(t.budgetTime);
+      this.m_budgetFEs.add(t.budgetFEs);
 
       if (this.m_success.test(t)) {
         ++this.m_successes;
-        this.m_ertTime._add(t.lastImprovementTime);
-        this.m_ertFEs._add(t.lastImprovementFE);
-        this.m_successFEs._add(t.lastImprovementFE);
-        this.m_successTime._add(t.lastImprovementTime);
+        this.m_ertTime.add(t.lastImprovementTime);
+        this.m_ertFEs.add(t.lastImprovementFE);
+        this.m_successFEs.add(t.lastImprovementFE);
+        this.m_successTime.add(t.lastImprovementTime);
 
         Setup use = null;
         if (t.lastImprovementFE < this.m_fastestSuccessFEs) {
@@ -2842,24 +2841,24 @@ public class EndResultStatistics {
         }
 
       } else {
-        this.m_ertTime._add(t.totalTime);
-        this.m_ertFEs._add(t.totalFEs);
+        this.m_ertTime.add(t.totalTime);
+        this.m_ertFEs.add(t.totalFEs);
       }
     }
 
     /** finalize */
-    void _finalize() {
+    void doFinalize() {
       if (this.m_finalized) {
         throw new IllegalStateException();
       }
       this.m_finalized = true;
 
-      final HashSet<__InnerSetup> data = this.m_setups;
+      final HashSet<InnerSetup> data = this.m_setups;
       this.m_setups = null;
-      final __InnerSetup[] tmp =
-          data.toArray(new __InnerSetup[data.size()]);
+      final InnerSetup[] tmp =
+          data.toArray(new InnerSetup[data.size()]);
       data.clear();
-      for (final __InnerSetup s : tmp) {
+      for (final InnerSetup s : tmp) {
         data.add(s);
       }
       data.toArray(tmp);
@@ -2869,23 +2868,23 @@ public class EndResultStatistics {
 
       this.m_success = null;
 
-      this.m_bestF = this.m_bestF._finalize();
-      this.m_totalTime = this.m_totalTime._finalize();
-      this.m_totalFEs = this.m_totalFEs._finalize();
+      this.m_bestF = this.m_bestF.doFinalize();
+      this.m_totalTime = this.m_totalTime.doFinalize();
+      this.m_totalFEs = this.m_totalFEs.doFinalize();
       this.m_lastImprovementTime =
-          this.m_lastImprovementTime._finalize();
+          this.m_lastImprovementTime.doFinalize();
       this.m_lastImprovementFE =
-          this.m_lastImprovementFE._finalize();
+          this.m_lastImprovementFE.doFinalize();
       this.m_numberOfImprovements =
-          this.m_numberOfImprovements._finalize();
-      this.m_budgetTime = this.m_budgetTime._finalize();
-      this.m_budgetFEs = this.m_budgetFEs._finalize();
-      this.m_ertTime = this.m_ertTime._finalize();
-      this.m_ertFEs = this.m_ertFEs._finalize();
+          this.m_numberOfImprovements.doFinalize();
+      this.m_budgetTime = this.m_budgetTime.doFinalize();
+      this.m_budgetFEs = this.m_budgetFEs.doFinalize();
+      this.m_ertTime = this.m_ertTime.doFinalize();
+      this.m_ertFEs = this.m_ertFEs.doFinalize();
 
       if (this.m_successes > 0) {
-        this.m_successFEs = this.m_successFEs._finalize();
-        this.m_successTime = this.m_successTime._finalize();
+        this.m_successFEs = this.m_successFEs.doFinalize();
+        this.m_successTime = this.m_successTime.doFinalize();
       } else {
         this.m_successFEs = null;
         this.m_successTime = null;
@@ -2893,7 +2892,7 @@ public class EndResultStatistics {
     }
 
     /** the inner setup */
-    private final class __InnerSetup extends Setup {
+    private final class InnerSetup extends Setup {
       /** the inner setup */
       final double m_bestF2;
 
@@ -2903,7 +2902,7 @@ public class EndResultStatistics {
        * @param e
        *          the end result record
        */
-      __InnerSetup(final EndResult e) {
+      InnerSetup(final EndResult e) {
         super(e);
         this.m_bestF2 = e.bestF;
       }
@@ -2911,7 +2910,7 @@ public class EndResultStatistics {
       /** {@inheritDoc} */
       @Override
       public int hashCode() {
-        if (__Holder.this.m_finalized) {
+        if (Holder.this.m_finalized) {
           return Double.hashCode(this.m_bestF2);
         }
         return super.hashCode();
@@ -2923,9 +2922,9 @@ public class EndResultStatistics {
         if (o == this) {
           return true;
         }
-        if (__Holder.this.m_finalized) {
+        if (Holder.this.m_finalized) {
           return Double.compare(this.m_bestF2,
-              ((__InnerSetup) o).m_bestF2) == 0;
+              ((InnerSetup) o).m_bestF2) == 0;
         }
         return super.equals(o);
       }
@@ -2933,9 +2932,9 @@ public class EndResultStatistics {
       /** {@inheritDoc} */
       @Override
       public int compareTo(final Setup s) {
-        if (__Holder.this.m_finalized) {
+        if (Holder.this.m_finalized) {
           return Double.compare(this.m_bestF2,
-              ((__InnerSetup) s).m_bestF2);
+              ((InnerSetup) s).m_bestF2);
         }
         return super.compareTo(s);
       }
@@ -2948,12 +2947,12 @@ public class EndResultStatistics {
    * @param s
    *          the print stream
    */
-  static final void _printArgs(final PrintStream s) {
+  static final void printArgs(final PrintStream s) {
     EndResults.printArgs(s);
-    _CommandLineArgs._printEndResultsStatFile(s);
-    _CommandLineArgs._printSuccess(s);
-    _CommandLineArgs._printAlgorithmNameMapper(s);
-    _CommandLineArgs._printInstanceNameMapper(s);
+    CommandLineArgs.printEndResultsStatFile(s);
+    CommandLineArgs.printSuccess(s);
+    CommandLineArgs.printAlgorithmNameMapper(s);
+    CommandLineArgs.printInstanceNameMapper(s);
   }
 
   /**
@@ -2967,23 +2966,22 @@ public class EndResultStatistics {
       s.println(
           "Welcome to the End-Result Statistics CSV Table Generator"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
-      EndResultStatistics._printArgs(s);
+      EndResultStatistics.printArgs(s);
       s.println(
           "If you do not set the arguments, defaults will be used.");//$NON-NLS-1$
     });
 
     Configuration.putCommandLine(args);
 
-    final Path in = _CommandLineArgs._getSourceDir();
-    final Path out = _CommandLineArgs._getDestDir();
-    final String name =
-        _CommandLineArgs._getEndResultsStatFile();
+    final Path in = CommandLineArgs.getSourceDir();
+    final Path out = CommandLineArgs.getDestDir();
+    final String name = CommandLineArgs.getEndResultsStatFile();
     final Function<String, String> algoNameMap =
-        _CommandLineArgs._getAlgorithmNameMapper();
+        CommandLineArgs.getAlgorithmNameMapper();
     final Function<String, String> instNameMap =
-        _CommandLineArgs._getInstanceNameMapper();
+        CommandLineArgs.getInstanceNameMapper();
     final Predicate<EndResult> success =
-        _CommandLineArgs._getSuccess();
+        CommandLineArgs.getSuccess();
     Configuration.print();
 
     try {

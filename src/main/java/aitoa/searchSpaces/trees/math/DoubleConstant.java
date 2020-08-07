@@ -200,7 +200,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
       }
     }
 
-    return a -> new __ConstantNodeType<>(a, min, max, span, r);
+    return a -> new ConstantNodeType<>(a, min, max, span, r);
   }
 
   /**
@@ -209,7 +209,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
    * @param <C>
    *          the parameter type
    */
-  private final static class __ConstantNodeType<C>
+  private final static class ConstantNodeType<C>
       extends NodeType<DoubleConstant<C>> {
 
     /** the minimum value */
@@ -236,7 +236,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
      *          the privileged values
      */
     @SuppressWarnings("unchecked")
-    __ConstantNodeType(final NodeTypeSet<?>[] children,
+    ConstantNodeType(final NodeTypeSet<?>[] children,
         final double min, final double max, final double span,
         final double[] privileged) {
       super(children);

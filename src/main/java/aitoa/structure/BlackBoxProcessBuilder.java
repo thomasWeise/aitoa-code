@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  *          the solution space
  */
 public class BlackBoxProcessBuilder<X, Y>
-    extends _BlackBoxProcessData<X, Y>
+    extends BlackBoxProcessData<X, Y>
     implements Supplier<IBlackBoxProcess<X, Y>> {
 
   /** the log path */
@@ -188,7 +188,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setGoalF(final double goal) {
-    this.m_goalF = _BlackBoxProcessData._checkGoalF(goal);
+    this.m_goalF = BlackBoxProcessData.checkGoalF(goal);
     return this;
   }
 
@@ -203,7 +203,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setMaxFEs(final long max) {
-    this.m_maxFEs = _BlackBoxProcessData._checkMaxFEs(max);
+    this.m_maxFEs = BlackBoxProcessData.checkMaxFEs(max);
     return this;
   }
 
@@ -218,7 +218,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setMaxTime(final long max) {
-    this.m_maxTime = _BlackBoxProcessData._checkMaxTime(max);
+    this.m_maxTime = BlackBoxProcessData.checkMaxTime(max);
     return this;
   }
 
@@ -231,7 +231,7 @@ public class BlackBoxProcessBuilder<X, Y>
    *          the log path
    * @return this
    */
-  BlackBoxProcessBuilder<X, Y> _setLogPath(final Path path) {
+  BlackBoxProcessBuilder<X, Y> doSetLogPath(final Path path) {
     if (path != null) {
       this.m_logPath = path.toAbsolutePath();
     } else {
@@ -249,7 +249,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setLogPath(final Path path) {
-    return (this._setLogPath(path));
+    return (this.doSetLogPath(path));
   }
 
   /**
@@ -293,7 +293,7 @@ public class BlackBoxProcessBuilder<X, Y>
    *
    * @return the log
    */
-  final Writer _createLogWriter() {
+  final Writer createLogWriter() {
     // create log writer now, to a) spot potential errors and b)
     // make sure the file exists, so other threads may skip over
     // the problem
@@ -313,7 +313,7 @@ public class BlackBoxProcessBuilder<X, Y>
    *
    * @return the long array
    */
-  final long[] _createLog() {
+  final long[] createLog() {
     return new long[Math.multiplyExact(
         Integer.highestOneBit(this.m_expectedLogLength * 3), 2)];
   }
@@ -350,7 +350,7 @@ public class BlackBoxProcessBuilder<X, Y>
    * @return the problem instance
    */
   @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
-  IBlackBoxProcess<X, Y> _get() {
+  IBlackBoxProcess<X, Y> doGet() {
     if (this.m_logAll && (this.m_logPath == null)) {
       throw new IllegalArgumentException(
           "No log path is provided, while logging is set to ALL."); //$NON-NLS-1$
@@ -364,7 +364,7 @@ public class BlackBoxProcessBuilder<X, Y>
 // now. (The problem which can cause delays is the resolution of
 // the Graphics Adapater via the PCI ID which works via a web
 // page.)
-      if (_SystemData._getSystemData().length < 256) {
+      if (SystemData.getSystemData().length < 256) {
         throw new IllegalStateException(
             "Could not load system data?"); //$NON-NLS-1$
       }
@@ -373,20 +373,20 @@ public class BlackBoxProcessBuilder<X, Y>
     if (this.m_mapping == null) {
       // search space == solution space
       if (this.m_logPath == null) {
-        return new _BlackBoxProcess1NoLog(this);
+        return new BlackBoxProcess1NoLog(this);
       }
       return this.m_logAll //
-          ? new _BlackBoxProcess1LogAll(this)//
-          : new _BlackBoxProcess1Log(this);
+          ? new BlackBoxProcess1LogAll(this)//
+          : new BlackBoxProcess1Log(this);
     }
 
     // search and solution space are different
     if (this.m_logPath == null) {
-      return new _BlackBoxProcess2NoLog(this);
+      return new BlackBoxProcess2NoLog(this);
     }
     return this.m_logAll //
-        ? new _BlackBoxProcess2LogAll(this)//
-        : new _BlackBoxProcess2Log(this);
+        ? new BlackBoxProcess2LogAll(this)//
+        : new BlackBoxProcess2Log(this);
   }
 
   /**
@@ -396,6 +396,6 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   @Override
   public final IBlackBoxProcess<X, Y> get() {
-    return this._get();
+    return this.doGet();
   }
 }

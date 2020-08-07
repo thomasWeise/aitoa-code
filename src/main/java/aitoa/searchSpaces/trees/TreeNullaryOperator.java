@@ -7,7 +7,7 @@ import aitoa.structure.INullarySearchOperator;
 /**
  * An operation creating trees.
  */
-public final class TreeNullaryOperator extends _TreeOperator
+public final class TreeNullaryOperator extends TreeOperator
     implements INullarySearchOperator<Node[]> {
 
   /** the types to choose from */
@@ -30,9 +30,9 @@ public final class TreeNullaryOperator extends _TreeOperator
   /** {@inheritDoc} */
   @Override
   public void apply(final Node[] dest, final Random random) {
-    for (int trials = _TreeOperator.MAX_TRIALS;
+    for (int trials = TreeOperator.MAX_TRIALS;
         (--trials) >= 0;) {
-      if ((dest[0] = _TreeOperator._createTree(this.m_types,
+      if ((dest[0] = TreeOperator.createTree(this.m_types,
           (1 + random.nextInt(this.m_maxDepth)),
           random)) != null) {
         return;
@@ -40,7 +40,7 @@ public final class TreeNullaryOperator extends _TreeOperator
     }
     throw new IllegalArgumentException(//
         "failed to create tree " + //$NON-NLS-1$
-            _TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
+            TreeOperator.MAX_TRIALS + " times!"); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */

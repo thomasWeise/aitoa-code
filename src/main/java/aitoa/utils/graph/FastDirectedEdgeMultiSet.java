@@ -6,7 +6,7 @@ import java.util.Arrays;
  * A fast, but memory intense representation for an
  * {@linkplain DirectedEdgeMultiSet multiset for edges}
  */
-final class _FastDirectedEdgeMultiSet
+final class FastDirectedEdgeMultiSet
     extends DirectedEdgeMultiSet {
   /** the number of times the edges exist in the set */
   private final int[] m_edges;
@@ -19,7 +19,7 @@ final class _FastDirectedEdgeMultiSet
    * @param _K
    *          the maximum number of edges per node
    */
-  _FastDirectedEdgeMultiSet(final int _L, final int _K) {
+  FastDirectedEdgeMultiSet(final int _L, final int _K) {
     super(_L, _K);
     this.m_edges = new int[(_L + 1) * _L];
   }

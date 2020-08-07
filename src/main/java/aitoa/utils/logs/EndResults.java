@@ -328,7 +328,7 @@ public final class EndResults {
       long budgetTime = -1L;
       long budgetFEs = -1L;
       double goalF = Double.POSITIVE_INFINITY;
-      final _Cache cache = new _Cache();
+      final Cache cache = new Cache();
 
       String line2;
       int lineIndex = 0;
@@ -363,7 +363,7 @@ public final class EndResults {
             throw new IllegalArgumentException(
                 "Algorithm ID must be specified."); //$NON-NLS-1$
           }
-          algorithm = cache._string(algorithm);
+          algorithm = cache.string(algorithm);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -373,7 +373,7 @@ public final class EndResults {
             throw new IllegalArgumentException(
                 "Instance ID must be specified."); //$NON-NLS-1$
           }
-          instance = cache._string(instance);
+          instance = cache.string(instance);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //
@@ -534,8 +534,8 @@ public final class EndResults {
    *          the print stream
    */
   static void printArgs(final PrintStream s) {
-    _CommandLineArgs._printSourceDir(s);
-    _CommandLineArgs._printDestDir(s);
+    CommandLineArgs.printSourceDir(s);
+    CommandLineArgs.printDestDir(s);
   }
 
   /**
@@ -555,8 +555,8 @@ public final class EndResults {
 
     Configuration.putCommandLine(args);
 
-    final Path in = _CommandLineArgs._getSourceDir();
-    final Path out = _CommandLineArgs._getDestDir();
+    final Path in = CommandLineArgs.getSourceDir();
+    final Path out = CommandLineArgs.getDestDir();
 
     Configuration.print();
 

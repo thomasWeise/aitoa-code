@@ -202,7 +202,7 @@ public abstract class NodeType<T extends Node>
 
   /** get the instance */
   @SuppressWarnings("rawtypes")
-  private static final NodeType DUMMY_TYPE = new __DummyType();
+  private static final NodeType DUMMY_TYPE = new DummyType();
 
   /**
    * Obtain a dummy node type. This node type cannot be used in
@@ -224,9 +224,9 @@ public abstract class NodeType<T extends Node>
   }
 
   /** a dummy node type */
-  private static final class __DummyType extends NodeType<Node> {
+  private static final class DummyType extends NodeType<Node> {
     /** create */
-    __DummyType() {
+    DummyType() {
       super(new NodeTypeSet[0]);
     }
 

@@ -6,7 +6,7 @@ import java.util.Arrays;
  * A compact representation for an
  * {@linkplain DirectedEdgeMultiSet multiset for edges}
  */
-final class _CompactDirectedEdgeMultiSet
+final class CompactDirectedEdgeMultiSet
     extends DirectedEdgeMultiSet {
   /** the stored edges */
   private final int[][] m_edges;
@@ -21,7 +21,7 @@ final class _CompactDirectedEdgeMultiSet
    * @param _K
    *          the maximum number of edges per node
    */
-  _CompactDirectedEdgeMultiSet(final int _L, final int _K) {
+  CompactDirectedEdgeMultiSet(final int _L, final int _K) {
     super(_L, _K);
     this.m_edges = new int[_L + 1][_K];
     this.m_counts = new int[_L + 1][_K];
