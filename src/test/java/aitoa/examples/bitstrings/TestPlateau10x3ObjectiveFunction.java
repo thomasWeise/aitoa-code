@@ -11,7 +11,7 @@ import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
 /** A Test for the Plateau Objective Function */
-public class TestPlateau_10_3_ObjectiveFunction
+public class TestPlateau10x3ObjectiveFunction
     extends IObjectiveFunctionTest<boolean[]> {
 
   /** the Plateau */
@@ -21,14 +21,14 @@ public class TestPlateau_10_3_ObjectiveFunction
   /** {@inheritDoc} */
   @Override
   protected IObjectiveFunction<boolean[]> getInstance() {
-    return TestPlateau_10_3_ObjectiveFunction.F;
+    return TestPlateau10x3ObjectiveFunction.F;
   }
 
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
     final boolean[] x =
-        new boolean[TestPlateau_10_3_ObjectiveFunction.F.n];
+        new boolean[TestPlateau10x3ObjectiveFunction.F.n];
     final Random r = ThreadLocalRandom.current();
     for (int i = x.length; (--i) >= 0;) {
       x[i] = r.nextBoolean();
@@ -41,27 +41,27 @@ public class TestPlateau_10_3_ObjectiveFunction
   @Test(timeout = 3600000)
   public final void testCorrectness() {
     final boolean[] x =
-        new boolean[TestPlateau_10_3_ObjectiveFunction.F.n];
+        new boolean[TestPlateau10x3ObjectiveFunction.F.n];
 
     for (int i = 0; i <= x.length; i++) {
       final double res =
-          TestPlateau_10_3_ObjectiveFunction.F.evaluate(x);
+          TestPlateau10x3ObjectiveFunction.F.evaluate(x);
 
       int exp = 0;
-      if ((i <= (TestPlateau_10_3_ObjectiveFunction.F.n
-          - TestPlateau_10_3_ObjectiveFunction.F.k))
-          || (i == TestPlateau_10_3_ObjectiveFunction.F.n)) {
+      if ((i <= (TestPlateau10x3ObjectiveFunction.F.n
+          - TestPlateau10x3ObjectiveFunction.F.k))
+          || (i == TestPlateau10x3ObjectiveFunction.F.n)) {
         exp = i;
       } else {
-        exp = TestPlateau_10_3_ObjectiveFunction.F.n
-            - TestPlateau_10_3_ObjectiveFunction.F.k;
+        exp = TestPlateau10x3ObjectiveFunction.F.n
+            - TestPlateau10x3ObjectiveFunction.F.k;
       }
       exp = x.length - exp;
       Assert.assertEquals(res, exp, 0);
       TestTools.assertGreaterOrEqual(exp,
-          TestPlateau_10_3_ObjectiveFunction.F.lowerBound());
+          TestPlateau10x3ObjectiveFunction.F.lowerBound());
       TestTools.assertLessOrEqual(exp,
-          TestPlateau_10_3_ObjectiveFunction.F.upperBound());
+          TestPlateau10x3ObjectiveFunction.F.upperBound());
       if (i >= x.length) {
         break;
       }

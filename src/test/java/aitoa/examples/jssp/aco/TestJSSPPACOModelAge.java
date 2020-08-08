@@ -28,7 +28,7 @@ public class TestJSSPPACOModelAge
       new JSSPPACOModelAge(TestJSSPPACOModelAge.PROBLEM, 3, 0.9,
           5d, 1d);
   /** the internal representation mapping */
-  private static JSSPRepresentationMapping G =
+  private static final JSSPRepresentationMapping G =
       new JSSPRepresentationMapping(
           TestJSSPPACOModelAge.PROBLEM);
 

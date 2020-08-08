@@ -15,7 +15,7 @@ public class PerformanceComparisonBitStringNullary {
    * @param random
    *          the random number generator
    */
-  private static final void __apply_orig(final boolean[] dest,
+  private static final void applyOrig(final boolean[] dest,
       final Random random) {
     for (int i = dest.length; (--i) >= 0;) {
       dest[i] = random.nextBoolean();
@@ -30,7 +30,7 @@ public class PerformanceComparisonBitStringNullary {
    * @param random
    *          the random number generator
    */
-  private static final void __apply_new(final boolean[] dest,
+  private static final void applyNew(final boolean[] dest,
       final Random random) {
     int i = dest.length - 1;
     for (;;) {
@@ -308,30 +308,30 @@ public class PerformanceComparisonBitStringNullary {
     final int times = 1000000;
 
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringNullary.__apply_orig(array,
+      PerformanceComparisonBitStringNullary.applyOrig(array,
           random);
-      PerformanceComparisonBitStringNullary.__apply_new(array,
+      PerformanceComparisonBitStringNullary.applyNew(array,
           random);
     }
 
     final long t1 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringNullary.__apply_orig(array,
+      PerformanceComparisonBitStringNullary.applyOrig(array,
           random);
     }
     final long t2 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringNullary.__apply_new(array,
+      PerformanceComparisonBitStringNullary.applyNew(array,
           random);
     }
     final long t3 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringNullary.__apply_orig(array,
+      PerformanceComparisonBitStringNullary.applyOrig(array,
           random);
     }
     final long t4 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringNullary.__apply_new(array,
+      PerformanceComparisonBitStringNullary.applyNew(array,
           random);
     }
     final long t5 = System.nanoTime();

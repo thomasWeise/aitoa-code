@@ -30,7 +30,7 @@ public class TestJSSPACOSpace
           TestJSSPACOSpace.PROBLEM);
 
   /** the internal representation mapping */
-  private static JSSPRepresentationMapping G =
+  private static final JSSPRepresentationMapping G =
       new JSSPRepresentationMapping(TestJSSPACOSpace.PROBLEM);
 
   /** create */

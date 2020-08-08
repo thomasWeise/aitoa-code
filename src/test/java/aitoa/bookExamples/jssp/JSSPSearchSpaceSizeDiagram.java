@@ -17,8 +17,8 @@ public class JSSPSearchSpaceSizeDiagram {
    *          ignore
    */
   public static final void main(final String[] args) {
-    final ArrayList<__row> all = new ArrayList<>();
-    final ArrayList<__row> pending = new ArrayList<>();
+    final ArrayList<Row> all = new ArrayList<>();
+    final ArrayList<Row> pending = new ArrayList<>();
 
     loop: for (int max = 1;; max++) {
       pending.clear();
@@ -27,7 +27,7 @@ public class JSSPSearchSpaceSizeDiagram {
           final BigInteger size =
               JSSPSearchSpaceSize.searchSpaceSize(m, n);
           if (Double.isFinite(size.doubleValue())) {
-            pending.add(new __row(m, n, size));
+            pending.add(new Row(m, n, size));
           } else {
             break loop;
           }
@@ -42,7 +42,7 @@ public class JSSPSearchSpaceSizeDiagram {
     System.out.print("m,n,size"); //$NON-NLS-1$
     System.out.print('"');
 
-    for (final __row row : all) {
+    for (final Row row : all) {
       System.out.println(',');
       System.out.print('"');
       System.out.print(row.m);
@@ -55,7 +55,7 @@ public class JSSPSearchSpaceSizeDiagram {
   }
 
   /** one row of the diagram */
-  private static final class __row {
+  private static final class Row {
     /** the m */
     final int m;
     /** the n */
@@ -73,7 +73,7 @@ public class JSSPSearchSpaceSizeDiagram {
      * @param _size
      *          the size
      */
-    __row(final int _m, final int _n, final BigInteger _size) {
+    Row(final int _m, final int _n, final BigInteger _size) {
       super();
       this.m = _m;
       this.n = _n;

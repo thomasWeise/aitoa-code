@@ -164,5 +164,4 @@ public class TestNQueensObjectiveFunction
       opt[i] = b1;
     }
   }
-
 }

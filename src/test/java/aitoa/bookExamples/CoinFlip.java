@@ -43,7 +43,7 @@ public class CoinFlip {
   }
 
   /** the internal cache */
-  private static BigInteger[] POW2 = new BigInteger[128];
+  private static BigInteger[] pow2 = new BigInteger[128];
 
   /**
    * compute the probability to toss k heads our of n tosses in
@@ -57,16 +57,16 @@ public class CoinFlip {
    */
   private static final BigInteger[]
       kHeadsFromNTosses(final int n, final int k) {
-    if (n > CoinFlip.POW2.length) {
-      CoinFlip.POW2 = Arrays.copyOf(CoinFlip.POW2, Math.max(
+    if (n > CoinFlip.pow2.length) {
+      CoinFlip.pow2 = Arrays.copyOf(CoinFlip.pow2, Math.max(
           n + 1,
-          Math.max(n + (n >>> 1), CoinFlip.POW2.length * 2)));
+          Math.max(n + (n >>> 1), CoinFlip.pow2.length * 2)));
     }
-    if (CoinFlip.POW2[n] == null) {
-      CoinFlip.POW2[n] = BigInteger.valueOf(2).pow(n);
+    if (CoinFlip.pow2[n] == null) {
+      CoinFlip.pow2[n] = BigInteger.valueOf(2).pow(n);
     }
     return new BigInteger[] { CoinFlip.nChooseK(n, k),
-        CoinFlip.POW2[n] };
+        CoinFlip.pow2[n] };
   }
 
   /**
@@ -100,7 +100,7 @@ public class CoinFlip {
   /** test the demo instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_probabilities() {
+  public void testProbabilities() {
     BigInteger[] results;
     double d;
 
@@ -128,7 +128,7 @@ public class CoinFlip {
   /** test the demo instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_nChooseK() {
+  public void testNChooseK() {
     BigInteger result;
 
     result = CoinFlip.nChooseK(10, 4);

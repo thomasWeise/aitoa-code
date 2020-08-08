@@ -81,11 +81,11 @@ public class TestBlackBoxProcessBuilder<X, Y>
   @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
   final IBlackBoxProcess<X, Y> doGet() {
     if (this.m_mapping == null) {
-      return new __BlackBoxProcessWrapper1(
+      return new BlackBoxProcessWrapper1(
           new BlackBoxProcess1NoLog(this));
     }
 
-    return new __BlackBoxProcessWrapper2(
+    return new BlackBoxProcessWrapper2(
         new BlackBoxProcess2NoLog(this));
   }
 
@@ -100,7 +100,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
    * @param <P>
    *          the base type
    */
-  private static class __BlackBoxProcessWrapper<X, Y,
+  private static class BlackBoxProcessWrapper<X, Y,
       P extends BlackBoxProcessBase<X, Y>>
       implements IBlackBoxProcess<X, Y> {
 
@@ -128,7 +128,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
      * @param process
      *          the wrapped process
      */
-    __BlackBoxProcessWrapper(final P process) {
+    BlackBoxProcessWrapper(final P process) {
       super();
       this.m_process = Objects.requireNonNull(process);
       this.m_lb = process.m_f.lowerBound();
@@ -343,9 +343,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
    * @param <Y>
    *          the solution space
    */
-  private static class __BlackBoxProcessWrapper2<X, Y>
-      extends __BlackBoxProcessWrapper<X, Y,
-          BlackBoxProcess2NoLog<X, Y>> {
+  private static class BlackBoxProcessWrapper2<X, Y> extends
+      BlackBoxProcessWrapper<X, Y, BlackBoxProcess2NoLog<X, Y>> {
 
     /**
      * create
@@ -353,7 +352,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
      * @param process
      *          the wrapped process
      */
-    __BlackBoxProcessWrapper2(
+    BlackBoxProcessWrapper2(
         final BlackBoxProcess2NoLog<X, Y> process) {
       super(process);
     }
@@ -422,15 +421,15 @@ public class TestBlackBoxProcessBuilder<X, Y>
    * @param <X>
    *          the search- and solution space
    */
-  private static class __BlackBoxProcessWrapper1<X> extends
-      __BlackBoxProcessWrapper<X, X, BlackBoxProcess1NoLog<X>> {
+  private static class BlackBoxProcessWrapper1<X> extends
+      BlackBoxProcessWrapper<X, X, BlackBoxProcess1NoLog<X>> {
     /**
      * create
      *
      * @param process
      *          the wrapped process
      */
-    __BlackBoxProcessWrapper1(
+    BlackBoxProcessWrapper1(
         final BlackBoxProcess1NoLog<X> process) {
       super(process);
     }

@@ -18,7 +18,7 @@ import aitoa.TestTools;
  */
 @Ignore
 public class TestNodeTypeSet<T extends Node>
-    extends _StructureTest<NodeTypeSet<T>> implements Cloneable {
+    extends StructureTest<NodeTypeSet<T>> implements Cloneable {
 
   /** the node type */
   private NodeTypeSet<T> m_nodeTypeSet;
@@ -31,7 +31,7 @@ public class TestNodeTypeSet<T extends Node>
    * @param type
    *          the node type
    */
-  private TestNodeTypeSet(final _StructureTest<?> owner,
+  private TestNodeTypeSet(final StructureTest<?> owner,
       final NodeTypeSet<T> type) {
     super(owner);
     this.m_nodeTypeSet = Objects.requireNonNull(type);
@@ -108,7 +108,7 @@ public class TestNodeTypeSet<T extends Node>
    * @param nodeTypeSet
    *          the node type set
    */
-  static void _testNodeTypeSet(final _StructureTest<?> owner,
+  static void _testNodeTypeSet(final StructureTest<?> owner,
       final NodeTypeSet<?> nodeTypeSet) {
     owner._test(nodeTypeSet,
         () -> new TestNodeTypeSet<>(owner, nodeTypeSet)

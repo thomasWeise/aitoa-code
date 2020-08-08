@@ -11,7 +11,7 @@ import aitoa.TestTools;
 import aitoa.utils.math.DiscreteConstant;
 
 /** Test the binomial distributed unary operator flip */
-public class Test_BitStringUnaryOperatorFlipWithDist {
+public class TestBitStringUnaryOperatorFlipWithDist {
 
   /** Test the binomial distribution */
   @SuppressWarnings("static-method")
@@ -25,7 +25,7 @@ public class Test_BitStringUnaryOperatorFlipWithDist {
 
       for (int m = n; m > 1; m--) {
 
-        final _Test test = new _Test(n, m);
+        final TheTest test = new TheTest(n, m);
         Arrays.fill(count, 0);
 
         final int steps = 20 * n * n * n;
@@ -62,7 +62,7 @@ public class Test_BitStringUnaryOperatorFlipWithDist {
   }
 
   /** the test */
-  private static final class _Test
+  private static final class TheTest
       extends BitStringUnaryOperatorFlipWithDist {
 
     /**
@@ -73,7 +73,7 @@ public class Test_BitStringUnaryOperatorFlipWithDist {
      * @param _m
      *          the number of bits to flip
      */
-    _Test(final int _n, final int _m) {
+    TheTest(final int _n, final int _m) {
       super(_n, new DiscreteConstant(_m));
     }
 

@@ -1,10 +1,10 @@
 package aitoa.searchSpaces.bitstrings;
 
 /** Test the bit string m-over-n-flip unary operator */
-public class TestBitStringUnaryOperatorMOverNFlip1_12
+public class TestBitStringUnaryOperatorMOverNFlip1x12
     extends TestBitStringUnaryOperatorMOverNFlip {
   /** create */
-  public TestBitStringUnaryOperatorMOverNFlip1_12() {
+  public TestBitStringUnaryOperatorMOverNFlip1x12() {
     super(12, new BitStringUnaryOperatorMOverNFlip(1));
   }
 }

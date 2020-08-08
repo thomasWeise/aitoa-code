@@ -19,7 +19,7 @@ public class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void __apply_orig(final boolean[] x0,
+  private static final void applyOrig(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
     for (int i = dest.length; (--i) >= 0;) {
@@ -39,7 +39,7 @@ public class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void __apply_new_1(final boolean[] x0,
+  private static final void applyNew1(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
 
@@ -381,7 +381,7 @@ public class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void __apply_new_2(final boolean[] x0,
+  private static final void applyNew2(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
 
@@ -792,44 +792,44 @@ public class PerformanceComparisonBitStringBinaryUniform {
     final int times = 1000000;
 
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_orig(x0, x1, array, random);
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_1(x0, x1, array, random);
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_2(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyOrig(x0,
+          x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew1(x0,
+          x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew2(x0,
+          x1, array, random);
     }
 
     final long t1 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_orig(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyOrig(x0,
+          x1, array, random);
     }
     final long t2 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_1(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew1(x0,
+          x1, array, random);
     }
     final long t3 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_2(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew2(x0,
+          x1, array, random);
     }
     final long t4 = System.nanoTime();
 
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_orig(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyOrig(x0,
+          x1, array, random);
     }
     final long t5 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_1(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew1(x0,
+          x1, array, random);
     }
     final long t6 = System.nanoTime();
     for (int i = times; (--i) >= 0;) {
-      PerformanceComparisonBitStringBinaryUniform
-          .__apply_new_2(x0, x1, array, random);
+      PerformanceComparisonBitStringBinaryUniform.applyNew2(x0,
+          x1, array, random);
     }
     final long t7 = System.nanoTime();
 

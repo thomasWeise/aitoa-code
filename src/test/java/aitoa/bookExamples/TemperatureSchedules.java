@@ -11,7 +11,7 @@ import aitoa.algorithms.TemperatureSchedule;
 public class TemperatureSchedules {
 
   /** the maximum FEs */
-  private static final int MAX_FEs = 1024 * 1024 * 64;
+  private static final int MAX_FES = 1024 * 1024 * 64;
 
   /**
    * add the value
@@ -21,9 +21,9 @@ public class TemperatureSchedules {
    * @param val
    *          the value
    */
-  private static final void __add(final HashSet<Integer> set,
+  private static final void add(final HashSet<Integer> set,
       final int val) {
-    if ((val > 0) && (val <= TemperatureSchedules.MAX_FEs)) {
+    if ((val > 0) && (val <= TemperatureSchedules.MAX_FES)) {
       set.add(Integer.valueOf(val));
     }
   }
@@ -35,7 +35,7 @@ public class TemperatureSchedules {
    *          the values
    * @return the array
    */
-  private static final double[] __make(final double... val) {
+  private static final double[] make(final double... val) {
     final HashSet<Double> set = new HashSet<>(val.length);
     for (final double d : val) {
       set.add(Double.valueOf(d));
@@ -62,34 +62,34 @@ public class TemperatureSchedules {
             new TemperatureSchedule.Exponential(Ts, 8e-7), };
 
     final HashSet<Integer> points =
-        new HashSet<>(TemperatureSchedules.MAX_FEs);
+        new HashSet<>(TemperatureSchedules.MAX_FES);
 
     for (int i = 1; i <= 128; i++) {
-      TemperatureSchedules.__add(points, i);
-      TemperatureSchedules.__add(points,
-          TemperatureSchedules.MAX_FEs / i);
+      TemperatureSchedules.add(points, i);
+      TemperatureSchedules.add(points,
+          TemperatureSchedules.MAX_FES / i);
     }
 
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i <<= 1) {
-      TemperatureSchedules.__add(points, i);
-      TemperatureSchedules.__add(points, i / 3);
-      TemperatureSchedules.__add(points, i * 3);
-      TemperatureSchedules.__add(points, i / 5);
-      TemperatureSchedules.__add(points, i * 5);
-      TemperatureSchedules.__add(points, (3 * i) / 5);
-      TemperatureSchedules.__add(points, 3 * i * 5);
+    for (int i = 1; i <= TemperatureSchedules.MAX_FES; i <<= 1) {
+      TemperatureSchedules.add(points, i);
+      TemperatureSchedules.add(points, i / 3);
+      TemperatureSchedules.add(points, i * 3);
+      TemperatureSchedules.add(points, i / 5);
+      TemperatureSchedules.add(points, i * 5);
+      TemperatureSchedules.add(points, (3 * i) / 5);
+      TemperatureSchedules.add(points, 3 * i * 5);
     }
 
     for (int j = 2; j < 64; j++) {
-      for (int i = 1; i <= TemperatureSchedules.MAX_FEs;
+      for (int i = 1; i <= TemperatureSchedules.MAX_FES;
           i *= j) {
-        TemperatureSchedules.__add(points, i);
-        TemperatureSchedules.__add(points, i / 3);
-        TemperatureSchedules.__add(points, i * 3);
+        TemperatureSchedules.add(points, i);
+        TemperatureSchedules.add(points, i / 3);
+        TemperatureSchedules.add(points, i * 3);
       }
     }
 
-    final double[] critTS = TemperatureSchedules.__make(Ts, 0,
+    final double[] critTS = TemperatureSchedules.make(Ts, 0,
         (7 * Ts) / 8, (6 * Ts) / 8, (5 * Ts) / 8, (4 * Ts) / 8,
         (3 * Ts) / 8, (2 * Ts) / 8, (1 * Ts) / 8, (9 * Ts) / 10,
         (8 * Ts) / 10, (7 * Ts) / 10, (6 * Ts) / 10,
@@ -110,7 +110,7 @@ public class TemperatureSchedules {
       Arrays.fill(dd, Double.POSITIVE_INFINITY);
     }
 
-    for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i++) {
+    for (int i = 1; i <= TemperatureSchedules.MAX_FES; i++) {
       for (int j = sched.length; (--j) >= 0;) {
         final double v = sched[j].temperature(i);
         for (int k = critTS.length; (--k) >= 0;) {
@@ -125,12 +125,12 @@ public class TemperatureSchedules {
 
     for (final int[] is : idxs) {
       for (final int k : is) {
-        TemperatureSchedules.__add(points, k);
+        TemperatureSchedules.add(points, k);
       }
     }
 
     final int[] targets = { 1, 2, 3, 5, 10 };
-    final double[] critProb = TemperatureSchedules.__make(0.01,
+    final double[] critProb = TemperatureSchedules.make(0.01,
         0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.01,
         0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
         1, 0.25, 0.75, 1 / 8d, 3d / 8d, 7d / 8d, 7d / 8d, 1 / 3d,
@@ -150,7 +150,7 @@ public class TemperatureSchedules {
         Arrays.fill(dd, Double.POSITIVE_INFINITY);
       }
 
-      for (int i = 1; i <= TemperatureSchedules.MAX_FEs; i++) {
+      for (int i = 1; i <= TemperatureSchedules.MAX_FES; i++) {
         for (int j = sched.length; (--j) >= 0;) {
           final double v =
               Math.exp(-target / sched[j].temperature(i));
@@ -166,7 +166,7 @@ public class TemperatureSchedules {
 
       for (final int[] is : nidxs) {
         for (final int k : is) {
-          TemperatureSchedules.__add(points, k);
+          TemperatureSchedules.add(points, k);
         }
       }
     }

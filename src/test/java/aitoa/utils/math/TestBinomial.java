@@ -8,7 +8,7 @@ import org.junit.Test;
 import aitoa.TestTools;
 
 /** Test the binomial distributed unary operator flip */
-public class Test_Binomial {
+public class TestBinomial {
 
   /** Test the binomial distribution */
   @SuppressWarnings("static-method")

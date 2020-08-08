@@ -345,8 +345,8 @@ public class TestTools {
    * @param epsilon
    *          the epsilon
    */
-  private static final void __check(final double a,
-      final double b, final double epsilon) {
+  private static final void check(final double a, final double b,
+      final double epsilon) {
     if (Double.isNaN(a) || Double.isNaN(b)
         || Double.isNaN(epsilon) || (epsilon < 0d)
         || Double.isFinite(epsilon)) {
@@ -370,7 +370,7 @@ public class TestTools {
    */
   public static final void assertLessOrEqual(final double a,
       final double b, final double epsilon) {
-    TestTools.__check(a, b, epsilon);
+    TestTools.check(a, b, epsilon);
     if (a > b) {
       final double border = b + epsilon;
       if (a > border) {
@@ -396,7 +396,7 @@ public class TestTools {
    */
   public static final void assertLess(final double a,
       final double b, final double epsilon) {
-    TestTools.__check(a, b, epsilon);
+    TestTools.check(a, b, epsilon);
     if (a >= b) {
       final double border = b + epsilon;
       if (a >= border) {
@@ -422,7 +422,7 @@ public class TestTools {
    */
   public static final void assertGreaterOrEqual(final double a,
       final double b, final double epsilon) {
-    TestTools.__check(a, b, epsilon);
+    TestTools.check(a, b, epsilon);
     if (a < b) {
       final double border = b - epsilon;
       if (a < border) {
@@ -448,7 +448,7 @@ public class TestTools {
    */
   public static final void assertGreater(final double a,
       final double b, final double epsilon) {
-    TestTools.__check(a, b, epsilon);
+    TestTools.check(a, b, epsilon);
     if (a <= b) {
       final double border = b - epsilon;
       if (a <= border) {
@@ -469,7 +469,7 @@ public class TestTools {
    * @param b
    *          the second value
    */
-  private static final void __check(final double a,
+  private static final void check(final double a,
       final double b) {
     if (Double.isNaN(a) || Double.isNaN(b)) {
       Assert.fail("Invalid test (" //$NON-NLS-1$
@@ -489,7 +489,7 @@ public class TestTools {
    */
   public static final void assertLessOrEqual(final double a,
       final double b) {
-    TestTools.__check(a, b);
+    TestTools.check(a, b);
     if (a > b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be less or equal than " //$NON-NLS-1$
@@ -508,7 +508,7 @@ public class TestTools {
    */
   public static final void assertLess(final double a,
       final double b) {
-    TestTools.__check(a, b);
+    TestTools.check(a, b);
     if (a >= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be less than " //$NON-NLS-1$
@@ -527,7 +527,7 @@ public class TestTools {
    */
   public static final void assertGreaterOrEqual(final double a,
       final double b) {
-    TestTools.__check(a, b);
+    TestTools.check(a, b);
     if (a < b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be greater or equal than " //$NON-NLS-1$
@@ -546,7 +546,7 @@ public class TestTools {
    */
   public static final void assertGreater(final double a,
       final double b) {
-    TestTools.__check(a, b);
+    TestTools.check(a, b);
     if (a <= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be greater than " //$NON-NLS-1$

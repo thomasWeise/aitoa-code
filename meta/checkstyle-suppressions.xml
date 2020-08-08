@@ -6,4 +6,5 @@
 
 <suppressions>
 	<suppress checks="FileLength" files="EndResultStatistics.java" />
+	<suppress checks="JavadocPackage" files="src/test/*"/>
 </suppressions>

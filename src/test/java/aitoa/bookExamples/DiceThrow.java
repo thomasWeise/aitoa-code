@@ -16,7 +16,7 @@ public class DiceThrow {
    * @param step
    *          the step
    */
-  private static final void __print(final long v,
+  private static final void print(final long v,
       final long step) {
     System.out.printf("%.4f", //$NON-NLS-1$
         Double.valueOf(((double) v) / step));
@@ -47,7 +47,7 @@ public class DiceThrow {
       ++count[n - 1];
       for (final int element : count) {
         System.out.print('|');
-        DiceThrow.__print(element, step);
+        DiceThrow.print(element, step);
       }
       System.out.println('|');
     }
@@ -63,7 +63,7 @@ public class DiceThrow {
         System.out.print("&hellip;"); //$NON-NLS-1$
         for (final int element : count) {
           System.out.print('|');
-          DiceThrow.__print(element, step);
+          DiceThrow.print(element, step);
         }
         System.out.println('|');
         next *= 10;

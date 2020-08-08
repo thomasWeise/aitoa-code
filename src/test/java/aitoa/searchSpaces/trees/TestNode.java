@@ -24,7 +24,7 @@ import aitoa.utils.ReflectionUtils;
  * Test a node
  */
 @Ignore
-public class TestNode extends _StructureTest<Node> {
+public class TestNode extends StructureTest<Node> {
 
   /** the node */
   private final Node m_node;
@@ -37,7 +37,7 @@ public class TestNode extends _StructureTest<Node> {
    * @param owner
    *          the owner
    */
-  private TestNode(final _StructureTest<?> owner,
+  private TestNode(final StructureTest<?> owner,
       final Node node) {
     super(owner);
     this.m_node = Objects.requireNonNull(node);
@@ -247,7 +247,7 @@ public class TestNode extends _StructureTest<Node> {
    * @param node
    *          the node
    */
-  static void _testNode(final _StructureTest<?> owner,
+  static void _testNode(final StructureTest<?> owner,
       final Node node) {
     owner._test(node,
         () -> new TestNode(owner, node).runAllTests());

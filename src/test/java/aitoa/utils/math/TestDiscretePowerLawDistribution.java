@@ -9,7 +9,7 @@ import org.junit.Test;
 import aitoa.TestTools;
 
 /** Test the power law distributed unary operator flip */
-public class Test_DiscretePowerLawDistribution {
+public class TestDiscretePowerLawDistribution {
 
   /** Test the power law distribution */
   @SuppressWarnings("static-method")

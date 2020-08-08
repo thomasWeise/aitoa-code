@@ -49,8 +49,8 @@ public enum EJSSPExperimentStageACO implements
         for (final int lambda : new int[] { 1024 }) {
           for (final int K : new int[] { 4, 8, 16 }) {
             for (final double beta : new double[] { 1.5d, 2d,
-                2.5d }) {
-              for (final double q0 : new double[] { 0.5d,
+                2.5d, 3d }) {
+              for (final double q0 : new double[] { 0.1d, 0.5d,
                   0.9d }) {
                 for (final double tauMax : new double[] { 1d }) {
                   list.add(() -> new EDA<>(mu, lambda,

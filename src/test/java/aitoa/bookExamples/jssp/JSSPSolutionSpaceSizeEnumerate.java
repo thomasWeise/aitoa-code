@@ -53,8 +53,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
     final int[][] gantt =
         JSSPSolutionSpaceSizeEnumerate.makeArray(n, m);
 
-    final __InstanceProcessor proc = new __InstanceProcessor(
-        gantt, new __ValidGanttCounter(jobMachines));
+    final InstanceProcessor proc = new InstanceProcessor(gantt,
+        new ValidGanttCounter(jobMachines));
 
     JSSPSolutionSpaceSizeEnumerate.permute(jobMachines, proc);
     return (proc.m_min);
@@ -126,7 +126,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
   }
 
   /** the checker */
-  private static final class __InstanceProcessor
+  private static final class InstanceProcessor
       implements Predicate<int[][]> {
 
     /** the minimum number of valid Gantt charts */
@@ -136,7 +136,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
     private final int[][] m_gantt;
 
     /** the counter */
-    private final __ValidGanttCounter m_counter;
+    private final ValidGanttCounter m_counter;
 
     /**
      * create
@@ -146,8 +146,8 @@ public class JSSPSolutionSpaceSizeEnumerate {
      * @param counter
      *          the counter
      */
-    __InstanceProcessor(final int[][] gantt,
-        final __ValidGanttCounter counter) {
+    InstanceProcessor(final int[][] gantt,
+        final ValidGanttCounter counter) {
       super();
       this.m_gantt = gantt;
       this.m_min = Long.MAX_VALUE;
@@ -173,7 +173,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
   }
 
   /** the checker */
-  private static final class __ValidGanttCounter
+  private static final class ValidGanttCounter
       implements Predicate<int[][]> {
     /** the counter */
     long counter;
@@ -194,7 +194,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
      * @param jobMachines
      *          the assignments of jobs to machines
      */
-    __ValidGanttCounter(final int[][] jobMachines) {
+    ValidGanttCounter(final int[][] jobMachines) {
       super();
       this.m_jobMachines = jobMachines;
       this.m_jobStage = new int[this.m_jobMachines.length];
@@ -279,7 +279,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
   }
 
   /** the computer */
-  private static final class __Compute implements Runnable {
+  private static final class Compute implements Runnable {
     /** the m */
     private final int m_m;
     /** the n */
@@ -293,7 +293,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
      * @param n
      *          the n
      */
-    __Compute(final int m, final int n) {
+    Compute(final int m, final int n) {
       super();
       this.m_m = m;
       this.m_n = n;
@@ -389,7 +389,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
     for (final long[] pair : list) {
       final int m = ((int) (pair[0]));
       final int n = ((int) (pair[1]));
-      service.execute(new __Compute(m, n));
+      service.execute(new Compute(m, n));
     }
     list.clear();
 

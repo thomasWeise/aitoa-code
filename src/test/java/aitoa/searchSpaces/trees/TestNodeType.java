@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 @Ignore
 public class TestNodeType<T extends Node>
-    extends _StructureTest<NodeType<T>> implements Cloneable {
+    extends StructureTest<NodeType<T>> implements Cloneable {
 
   /** the node type */
   private NodeType<T> m_nodeType;
@@ -29,7 +29,7 @@ public class TestNodeType<T extends Node>
    * @param type
    *          the node type
    */
-  private TestNodeType(final _StructureTest<?> owner,
+  private TestNodeType(final StructureTest<?> owner,
       final NodeType<T> type) {
     super(owner);
     this.m_nodeType = Objects.requireNonNull(type);
@@ -146,7 +146,7 @@ public class TestNodeType<T extends Node>
    * @param nodeType
    *          the node type
    */
-  static void _testNodeType(final _StructureTest<?> owner,
+  static void _testNodeType(final StructureTest<?> owner,
       final NodeType<?> nodeType) {
     owner._test(nodeType,
         () -> new TestNodeType<>(owner, nodeType).runAllTests());

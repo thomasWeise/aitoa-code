@@ -14,10 +14,10 @@ import aitoa.ObjectTest;
  *          the tested type
  */
 @Ignore
-abstract class _StructureTest<T> extends ObjectTest<T> {
+abstract class StructureTest<T> extends ObjectTest<T> {
 
   /** the done objects */
-  private final __Checker m_done;
+  private final Checker m_done;
 
   /**
    * create the structured test
@@ -25,10 +25,10 @@ abstract class _StructureTest<T> extends ObjectTest<T> {
    * @param owner
    *          the owner
    */
-  _StructureTest(final _StructureTest<?> owner) {
+  StructureTest(final StructureTest<?> owner) {
     super();
     this.m_done =
-        ((owner != null) ? owner.m_done : (new __Checker()));
+        ((owner != null) ? owner.m_done : (new Checker()));
   }
 
   /**
@@ -44,7 +44,7 @@ abstract class _StructureTest<T> extends ObjectTest<T> {
   }
 
   /** the internal checker */
-  private static final class __Checker
+  private static final class Checker
       implements BiConsumer<Object, Runnable> {
 
     /** the objects which are done */
@@ -54,7 +54,7 @@ abstract class _StructureTest<T> extends ObjectTest<T> {
     private int m_depth;
 
     /** create */
-    __Checker() {
+    Checker() {
       super();
       this.m_done = new HashSet<>();
     }
