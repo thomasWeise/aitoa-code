@@ -8,7 +8,7 @@ import java.util.Objects;
  * Print the search space sizes for the JSSP instances in form of
  * a diagram
  */
-public class JSSPSearchSpaceSizeDiagram {
+public final class JSSPSearchSpaceSizeDiagram {
 
   /**
    * The main routine
@@ -16,7 +16,7 @@ public class JSSPSearchSpaceSizeDiagram {
    * @param args
    *          ignore
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final ArrayList<Row> all = new ArrayList<>();
     final ArrayList<Row> pending = new ArrayList<>();
 
@@ -80,4 +80,8 @@ public class JSSPSearchSpaceSizeDiagram {
       this.mSize = Objects.requireNonNull(pSize);
     }
   }
+
+  /** forbidden */
+  private JSSPSearchSpaceSizeDiagram() {
+    throw new UnsupportedOperationException();}
 }

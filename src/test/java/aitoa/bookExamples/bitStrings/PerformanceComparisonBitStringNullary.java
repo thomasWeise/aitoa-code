@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * a performance comparison of the nullary bit string operator
  */
-public class PerformanceComparisonBitStringNullary {
+public final class PerformanceComparisonBitStringNullary {
 
   /**
    * do the original version
@@ -373,4 +373,8 @@ public class PerformanceComparisonBitStringNullary {
     System.out.println('}');// $NON-NLS-1$
   }
 
+  /** forbidden */
+  private PerformanceComparisonBitStringNullary() {
+    throw new UnsupportedOperationException();
+  }
 }

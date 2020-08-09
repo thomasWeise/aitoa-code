@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 /** Print the solution space sizes for the JSSP instances */
-public class JSSPSolutionSpaceSizeEnumerate {
+public final class JSSPSolutionSpaceSizeEnumerate {
 
   /**
    * make an {@code n*m} array
@@ -399,5 +399,10 @@ public class JSSPSolutionSpaceSizeEnumerate {
     } catch (final Throwable error) {
       error.printStackTrace();
     }
+  }
+
+  /** forbidden */
+  private JSSPSolutionSpaceSizeEnumerate() {
+    throw new UnsupportedOperationException();
   }
 }

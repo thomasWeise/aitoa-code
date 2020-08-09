@@ -13,7 +13,7 @@ import aitoa.examples.jssp.JSSPSearchSpace;
 import aitoa.examples.jssp.JSSPSolutionSpace;
 
 /** Create the demo gantt chart */
-public class JSSPDemoGanttChart {
+public final class JSSPDemoGanttChart {
 
   /**
    * The main routine
@@ -23,7 +23,7 @@ public class JSSPDemoGanttChart {
    * @throws IOException
    *           should not
    */
-  public static final void main(final String[] args)
+  public static void main(final String[] args)
       throws IOException {
 
     final JSSPInstance instance = new JSSPInstance("demo"); //$NON-NLS-1$
@@ -54,5 +54,10 @@ public class JSSPDemoGanttChart {
     System.out.println();
     System.out.println();
     System.out.println("f(y): " + z); //$NON-NLS-1$
+  }
+
+  /** forbidden */
+  private JSSPDemoGanttChart() {
+    throw new UnsupportedOperationException();
   }
 }

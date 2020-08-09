@@ -253,4 +253,9 @@ public final class QuickOptimizers {
     QuickOptimizers.unimodal1Dminimization(f, () -> false, lower,
         upper, dest, fineAdjust);
   }
+
+  /** forbidden */
+  private QuickOptimizers() {
+    throw new UnsupportedOperationException();
+  }
 }

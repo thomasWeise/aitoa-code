@@ -11,7 +11,7 @@ import aitoa.examples.jssp.EJSSPExperimentStage;
 import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the search space sizes for the JSSP instances */
-public class JSSPSearchSpaceSize {
+public final class JSSPSearchSpaceSize {
 
   /**
    * compute the search space size as string
@@ -22,8 +22,7 @@ public class JSSPSearchSpaceSize {
    *          the n
    * @return the size
    */
-  static final BigInteger searchSpaceSize(final int m,
-      final int n) {
+  static BigInteger searchSpaceSize(final int m, final int n) {
     final BigInteger mm = BigInteger.valueOf(m);
     final BigInteger nn = BigInteger.valueOf(n);
 
@@ -42,7 +41,7 @@ public class JSSPSearchSpaceSize {
    *          ignore
    */
 
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
     printFor.addAll(//
@@ -88,5 +87,10 @@ public class JSSPSearchSpaceSize {
           15);
       System.out.println();
     }
+  }
+
+  /** forbidden */
+  private JSSPSearchSpaceSize() {
+    throw new UnsupportedOperationException();
   }
 }

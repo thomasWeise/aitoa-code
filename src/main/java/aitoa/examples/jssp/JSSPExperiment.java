@@ -12,7 +12,12 @@ import aitoa.utils.IOUtils;
  * JSSP experiments. It will run a very long time and is not
  * parallelized at all.
  */
-public class JSSPExperiment {
+public final class JSSPExperiment {
+
+  /** forbidden */
+  private JSSPExperiment() {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Run all the experiments in a full-factorial experimental
@@ -23,7 +28,7 @@ public class JSSPExperiment {
    * @throws IOException
    *           if I/O fails
    */
-  public static final void main(final String[] args)
+  public static void main(final String[] args)
       throws IOException {
     final Path out = IOUtils.canonicalizePath(
         (args.length > 0) ? args[0] : "results");//$NON-NLS-1$

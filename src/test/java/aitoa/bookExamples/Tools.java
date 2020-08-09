@@ -12,7 +12,7 @@ import org.junit.Test;
  * contain especially the formatting of numbers and computation
  * with, as we try to compute with big numbers.
  */
-public class Tools {
+public final class Tools {
 
   /**
    * format a long number string
@@ -23,7 +23,7 @@ public class Tools {
    *          the maximally allowed digits
    * @return the string
    */
-  public static final String formatLongNumber(final long num,
+  public static String formatLongNumber(final long num,
       final int maxDigits) {
     return Tools.formatLongNumber(Long.toString(num), maxDigits);
   }
@@ -38,7 +38,7 @@ public class Tools {
    * @return the string
    */
   @SuppressWarnings("unused")
-  public static final String formatLongNumber(final Object num,
+  public static String formatLongNumber(final Object num,
       final int maxDigits) {
     if (num == null) {
       return "";//$NON-NLS-1$
@@ -97,7 +97,7 @@ public class Tools {
    *          the string
    * @return the string
    */
-  public static final String formatLongNumber(final Object num) {
+  public static String formatLongNumber(final Object num) {
     return (Tools.formatLongNumber(num, Integer.MAX_VALUE));
   }
 
@@ -108,7 +108,7 @@ public class Tools {
    *          the string
    * @return the string
    */
-  public static final String formatLongNumber(final long num) {
+  public static String formatLongNumber(final long num) {
     return (Tools.formatLongNumber(Long.valueOf(num),
         Integer.MAX_VALUE));
   }
@@ -121,7 +121,7 @@ public class Tools {
    * @param maxDigits
    *          the maximally allowed digits
    */
-  public static final void printLongNumber(final Object num,
+  public static void printLongNumber(final Object num,
       final int maxDigits) {
     System.out.print(Tools.formatLongNumber(num, maxDigits));
   }
@@ -134,7 +134,7 @@ public class Tools {
    * @param maxDigits
    *          the maximally allowed digits
    */
-  public static final void printLongNumber(final long num,
+  public static void printLongNumber(final long num,
       final int maxDigits) {
     System.out.print(Tools.formatLongNumber(num, maxDigits));
   }
@@ -145,7 +145,7 @@ public class Tools {
    * @param num
    *          the string
    */
-  public static final void printLongNumber(final Object num) {
+  public static void printLongNumber(final Object num) {
     System.out.print(Tools.formatLongNumber(num));
   }
 
@@ -155,7 +155,7 @@ public class Tools {
    * @param num
    *          the string
    */
-  public static final void printLongNumber(final long num) {
+  public static void printLongNumber(final long num) {
     System.out.print(Tools.formatLongNumber(num));
   }
 
@@ -176,5 +176,10 @@ public class Tools {
     Assert.assertEquals(Tools.formatLongNumber("1234567"), //$NON-NLS-1$
         "1'234'567"); //$NON-NLS-1$
 
+  }
+
+  /** forbidden */
+  private Tools() {
+    throw new UnsupportedOperationException();
   }
 }

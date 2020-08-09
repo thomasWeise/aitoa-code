@@ -6,7 +6,7 @@ import java.util.Random;
  * An example for throwing dice showing that the law of large
  * numbers applies
  */
-public class DiceThrow {
+public final class DiceThrow {
 
   /**
    * print a number
@@ -16,8 +16,7 @@ public class DiceThrow {
    * @param step
    *          the step
    */
-  private static final void print(final long v,
-      final long step) {
+  private static void print(final long v, final long step) {
     System.out.printf("%.4f", //$NON-NLS-1$
         Double.valueOf(((double) v) / step));
   }
@@ -28,7 +27,7 @@ public class DiceThrow {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final Random random = new Random(1212L);
     final int[] count = new int[6];
     final int max_steps = 12;
@@ -69,5 +68,10 @@ public class DiceThrow {
         next *= 10;
       }
     }
+  }
+
+  /** forbidden */
+  private DiceThrow() {
+    throw new UnsupportedOperationException();
   }
 }

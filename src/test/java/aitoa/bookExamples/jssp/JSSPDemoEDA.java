@@ -18,7 +18,7 @@ import aitoa.utils.RandomUtils;
  * realistic or exactly represent the probability-based behavior,
  * but it should be easy-to-understand and correct.
  */
-public class JSSPDemoEDA {
+public final class JSSPDemoEDA {
 
   /**
    * The main routine
@@ -27,7 +27,7 @@ public class JSSPDemoEDA {
    *          ignore
    */
   @SuppressWarnings("unchecked")
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
 
     final JSSPInstance instance = new JSSPInstance("demo"); //$NON-NLS-1$
     final JSSPCandidateSolution y =
@@ -305,5 +305,10 @@ public class JSSPDemoEDA {
     System.out.print(' ');
     System.out.println(makespan);
     System.out.println();
+  }
+
+  /** forbidden */
+  private JSSPDemoEDA() {
+    throw new UnsupportedOperationException();
   }
 }

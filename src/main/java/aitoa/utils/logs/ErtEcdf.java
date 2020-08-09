@@ -796,4 +796,9 @@ public final class ErtEcdf {
       System.exit(1);
     }
   }
+
+  /** forbidden */
+  private ErtEcdf() {
+    throw new UnsupportedOperationException();
+  }
 }

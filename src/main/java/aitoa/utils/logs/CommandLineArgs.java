@@ -14,7 +14,7 @@ import aitoa.utils.Configuration;
  * A class just defining command line arguments to be used by
  * many tools inside this package
  */
-abstract class CommandLineArgs {
+final class CommandLineArgs {
 
   /** the source directory parameter */
   private static final String PARAM_SRC_DIR = "src"; //$NON-NLS-1$
@@ -27,7 +27,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void printSourceDir(final PrintStream s) {
+  static void printSourceDir(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_SRC_DIR);
     s.println(
@@ -39,7 +39,7 @@ abstract class CommandLineArgs {
    *
    * @return the input path
    */
-  static final Path getSourceDir() {
+  static Path getSourceDir() {
     return Configuration.getPath(CommandLineArgs.PARAM_SRC_DIR,
         () -> Paths.get("results"));//$NON-NLS-1$ ;
   }
@@ -50,7 +50,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void printDestDir(final PrintStream s) {
+  static void printDestDir(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_DST_DIR);
     s.println(
@@ -62,7 +62,7 @@ abstract class CommandLineArgs {
    *
    * @return the output path
    */
-  static final Path getDestDir() {
+  static Path getDestDir() {
     return Configuration.getPath(CommandLineArgs.PARAM_DST_DIR,
         () -> Paths.get("evaluation"));//$NON-NLS-1$ ;
   }
@@ -77,7 +77,7 @@ abstract class CommandLineArgs {
    *
    * @return the success predicate
    */
-  static final Predicate<EndResult> getSuccess() {
+  static Predicate<EndResult> getSuccess() {
     final String goalFunc = Configuration.getString(//
         CommandLineArgs.PARAM_GOAL_FUNC);
 
@@ -124,7 +124,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void printSuccess(final PrintStream s) {
+  static void printSuccess(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_GOAL);
     s.println(
@@ -156,8 +156,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void
-      printEndResultsStatFile(final PrintStream s) {
+  static void printEndResultsStatFile(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
     s.println(
@@ -169,7 +168,7 @@ abstract class CommandLineArgs {
    *
    * @return the end result statistics file name
    */
-  static final String getEndResultsStatFile() {
+  static String getEndResultsStatFile() {
     final String s = Configuration
         .getString(CommandLineArgs.PARAM_END_RESULTS_STAT_FILE);
     return (s == null) ? EndResultStatistics.FILE_NAME : s;
@@ -184,7 +183,7 @@ abstract class CommandLineArgs {
    *          should all others be omitted?
    * @return the name mapping function
    */
-  private static final Function<String, String>
+  private static Function<String, String>
       nameMap(final String src, final boolean omitOthers) {
     final int i = src.indexOf("->"); //$NON-NLS-1$
     if (i < 0) {
@@ -227,8 +226,7 @@ abstract class CommandLineArgs {
    *
    * @return the algorithm name mapper
    */
-  static final Function<String, String>
-      getAlgorithmNameMapper() {
+  static Function<String, String> getAlgorithmNameMapper() {
     final String s = Configuration
         .getString(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     if (s != null) {
@@ -244,8 +242,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void
-      printAlgorithmNameMapper(final PrintStream s) {
+  static void printAlgorithmNameMapper(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_ALGO_NAME_MAP);
     s.println(
@@ -278,7 +275,7 @@ abstract class CommandLineArgs {
    *
    * @return the instance name mapper
    */
-  static final Function<String, String> getInstanceNameMapper() {
+  static Function<String, String> getInstanceNameMapper() {
     final String s = Configuration
         .getString(CommandLineArgs.PARAM_INST_NAME_MAP);
     if (s != null) {
@@ -294,8 +291,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void
-      printInstanceNameMapper(final PrintStream s) {
+  static void printInstanceNameMapper(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_INST_NAME_MAP);
     s.println(
@@ -326,7 +322,7 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream
    */
-  static final void printUseFEs(final PrintStream s) {
+  static void printUseFEs(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_USE_FES);
     s.println(": use FEs as time measure (default).");//$NON-NLS-1$
@@ -340,7 +336,7 @@ abstract class CommandLineArgs {
    *
    * @return the whether FEs should be used
    */
-  static final boolean getUseFEs() {
+  static boolean getUseFEs() {
     if (Configuration
         .getBoolean(CommandLineArgs.PARAM_USE_FES)) {
       return true;
@@ -357,7 +353,7 @@ abstract class CommandLineArgs {
    *
    * @return the name
    */
-  static final String getErtEcdfFileName() {
+  static String getErtEcdfFileName() {
     final String s = Configuration
         .getString(CommandLineArgs.PARAM_ERTECDF_NAME);
     return (s != null) ? s : ErtEcdf.ERT_ECDF_DIAGRAM_BASE_NAME;
@@ -369,9 +365,14 @@ abstract class CommandLineArgs {
    * @param s
    *          the print stream to write to
    */
-  static final void printErtEcdfFileName(final PrintStream s) {
+  static void printErtEcdfFileName(final PrintStream s) {
     s.print(' ');
     s.print(CommandLineArgs.PARAM_ERTECDF_NAME);
     s.println(": the name of the ERT-ECDF diagram file.");//$NON-NLS-1$
+  }
+
+  /** forbidden */
+  private CommandLineArgs() {
+    throw new UnsupportedOperationException();
   }
 }

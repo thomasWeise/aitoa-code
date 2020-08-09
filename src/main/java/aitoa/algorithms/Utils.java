@@ -55,4 +55,9 @@ public final class Utils {
     return unique; // return number of unique: 1<=unique<=max
   }
 // end qualityClearing
+
+  /** forbidden */
+  private Utils() {
+    throw new UnsupportedOperationException();
+  }
 }

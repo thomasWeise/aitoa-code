@@ -46,4 +46,9 @@ final class Example {
   static IMetaheuristic<boolean[], boolean[]> algorithm() {
     return new EA1p1<>();
   }
+
+  /** forbidden */
+  private Example() {
+    throw new UnsupportedOperationException();
+  }
 }

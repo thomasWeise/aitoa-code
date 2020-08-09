@@ -8,7 +8,7 @@ import java.util.HashSet;
 import aitoa.algorithms.TemperatureSchedule;
 
 /** Examples for the temperature schedules. */
-public class TemperatureSchedules {
+public final class TemperatureSchedules {
 
   /** the maximum FEs */
   private static final int MAX_FES = 1024 * 1024 * 64;
@@ -21,7 +21,7 @@ public class TemperatureSchedules {
    * @param val
    *          the value
    */
-  private static final void add(final HashSet<Integer> set,
+  private static void add(final HashSet<Integer> set,
       final int val) {
     if ((val > 0) && (val <= TemperatureSchedules.MAX_FES)) {
       set.add(Integer.valueOf(val));
@@ -50,7 +50,7 @@ public class TemperatureSchedules {
    * @param args
    *          the arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final double Ts = 20d;
     final TemperatureSchedule[] sched =
         new TemperatureSchedule[] {
@@ -206,5 +206,10 @@ public class TemperatureSchedules {
     } catch (final Throwable error) {
       error.printStackTrace();
     }
+  }
+
+  /** forbidden */
+  private TemperatureSchedules() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -959,4 +959,9 @@ public final class Statistics {
 
     return new Number[] { mean, Statistics.doubleToNumber(sd) };
   }
+
+  /** forbidden */
+  private Statistics() {
+    throw new UnsupportedOperationException();
+  }
 }

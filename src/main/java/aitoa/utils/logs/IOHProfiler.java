@@ -28,7 +28,7 @@ import aitoa.utils.IOUtils;
  * This method allows us to convert the output log files produced
  * by our experimenter to the IOHprofiler format.
  */
-public class IOHProfiler {
+public final class IOHProfiler {
 
   /** the dat file suffix */
   private static final String DAT_FILE_SUFFIX = ".dat";//$NON-NLS-1$
@@ -88,7 +88,7 @@ public class IOHProfiler {
    *         found
    */
   @SuppressWarnings("unused")
-  public static final IObjectiveFunction<?> getObjectiveFunction(
+  public static IObjectiveFunction<?> getObjectiveFunction(
       final String instance, final SetupData setup) {
     final String functionClass = setup.setup
         .get(LogFormat.classKey(LogFormat.OBJECTIVE_FUNCTION));
@@ -135,7 +135,7 @@ public class IOHProfiler {
    *         found
    */
   @SuppressWarnings("unused")
-  public static final ISpace<?> getSpace(final String instance,
+  public static ISpace<?> getSpace(final String instance,
       final SetupData setup, final boolean checkSolutionSpace,
       final boolean checkSearchSpace,
       final boolean checkViaObjectiveFunction) {
@@ -220,9 +220,8 @@ public class IOHProfiler {
    *          the setup of the run
    * @return the function name and dimension
    */
-  public static final FunctionMetaData
-      defaultGetFunctionMetaData(final String instance,
-          final SetupData setup) {
+  public static FunctionMetaData defaultGetFunctionMetaData(
+      final String instance, final SetupData setup) {
     Objects.requireNonNull(instance);
     Objects.requireNonNull(setup);
 
@@ -326,7 +325,7 @@ public class IOHProfiler {
    * @throws IOException
    *           if i/o fails
    */
-  public static final Path convertToIOHprofilerData(
+  public static Path convertToIOHprofilerData(
       final Path inputFolder, final Path outputFolder,
       final BiFunction<String, SetupData,
           FunctionMetaData> getFunctionMetaData,
@@ -847,7 +846,7 @@ public class IOHProfiler {
    * @param s
    *          the print stream
    */
-  static final void printArgs(final PrintStream s) {
+  static void printArgs(final PrintStream s) {
     CommandLineArgs.printSourceDir(s);
     CommandLineArgs.printDestDir(s);
   }
@@ -858,7 +857,7 @@ public class IOHProfiler {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     ConsoleIO.stdout(s -> {
       s.println("Welcome to the IOHprofiler Data Converter"); //$NON-NLS-1$
       s.println("The command line arguments are as follows: ");//$NON-NLS-1$
@@ -882,5 +881,10 @@ public class IOHProfiler {
           error);
       System.exit(1);
     }
+  }
+
+  /** forbidden */
+  private IOHProfiler() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -415,6 +415,11 @@ public final class IOUtils {
     }
   }
 
+  /** forbidden */
+  private IOUtils() {
+    throw new UnsupportedOperationException();
+  }
+
   /** An I/O runnable */
   public interface IORunnable {
     /**

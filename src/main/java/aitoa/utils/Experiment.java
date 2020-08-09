@@ -23,7 +23,7 @@ import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.LogFormat;
 
 /** A class for processing and executing experiments */
-public class Experiment {
+public final class Experiment {
 
   /**
    * Process a name part derived from an object's
@@ -35,8 +35,7 @@ public class Experiment {
    * @return the name part as acceptable for file and directory
    *         names
    */
-  public static final String
-      nameFromObjectPrepare(final Object part) {
+  public static String nameFromObjectPrepare(final Object part) {
     return Experiment.nameStringPrepare(part.toString());
   }
 
@@ -49,8 +48,7 @@ public class Experiment {
    * @return the name part as acceptable for file and directory
    *         names
    */
-  public static final String
-      nameStringPrepare(final String part) {
+  public static String nameStringPrepare(final String part) {
     final Object res = Experiment.processNamePart(part);
     if (res == null) {
       return part;
@@ -147,7 +145,7 @@ public class Experiment {
    *          the character
    * @return {@code true} if it is, {@code false} if it isn't
    */
-  private static final boolean isWhiteSpace(final char ch) {
+  private static boolean isWhiteSpace(final char ch) {
     return (ch <= 32) || (ch == '_')//
         || (ch == '\u00A0') || (ch == '\u2007')
         || (ch == '\u202F')//
@@ -165,8 +163,8 @@ public class Experiment {
    * @param lengthMinusOne
    *          the length - 1
    */
-  private static final void delete(final char[] data,
-      final int index, final int lengthMinusOne) {
+  private static void delete(final char[] data, final int index,
+      final int lengthMinusOne) {
     if (index < lengthMinusOne) {
       System.arraycopy(data, index + 1, data, index,
           lengthMinusOne - index);
@@ -184,7 +182,7 @@ public class Experiment {
    *         one an int array of length 1 with the array length
    *         of the first array
    */
-  private static final Object processNamePart(final String s) {
+  private static Object processNamePart(final String s) {
     final char[] chars = s.toCharArray();
     boolean unchanged = true;
     int length = chars.length;
@@ -324,7 +322,7 @@ public class Experiment {
    * @throws IOException
    *           if I/O fails
    */
-  public static final Path logFile(final Path root,
+  public static Path logFile(final Path root,
       final String algorithm, final String instance,
       final long randSeed, final boolean onlyComputePath)
       throws IOException {
@@ -381,7 +379,7 @@ public class Experiment {
    * @throws IOException
    *           if I/O fails
    */
-  private static final Path logFile(final Path root,
+  private static Path logFile(final Path root,
       final String algorithm, final String instance,
       final long randSeed, final FileSet done,
       final boolean onlyComputePath) throws IOException {
@@ -470,8 +468,7 @@ public class Experiment {
    *          the {@code double}
    * @return the string
    */
-  public static final String
-      doubleToStringForName(final double d) {
+  public static String doubleToStringForName(final double d) {
     if ((d <= Double.NEGATIVE_INFINITY) || //
         (d >= Double.POSITIVE_INFINITY) || //
         Double.isNaN(d)) {
@@ -626,7 +623,7 @@ public class Experiment {
    * @param random
    *          the randomizer
    */
-  private static final void sleep(final long min,
+  private static void sleep(final long min,
       final ThreadLocalRandom random) {
     Thread.yield();
     if (min > 0L) {
@@ -751,7 +748,7 @@ public class Experiment {
    * @param <Y>
    *          the solution space
    */
-  public static final <X, Y> void
+  public static <X, Y> void
       executeExperiment(
           final Stream<Supplier<IExperimentStage<? extends X,
               ? extends Y, ?, ?>>> stages,
@@ -793,7 +790,7 @@ public class Experiment {
    * @param <Y>
    *          the solution space
    */
-  public static final <X, Y> void executeExperiment(
+  public static <X, Y> void executeExperiment(
       final Stream<Supplier<IExperimentStage<? extends X,
           ? extends Y, ?, ?>>> stages,
       final Path outputDir, final boolean writeLogInfos,
@@ -806,7 +803,7 @@ public class Experiment {
   }
 
   /** perform garbage collection */
-  private static final void doGc() {
+  private static void doGc() {
     final Runtime runtime = Runtime.getRuntime();
 
     for (int i = 10; (--i) >= 0;) {
@@ -864,7 +861,7 @@ public class Experiment {
    * @see #executeExperiment(Stream, Path)
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  static final <X, Y> void executeExperiment(
+  static <X, Y> void executeExperiment(
       final Stream<Supplier<IExperimentStage<? extends X,
           ? extends Y, ?, ?>>> stages,
       final Path outputDir, final boolean writeLogInfos,
@@ -1213,7 +1210,7 @@ public class Experiment {
    *          the number of cores to use
    * @see #executeExperiment(Stream, Path)
    */
-  public static final void executeExperimentInParallel(
+  public static void executeExperimentInParallel(
       final Stream<
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir, final int cores) {
@@ -1243,7 +1240,7 @@ public class Experiment {
    * @see #executeExperimentInParallel(Stream, Path, int)
    * @see #executeExperiment(Stream, Path)
    */
-  public static final void executeExperimentInParallel(
+  public static void executeExperimentInParallel(
       final Stream<
           Supplier<IExperimentStage<?, ?, ?, ?>>> stages,
       final Path outputDir) {
@@ -1256,7 +1253,7 @@ public class Experiment {
    *
    * @return the default thread count
    */
-  public static final int defaultThreadCount() {
+  public static int defaultThreadCount() {
     final int i = Runtime.getRuntime().availableProcessors();
     if (i < 1) {
       throw new IllegalStateException("No processors?"); //$NON-NLS-1$
@@ -1301,7 +1298,7 @@ public class Experiment {
    * @param <Y>
    *          the solution space
    */
-  public static final <X, Y> void executeExperimentInParallel(
+  public static <X, Y> void executeExperimentInParallel(
       final Stream<Supplier<IExperimentStage<? extends X,
           ? extends Y, ?, ?>>> stages,
       final Path outputDir, final int cores,
@@ -1372,6 +1369,11 @@ public class Experiment {
           cores
           + " worker threads, the experiment is complete.");//$NON-NLS-1$
     }
+  }
+
+  /** forbidden */
+  private Experiment() {
+    throw new UnsupportedOperationException();
   }
 
   /** the set of paths */

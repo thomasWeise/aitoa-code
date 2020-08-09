@@ -426,4 +426,9 @@ public final class LogFormat {
 
     return number.toString();
   }
+
+  /** forbidden */
+  private LogFormat() {
+    throw new UnsupportedOperationException();
+  }
 }

@@ -39,4 +39,9 @@ public final class ReflectionUtils {
     }
     return s;
   }
+
+  /** forbidden */
+  private ReflectionUtils() {
+    throw new UnsupportedOperationException();
+  }
 }

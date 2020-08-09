@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 
 /** Some tools for testing */
-public class TestTools {
+public final class TestTools {
 
   /**
    * Compare two objects
@@ -16,7 +16,7 @@ public class TestTools {
    * @param b
    *          the second object
    */
-  public static final void assertEquals(final Object a,
+  public static void assertEquals(final Object a,
       final Object b) {
     if (a instanceof byte[]) {
       Assert.assertArrayEquals((byte[]) a, (byte[]) b);
@@ -69,7 +69,7 @@ public class TestTools {
    * @param a
    *          the first object
    */
-  public static final void fillWithRandomData(final Object a) {
+  public static void fillWithRandomData(final Object a) {
     final ThreadLocalRandom random = ThreadLocalRandom.current();
     if (a instanceof byte[]) {
       random.nextBytes((byte[]) a);
@@ -146,7 +146,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLessOrEqual(final int a,
+  public static void assertLessOrEqual(final int a,
       final int b) {
     if (a > b) {
       Assert.fail("Value " + //$NON-NLS-1$
@@ -163,7 +163,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLess(final int a, final int b) {
+  public static void assertLess(final int a, final int b) {
     if (a >= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be less than " //$NON-NLS-1$
@@ -180,7 +180,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreaterOrEqual(final int a,
+  public static void assertGreaterOrEqual(final int a,
       final int b) {
     if (a < b) {
       Assert.fail("Value " + //$NON-NLS-1$
@@ -199,8 +199,8 @@ public class TestTools {
    * @param max
    *          the maximum of the range
    */
-  public static final void assertInRange(final long a,
-      final long min, final long max) {
+  public static void assertInRange(final long a, final long min,
+      final long max) {
     if ((a < min) || (a > max)) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " must be in range " //$NON-NLS-1$
@@ -219,8 +219,8 @@ public class TestTools {
    * @param max
    *          the maximum of the range
    */
-  public static final void assertInRange(final int a,
-      final int min, final int max) {
+  public static void assertInRange(final int a, final int min,
+      final int max) {
     if ((a < min) || (a > max)) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " must be in range " //$NON-NLS-1$
@@ -238,7 +238,7 @@ public class TestTools {
    * @param length
    *          the length of the array or list
    */
-  public static final void assertValidIndex(final int a,
+  public static void assertValidIndex(final int a,
       final int length) {
     if (length <= 0) {
       Assert.fail(//
@@ -256,8 +256,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreater(final int a,
-      final int b) {
+  public static void assertGreater(final int a, final int b) {
     if (a <= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be greater than " //$NON-NLS-1$
@@ -274,7 +273,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLessOrEqual(final long a,
+  public static void assertLessOrEqual(final long a,
       final long b) {
     if (a > b) {
       Assert.fail("Value " + //$NON-NLS-1$
@@ -291,8 +290,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLess(final long a,
-      final long b) {
+  public static void assertLess(final long a, final long b) {
     if (a >= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be less than " //$NON-NLS-1$
@@ -309,7 +307,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreaterOrEqual(final long a,
+  public static void assertGreaterOrEqual(final long a,
       final long b) {
     if (a < b) {
       Assert.fail("Value " + //$NON-NLS-1$
@@ -326,8 +324,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreater(final long a,
-      final long b) {
+  public static void assertGreater(final long a, final long b) {
     if (a <= b) {
       Assert.fail("Value " + //$NON-NLS-1$
           a + " should be greater than " //$NON-NLS-1$
@@ -345,7 +342,7 @@ public class TestTools {
    * @param epsilon
    *          the epsilon
    */
-  private static final void check(final double a, final double b,
+  private static void check(final double a, final double b,
       final double epsilon) {
     if (Double.isNaN(a) || Double.isNaN(b)
         || Double.isNaN(epsilon) || (epsilon < 0d)
@@ -368,7 +365,7 @@ public class TestTools {
    * @param epsilon
    *          the permissible tolerance
    */
-  public static final void assertLessOrEqual(final double a,
+  public static void assertLessOrEqual(final double a,
       final double b, final double epsilon) {
     TestTools.check(a, b, epsilon);
     if (a > b) {
@@ -394,8 +391,8 @@ public class TestTools {
    * @param epsilon
    *          the permissible tolerance
    */
-  public static final void assertLess(final double a,
-      final double b, final double epsilon) {
+  public static void assertLess(final double a, final double b,
+      final double epsilon) {
     TestTools.check(a, b, epsilon);
     if (a >= b) {
       final double border = b + epsilon;
@@ -420,7 +417,7 @@ public class TestTools {
    * @param epsilon
    *          the permissible tolerance
    */
-  public static final void assertGreaterOrEqual(final double a,
+  public static void assertGreaterOrEqual(final double a,
       final double b, final double epsilon) {
     TestTools.check(a, b, epsilon);
     if (a < b) {
@@ -446,7 +443,7 @@ public class TestTools {
    * @param epsilon
    *          the permissible tolerance
    */
-  public static final void assertGreater(final double a,
+  public static void assertGreater(final double a,
       final double b, final double epsilon) {
     TestTools.check(a, b, epsilon);
     if (a <= b) {
@@ -469,8 +466,7 @@ public class TestTools {
    * @param b
    *          the second value
    */
-  private static final void check(final double a,
-      final double b) {
+  private static void check(final double a, final double b) {
     if (Double.isNaN(a) || Double.isNaN(b)) {
       Assert.fail("Invalid test (" //$NON-NLS-1$
           + a + ", " + //$NON-NLS-1$
@@ -487,7 +483,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLessOrEqual(final double a,
+  public static void assertLessOrEqual(final double a,
       final double b) {
     TestTools.check(a, b);
     if (a > b) {
@@ -506,8 +502,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertLess(final double a,
-      final double b) {
+  public static void assertLess(final double a, final double b) {
     TestTools.check(a, b);
     if (a >= b) {
       Assert.fail("Value " + //$NON-NLS-1$
@@ -525,7 +520,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreaterOrEqual(final double a,
+  public static void assertGreaterOrEqual(final double a,
       final double b) {
     TestTools.check(a, b);
     if (a < b) {
@@ -544,7 +539,7 @@ public class TestTools {
    * @param b
    *          the b value
    */
-  public static final void assertGreater(final double a,
+  public static void assertGreater(final double a,
       final double b) {
     TestTools.check(a, b);
     if (a <= b) {
@@ -563,7 +558,7 @@ public class TestTools {
    * @param a
    *          the array
    */
-  public static final void assertAllEquals(final boolean v,
+  public static void assertAllEquals(final boolean v,
       final boolean[] a) {
     ok: {
       for (final boolean z : a) {
@@ -587,7 +582,7 @@ public class TestTools {
    * @param a
    *          the array
    */
-  public static final void assertAllEquals(final int v,
+  public static void assertAllEquals(final int v,
       final int[] a) {
     ok: {
       for (final int z : a) {
@@ -607,9 +602,14 @@ public class TestTools {
    * @param d
    *          the value that should be finite
    */
-  public static final void assertFinite(final double d) {
+  public static void assertFinite(final double d) {
     if (!(Double.isFinite(d))) {
       Assert.fail(d + " is not finite."); //$NON-NLS-1$
     }
+  }
+
+  /** forbidden */
+  private TestTools() {
+    throw new UnsupportedOperationException();
   }
 }

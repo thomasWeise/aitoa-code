@@ -4,7 +4,7 @@ import aitoa.utils.Configuration;
 import aitoa.utils.ConsoleIO;
 
 /** The entry point for post-processing the data */
-public class PostProcessor {
+public final class PostProcessor {
 
   /**
    * The main routine
@@ -12,7 +12,7 @@ public class PostProcessor {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final Class<?>[] classes = { //
         EndResults.class, //
         EndResultStatistics.class, //
@@ -65,5 +65,10 @@ public class PostProcessor {
         System.exit(1);
       }
     }
+  }
+
+  /** forbidden */
+  private PostProcessor() {
+    throw new UnsupportedOperationException();
   }
 }

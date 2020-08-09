@@ -760,4 +760,9 @@ public final class LogParser {
           error);
     }
   }
+
+  /** forbidden */
+  private LogParser() {
+    throw new UnsupportedOperationException();
+  }
 }

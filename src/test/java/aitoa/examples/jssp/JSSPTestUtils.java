@@ -11,7 +11,7 @@ import aitoa.utils.RandomUtils;
 
 /** A base class for testing JSSP operators */
 @Ignore
-public class JSSPTestUtils {
+public final class JSSPTestUtils {
 
   /** the instances */
   public static final JSSPInstance[] INSTANCS = { //
@@ -147,5 +147,10 @@ public class JSSPTestUtils {
     JSSPTestUtils.canonicalX(x, inst);
     RandomUtils.shuffle(ThreadLocalRandom.current(), x, 0,
         x.length);
+  }
+
+  /** forbidden */
+  private JSSPTestUtils() {
+    throw new UnsupportedOperationException();
   }
 }

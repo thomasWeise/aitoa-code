@@ -10,7 +10,7 @@ import aitoa.examples.jssp.EJSSPExperimentStage;
 import aitoa.examples.jssp.JSSPInstance;
 
 /** Print the solution space sizes for the JSSP instances */
-public class JSSPSolutionSpaceSize {
+public final class JSSPSolutionSpaceSize {
 
   /**
    * compute the factorial
@@ -19,7 +19,7 @@ public class JSSPSolutionSpaceSize {
    *          the input value
    * @return the factorial
    */
-  static final BigInteger factorial(final BigInteger input) {
+  static BigInteger factorial(final BigInteger input) {
     BigInteger result = BigInteger.ONE;
     BigInteger n = input;
 
@@ -40,7 +40,7 @@ public class JSSPSolutionSpaceSize {
    *          the n
    * @return the size
    */
-  static final BigInteger solutionSpaceSizeUpper(final int m,
+  static BigInteger solutionSpaceSizeUpper(final int m,
       final int n) {
     return JSSPSolutionSpaceSize.factorial(BigInteger.valueOf(n))
         .pow(m);
@@ -77,7 +77,7 @@ public class JSSPSolutionSpaceSize {
    *          the n
    * @return the size
    */
-  static final BigInteger solutionSpaceSizeLower(final int m,
+  static BigInteger solutionSpaceSizeLower(final int m,
       final int n) {
     TestTools.assertGreater(m, 0);
     TestTools.assertGreater(n, 0);
@@ -108,7 +108,7 @@ public class JSSPSolutionSpaceSize {
    *          ignore
    */
 
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
     printFor.addAll(//
@@ -152,5 +152,10 @@ public class JSSPSolutionSpaceSize {
           .solutionSpaceSizeUpper(inst.m, inst.n), 15);
       System.out.println();
     }
+  }
+
+  /** forbidden */
+  private JSSPSolutionSpaceSize() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * a performance comparison of the nullary bit string operator
  */
-public class PerformanceComparisonBitStringBinaryUniform {
+public final class PerformanceComparisonBitStringBinaryUniform {
 
   /**
    * do the original version
@@ -921,4 +921,8 @@ public class PerformanceComparisonBitStringBinaryUniform {
     System.out.println('}');// $NON-NLS-1$
   }
 
+  /** forbidden */
+  private PerformanceComparisonBitStringBinaryUniform() {
+    throw new UnsupportedOperationException();
+  }
 }

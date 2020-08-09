@@ -8,7 +8,7 @@ import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 
 /** Print the lower bounds for the JSSP instances */
-public class JSSPLowerBounds {
+public final class JSSPLowerBounds {
   /**
    * The main routine
    *
@@ -16,7 +16,7 @@ public class JSSPLowerBounds {
    *          ignore
    */
 
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final ArrayList<String> printFor = new ArrayList<>();
     printFor.add("demo"); //$NON-NLS-1$
     printFor.addAll(//
@@ -38,5 +38,10 @@ public class JSSPLowerBounds {
           new JSSPMakespanObjectiveFunction(inst).lowerBound());
       System.out.println();
     }
+  }
+
+  /** forbidden */
+  private JSSPLowerBounds() {
+    throw new UnsupportedOperationException();
   }
 }

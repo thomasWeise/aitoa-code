@@ -530,4 +530,9 @@ public final class Configuration {
       }
     });
   }
+
+  /** forbidden */
+  private Configuration() {
+    throw new UnsupportedOperationException();
+  }
 }

@@ -10,7 +10,7 @@ import aitoa.examples.jssp.JSSPRepresentationMapping;
 import aitoa.examples.jssp.JSSPSolutionSpace;
 
 /** an example for the JSSP representation */
-public class JSSPRepresentationMappingExample {
+public final class JSSPRepresentationMappingExample {
 
   /** the example instance */
   public static final JSSPInstance INSTANCE =
@@ -56,7 +56,7 @@ public class JSSPRepresentationMappingExample {
    * @throws IOException
    *           should not
    */
-  public static final void main(final String[] args)
+  public static void main(final String[] args)
       throws IOException {
     JSSPRepresentationMappingExample.SOLUTION_SPACE.print(
         JSSPRepresentationMappingExample.SOLUTION, System.out);
@@ -65,5 +65,10 @@ public class JSSPRepresentationMappingExample {
     System.out.println(
         Math.round(JSSPRepresentationMappingExample.F.evaluate(
             JSSPRepresentationMappingExample.SOLUTION)));
+  }
+
+  /** forbidden */
+  private JSSPRepresentationMappingExample() {
+    throw new UnsupportedOperationException();
   }
 }

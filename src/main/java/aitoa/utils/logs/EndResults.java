@@ -569,4 +569,9 @@ public final class EndResults {
       System.exit(1);
     }
   }
+
+  /** forbidden */
+  private EndResults() {
+    throw new UnsupportedOperationException();
+  }
 }

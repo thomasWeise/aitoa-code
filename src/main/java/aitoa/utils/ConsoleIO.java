@@ -191,6 +191,11 @@ public final class ConsoleIO {
     return (a + ' ').toCharArray();
   }
 
+  /** forbidden */
+  private ConsoleIO() {
+    throw new UnsupportedOperationException();
+  }
+
   /** the ID holder */
   private static final class ID {
 

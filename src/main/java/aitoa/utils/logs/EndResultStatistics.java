@@ -31,7 +31,7 @@ import aitoa.utils.math.Statistics;
  * this assumption does not hold, then the ERTs computed here
  * cannot be used and will be wrong.
  */
-public class EndResultStatistics {
+public final class EndResultStatistics {
 
   /** the file name used for end result statistics tables */
   public static final String FILE_NAME = "endResultStatistics"; //$NON-NLS-1$
@@ -136,7 +136,7 @@ public class EndResultStatistics {
    *          the list of unique setups
    * @return the chosen, closest value
    */
-  private static final Setup closestSetup(//
+  private static Setup closestSetup(//
       final double value, //
       final Holder.InnerSetup[] unique) {//
 
@@ -236,7 +236,7 @@ public class EndResultStatistics {
    * @throws IOException
    *           if i/o fails
    */
-  private static final Number printStat(//
+  private static Number printStat(//
       final Statistic data, //
       final double[] quantiles, //
       final Holder.InnerSetup[] unique, //
@@ -376,7 +376,7 @@ public class EndResultStatistics {
    * @throws IOException
    *           if i/o fails
    */
-  public static final Path makeEndResultStatisticsTable(
+  public static Path makeEndResultStatisticsTable(
       final Path endResults, final Path outputFolder,
       final Predicate<EndResult> success,
       final Function<String, String> instanceNameMapper,
@@ -670,7 +670,7 @@ public class EndResultStatistics {
    * @throws IOException
    *           if i/o fails
    */
-  public static final void parseEndResultStatisticsTable(
+  public static void parseEndResultStatisticsTable(
       final Path path,
       final Consumer<EndResultStatistic> consumer,
       final boolean logProgressToConsole) throws IOException {
@@ -2586,6 +2586,11 @@ public class EndResultStatistics {
     }
   }
 
+  /** forbidden */
+  private EndResultStatistics() {
+    throw new UnsupportedOperationException();
+  }
+
   /** the internal parser class */
   private static final class Parser
       implements Consumer<EndResult> {
@@ -2948,7 +2953,7 @@ public class EndResultStatistics {
    * @param s
    *          the print stream
    */
-  static final void printArgs(final PrintStream s) {
+  static void printArgs(final PrintStream s) {
     EndResults.printArgs(s);
     CommandLineArgs.printEndResultsStatFile(s);
     CommandLineArgs.printSuccess(s);
@@ -2962,7 +2967,7 @@ public class EndResultStatistics {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     ConsoleIO.stdout(s -> {
       s.println(
           "Welcome to the End-Result Statistics CSV Table Generator"); //$NON-NLS-1$

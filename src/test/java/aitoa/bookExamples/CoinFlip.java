@@ -11,7 +11,7 @@ import org.junit.Test;
  * Computing the probability to win at least k times in n coin
  * flips
  */
-public class CoinFlip {
+public final class CoinFlip {
 
   /**
    * compute n over k
@@ -22,8 +22,7 @@ public class CoinFlip {
    *          k
    * @return the value
    */
-  private static final BigInteger nChooseK(final int n,
-      final int k) {
+  private static BigInteger nChooseK(final int n, final int k) {
 
     if (k == 1) {
       return BigInteger.valueOf(n);
@@ -55,8 +54,8 @@ public class CoinFlip {
    *          the k
    * @return the probability
    */
-  private static final BigInteger[]
-      kHeadsFromNTosses(final int n, final int k) {
+  private static BigInteger[] kHeadsFromNTosses(final int n,
+      final int k) {
     if (n > CoinFlip.sPow2.length) {
       CoinFlip.sPow2 = Arrays.copyOf(CoinFlip.sPow2, Math.max(
           n + 1,
@@ -79,7 +78,7 @@ public class CoinFlip {
    *          the k
    * @return the probability
    */
-  private static final BigInteger[]
+  private static BigInteger[]
       atLeastKHeadsFromNTosses(final int n, final int k) {
     final BigInteger[] result =
         new BigInteger[] { BigInteger.ZERO, BigInteger.ONE };
@@ -178,7 +177,7 @@ public class CoinFlip {
    * @param args
    *          the command line arguments
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final int total = 160;
     final int wins = (total - (2 * (total / 10)));
     System.out.print(wins);
@@ -200,5 +199,10 @@ public class CoinFlip {
         new BigDecimal(res[0]).divide(new BigDecimal(res[1])));
     Tools.printLongNumber(
         new BigDecimal(res[0]).divide(new BigDecimal(res[1])));
+  }
+
+  /** forbidden */
+  private CoinFlip() {
+    throw new UnsupportedOperationException();
   }
 }

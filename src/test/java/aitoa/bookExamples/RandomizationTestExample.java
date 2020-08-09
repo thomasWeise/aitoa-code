@@ -5,7 +5,7 @@ package aitoa.bookExamples;
  * test. it is used to verify the results of the example in the
  * book
  */
-public class RandomizationTestExample {
+public final class RandomizationTestExample {
 
   /**
    * the main routine
@@ -36,5 +36,10 @@ public class RandomizationTestExample {
     System.out.println(//
         meanLowerOrEqualTo4 + " " + totalCombinations); //$NON-NLS-1$
 // end relevant
+  }
+
+  /** forbidden */
+  private RandomizationTestExample() {
+    throw new UnsupportedOperationException();
   }
 }

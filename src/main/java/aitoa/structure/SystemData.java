@@ -40,6 +40,11 @@ final class SystemData {
     return Holder.SYSTEM_DATA;
   }
 
+  /** forbidden */
+  private SystemData() {
+    throw new UnsupportedOperationException();
+  }
+
   /** the internal holder class */
   private static final class Holder {
 

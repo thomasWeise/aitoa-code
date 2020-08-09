@@ -344,4 +344,9 @@ public final class RandomUtils {
     }
     return r;
   }
+
+  /** forbidden */
+  private RandomUtils() {
+    throw new UnsupportedOperationException();
+  }
 }
