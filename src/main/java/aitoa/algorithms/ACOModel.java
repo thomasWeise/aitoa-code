@@ -20,22 +20,22 @@ import aitoa.structure.LogFormat;
 public abstract class ACOModel<X> implements IModel<X> {
 
   /** the length of the permutation */
-  public final int L;
+  public final int length;
 
   /**
    * Create the ACO model.
    *
-   * @param pL
+   * @param pLength
    *          the length of the permutation
    */
-  protected ACOModel(final int pL) {
+  protected ACOModel(final int pLength) {
     super();
-    if ((pL < 2) || (pL > 1_000_000)) {
+    if ((pLength < 2) || (pLength > 1_000_000)) {
       throw new IllegalArgumentException(
           "L should be from 2..1'000'000, but is " //$NON-NLS-1$
-              + pL);
+              + pLength);
     }
-    this.L = pL;
+    this.length = pLength;
   }
 
   /**
@@ -102,7 +102,7 @@ public abstract class ACOModel<X> implements IModel<X> {
   public void printSetup(final Writer output)
       throws IOException {
     IModel.super.printSetup(output);
-    output.write(LogFormat.mapEntry("L", this.L)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("L", this.length)); //$NON-NLS-1$
     output.write(System.lineSeparator());
   }
 }

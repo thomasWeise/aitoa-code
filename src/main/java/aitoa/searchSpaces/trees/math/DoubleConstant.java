@@ -213,13 +213,13 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
       extends NodeType<DoubleConstant<C>> {
 
     /** the minimum value */
-    private final double m_min;
+    private final double mMin;
     /** the maximum value */
-    private final double m_max;
+    private final double mMax;
     /** the range */
-    private final double m_span;
+    private final double mSpan;
     /** a set of privileged values */
-    private final DoubleConstant<C>[] m_privileged;
+    private final DoubleConstant<C>[] mPrivileged;
 
     /**
      * create the constant node factory
@@ -241,14 +241,14 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
         final double[] privileged) {
       super(children);
 
-      this.m_min = min;
-      this.m_max = max;
-      this.m_span = span;
+      this.mMin = min;
+      this.mMax = max;
+      this.mSpan = span;
 
       int i = privileged.length;
-      this.m_privileged = new DoubleConstant[i];
+      this.mPrivileged = new DoubleConstant[i];
       for (; (--i) >= 0;) {
-        this.m_privileged[i] =
+        this.mPrivileged[i] =
             new DoubleConstant<>(this, privileged[i]);
       }
     }
@@ -257,20 +257,20 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
     @Override
     public DoubleConstant<C> instantiate(final Node[] children,
         final Random random) {
-      final int l = this.m_privileged.length;
+      final int l = this.mPrivileged.length;
       final int i = random.nextInt(l + 1);
       double v;
       if (i >= l) {
         do {
-          v = (this.m_min + (random.nextBoolean() //
-              ? (this.m_span * random.nextDouble()) // uniform
-              : ((0.1d * this.m_span * random.nextGaussian())
-                  + (0.5d * this.m_span)))); // normal
-        } while ((!(Double.isFinite(v))) || (v < this.m_min)
-            || (v > this.m_max));
+          v = (this.mMin + (random.nextBoolean() //
+              ? (this.mSpan * random.nextDouble()) // uniform
+              : ((0.1d * this.mSpan * random.nextGaussian())
+                  + (0.5d * this.mSpan)))); // normal
+        } while ((!(Double.isFinite(v))) || (v < this.mMin)
+            || (v > this.mMax));
         return new DoubleConstant<>(this, v);
       }
-      return this.m_privileged[i];
+      return this.mPrivileged[i];
     }
 
     /** {@inheritDoc} */
@@ -283,9 +283,9 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
       do {
         v = value + (random.nextGaussian() * 0.1d
             * (((av > 1e-10d) && random.nextBoolean()) ? av
-                : this.m_span));
-      } while ((!(Double.isFinite(v))) || (v < this.m_min)
-          || (v > this.m_max) || (v == value));
+                : this.mSpan));
+      } while ((!(Double.isFinite(v))) || (v < this.mMin)
+          || (v > this.mMax) || (v == value));
       return new DoubleConstant<>(this, v);
     }
 

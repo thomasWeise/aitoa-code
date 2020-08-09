@@ -22,28 +22,29 @@ package aitoa.utils.graph;
 public abstract class DirectedEdgeMultiSet {
 
   /** the number of nodes */
-  public final int L;
+  public final int length;
 
   /** the maximum number of edges */
-  public final int K;
+  public final int maxEdgesPerNode;
 
   /**
    * Create the multiset.
    *
-   * @param pL
+   * @param pLegth
    *          the number of nodes
-   * @param pK
+   * @param pMaxEdgesPerNode
    *          the maximum number of edges per node
    */
-  DirectedEdgeMultiSet(final int pL, final int pK) {
+  DirectedEdgeMultiSet(final int pLegth,
+      final int pMaxEdgesPerNode) {
     super();
-    if ((pL <= 1) || (pK <= 0)) {
+    if ((pLegth <= 1) || (pMaxEdgesPerNode <= 0)) {
       throw new IllegalArgumentException(//
           "Invalid values for L=" //$NON-NLS-1$
-              + pL + " and K=" + pK);//$NON-NLS-1$
+              + pLegth + " and K=" + pMaxEdgesPerNode);//$NON-NLS-1$
     }
-    this.L = pL;
-    this.K = pK;
+    this.length = pLegth;
+    this.maxEdgesPerNode = pMaxEdgesPerNode;
   }
 
   /** Clear the edge set */
@@ -115,21 +116,23 @@ public abstract class DirectedEdgeMultiSet {
    * Create a suitable implementation of the
    * {@link DirectedEdgeMultiSet}
    *
-   * @param pL
+   * @param pLength
    *          the number of nodes
-   * @param pK
+   * @param pMaxEdgesPerNode
    *          the maximum number of edges per node
    * @return the new, empty multiset
    */
-  public static final DirectedEdgeMultiSet create(final int pL,
-      final int pK) {
-    if ((((pL + 1L) * pL) * 2L) < Integer.MAX_VALUE) {
+  public static final DirectedEdgeMultiSet
+      create(final int pLength, final int pMaxEdgesPerNode) {
+    if ((((pLength + 1L) * pLength) * 2L) < Integer.MAX_VALUE) {
       try {
-        return new FastDirectedEdgeMultiSet(pL, pK);
+        return new FastDirectedEdgeMultiSet(pLength,
+            pMaxEdgesPerNode);
       } catch (@SuppressWarnings("unused") final OutOfMemoryError oome) {
         // ignore
       }
     }
-    return new CompactDirectedEdgeMultiSet(pL, pK);
+    return new CompactDirectedEdgeMultiSet(pLength,
+        pMaxEdgesPerNode);
   }
 }

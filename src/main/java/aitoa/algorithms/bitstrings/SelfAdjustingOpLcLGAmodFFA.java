@@ -37,7 +37,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
       Math.pow(SelfAdjustingOpLcLGAmodFFA.F, 0.25d);
 
   /** the upper bound of the objective function */
-  private final int UB;
+  private final int mUB;
 
   /**
    * create
@@ -52,7 +52,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
           "UB must be at least 1, but you specified " //$NON-NLS-1$
               + pUB);
     }
-    this.UB = pUB;
+    this.mUB = pUB;
   }
 
   /** {@inheritDoc} */
@@ -72,7 +72,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
     final int n = x.x.length;
 
     // FFA: this history table
-    final long[] H = new long[this.UB + 1];
+    final long[] H = new long[this.mUB + 1];
     H[x.f] = 1L; // update for solution sampled first
 
     // allocate integer array used in mutation

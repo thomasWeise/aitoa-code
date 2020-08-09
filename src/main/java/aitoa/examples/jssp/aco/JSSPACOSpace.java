@@ -11,8 +11,8 @@ import aitoa.utils.math.BigMath;
 
 /** The space for the PACO individuals */
 public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
-  /** the problem instance */
-  public final JSSPSolutionSpace Y;
+  /** the internal {@link JSSPSolutionSpace} */
+  private final JSSPSolutionSpace mY;
 
   /**
    * create
@@ -22,14 +22,14 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
    */
   public JSSPACOSpace(final JSSPInstance pInstance) {
     super();
-    this.Y = new JSSPSolutionSpace(pInstance);
+    this.mY = new JSSPSolutionSpace(pInstance);
   }
 
   /** {@inheritDoc} */
   @Override
   public JSSPACOIndividual create() {
-    return new JSSPACOIndividual(this.Y.instance.m,
-        this.Y.instance.n);
+    return new JSSPACOIndividual(this.mY.instance.m,
+        this.mY.instance.n);
   }
 
   /** {@inheritDoc} */
@@ -38,7 +38,7 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
       final JSSPACOIndividual to) {
     System.arraycopy(from.permutation, 0, to.permutation, 0,
         to.permutation.length);
-    this.Y.copy(from.solution, to.solution);
+    this.mY.copy(from.solution, to.solution);
     to.makespan = from.makespan;
   }
 
@@ -56,7 +56,7 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
     out.append('}');
     out.append(System.lineSeparator());
     out.append(System.lineSeparator());
-    this.Y.print(z.solution, out);
+    this.mY.print(z.solution, out);
     out.append(System.lineSeparator());
     out.append(System.lineSeparator());
     out.append("makespan: "); //$NON-NLS-1$
@@ -68,7 +68,7 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
   public void check(final JSSPACOIndividual z) {
     Objects.requireNonNull(z);
 
-    this.Y.check(z.solution);
+    this.mY.check(z.solution);
 
     if (z.makespan <= 0) {
       throw new IllegalArgumentException(
@@ -76,7 +76,7 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
     }
 
     Objects.requireNonNull(z.permutation);
-    final int l = this.Y.instance.m * this.Y.instance.n;
+    final int l = this.mY.instance.m * this.mY.instance.n;
     if (z.permutation.length != l) {
       throw new IllegalArgumentException(
           "Invalid length " + z.permutation.length//$NON-NLS-1$
@@ -105,6 +105,6 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
   @Override
   public final double getScale() {
     return BigMath.ld(BigMath.factorial(BigInteger.valueOf(//
-        this.Y.instance.m * this.Y.instance.n)));
+        this.mY.instance.m * this.mY.instance.n)));
   }
 }

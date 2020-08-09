@@ -24,8 +24,8 @@ public abstract class TestDirectedEdgeMultiSet {
 
     final ThreadLocalRandom r = ThreadLocalRandom.current();
 
-    final int L = pE.L;
-    final int K = pE.K;
+    final int L = pE.length;
+    final int K = pE.maxEdgesPerNode;
 
 // check for each individual edge
     for (int a = -1; a < L; a++) {

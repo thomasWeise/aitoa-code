@@ -1,4 +1,4 @@
-# Example Codes from the Book "An Introduction to Optimization Algorithms"
+# Example Codes from the Book &ldquo;An Introduction to Optimization Algorithms&rdquo;
 
 [<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
 [<img alt="AppVeyor Build Status" src="https://img.shields.io/appveyor/ci/thomasWeise/aitoa-code.svg" height="20"/>](https://ci.appveyor.com/project/thomasWeise/aitoa-code)

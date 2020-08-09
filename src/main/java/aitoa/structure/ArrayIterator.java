@@ -26,12 +26,12 @@ final class ArrayIterator<X> extends IteratorBase<X, X> {
   /** {@inheritDoc} */
   @Override
   public X next() {
-    final int i = this.m_index;
-    if (i >= this.m_end) {
+    final int i = this.mIndex;
+    if (i >= this.mEnd) {
       IteratorBase.endError(i);
     }
-    final X x = this.m_array[i];
-    this.m_index = (i + 1);
+    final X x = this.mArray[i];
+    this.mIndex = (i + 1);
     return x;
   }
 }

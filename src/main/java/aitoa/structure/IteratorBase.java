@@ -13,11 +13,11 @@ import java.util.NoSuchElementException;
  */
 abstract class IteratorBase<X, Y> implements Iterator<Y> {
   /** the array */
-  final X[] m_array;
+  final X[] mArray;
   /** the index */
-  int m_index;
+  int mIndex;
   /** the end */
-  final int m_end;
+  final int mEnd;
 
   /**
    * create
@@ -31,9 +31,9 @@ abstract class IteratorBase<X, Y> implements Iterator<Y> {
    */
   IteratorBase(final X[] array, final int start, final int end) {
     super();
-    this.m_array = array;
-    this.m_index = start;
-    this.m_end = end;
+    this.mArray = array;
+    this.mIndex = start;
+    this.mEnd = end;
   }
 
   /**
@@ -71,6 +71,6 @@ abstract class IteratorBase<X, Y> implements Iterator<Y> {
   /** {@inheritDoc} */
   @Override
   public final boolean hasNext() {
-    return (this.m_index < this.m_end);
+    return (this.mIndex < this.mEnd);
   }
 }

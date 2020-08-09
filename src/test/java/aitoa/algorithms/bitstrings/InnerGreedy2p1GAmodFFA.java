@@ -35,7 +35,7 @@ public class InnerGreedy2p1GAmodFFA<Y>
   public final int m;
 
   /** the upper bound of the objective value */
-  private final int UB;
+  private final int mUB;
 
   /**
    * create
@@ -59,7 +59,7 @@ public class InnerGreedy2p1GAmodFFA<Y>
           "UB must be at least 1, but you specified " //$NON-NLS-1$
               + pUB);
     }
-    this.UB = pUB;
+    this.mUB = pUB;
   }
 
   /** {@inheritDoc} */
@@ -90,7 +90,7 @@ public class InnerGreedy2p1GAmodFFA<Y>
     Assert.assertNotSame(x, znew);
     Assert.assertNotSame(y, znew);
 
-    final long[] H = new long[this.UB + 1]; // FFA
+    final long[] H = new long[this.mUB + 1]; // FFA
 
     final int n = x.length;
 

@@ -29,7 +29,7 @@ public final class Greedy2p1GAmodFFA<Y>
     extends Greedy2p1GAmodBase<Y> {
 
   /** the upper bound of the objective value */
-  private final int UB;
+  private final int mUB;
 
   /**
    * create
@@ -57,7 +57,7 @@ public final class Greedy2p1GAmodFFA<Y>
           "UB must be at least 1, but you specified " //$NON-NLS-1$
               + pUB);
     }
-    this.UB = pUB;
+    this.mUB = pUB;
   }
 
   /** {@inheritDoc} */
@@ -85,7 +85,7 @@ public final class Greedy2p1GAmodFFA<Y>
 // other initialization stuff
     boolean[] znew = searchSpace.create();
 
-    final long[] H = new long[this.UB + 1]; // FFA
+    final long[] H = new long[this.mUB + 1]; // FFA
 
     final int n = x.length;
 

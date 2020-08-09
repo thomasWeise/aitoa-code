@@ -15,24 +15,24 @@ import aitoa.utils.graph.IntSet;
  * implemented as an EDA model.
  * <p>
  * The population of the ants is managed in an age-based manner.
- * The population will hold at most {@link #K} "ants"
+ * The population will hold at most {@link #popSize} "ants"
  * (permutations). Initially, it is empty. In each iteration, new
  * ants may enter the population (via a call of
  * {@link #update(Iterable)}). If adding a new ant (permutation)
  * would lead to exceeding the maximum population size
- * {@link #K}, the "oldest" ant, i.e., the ant in the population
- * which entered the population at the earliest time, will be
- * removed. The population is basically a ring buffer of size
- * {@link #K}.
+ * {@link #popSize}, the "oldest" ant, i.e., the ant in the
+ * population which entered the population at the earliest time,
+ * will be removed. The population is basically a ring buffer of
+ * size {@link #popSize}.
  * <p>
  * The amount of pheromone on an sub-sequence {@code (a, b)}
  * (called edge) is determined by how often {@code b} directly
  * follows {@code a} in the ants in the population. If the
  * sequence {@code (a, b)} does not occur in any permutation in
  * the population, the pheromone is a very small value
- * {@link #tau0} (where {@code tau0=1/(L-1)}, with {@link #L}
- * being the length of the permutations). If {@code (a, b)}
- * occurs {@code t} times, the pheromone is
+ * {@link #tau0} (where {@code tau0=1/(L-1)}, with
+ * {@link #length} being the length of the permutations). If
+ * {@code (a, b)} occurs {@code t} times, the pheromone is
  * {@code tau0 + t(tauMax-tauMin)/K}, where {@link #tauMax} is
  * the maximum pheromone.
  * <p>
@@ -71,32 +71,32 @@ public class PACOModelAge<X> extends ACOModel<X> {
   private final double mPheroMultiplier;
 
   /** the maximum size of the population */
-  public final int K;
+  public final int popSize;
 
   /** the edge matrix used for pheromones */
   private final DirectedEdgeMultiSet mMatrix;
   /** the node set managing the nodes */
   protected final IntSet mNodes;
 
-  /** the population of size of at most {@link #K} */
+  /** the population of size of at most {@link #popSize} */
   private final int[][] mPopulation;
 
   /**
    * the actual size of the population: will initially be
    * {@code 0}, the increase every time an ant reaches the
-   * population, until it eventually remains fixed at {@link #K}
-   * once the population is full
+   * population, until it eventually remains fixed at
+   * {@link #popSize} once the population is full
    */
-  private int mPopSize;
+  private int mCurPopSize;
   /**
    * the index where the next permutation can be stored in the
    * population: The population is a ring buffer, where the
    * oldest ant is overwritten with new ants coming in.
-   * {@link #mPopIndex} therefore increases by {@code 1} and is
-   * modulo-divided by {@link #K} every time an ant enters the
-   * population.
+   * {@link #mCurPopIndex} therefore increases by {@code 1} and
+   * is modulo-divided by {@link #popSize} every time an ant
+   * enters the population.
    */
-  private int mPopIndex;
+  private int mCurPopIndex;
 
   /**
    * the temporary storage of the edge values, used when
@@ -107,9 +107,9 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /**
    * Create the PACO model.
    *
-   * @param pL
+   * @param pLength
    *          the length of the permutation
-   * @param pK
+   * @param pPopSize
    *          the size of the population
    * @param pQ0
    *          the fraction of edges to be chosen greedily based
@@ -120,16 +120,16 @@ public class PACOModelAge<X> extends ACOModel<X> {
    *          the maximum pheromone that can be assigned to any
    *          edge
    */
-  protected PACOModelAge(final int pL, final int pK,
+  protected PACOModelAge(final int pLength, final int pPopSize,
       final double pQ0, final double pBeta,
       final double pTauMax) {
-    super(pL);
+    super(pLength);
 
-    if (pK <= 0) {
+    if (pPopSize <= 0) {
       throw new IllegalArgumentException(//
-          "K must be > 0, but is " + pK);//$NON-NLS-1$
+          "K must be > 0, but is " + pPopSize);//$NON-NLS-1$
     }
-    this.K = pK;
+    this.popSize = pPopSize;
 
     if (Double.isFinite(pQ0) && (pQ0 >= 0d) && (pQ0 <= 1d)) {
       this.q0 = pQ0;
@@ -147,45 +147,47 @@ public class PACOModelAge<X> extends ACOModel<X> {
               + pBeta);
     }
 
-    this.tau0 = (1d / (this.L - 1));
+    this.tau0 = (1d / (this.length - 1));
     if ((!Double.isFinite(this.tau0)) || (this.tau0 <= 0d)) {
       throw new IllegalArgumentException(//
           "Huh? tau0=" + this.tau0 //$NON-NLS-1$
-              + " for L=" + this.L);//$NON-NLS-1$
+              + " for L=" + this.length);//$NON-NLS-1$
     }
 
     if (Double.isFinite(pTauMax)
-        && (pTauMax > (1d / (this.L - 1)))) {
+        && (pTauMax > (1d / (this.length - 1)))) {
       this.tauMax = pTauMax;
     } else {
       throw new IllegalArgumentException(((//
       "tauMax must be > 1/(L-1), i.e., > 1/"//$NON-NLS-1$
-          + (this.L - 1)) + ", i.e., > "//$NON-NLS-1$
+          + (this.length - 1)) + ", i.e., > "//$NON-NLS-1$
           + this.tau0) + ", but is "//$NON-NLS-1$
           + pTauMax);
     }
 
-    this.mPheroMultiplier = (this.tauMax - this.tau0) / this.K;
+    this.mPheroMultiplier =
+        (this.tauMax - this.tau0) / this.popSize;
     if ((!Double.isFinite(this.mPheroMultiplier))
         || (this.mPheroMultiplier <= 0d)) {
       throw new IllegalArgumentException(
           "Invalid pheromone multiplier " //$NON-NLS-1$
               + this.mPheroMultiplier + " resulting from tauMax=" //$NON-NLS-1$
               + this.tauMax + " and K=" //$NON-NLS-1$
-              + this.K + " at L=" + this.L); //$NON-NLS-1$
+              + this.popSize + " at L=" + this.length); //$NON-NLS-1$
     }
 
-    this.mNodes = new IntSet(this.L);
-    this.mMatrix = DirectedEdgeMultiSet.create(this.L, this.K);
+    this.mNodes = new IntSet(this.length);
+    this.mMatrix =
+        DirectedEdgeMultiSet.create(this.length, this.popSize);
 
-    this.mPopulation = new int[this.K][this.L];
-    this.mVs = new double[this.L];
+    this.mPopulation = new int[this.popSize][this.length];
+    this.mVs = new double[this.length];
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return (((((("paco_age_" + this.K) + '_') //$NON-NLS-1$
+    return (((((("paco_age_" + this.popSize) + '_') //$NON-NLS-1$
         + this.q0) + '_') + this.beta) + '_') + this.tauMax;
   }
 
@@ -193,8 +195,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
   @Override
   public void initialize() {
     this.mMatrix.clear();
-    this.mPopSize = 0;
-    this.mPopIndex = 0;
+    this.mCurPopSize = 0;
+    this.mCurPopIndex = 0;
   }
 
   /**
@@ -219,16 +221,18 @@ public class PACOModelAge<X> extends ACOModel<X> {
   public final void update(final Iterable<X> selected) {
     for (final X x : selected) { // for each ant to be added
       final int[] pi = this.permutationFromX(x);
-      final int size = this.mPopSize;
-      final int index = this.mPopIndex;
+      final int size = this.mCurPopSize;
+      final int index = this.mCurPopIndex;
       final int[] dest = this.mPopulation[index];
-      if (size >= this.K) { // population is full: remove oldest
+      if (size >= this.popSize) { // population is full: remove
+                                  // oldest
         this.mMatrix.removePermutation(dest);
       }
-      System.arraycopy(pi, 0, dest, 0, this.L); // copy
+      System.arraycopy(pi, 0, dest, 0, this.length); // copy
       this.mMatrix.addPermutation(pi); // add edges to pheros
-      this.mPopSize = Math.min(this.K, size + 1);
-      this.mPopIndex = (index + 1) % this.K; // move index
+      this.mCurPopSize = Math.min(this.popSize, size + 1);
+      this.mCurPopIndex = (index + 1) % this.popSize; // move
+                                                      // index
     }
   }
 
@@ -343,7 +347,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
   public void printSetup(final Writer output)
       throws IOException {
     super.printSetup(output);
-    output.write(LogFormat.mapEntry("K", this.K)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("K", this.popSize)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("tau0", this.tau0)); //$NON-NLS-1$
     output.write(System.lineSeparator());

@@ -31,13 +31,13 @@ public final class IntSet {
   /**
    * instantiate the integer set
    *
-   * @param pL
+   * @param pLength
    *          the number of value
    */
-  public IntSet(final int pL) {
+  public IntSet(final int pLength) {
     super();
-    this.mValues = new int[pL];
-    this.mPositions = new int[pL];
+    this.mValues = new int[pLength];
+    this.mPositions = new int[pLength];
     this.clear();
   }
 

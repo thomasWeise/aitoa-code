@@ -134,17 +134,17 @@ public final class LongConstant<C> extends NullaryFunction<C> {
       extends NodeType<LongConstant<C>> {
 
     /** the minimum value */
-    private final long m_min;
+    private final long mMin;
     /** the maximum value */
-    private final long m_max;
+    private final long mMax;
     /** a set of privileged values */
-    private final LongConstant<C>[] m_privileged;
+    private final LongConstant<C>[] mPrivileged;
     /** the offset */
-    private final long m_start;
+    private final long mStart;
     /** the offset */
-    private final long m_end;
+    private final long mEnd;
     /** the span */
-    private final double m_span;
+    private final double mSpan;
 
     /**
      * create the constant node factory
@@ -161,22 +161,21 @@ public final class LongConstant<C> extends NullaryFunction<C> {
         final long min, final long max) {
       super(children);
 
-      this.m_min = min;
-      this.m_max = max;
+      this.mMin = min;
+      this.mMax = max;
 
       final long r = max - min;
-      // HD 2-12 Overflow iff the arguments have different signs
-      // and
-      // the sign of the result is different from the sign of x
+// HD 2-12 Overflow iff the arguments have different signs and
+// the sign of the result is different from the sign of x
       if (((max ^ min) & (max ^ r)) < 0) {
-        this.m_span = r;
+        this.mSpan = r;
       } else {
-        this.m_span = ((double) max) - ((double) min);
+        this.mSpan = ((double) max) - ((double) min);
       }
 
       if ((max - min) <= 101L) {
-        this.m_start = min;
-        this.m_end = max;
+        this.mStart = min;
+        this.mEnd = max;
       } else {
         long center;
         if ((min <= 0L) && (max >= 0L)) {
@@ -190,16 +189,16 @@ public final class LongConstant<C> extends NullaryFunction<C> {
             }
           }
         }
-        this.m_start = Math.max(min, center - 50L);
-        this.m_end = Math.min(max, center + 50L);
+        this.mStart = Math.max(min, center - 50L);
+        this.mEnd = Math.min(max, center + 50L);
       }
 
-      this.m_privileged =
-          new LongConstant[((int) (this.m_end - this.m_start))
+      this.mPrivileged =
+          new LongConstant[((int) (this.mEnd - this.mStart))
               + 1];
-      for (int i = this.m_privileged.length; (--i) >= 0;) {
-        this.m_privileged[i] =
-            new LongConstant<>(this, this.m_start + i);
+      for (int i = this.mPrivileged.length; (--i) >= 0;) {
+        this.mPrivileged[i] =
+            new LongConstant<>(this, this.mStart + i);
       }
     }
 
@@ -211,8 +210,8 @@ public final class LongConstant<C> extends NullaryFunction<C> {
      * @return the constant
      */
     private LongConstant<C> forLong(final long l) {
-      if ((l >= this.m_start) && (l <= this.m_end)) {
-        return this.m_privileged[(int) (l - this.m_start)];
+      if ((l >= this.mStart) && (l <= this.mEnd)) {
+        return this.mPrivileged[(int) (l - this.mStart)];
       }
       return new LongConstant<>(this, l);
     }
@@ -222,11 +221,11 @@ public final class LongConstant<C> extends NullaryFunction<C> {
     public LongConstant<C> instantiate(final Node[] children,
         final Random random) {
       if (random.nextInt(3) <= 0) {
-        return this.m_privileged[random
-            .nextInt(this.m_privileged.length)];
+        return this.mPrivileged[random
+            .nextInt(this.mPrivileged.length)];
       }
       return this.forLong(RandomUtils.uniformFromMtoN(random,
-          this.m_min, this.m_max));
+          this.mMin, this.mMax));
     }
 
     /** {@inheritDoc} */
@@ -242,7 +241,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
       for (;;) {
         final double add = (random.nextGaussian() * 0.1d
             * (((av > 1e-10d) && random.nextBoolean()) ? av
-                : this.m_span));
+                : this.mSpan));
         if ((add < Long.MIN_VALUE) || (add > Long.MAX_VALUE)) {
           continue;
         }
@@ -251,7 +250,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
           continue;
         }
         v = (node.value + addl);
-        if ((v >= this.m_min) && (v <= this.m_max)) {
+        if ((v >= this.mMin) && (v <= this.mMax)) {
           break;
         }
       }

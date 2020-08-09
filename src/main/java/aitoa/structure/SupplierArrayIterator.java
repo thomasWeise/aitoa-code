@@ -30,12 +30,12 @@ final class SupplierArrayIterator<X>
   /** {@inheritDoc} */
   @Override
   public X next() {
-    final int i = this.m_index;
-    if (i >= this.m_end) {
+    final int i = this.mIndex;
+    if (i >= this.mEnd) {
       IteratorBase.endError(i);
     }
-    final X x = this.m_array[i].get();
-    this.m_index = (i + 1);
+    final X x = this.mArray[i].get();
+    this.mIndex = (i + 1);
     return x;
   }
 }

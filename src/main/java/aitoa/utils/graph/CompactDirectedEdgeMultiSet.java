@@ -16,15 +16,16 @@ final class CompactDirectedEdgeMultiSet
   /**
    * Create the multiset.
    *
-   * @param pL
+   * @param pLength
    *          the number of nodes
-   * @param pK
+   * @param pMaxEdgesPerNode
    *          the maximum number of edges per node
    */
-  CompactDirectedEdgeMultiSet(final int pL, final int pK) {
-    super(pL, pK);
-    this.mEdges = new int[pL + 1][pK];
-    this.mCounts = new int[pL + 1][pK];
+  CompactDirectedEdgeMultiSet(final int pLength,
+      final int pMaxEdgesPerNode) {
+    super(pLength, pMaxEdgesPerNode);
+    this.mEdges = new int[pLength + 1][pMaxEdgesPerNode];
+    this.mCounts = new int[pLength + 1][pMaxEdgesPerNode];
   }
 
   /** {@inheritDoc} */
