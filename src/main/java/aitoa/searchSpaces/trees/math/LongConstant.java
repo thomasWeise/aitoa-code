@@ -130,7 +130,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
    * @param <C>
    *          the parameter type
    */
-  private final static class ConstantNodeType<C>
+  private static final class ConstantNodeType<C>
       extends NodeType<LongConstant<C>> {
 
     /** the minimum value */

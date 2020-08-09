@@ -144,7 +144,7 @@ public final class JobStatistic
   }
 
   /** a factory for job statistic node types */
-  private final static class JobStatisticNodeType
+  private static final class JobStatisticNodeType
       extends NodeType<JobStatistic> {
 
     /** a set of statistics */

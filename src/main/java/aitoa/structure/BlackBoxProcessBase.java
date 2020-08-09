@@ -45,7 +45,7 @@ abstract class BlackBoxProcessBase<X, Y> extends
   long mTerminationTime;
 
   /** a linked list link */
-  volatile transient BlackBoxProcessBase<?, ?> mNext;
+  transient volatile BlackBoxProcessBase<?, ?> mNext;
 
   /**
    * Create the base class of the black box problem

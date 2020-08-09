@@ -95,25 +95,25 @@
 
 		<!-- Checks for imports -->
 		<!-- See https://checkstyle.org/config_imports.html -->
-		<!--<module name="AvoidStarImport"/> -->
-		<!--<module name="IllegalImport"/> -->
-		<!--<module name="RedundantImport"/> -->
-		<!--<module name="UnusedImports"> -->
-		<!--<property name="processJavadoc" value="false"/> -->
-		<!--</module> -->
+		<module name="AvoidStarImport" />
+		<module name="IllegalImport" />
+		<module name="RedundantImport" />
+		<module name="UnusedImports">
+			<property name="processJavadoc" value="true" />
+		</module>
 
 		<!-- Checks for Size Violations. -->
 		<!-- See https://checkstyle.org/config_sizes.html -->
 		<!--<module name="MethodLength"/> -->
-		<!--<module name="ParameterNumber"/> -->
+		<module name="ParameterNumber" />
 
 		<!-- Checks for whitespace -->
 		<!-- See https://checkstyle.org/config_whitespace.html -->
-		<!--<module name="EmptyForIteratorPad"/> -->
-		<!--<module name="GenericWhitespace"/> -->
-		<!--<module name="MethodParamPad"/> -->
-		<!--<module name="NoWhitespaceAfter"/> -->
-		<!--<module name="NoWhitespaceBefore"/> -->
+		<module name="EmptyForIteratorPad" />
+		<module name="GenericWhitespace" />
+		<module name="MethodParamPad" />
+		<!-- <module name="NoWhitespaceAfter" /> -->
+		<module name="NoWhitespaceBefore" />
 		<!--<module name="OperatorWrap"/> -->
 		<!--<module name="ParenPad"/> -->
 		<!--<module name="TypecastParenPad"/> -->
@@ -122,8 +122,8 @@
 
 		<!-- Modifier Checks -->
 		<!-- See https://checkstyle.org/config_modifiers.html -->
-		<!-- <module name="ModifierOrder"/> -->
-		<!-- <module name="RedundantModifier"/> -->
+		<module name="ModifierOrder" />
+		<!-- <module name="RedundantModifier" /> -->
 
 		<!-- Checks for blocks. You know, those {}'s -->
 		<!-- See https://checkstyle.org/config_blocks.html -->

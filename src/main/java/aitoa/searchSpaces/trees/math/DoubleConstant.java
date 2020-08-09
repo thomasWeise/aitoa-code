@@ -209,7 +209,7 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
    * @param <C>
    *          the parameter type
    */
-  private final static class ConstantNodeType<C>
+  private static final class ConstantNodeType<C>
       extends NodeType<DoubleConstant<C>> {
 
     /** the minimum value */
