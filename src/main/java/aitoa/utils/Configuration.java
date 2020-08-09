@@ -95,32 +95,26 @@ public final class Configuration {
    *          the string
    */
   public static void putCommandLine(final String s) {
-    String t;
-    int i, j;
-    final int len;
-    char ch;
-    boolean canUseSlash;
-
     if (s == null) {
       return;
     }
 
-    t = s.trim();
-    len = t.length();
+    final String t = s.trim();
+    final int len = t.length();
     if (len <= 0) {
       return;
     }
 
-    canUseSlash = (File.separatorChar != '/');
+    final boolean canUseSlash = (File.separatorChar != '/');
 
-    for (i = 0; i < len; i++) {
-      ch = t.charAt(i);
+    for (int i = 0; i < len; i++) {
+      char ch = t.charAt(i);
       if ((ch == '-') || (canUseSlash && (ch == '/'))
           || (ch <= 32)) {
         continue;
       }
 
-      for (j = i + 1; j < len; j++) {
+      for (int j = i + 1; j < len; j++) {
         ch = t.charAt(j);
         if ((ch == ':') || (ch == '=')) {
           Configuration.putString(t.substring(i, j),

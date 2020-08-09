@@ -54,9 +54,7 @@ public abstract class ObjectTest<T> {
    */
   @Test(timeout = 3600000)
   public void testToString() {
-    final Object instance;
-
-    instance = this.getInstance();
+    final Object instance = this.getInstance();
     Assert.assertNotNull(instance);
     final int h = instance.hashCode();
     final String s = instance.toString();
@@ -92,14 +90,12 @@ public abstract class ObjectTest<T> {
   @SuppressWarnings("unchecked")
   @Test(timeout = 3600000)
   public void testCloneIfCloneable() throws Throwable {
-    T instance1, instance2;
-
-    instance1 = this.getInstance();
+    final T instance1 = this.getInstance();
     Assert.assertNotNull(instance1);
     if (instance1 instanceof Cloneable) {
-
-      instance2 = ((T) (instance1.getClass().getMethod("clone") //$NON-NLS-1$
-          .invoke(instance1)));
+      final T instance2 =
+          ((T) (instance1.getClass().getMethod("clone") //$NON-NLS-1$
+              .invoke(instance1)));
       Assert.assertNotNull(instance2);
 
       Assert.assertEquals(instance1, instance2);

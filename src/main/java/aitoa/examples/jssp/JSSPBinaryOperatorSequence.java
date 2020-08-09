@@ -65,7 +65,9 @@ public final class JSSPBinaryOperatorSequence
     Arrays.fill(done_x1, false); // nothing used from xy yet
 
     final int length = done_x0.length; // length = m*n
-    int desti = 0, x0i = 0, x1i = 0; // array indexes = 0
+    int desti = 0; // all array indexes = 0
+    int x0i = 0;
+    int x1i = 0;
 // start relevant
     for (;;) { // repeat until dest is filled, i.e., desti=length
 // randomly chose a source point and pick next sub-job from it

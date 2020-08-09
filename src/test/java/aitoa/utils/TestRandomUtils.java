@@ -13,9 +13,9 @@ import aitoa.TestTools;
 /**
  * A test the utility methods in {@link RandomUtils}
  */
-public class RandomUtilsTest {
+public class TestRandomUtils {
   /** create */
-  public RandomUtilsTest() {
+  public TestRandomUtils() {
     super();
   }
 
@@ -132,7 +132,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle2() {
-    RandomUtilsTest.permShuffleTest(2);
+    TestRandomUtils.permShuffleTest(2);
   }
 
   /**
@@ -142,7 +142,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle3() {
-    RandomUtilsTest.permShuffleTest(3);
+    TestRandomUtils.permShuffleTest(3);
   }
 
   /**
@@ -152,7 +152,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle4() {
-    RandomUtilsTest.permShuffleTest(4);
+    TestRandomUtils.permShuffleTest(4);
   }
 
   /**
@@ -162,7 +162,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle5() {
-    RandomUtilsTest.permShuffleTest(5);
+    TestRandomUtils.permShuffleTest(5);
   }
 
   /**
@@ -172,7 +172,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle6() {
-    RandomUtilsTest.permShuffleTest(6);
+    TestRandomUtils.permShuffleTest(6);
   }
 
   /**
@@ -182,7 +182,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle7() {
-    RandomUtilsTest.permShuffleTest(7);
+    TestRandomUtils.permShuffleTest(7);
   }
 
   /**
@@ -192,7 +192,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle8() {
-    RandomUtilsTest.permShuffleTest(8);
+    TestRandomUtils.permShuffleTest(8);
   }
 
   /**
@@ -218,7 +218,7 @@ public class RandomUtilsTest {
         perm[i] = i;
       }
       RandomUtils.shuffle(random, perm, 0, perm.length);
-      ++counters[RandomUtilsTest.permToInt(perm, temp1, temp2)];
+      ++counters[TestRandomUtils.permToInt(perm, temp1, temp2)];
     }
 
     for (final int v : counters) {
@@ -242,7 +242,9 @@ public class RandomUtilsTest {
    */
   private static final int permToInt(final int[] pPerm,
       final int[] pTemp1, final int[] pTemp2) {
-    int i, k = 0, m = 1;
+    int i = -1;
+    int k = 0;
+    int m = 1;
     final int n = pPerm.length;
 
     for (i = 0; i < n; i++) {
@@ -393,7 +395,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFrom0To10() {
-    RandomUtilsTest.testUniformFromMtoNSmall(0, 10);
+    TestRandomUtils.testUniformFromMtoNSmall(0, 10);
   }
 
   /**
@@ -402,7 +404,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus10To10() {
-    RandomUtilsTest.testUniformFromMtoNSmall(-10, 10);
+    TestRandomUtils.testUniformFromMtoNSmall(-10, 10);
   }
 
   /**
@@ -411,7 +413,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus10To0() {
-    RandomUtilsTest.testUniformFromMtoNSmall(-10, 0);
+    TestRandomUtils.testUniformFromMtoNSmall(-10, 0);
   }
 
   /**
@@ -420,7 +422,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus0To1() {
-    RandomUtilsTest.testUniformFromMtoNSmall(0, 1);
+    TestRandomUtils.testUniformFromMtoNSmall(0, 1);
   }
 
   /**
@@ -429,7 +431,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus20To31() {
-    RandomUtilsTest.testUniformFromMtoNSmall(20, 31);
+    TestRandomUtils.testUniformFromMtoNSmall(20, 31);
   }
 
   /**
@@ -471,7 +473,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMinTo0() {
-    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE, 0);
+    TestRandomUtils.testUniformFromMtoNBig(Long.MIN_VALUE, 0);
   }
 
   /**
@@ -480,7 +482,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMinToMax() {
-    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE,
+    TestRandomUtils.testUniformFromMtoNBig(Long.MIN_VALUE,
         Long.MAX_VALUE);
   }
 
@@ -491,7 +493,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMin2ToMax2() {
-    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE / 2,
+    TestRandomUtils.testUniformFromMtoNBig(Long.MIN_VALUE / 2,
         Long.MAX_VALUE / 2);
   }
 

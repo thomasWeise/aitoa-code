@@ -129,9 +129,6 @@ public final class BinomialDistribution
     }
     this.p = pP;
 
-    int bh, i;
-    double f, rm;
-
     this.mPar = Math.min(this.p, 1.0d - this.p);
     this.mQ = 1.0d - this.mPar;
     this.mNp = this.n * this.mPar;
@@ -143,24 +140,24 @@ public final class BinomialDistribution
           + pN + " and p=" + pP);//$NON-NLS-1$
     }
 
-    rm = this.mNp + this.mPar;
+    final double rm = this.mNp + this.mPar;
     this.mM = (int) rm; // mode, integer
     this.mXm = this.mM + 0.5d;
     this.mPq = this.mPar / this.mQ;
 
     this.mP0 = Math.exp(this.n * Math.log(this.mQ)); // Chop-down
-    bh = (int) (this.mNp
+    final int bh = (int) (this.mNp
         + (10.0d * Math.sqrt(this.mNp * this.mQ)));
     this.mB = Math.min(this.n, bh);
 
     this.mRc = (this.n + 1.0d) * this.mPq; // recurr.
 
     this.mSs = this.mNp * this.mQ; // variance
-    i = (int) ((2.195d * Math.sqrt(this.mSs))
+    final int i = (int) ((2.195d * Math.sqrt(this.mSs))
         - (4.6d * this.mQ));
     this.mXl = this.mM - i; // limit left
     this.mXr = this.mM + i + 1L; // limit right
-    f = (rm - this.mXl) / (rm - (this.mXl * this.mPar));
+    double f = (rm - this.mXl) / (rm - (this.mXl * this.mPar));
     this.mLl = f * (1.0d + (0.5d * f));
     f = (this.mXr - rm) / (this.mXr * this.mQ);
     this.mLr = f * (1.0d + (0.5d * f));
@@ -188,12 +185,9 @@ public final class BinomialDistribution
    * @return the stirling correction
    */
   private static double stirlingCorrection(final int k) {
-
-    double r, rr;
-
     if (k > 30) {
-      r = 1.0d / k;
-      rr = r * r;
+      final double r = 1.0d / k;
+      final double rr = r * r;
       return r * (BinomialDistribution.C1
           + (rr * (BinomialDistribution.C3
               + (rr * (BinomialDistribution.C5
@@ -213,23 +207,22 @@ public final class BinomialDistribution
   private static double raw(final Random random) {
     int nextInt;
     do { // accept anything but zero
-      nextInt = random.nextInt(); // in
-                                  // [Integer.MIN_VALUE,Integer.MAX_VALUE]-interval
+      nextInt = random.nextInt();
+// in [Integer.MIN_VALUE,Integer.MAX_VALUE]-interval
     } while (nextInt == 0);
 
-    // transform to (0.0,1.0)-interval
-    // 2.3283064365386963E-10 == 1.0 / Math.pow(2,32)
+// transform to (0.0,1.0)-interval 2.3283064365386963E-10 == 1.0
+// / Math.pow(2,32)
     return (nextInt & 0xFFFFFFFFL) * 2.3283064365386963E-10;
 
-    /*
-     * nextInt == Integer.MAX_VALUE --> 0.49999999976716936
-     * nextInt == Integer.MIN_VALUE --> 0.5 nextInt ==
-     * Integer.MAX_VALUE-1 --> 0.4999999995343387 nextInt ==
-     * Integer.MIN_VALUE+1 --> 0.5000000002328306 nextInt == 1
-     * --> 2.3283064365386963E-10 nextInt == -1 -->
-     * 0.9999999997671694 nextInt == 2 --> 4.6566128730773926E-10
-     * nextInt == -2 --> 0.9999999995343387
-     */
+/*
+ * nextInt == Integer.MAX_VALUE --> 0.49999999976716936 nextInt
+ * == Integer.MIN_VALUE --> 0.5 nextInt == Integer.MAX_VALUE-1
+ * --> 0.4999999995343387 nextInt == Integer.MIN_VALUE+1 -->
+ * 0.5000000002328306 nextInt == 1 --> 2.3283064365386963E-10
+ * nextInt == -1 --> 0.9999999997671694 nextInt == 2 -->
+ * 4.6566128730773926E-10 nextInt == -2 --> 0.9999999995343387
+ */
   }
 
   /**
@@ -242,16 +235,14 @@ public final class BinomialDistribution
    */
   @Override
   public int nextInt(final Random random) {
-
-    int i, K, Km, nK;
-    double f;
-    double U, V, X, T, E;
-
+    int K = 0;
+    int Km = -1;
+    double U = Double.NaN;
+    double V = Double.NaN;
+    double X = Double.NaN;
     if (this.mNp < 10) { // Inversion Chop-down
-      double pk;
 
-      K = 0;
-      pk = this.mP0;
+      double pk = this.mP0;
       U = BinomialDistribution.raw(random);
       while (U > pk) {
         ++K;
@@ -305,15 +296,15 @@ public final class BinomialDistribution
 
         // computation of p(K) via recurrence relationship from
         // the mode
-        f = 1.0d; // f(m_m)
+        double f = 1.0d; // f(m_m)
         if (this.mM < K) {
-          for (i = this.mM; i < K;) {
+          for (int i = this.mM; i < K;) {
             if ((f *= ((this.mRc / ++i) - this.mPq)) < V) {
               break; // multiply f
             }
           }
         } else {
-          for (i = K; i < this.mM;) {
+          for (int i = K; i < this.mM;) {
             if ((V *= ((this.mRc / ++i) - this.mPq)) > f) {
               break; // multiply V
             }
@@ -326,8 +317,8 @@ public final class BinomialDistribution
         // lower and upper squeeze tests, based on lower bounds
         // for log p(K)
         V = Math.log(V);
-        T = (-Km * Km) / (this.mSs + this.mSs);
-        E = (Km / this.mSs)
+        final double T = (-Km * Km) / (this.mSs + this.mSs);
+        final double E = (Km / this.mSs)
             * ((((Km * ((Km * BinomialDistribution.C1_3)
                 + BinomialDistribution.C5_8))
                 + BinomialDistribution.C1_6) / this.mSs) + 0.5d);
@@ -335,7 +326,7 @@ public final class BinomialDistribution
           break;
         }
         if (V <= (T + E)) {
-          nK = (this.n - K) + 1;
+          final int nK = (this.n - K) + 1;
 
           // computation of log f(K) via Stirling's formula
           // final acceptance-rejection test

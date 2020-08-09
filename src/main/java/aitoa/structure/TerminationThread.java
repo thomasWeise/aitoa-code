@@ -48,10 +48,11 @@ final class TerminationThread extends Thread {
    *          the function
    */
   static void enqueue(final BlackBoxProcessBase<?, ?> f) {
-    final long t;
-    BlackBoxProcessBase<?, ?> prev, next;
+    BlackBoxProcessBase<?, ?> prev = null;
+    BlackBoxProcessBase<?, ?> next = null;
 
-    t = f.mEndTime; // throw NullPointerException if null
+    final long t = f.mEndTime; // throw NullPointerException if
+                               // null
     if ((t >= Long.MAX_VALUE) || (t <= 0L)) {
       throw new IllegalArgumentException(
           "Invalid end time for enquing: " //$NON-NLS-1$
@@ -60,7 +61,6 @@ final class TerminationThread extends Thread {
 
     // find right place for insertion
     synchronized (TerminationThread.SYNC) {
-      prev = null;
       next = TerminationThread.sQueue;
 
       while (next != null) {
@@ -104,7 +104,8 @@ final class TerminationThread extends Thread {
    *          the function
    */
   static void dequeue(final BlackBoxProcessBase<?, ?> f) {
-    BlackBoxProcessBase<?, ?> cur, next;
+    BlackBoxProcessBase<?, ?> cur = null;
+    BlackBoxProcessBase<?, ?> next = null;
 
     if (f == null) {
       throw new NullPointerException(//
@@ -112,7 +113,6 @@ final class TerminationThread extends Thread {
     }
 
     synchronized (TerminationThread.SYNC) {
-      cur = null;
       next = TerminationThread.sQueue;
 
       // find element in queue

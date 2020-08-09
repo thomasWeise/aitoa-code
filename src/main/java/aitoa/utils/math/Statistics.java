@@ -779,29 +779,31 @@ public final class Statistics {
    *          destroyed
    * @return the accurate sum of the elements of {@code summands}
    */
-  private static double destructiveSum(final double[] summands) {
-    int i, j, n, index;
-    double x, y, t, xsave, hi, yr, lo, summand;
-    boolean ninf, pinf;
+  static double destructiveSum(final double[] summands) {
+    int index = 0;
 
-    n = 0;
-    lo = 0d;
-    ninf = pinf = false;
+    int n = 0;
+    double lo = 0d;
+    boolean ninf = false;
+    boolean pinf = false;
 
     main: {
       allIsOK: {
-        // the main summation routine
+// the main summation routine
         for (index = 0; index < summands.length; index++) {
-          xsave = summand = summands[index];
-          for (i = j = 0; j < n; j++) {
-            y = summands[j];
+          final double xsave = summands[index];
+          double summand = xsave;
+          int i = 0;
+          int j = 0;
+          for (; j < n; j++) {
+            double y = summands[j];
             if (Math.abs(summand) < Math.abs(y)) {
-              t = summand;
+              final double t = summand;
               summand = y;
               y = t;
             }
-            hi = summand + y;
-            yr = hi - summand;
+            final double hi = summand + y;
+            final double yr = hi - summand;
             lo = y - yr;
             if (lo != 0.0) {
               summands[i++] = lo;
@@ -813,8 +815,7 @@ public final class Statistics {
           if (summand != 0d) {
             if ((summand > Double.NEGATIVE_INFINITY)
                 && (summand < Double.POSITIVE_INFINITY)) {
-              summands[n++] = summand;// all finite, good,
-                                      // continue
+              summands[n++] = summand;// all finite: continue
             } else {
               summands[index] = xsave;
               break allIsOK;
@@ -824,11 +825,10 @@ public final class Statistics {
         break main;
       }
 
-      // we have error'ed: either due to overflow or because
-      // there was an
-      // infinity or NaN value in the data
+// we have error'ed: either due to overflow or because there was
+// an infinity or NaN value in the data
       for (; index < summands.length; index++) {
-        summand = summands[index];
+        final double summand = summands[index];
 
         if (summand <= Double.NEGATIVE_INFINITY) {
           if (pinf) {
@@ -852,40 +852,35 @@ public final class Statistics {
         return Double.NEGATIVE_INFINITY;
       }
 
-      // just a simple overflow. return NaN
+// just a simple overflow. return NaN
       return Double.NaN;
     }
 
-    hi = 0d;
+    double hi = 0d;
     if (n > 0) {
       hi = summands[--n];
-      /*
-       * sum_exact(ps, hi) from the top, stop when the sum
-       * becomes inexact.
-       */
+// sum_exact(ps, hi) from the top, stop when the sum becomes
+// inexact.
       while (n > 0) {
-        x = hi;
-        y = summands[--n];
+        final double x = hi;
+        final double y = summands[--n];
         hi = x + y;
-        yr = hi - x;
+        final double yr = hi - x;
         lo = y - yr;
         if (lo != 0d) {
           break;
         }
       }
-      /*
-       * Make half-even rounding work across multiple partials.
-       * Needed so that sum([1e-16, 1, 1e16]) will round-up the
-       * last digit to two instead of down to zero (the 1e-16
-       * makes the 1 slightly closer to two). With a potential 1
-       * ULP rounding error fixed-up, math.fsum() can guarantee
-       * commutativity.
-       */
+// Make half-even rounding work across multiple partials. Needed
+// so that sum([1e-16, 1, 1e16]) will round-up the last digit to
+// two instead of down to zero (the 1e-16 makes the 1 slightly
+// closer to two). With a potential 1 ULP rounding error
+// fixed-up, math.fsum() can guarantee commutativity.
       if ((n > 0) && (((lo < 0d) && (summands[n - 1] < 0d)) || //
           ((lo > 0d) && (summands[n - 1] > 0d)))) {
-        y = lo * 2d;
-        x = hi + y;
-        yr = x - hi;
+        final double y = lo * 2d;
+        final double x = hi + y;
+        final double yr = x - hi;
         if (y == yr) {
           hi = x;
         }
@@ -906,7 +901,6 @@ public final class Statistics {
    */
   public static Number[]
       sampleMeanAndStandardDeviation(final double[] values) {
-
     // handle simple cases
     if (values.length <= 0) {
       throw new IllegalArgumentException(

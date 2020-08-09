@@ -28,16 +28,13 @@ public final class TempDir implements Closeable {
    */
   public TempDir() throws IOException {
     super();
-
-    Path p1, p2;
-
-    p1 = IOUtils.canonicalizePath(//
+    final Path p1 = IOUtils.canonicalizePath(//
         Files.createTempDirectory(null));
     if (p1 == null) {
       throw new IOException(
           "Failed to create temporary directory."); //$NON-NLS-1$
     }
-    p2 = p1.normalize();
+    final Path p2 = p1.normalize();
     this.mDir = ((p2 != null) ? p2 : p1);
   }
 

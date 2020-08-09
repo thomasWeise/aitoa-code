@@ -118,7 +118,8 @@ public class TestNode extends StructureTest<Node> {
     Assert.assertTrue((size == 0) == n.isTerminal());
     Assert.assertTrue((size > 0) == (depth > 1));
 
-    int d = 0, w = 1;
+    int d = 0;
+    int w = 1;
     for (int i = size; (--i) >= 0;) {
       w += n.getChild(i).weight();
       d = Math.max(d, n.getChild(i).depth());

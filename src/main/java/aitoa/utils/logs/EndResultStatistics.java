@@ -294,7 +294,8 @@ public class EndResultStatistics {
       final boolean addSetupCols) {
 
     if (addSetupCols) {
-      final String s, t;
+      final String s;
+      final String t;
       return LogFormat.joinLogLine(//
           s = key + EndResultStatistics.COL_MIN, //
           s + EndResultStatistics.COL_SETUP, //

@@ -401,6 +401,14 @@ public final class EndResultStatistic
       return hc;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object o) {
+      return (o != null)
+          && (Objects.equals(this.getClass(), o.getClass()))
+          && StatBase.equalsStatBase(this, (StatBase) o);
+    }
+
     /**
      * check for equality
      *
@@ -534,6 +542,15 @@ public final class EndResultStatistic
       hc = (31 * hc) + Double.hashCode(this.q841);
       hc = (31 * hc) + Double.hashCode(this.q950);
       return hc;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object o) {
+      return (o != null)
+          && (Objects.equals(this.getClass(), o.getClass()))
+          && StatQuantiles.equalsStatQuantiles(this,
+              (StatQuantiles) o);
     }
 
     /**

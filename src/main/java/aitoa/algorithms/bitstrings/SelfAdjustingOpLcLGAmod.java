@@ -218,9 +218,7 @@ public final class SelfAdjustingOpLcLGAmod<Y>
 // If fybest == fxprime, we need to swap xprime into the xi array
 // and then pick one of the nbest+1 first elements.
 // Line 10: Choose the offspring
-        if (fxprime < fybest) {
-          // keep fxprime as is, it is selected
-        } else {
+        if (fxprime >= fybest) {
           if (fybest == fxprime) {
             final boolean[] tt = xi[nbest];
             xi[nbest] = xprime;
@@ -234,7 +232,7 @@ public final class SelfAdjustingOpLcLGAmod<Y>
           final boolean[] ttt = xi[sel];
           xi[sel] = xprime;
           xprime = ttt;
-        }
+        } // otherwise keep fxprime as is, it is selected
       } // end of crossover (lambda > 1)
 
 // Line 10: We chose xprime = y uniformly at random from the best

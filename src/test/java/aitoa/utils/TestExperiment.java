@@ -26,7 +26,7 @@ import aitoa.utils.Experiment.IExperimentStage;
 import aitoa.utils.logs.EndResults;
 
 /** Test the utilities for the experimenting */
-public class ExperimentTest {
+public class TestExperiment {
 
   /**
    * test the name part processing

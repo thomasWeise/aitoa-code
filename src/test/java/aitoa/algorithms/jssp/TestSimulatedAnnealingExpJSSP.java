@@ -22,7 +22,8 @@ public class TestSimulatedAnnealingExpJSSP
   protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
-    double st, ep;
+    double st = Double.NaN;
+    double ep = Double.NaN;
 
     do {
       st = rand.nextDouble() * 1000;

@@ -258,4 +258,37 @@ public class StatisticsTest {
     Assert.assertEquals(-190439861, msd[0].doubleValue(), 0.05);
     Assert.assertEquals(1279203887, msd[1].doubleValue(), 0.5);
   }
+
+  /** test the destructive sum */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 100000)
+  public void testDestructiveSum() {
+    Assert.assertEquals(1d,
+        Statistics.destructiveSum(new double[] { 1d }), 0d);
+    Assert.assertEquals(2d,
+        Statistics.destructiveSum(new double[] { 2d }), 0d);
+    Assert.assertEquals(2d,
+        Statistics.destructiveSum(new double[] { 1d, 1d }), 0d);
+    Assert.assertEquals(1e-16d, Statistics
+        .destructiveSum(new double[] { 10d, 1e-16d, -10d }), 0d);
+    Assert.assertEquals(2e-16d, Statistics.destructiveSum(
+        new double[] { 10d, 1e-16d, -10d, 1e-16d }), 0d);
+    Assert.assertEquals(1d + 2e-16d, Statistics.destructiveSum(
+        new double[] { 10d, 1e-16d, -9d, 1e-16d }), 0d);
+    Assert.assertEquals(1d, Statistics
+        .destructiveSum(new double[] { 10d, -9d, 1e-16d }), 0d);
+    Assert.assertEquals(1d, //
+        Statistics.destructiveSum(new double[] {
+            Integer.MAX_VALUE, 1d, -Integer.MAX_VALUE }),
+        0d);
+    Assert.assertEquals(10d,
+        Statistics.destructiveSum(new double[] { 10d,
+            Double.MAX_VALUE, -Double.MAX_VALUE }),
+        0d);
+    Assert.assertEquals(2d,
+        Statistics.destructiveSum(
+            new double[] { 1d, 1e200d, 1d, 1e100d, -0.5e100d,
+                -0.5e200d, -0.5e100d, -0.5e200d }),
+        0d);
+  }
 }

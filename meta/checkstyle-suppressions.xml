@@ -6,11 +6,15 @@
 
 <suppressions>
 	<suppress checks="FileLength" files="EndResultStatistics.java" />
-	<suppress checks="JavadocPackage" files="src/test/*"/>
-	
-  <suppress checks="ParameterNumber" files="EndResult.java" />
-  <suppress checks="ParameterNumber" files="EndResultStatistic.java" />
-	<suppress checks="ParameterNumber" files="EndResultStatistics.java" />
-  <suppress checks="ParameterNumber" files="LogLine.java" />
-  
+	<suppress checks="JavadocPackage" files="src/test/*" />
+
+	<suppress checks="ParameterNumber" files="EndResult.java" />
+	<suppress checks="ParameterNumber"
+		files="EndResultStatistic.java" />
+	<suppress checks="ParameterNumber"
+		files="EndResultStatistics.java" />
+	<suppress checks="ParameterNumber" files="LogLine.java" />
+
+	<suppress checks="EmptyBlock" files="RandomUtils.java" />
+
 </suppressions>

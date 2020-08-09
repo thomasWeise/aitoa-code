@@ -37,7 +37,10 @@ public class TestBitStringUnaryOperator3Flip
 
     this.getInstance().enumerate(ThreadLocalRandom.current(), x,
         y, z -> {
-          int done = 0, first = -1, second = -1, third = -1;
+          int done = 0;
+          int first = -1;
+          int second = -1;
+          int third = -1;
           for (int i = x.length; (--i) >= 0;) {
             if (x[i] != y[i]) {
               if (first >= 0) {

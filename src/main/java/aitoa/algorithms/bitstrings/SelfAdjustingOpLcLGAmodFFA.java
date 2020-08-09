@@ -265,7 +265,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
           final Holder ttt = xi[sel];
           xi[sel] = xprime;
           xprime = ttt;
-        }
+        } // otherwise keep fxprime as is, it is selected
       } // end of crossover (lambda > 1)
 
 // Line 10: We chose xprime = y uniformly at random from the best

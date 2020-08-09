@@ -31,7 +31,8 @@ public final class RandomUtils {
    */
   public static long[] uniqueRandomSeeds(final String pString,
       final int pCount) {
-    final long a, b;
+    final long a;
+    final long b;
 
     if (pCount <= 0) {
       throw new IllegalArgumentException(
@@ -299,7 +300,8 @@ public final class RandomUtils {
    */
   public static long uniformFrom0ToNminus1(final Random pRandom,
       final long pN) {
-    long bits, val;
+    long bits = -1L;
+    long val = -1L;
     do {
       bits = (pRandom.nextLong() << 1L) >>> 1L;
       val = bits % pN;
@@ -332,7 +334,7 @@ public final class RandomUtils {
         for (long u = (r >>> 1); // ensure nonnegative
             ((u + m) - (r = (u % n))) < 0L; // rejection check
             u = (pRandom.nextLong() >>> 1)) {
-          /* */}
+          /* just iterate while updating r */}
         r += pM;
       } else { // range not representable as long
         while ((r < pM) || (r > pN)) {

@@ -104,7 +104,8 @@ public abstract class BitStringObjectiveFunction
           prefix + "' and contain exactly two underscores (_).");//$NON-NLS-1$
     }
 
-    String n1 = null, n2 = null;
+    String n1 = null;
+    String n2 = null;
     try {
       n1 = name.substring(prefix.length() + 1, li);
       n2 = name.substring(li + 1);
@@ -169,7 +170,6 @@ public abstract class BitStringObjectiveFunction
    * @throws NullPointerException
    *           if {@code name==null}
    */
-  @SuppressWarnings("incomplete-switch")
   public static final BitStringObjectiveFunction
       tryLoadExample(final String name) {
     final int index = name.indexOf('_');
@@ -195,6 +195,8 @@ public abstract class BitStringObjectiveFunction
           return new Ising2DObjectiveFunction(name);
         case NQueensObjectiveFunction.NAME_PREFIX:
           return new NQueensObjectiveFunction(name);
+        default:
+          return null;
       }
     }
     return null;
