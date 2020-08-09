@@ -12,25 +12,25 @@ public final class DiscreteGreaterThanZero
     extends DiscreteRandomDistribution {
 
   /** the inner distribution */
-  private final DiscreteRandomDistribution m_inner;
+  private final DiscreteRandomDistribution mInner;
 
   /**
    * Create the distribution
    *
-   * @param inner
+   * @param pInner
    *          the inner distribution
    */
   public DiscreteGreaterThanZero(
-      final DiscreteRandomDistribution inner) {
+      final DiscreteRandomDistribution pInner) {
     super();
-    this.m_inner = Objects.requireNonNull(inner);
+    this.mInner = Objects.requireNonNull(pInner);
   }
 
   /** {@inheritDoc} */
   @Override
   public int nextInt(final Random random) {
     for (;;) {
-      final int res = this.m_inner.nextInt(random);
+      final int res = this.mInner.nextInt(random);
       if (res > 0) {
         return res;
       }
@@ -40,21 +40,21 @@ public final class DiscreteGreaterThanZero
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.m_inner.toString() + "_gt0"; //$NON-NLS-1$
+    return this.mInner.toString() + "_gt0"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    return this.m_inner.hashCode() ^ 0x93245878;
+    return this.mInner.hashCode() ^ 0x93245878;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object o) {
     if (o instanceof DiscreteGreaterThanZero) {
-      return this.m_inner
-          .equals(((DiscreteGreaterThanZero) o).m_inner);
+      return this.mInner
+          .equals(((DiscreteGreaterThanZero) o).mInner);
     }
     return false;
   }

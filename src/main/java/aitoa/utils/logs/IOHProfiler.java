@@ -393,9 +393,9 @@ public class IOHProfiler {
 
           lastFE[0] = -1L;
           LogParser.parseLogFile(file, l -> {
-            final long curFE = l.fe_max;
+            final long curFE = l.feMax;
             if (curFE > lastFE[0]) {
-              lines.add(new Point(curFE, l.f_min));
+              lines.add(new Point(curFE, l.fMin));
               lastFE[0] = curFE;
             }
           }, s -> setup[0] = Objects.requireNonNull(s));
@@ -550,18 +550,18 @@ public class IOHProfiler {
               Arrays.sort(allPoints2, (p1, p2) -> {
                 final int p1l = p1.length - 1;
                 final int p1ll =
-                    (p1l > 0) ? ((p1[p1l - 1].f <= p1[p1l].f)
+                    (p1l > 0) ? ((p1[p1l - 1].mF <= p1[p1l].mF)
                         ? (p1l - 1) : p1l) : p1l;
                 final int p2l = p2.length - 1;
                 final int p2ll =
-                    (p2l > 0) ? ((p2[p2l - 1].f <= p2[p2l].f)
+                    (p2l > 0) ? ((p2[p2l - 1].mF <= p2[p2l].mF)
                         ? (p2l - 1) : p2l) : p2l;
 
-                int r = Double.compare(p1[p1ll].f, p2[p2ll].f);
+                int r = Double.compare(p1[p1ll].mF, p2[p2ll].mF);
                 if (r != 0) {
                   return r;
                 }
-                r = Long.compare(p1[p1ll].fes, p2[p2ll].fes);
+                r = Long.compare(p1[p1ll].mFes, p2[p2ll].mFes);
                 if (r != 0) {
                   return r;
                 }
@@ -570,11 +570,11 @@ public class IOHProfiler {
                   return r;
                 }
 
-                r = Double.compare(p1[p1l].f, p2[p2l].f);
+                r = Double.compare(p1[p1l].mF, p2[p2l].mF);
                 if (r != 0) {
                   return r;
                 }
-                r = Long.compare(p1[p1l].fes, p2[p2l].fes);
+                r = Long.compare(p1[p1l].mFes, p2[p2l].mFes);
                 if (r != 0) {
                   return r;
                 }
@@ -588,10 +588,10 @@ public class IOHProfiler {
                   rawData.write(IOHProfiler.DAT_HEADER);
                   rawData.newLine();
                   for (final Point p : points) {
-                    rawData.write(Long.toString(p.fes));
+                    rawData.write(Long.toString(p.mFes));
                     rawData.write(IOHProfiler.RAW_SEPARATOR);
                     rawData.write(
-                        LogFormat.doubleToStringForLog(p.f));
+                        LogFormat.doubleToStringForLog(p.mF));
                     rawData.newLine();
                   }
 
@@ -601,11 +601,11 @@ public class IOHProfiler {
                       IOHProfiler.META_BETWEEN_INST_AND_FES);
                   final Point e = Objects
                       .requireNonNull(points[points.length - 1]);
-                  metaData.write(Long.toString(e.fes));
+                  metaData.write(Long.toString(e.mFes));
                   metaData
                       .write(IOHProfiler.META_BETWEEN_FES_AND_F);
                   metaData.write(
-                      LogFormat.doubleToStringForLog(e.f));
+                      LogFormat.doubleToStringForLog(e.mF));
                 }
               } // end raw writer
               metaData.newLine();
@@ -631,22 +631,22 @@ public class IOHProfiler {
   /** the log point */
   private static final class Point {
     /** the FEs */
-    final long fes;
+    final long mFes;
     /** the objective value */
-    final double f;
+    final double mF;
 
     /**
      * create the point
      *
-     * @param _fes
+     * @param pFes
      *          the fes
-     * @param _f
+     * @param pF
      *          the f
      */
-    Point(final long _fes, final double _f) {
+    Point(final long pFes, final double pF) {
       super();
-      this.fes = _fes;
-      this.f = _f;
+      this.mFes = pFes;
+      this.mF = pF;
     }
   }
 
@@ -663,147 +663,147 @@ public class IOHProfiler {
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _dimension
+     * @param pDimension
      *          the function dimension
-     * @param _instance
+     * @param pInstance
      *          the instance
      */
-    public FunctionMetaData(final String _id,
-        final long _dimension, final long _instance) {
+    public FunctionMetaData(final String pId,
+        final long pDimension, final long pInstance) {
       super();
-      this.id = _id.trim().replace('_', '-').replaceAll("--", //$NON-NLS-1$
+      this.id = pId.trim().replace('_', '-').replaceAll("--", //$NON-NLS-1$
           "-");//$NON-NLS-1$
       if (this.id.isEmpty()) {
         throw new IllegalArgumentException(
             "Function ID cannot be empty or blank, but '" //$NON-NLS-1$
-                + _id + "' with dimension "//$NON-NLS-1$
-                + _dimension + " and instance "//$NON-NLS-1$
-                + _instance + " is.");//$NON-NLS-1$
+                + pId + "' with dimension "//$NON-NLS-1$
+                + pDimension + " and instance "//$NON-NLS-1$
+                + pInstance + " is.");//$NON-NLS-1$
       }
-      if (_dimension <= 0L) {
+      if (pDimension <= 0L) {
         throw new IllegalArgumentException(//
             "Function dimension must not be "//$NON-NLS-1$
-                + _dimension + " but is for '" + //$NON-NLS-1$
-                _id + " and instance "//$NON-NLS-1$
-                + _instance + "'.");//$NON-NLS-1$
+                + pDimension + " but is for '" + //$NON-NLS-1$
+                pId + " and instance "//$NON-NLS-1$
+                + pInstance + "'.");//$NON-NLS-1$
       }
-      this.dimension = _dimension;
-      if (_instance <= 0L) {
+      this.dimension = pDimension;
+      if (pInstance <= 0L) {
         throw new IllegalArgumentException(//
             "Instance Id must not be "//$NON-NLS-1$
-                + _instance + " but is for '" + //$NON-NLS-1$
-                _id + " and dimension "//$NON-NLS-1$
-                + _dimension + "'.");//$NON-NLS-1$
+                + pInstance + " but is for '" + //$NON-NLS-1$
+                pId + " and dimension "//$NON-NLS-1$
+                + pDimension + "'.");//$NON-NLS-1$
       }
-      this.instance = _instance;
+      this.instance = pInstance;
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _dimension
+     * @param pDimension
      *          the function dimension
      */
-    public FunctionMetaData(final String _id,
-        final long _dimension) {
-      this(_id, _dimension, 1L);
+    public FunctionMetaData(final String pId,
+        final long pDimension) {
+      this(pId, pDimension, 1L);
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
      */
-    public FunctionMetaData(final String _id) {
-      this(_id, 1L);
+    public FunctionMetaData(final String pId) {
+      this(pId, 1L);
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _dimension
+     * @param pDimension
      *          the function dimension
-     * @param _instance
+     * @param pInstance
      *          the instance
      */
-    public FunctionMetaData(final String _id,
-        final double _dimension, final long _instance) {
-      this(_id,
-          FunctionMetaData.conv(_id, _dimension, _instance),
-          _instance);
+    public FunctionMetaData(final String pId,
+        final double pDimension, final long pInstance) {
+      this(pId,
+          FunctionMetaData.conv(pId, pDimension, pInstance),
+          pInstance);
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _dimension
+     * @param pDimension
      *          the function dimension
      */
-    public FunctionMetaData(final String _id,
-        final double _dimension) {
-      this(_id, _dimension, 1L);
+    public FunctionMetaData(final String pId,
+        final double pDimension) {
+      this(pId, pDimension, 1L);
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _space
+     * @param pSpace
      *          the space from which we take the dimension/scale
-     * @param _instance
+     * @param pInstance
      *          the instance
      */
-    public FunctionMetaData(final String _id,
-        final ISpace<?> _space, final long _instance) {
-      this(_id, _space.getScale(), _instance);
+    public FunctionMetaData(final String pId,
+        final ISpace<?> pSpace, final long pInstance) {
+      this(pId, pSpace.getScale(), pInstance);
     }
 
     /**
      * Create an Id an dimension
      *
-     * @param _id
+     * @param pId
      *          the function id
-     * @param _space
+     * @param pSpace
      *          the space from which we take the dimension/scale
      */
-    public FunctionMetaData(final String _id,
-        final ISpace<?> _space) {
-      this(_id, _space, 1L);
+    public FunctionMetaData(final String pId,
+        final ISpace<?> pSpace) {
+      this(pId, pSpace, 1L);
     }
 
     /**
      * do the dimension conversation
      *
-     * @param _id
+     * @param pId
      *          the id
-     * @param _dimension
+     * @param pDimension
      *          the dimension as {@code double}
-     * @param _instance
+     * @param pInstance
      *          the instance
      * @return the dimension as {@code long}
      */
-    private static long conv(final String _id,
-        final double _dimension, final long _instance) {
-      if (Double.isFinite(_dimension) && (_dimension > 0d)
-          && (_dimension < Long.MAX_VALUE)) {
-        final long l1 = Math.round(_dimension);
+    private static long conv(final String pId,
+        final double pDimension, final long pInstance) {
+      if (Double.isFinite(pDimension) && (pDimension > 0d)
+          && (pDimension < Long.MAX_VALUE)) {
+        final long l1 = Math.round(pDimension);
         return ((l1 == 0L) ? 1L : l1);
       }
       throw new IllegalArgumentException(//
           "Function dimension must not be "//$NON-NLS-1$
-              + _dimension + " but is for '" + //$NON-NLS-1$
-              _id + " and instance " + //$NON-NLS-1$
-              _instance + "'.");//$NON-NLS-1$
+              + pDimension + " but is for '" + //$NON-NLS-1$
+              pId + " and instance " + //$NON-NLS-1$
+              pInstance + "'.");//$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

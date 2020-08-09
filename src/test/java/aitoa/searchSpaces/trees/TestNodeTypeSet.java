@@ -21,30 +21,30 @@ public class TestNodeTypeSet<T extends Node>
     extends StructureTest<NodeTypeSet<T>> implements Cloneable {
 
   /** the node type */
-  private NodeTypeSet<T> m_nodeTypeSet;
+  private NodeTypeSet<T> mNodeTypeSet;
 
   /**
    * test a node type
    *
-   * @param owner
+   * @param pOwner
    *          the owner
-   * @param type
+   * @param pType
    *          the node type
    */
-  private TestNodeTypeSet(final StructureTest<?> owner,
-      final NodeTypeSet<T> type) {
-    super(owner);
-    this.m_nodeTypeSet = Objects.requireNonNull(type);
+  private TestNodeTypeSet(final StructureTest<?> pOwner,
+      final NodeTypeSet<T> pType) {
+    super(pOwner);
+    this.mNodeTypeSet = Objects.requireNonNull(pType);
   }
 
   /**
    * test a node type
    *
-   * @param type
+   * @param pType
    *          the node type
    */
-  protected TestNodeTypeSet(final NodeTypeSet<T> type) {
-    this(null, type);
+  protected TestNodeTypeSet(final NodeTypeSet<T> pType) {
+    this(null, pType);
   }
 
   /** test the node types in this node recursively */
@@ -97,7 +97,7 @@ public class TestNodeTypeSet<T extends Node>
   /** {@inheritDoc} */
   @Override
   protected NodeTypeSet<T> getInstance() {
-    return this.m_nodeTypeSet;
+    return this.mNodeTypeSet;
   }
 
   /**

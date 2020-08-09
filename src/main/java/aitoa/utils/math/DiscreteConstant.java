@@ -13,12 +13,12 @@ public final class DiscreteConstant
   /**
    * create the distribution
    *
-   * @param _m
+   * @param pM
    *          the value to return
    */
-  public DiscreteConstant(final int _m) {
+  public DiscreteConstant(final int pM) {
     super();
-    this.m = _m;
+    this.m = pM;
   }
 
   /** {@inheritDoc} */

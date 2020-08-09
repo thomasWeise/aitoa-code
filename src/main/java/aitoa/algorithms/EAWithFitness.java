@@ -42,40 +42,40 @@ public final class EAWithFitness<X, Y>
   /**
    * Create a new instance of the evolutionary algorithm
    *
-   * @param _cr
+   * @param pCr
    *          the crossover rate
-   * @param _mu
+   * @param pMu
    *          the number of parents to be selected
-   * @param _lambda
+   * @param pLambda
    *          the number of offspring to be created
-   * @param _fitness
+   * @param pFitness
    *          the fitness assignment process
    */
-  public EAWithFitness(final double _cr, final int _mu,
-      final int _lambda,
-      final FitnessAssignmentProcess<? super X> _fitness) {
+  public EAWithFitness(final double pCr, final int pMu,
+      final int pLambda,
+      final FitnessAssignmentProcess<? super X> pFitness) {
     super();
-    if ((_cr < 0d) || (_cr > 1d) || (!(Double.isFinite(_cr)))) {
+    if ((pCr < 0d) || (pCr > 1d) || (!(Double.isFinite(pCr)))) {
       throw new IllegalArgumentException(
-          "Invalid crossover rate: " + _cr); //$NON-NLS-1$
+          "Invalid crossover rate: " + pCr); //$NON-NLS-1$
     }
-    this.cr = _cr;
-    if ((_mu < 1) || (_mu > 1_000_000)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
+    this.cr = pCr;
+    if ((pMu < 1) || (pMu > 1_000_000)) {
+      throw new IllegalArgumentException("Invalid mu: " + pMu); //$NON-NLS-1$
     }
-    if ((_mu <= 1) && (_cr > 0d)) {
+    if ((pMu <= 1) && (pCr > 0d)) {
       throw new IllegalArgumentException(//
           "crossover rate must be 0 if mu is 1, but cr is " //$NON-NLS-1$
-              + _cr);
+              + pCr);
     }
-    this.mu = _mu;
-    if ((_lambda < 1) || (_lambda > 1_000_000)) {
+    this.mu = pMu;
+    if ((pLambda < 1) || (pLambda > 1_000_000)) {
       throw new IllegalArgumentException(
-          "Invalid lambda: " + _lambda); //$NON-NLS-1$
+          "Invalid lambda: " + pLambda); //$NON-NLS-1$
     }
-    this.lambda = _lambda;
+    this.lambda = pLambda;
 
-    this.fitness = Objects.requireNonNull(_fitness);
+    this.fitness = Objects.requireNonNull(pFitness);
   }
 
   /** {@inheritDoc} */

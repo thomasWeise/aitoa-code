@@ -30,20 +30,20 @@ public class Node {
       ReflectionUtils.className(Node.class) + "[] {";//$NON-NLS-1$
 
   /** the node type record */
-  final NodeType<?> m_type;
+  final NodeType<?> mType;
 
   /** the depth of the node */
-  private transient int m_depth;
+  private transient int mDepth;
 
   /**
    * Create a node
    *
-   * @param _type
+   * @param pType
    *          the node type record
    */
-  public Node(final NodeType<?> _type) {
+  public Node(final NodeType<?> pType) {
     super();
-    this.m_type = Objects.requireNonNull(_type);
+    this.mType = Objects.requireNonNull(pType);
   }
 
   /**
@@ -86,7 +86,7 @@ public class Node {
    * @return the node type
    */
   public final NodeType<?> getType() {
-    return this.m_type;
+    return this.mType;
   }
 
   /**
@@ -227,7 +227,7 @@ public class Node {
    * @return the depth of this tree
    */
   public final int depth() {
-    int d = this.m_depth;
+    int d = this.mDepth;
     if (d <= 0) {
       for (int i = this.getChildCount(); (--i) >= 0;) {
         final int dd = this.getChild(i).depth();
@@ -235,7 +235,7 @@ public class Node {
           d = dd;
         }
       }
-      d = this.m_depth = (d + 1);
+      d = this.mDepth = (d + 1);
     }
     return d;
   }

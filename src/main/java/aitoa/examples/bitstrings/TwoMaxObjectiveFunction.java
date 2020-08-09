@@ -15,11 +15,11 @@ public final class TwoMaxObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public TwoMaxObjectiveFunction(final int _n) {
-    super(_n);
+  public TwoMaxObjectiveFunction(final int pN) {
+    super(pN);
   }
 
   /**

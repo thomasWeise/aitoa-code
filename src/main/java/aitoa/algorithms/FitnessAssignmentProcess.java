@@ -16,12 +16,12 @@ public abstract class FitnessAssignmentProcess<X>
    * fill the {@link FitnessIndividual#fitness} variable with a
    * value based on the set of provided records.
    *
-   * @param P
+   * @param pop
    *          the array of records, each holding a point from the
    *          search space and a quality value.
    */
   public abstract void
-      assignFitness(FitnessIndividual<? extends X>[] P);
+      assignFitness(FitnessIndividual<? extends X>[] pop);
 
   /**
    * The comparator routine used by the fitness assignment

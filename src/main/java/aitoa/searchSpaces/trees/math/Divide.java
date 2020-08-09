@@ -17,14 +17,14 @@ public final class Divide<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public Divide(final NodeType<Divide<C>> type,
-      final Node[] _inner) {
-    super(type, _inner);
+  public Divide(final NodeType<Divide<C>> pType,
+      final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

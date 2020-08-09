@@ -20,29 +20,29 @@ public class TestBitStringBinaryOperatorUniform
     extends IBinarySearchOperatorTest<boolean[]> {
 
   /** the space */
-  private final BitStringSpace m_space;
+  private final BitStringSpace mSpace;
 
   /** the operator */
-  private final BitStringBinaryOperatorUniform m_operator;
+  private final BitStringBinaryOperatorUniform mOperator;
 
   /**
    * create
    *
-   * @param length
+   * @param pLength
    *          the length
    */
   protected TestBitStringBinaryOperatorUniform(
-      final int length) {
+      final int pLength) {
     super();
-    this.m_space = new BitStringSpace(length);
-    this.m_operator = new BitStringBinaryOperatorUniform();
+    this.mSpace = new BitStringSpace(pLength);
+    this.mOperator = new BitStringBinaryOperatorUniform();
   }
 
   /** {@inheritDoc} */
   @Test(timeout = 3600000)
   @Override
   public void testApplyValidAndDifferent() {
-    if (this.m_space.length > 10) {
+    if (this.mSpace.length > 10) {
       super.testApplyValidAndDifferent();
     }
   }
@@ -50,14 +50,14 @@ public class TestBitStringBinaryOperatorUniform
   /** {@inheritDoc} */
   @Override
   protected ISpace<boolean[]> getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected BitStringBinaryOperatorUniform
       getOperator(final ISpace<boolean[]> space) {
-    return this.m_operator;
+    return this.mOperator;
   }
 
   /** {@inheritDoc} */
@@ -70,7 +70,7 @@ public class TestBitStringBinaryOperatorUniform
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
-    final boolean[] b = new boolean[this.m_space.length];
+    final boolean[] b = new boolean[this.mSpace.length];
     final Random r = ThreadLocalRandom.current();
     for (int i = b.length; (--i) >= 0;) {
       b[i] = r.nextBoolean();
@@ -84,18 +84,18 @@ public class TestBitStringBinaryOperatorUniform
    */
   @Test(timeout = 3600000)
   public void testAllResultsPossible() {
-    if (this.m_space.length > 12) {
+    if (this.mSpace.length > 12) {
       return;
     }
-    final int[] count = new int[1 << this.m_space.length];
-    final boolean[] a = new boolean[this.m_space.length];
-    final boolean[] b = new boolean[this.m_space.length];
+    final int[] count = new int[1 << this.mSpace.length];
+    final boolean[] a = new boolean[this.mSpace.length];
+    final boolean[] b = new boolean[this.mSpace.length];
     final Random random = ThreadLocalRandom.current();
     Arrays.fill(random.nextBoolean() ? a : b, true);
 
-    final boolean[] x = new boolean[this.m_space.length];
+    final boolean[] x = new boolean[this.mSpace.length];
 
-    final BitStringBinaryOperatorUniform op = this.m_operator;
+    final BitStringBinaryOperatorUniform op = this.mOperator;
 
     for (int i = 100 * (10 + count.length); (--i) >= 0;) {
       op.apply(a, b, x, random);

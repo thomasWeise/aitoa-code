@@ -13,24 +13,24 @@ import aitoa.structure.ISpaceTest;
 public class TestTreeSpace extends ISpaceTest<Node[]> {
 
   /** the type set */
-  private final NodeTypeSet<?> m_typeSet;
+  private final NodeTypeSet<?> mTypeSet;
 
   /** the space */
-  private final TreeSpace m_space;
+  private final TreeSpace mSpace;
 
   /** test a tree space */
   public TestTreeSpace() {
     super();
 
-    this.m_typeSet =
+    this.mTypeSet =
         TestFunctionNodeTypeSet.makeMathNodeTypeSet();
-    this.m_space = new TreeSpace();
+    this.mSpace = new TreeSpace();
   }
 
   /** {@inheritDoc} */
   @Override
   public TreeSpace getInstance() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
@@ -38,7 +38,7 @@ public class TestTreeSpace extends ISpaceTest<Node[]> {
   protected void fillWithRandomData(final Node[] dest) {
     final Random r = ThreadLocalRandom.current();
     dest[0] = TestNodeType
-        .instantiate(this.m_typeSet.getRandomType(r), r, 0);
+        .instantiate(this.mTypeSet.getRandomType(r), r, 0);
   }
 
   /** {@inheritDoc} */

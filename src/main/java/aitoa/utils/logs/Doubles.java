@@ -8,21 +8,21 @@ import aitoa.utils.math.Statistics;
 final class Doubles extends Statistic {
 
   /** the internal data */
-  private double[] m_data;
+  private double[] mData;
 
   /** the size */
-  private int m_size;
+  private int mSize;
 
   /** create */
   Doubles() {
-    this.m_data = new double[10];
+    this.mData = new double[10];
   }
 
   /** {@inheritDoc} */
   @Override
   void add(final double value) {
-    final int size = this.m_size;
-    double[] data = this.m_data;
+    final int size = this.mSize;
+    double[] data = this.mData;
 
     if (!Double.isFinite(value)) {
       throw new IllegalArgumentException(
@@ -31,26 +31,26 @@ final class Doubles extends Statistic {
     }
 
     if (size >= data.length) {
-      this.m_data =
+      this.mData =
           data = Arrays.copyOf(data, Statistic.incSize(size));
     }
 
     data[size] = value;
-    this.m_size = (size + 1);
+    this.mSize = (size + 1);
   }
 
   /** {@inheritDoc} */
   @Override
   Statistic doFinalize() {
-    if (this.m_size <= 0) {
+    if (this.mSize <= 0) {
       throw new IllegalStateException("empty data array?"); //$NON-NLS-1$
     }
-    this.m_data = Arrays.copyOf(this.m_data, this.m_size);
-    Arrays.sort(this.m_data);
+    this.mData = Arrays.copyOf(this.mData, this.mSize);
+    Arrays.sort(this.mData);
 
     // try to convert the data to longs
     final long[] alt =
-        Statistics.tryConvertDoublesToLongs(this.m_data);
+        Statistics.tryConvertDoublesToLongs(this.mData);
     if (alt == null) {
       return this;
     }
@@ -60,26 +60,25 @@ final class Doubles extends Statistic {
   /** {@inheritDoc} */
   @Override
   int size() {
-    return this.m_size;
+    return this.mSize;
   }
 
   /** {@inheritDoc} */
   @Override
   Number quantile(final double p) {
-    return Statistics.quantile(p, this.m_data);
+    return Statistics.quantile(p, this.mData);
   }
 
   /** {@inheritDoc} */
   @Override
   Number[] meanAndStdDev() {
-    return Statistics
-        .sampleMeanAndStandardDeviation(this.m_data);
+    return Statistics.sampleMeanAndStandardDeviation(this.mData);
   }
 
   /** {@inheritDoc} */
   @Override
   Number divideSumBy(final int by) {
-    return Statistics.divideExact(Statistics.sum(this.m_data),
+    return Statistics.divideExact(Statistics.sum(this.mData),
         by);
   }
 }

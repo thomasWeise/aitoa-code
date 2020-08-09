@@ -15,20 +15,20 @@ public class TestIntSet {
   /**
    * Test the node set for a given value of L
    *
-   * @param L
+   * @param pL
    *          the length of the permutations
    */
-  private static final void testForL(final int L) {
-    final IntSet n = new IntSet(L);
+  private static final void testForL(final int pL) {
+    final IntSet n = new IntSet(pL);
     final Random r = ThreadLocalRandom.current();
 
-    final boolean[] avail = new boolean[L];
+    final boolean[] avail = new boolean[pL];
 
     // delete the last one
     n.fill();
     n.shuffle(r);
     Arrays.fill(avail, true);
-    for (int i = L; i > 0;) {
+    for (int i = pL; i > 0;) {
       for (int j = avail.length; (--j) >= 0;) {
         Assert.assertTrue(avail[j] == n.has(j));
       }
@@ -51,18 +51,18 @@ public class TestIntSet {
     n.fill();
     n.shuffle(r);
     Arrays.fill(avail, true);
-    for (int i = 0; i < L; i++) {
+    for (int i = 0; i < pL; i++) {
       for (int j = avail.length; (--j) >= 0;) {
         Assert.assertTrue(avail[j] == n.has(j));
       }
-      Assert.assertEquals(L - i, n.size());
+      Assert.assertEquals(pL - i, n.size());
       Assert.assertFalse(n.isEmpty());
       Assert.assertTrue(n.has(i));
       avail[i] = false;
       n.delete(i);
       Assert.assertFalse(n.has(i));
-      Assert.assertEquals(L - i - 1, n.size());
-      Assert.assertTrue((i >= (L - 1)) == n.isEmpty());
+      Assert.assertEquals(pL - i - 1, n.size());
+      Assert.assertTrue((i >= (pL - 1)) == n.isEmpty());
       for (int j = avail.length; (--j) >= 0;) {
         Assert.assertTrue(avail[j] == n.has(j));
       }
@@ -77,7 +77,7 @@ public class TestIntSet {
     n.fill();
     n.shuffle(r);
     Arrays.fill(avail, true);
-    for (int i = L; (--i) >= 0;) {
+    for (int i = pL; (--i) >= 0;) {
       for (int j = avail.length; (--j) >= 0;) {
         Assert.assertTrue(avail[j] == n.has(j));
       }
@@ -103,7 +103,7 @@ public class TestIntSet {
     n.fill();
     n.shuffle(r);
     Arrays.fill(avail, true);
-    for (int i = L; i > 0;) {
+    for (int i = pL; i > 0;) {
       Assert.assertEquals(i, n.size());
       Assert.assertFalse(n.isEmpty());
       for (int j = avail.length; (--j) >= 0;) {
@@ -129,7 +129,7 @@ public class TestIntSet {
     n.fill();
     n.shuffle(r);
     boolean toggle = true;
-    for (int i = L; i > 0; i--) {
+    for (int i = pL; i > 0; i--) {
       for (int j = i; (--j) >= 0;) {
         Assert.assertTrue(toggle == (avail[n.get(j)] ^= true));
       }
@@ -142,7 +142,7 @@ public class TestIntSet {
     Assert.assertEquals(0, n.size());
 
     // check adding of nodes
-    for (int i = 0; i < L; i++) {
+    for (int i = 0; i < pL; i++) {
       Assert.assertFalse(n.has(i));
       Assert.assertEquals(i, n.size());
       n.add(i);
@@ -157,20 +157,20 @@ public class TestIntSet {
     }
 
     Assert.assertFalse(n.isEmpty());
-    Assert.assertEquals(L, n.size());
+    Assert.assertEquals(pL, n.size());
     n.clear();
     Assert.assertTrue(n.isEmpty());
     Assert.assertEquals(0, n.size());
 
     // add in random order
-    final int[] values = new int[L];
-    for (int i = L; (--i) >= 0;) {
+    final int[] values = new int[pL];
+    for (int i = pL; (--i) >= 0;) {
       values[i] = i;
     }
-    RandomUtils.shuffle(r, values, 0, L);
+    RandomUtils.shuffle(r, values, 0, pL);
 
     // check adding of nodes
-    for (int i = 0; i < L; i++) {
+    for (int i = 0; i < pL; i++) {
       final int v = values[i];
       Assert.assertFalse(n.has(v));
       Assert.assertEquals(i, n.size());

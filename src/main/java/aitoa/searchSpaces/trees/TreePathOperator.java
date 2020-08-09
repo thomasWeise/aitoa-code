@@ -10,24 +10,24 @@ import java.util.Random;
 class TreePathOperator extends TreeOperator {
 
   /** the path */
-  private final Node[] m_path;
+  private final Node[] mPath;
 
   /** the path indexes */
-  private final int[] m_indexInParent;
+  private final int[] mIndexInParent;
 
   /** the length */
-  private int m_length;
+  private int mLength;
 
   /**
    * Create a new tree operation
    *
-   * @param md
+   * @param pMd
    *          the maximum tree depth
    */
-  TreePathOperator(final int md) {
-    super(md);
-    this.m_path = new Node[md];
-    this.m_indexInParent = new int[md];
+  TreePathOperator(final int pMd) {
+    super(pMd);
+    this.mPath = new Node[pMd];
+    this.mIndexInParent = new int[pMd];
   }
 
   /**
@@ -36,7 +36,7 @@ class TreePathOperator extends TreeOperator {
    * @return the element
    */
   final Node getEnd() {
-    return this.m_path[this.m_length - 1];
+    return this.mPath[this.mLength - 1];
   }
 
   /**
@@ -45,7 +45,7 @@ class TreePathOperator extends TreeOperator {
    * @return the choices for the end element of the path
    */
   final NodeTypeSet<?> getEndChoices() {
-    return this.m_path[this.m_length - 1].m_type.m_typeSet;
+    return this.mPath[this.mLength - 1].mType.mTypeSet;
   }
 
   /**
@@ -61,9 +61,9 @@ class TreePathOperator extends TreeOperator {
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   final Node tryModifyEnd(final Random random) {
-    final Node end = this.m_path[this.m_length - 1];
-    final Node newEnd = ((NodeType) (end.m_type))
-        .createModifiedCopy(end, random);
+    final Node end = this.mPath[this.mLength - 1];
+    final Node newEnd =
+        ((NodeType) (end.mType)).createModifiedCopy(end, random);
     if ((newEnd != null) && (!Objects.equals(end, newEnd))) {
       return this.replaceEnd(newEnd);
     }
@@ -83,8 +83,8 @@ class TreePathOperator extends TreeOperator {
   final int randomPath(final Node start, final Random random) {
     int length = 0;
     int parentIndex = -1;
-    final Node[] path = this.m_path;
-    final int[] parentIndexes = this.m_indexInParent;
+    final Node[] path = this.mPath;
+    final int[] parentIndexes = this.mIndexInParent;
     Node cur = start;
 
     for (;;) {
@@ -100,7 +100,7 @@ class TreePathOperator extends TreeOperator {
       cur = cur.getChild(parentIndex);
     }
 
-    return (this.m_length = length);
+    return (this.mLength = length);
   }
 
   /**
@@ -117,21 +117,21 @@ class TreePathOperator extends TreeOperator {
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   final Node replaceEnd(final Node newNode) {
-    int i = this.m_length;
-    final Node[] path = this.m_path;
-    final int[] parentIndexes = this.m_indexInParent;
+    int i = this.mLength;
+    final Node[] path = this.mPath;
+    final int[] parentIndexes = this.mIndexInParent;
 
     Node x = newNode;
     if (Objects.equals(x, path[--i])) {
-      this.m_length = -1; // invalidate path
+      this.mLength = -1; // invalidate path
       return null;
     }
     for (; (--i) >= 0;) {
       final Node current = path[i];
-      x = ((NodeType) (current.m_type)).replaceChild(current, x,
+      x = ((NodeType) (current.mType)).replaceChild(current, x,
           parentIndexes[i + 1]);
     }
-    this.m_length = -1; // invalidate path
+    this.mLength = -1; // invalidate path
     return x;
   }
 }

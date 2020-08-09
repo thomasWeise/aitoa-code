@@ -27,30 +27,30 @@ import aitoa.utils.ReflectionUtils;
 public class TestNode extends StructureTest<Node> {
 
   /** the node */
-  private final Node m_node;
+  private final Node mNode;
 
   /**
    * test a node
    *
-   * @param node
+   * @param pNode
    *          the node
-   * @param owner
+   * @param pOwner
    *          the owner
    */
-  private TestNode(final StructureTest<?> owner,
-      final Node node) {
-    super(owner);
-    this.m_node = Objects.requireNonNull(node);
+  private TestNode(final StructureTest<?> pOwner,
+      final Node pNode) {
+    super(pOwner);
+    this.mNode = Objects.requireNonNull(pNode);
   }
 
   /**
    * test a node
    *
-   * @param node
+   * @param pNode
    *          the node
    */
-  protected TestNode(final Node node) {
-    this(null, node);
+  protected TestNode(final Node pNode) {
+    this(null, pNode);
   }
 
   /** test the children of this node recursively */
@@ -130,7 +130,7 @@ public class TestNode extends StructureTest<Node> {
   /** {@inheritDoc} */
   @Override
   protected Node getInstance() {
-    return this.m_node;
+    return this.mNode;
   }
 
   /**

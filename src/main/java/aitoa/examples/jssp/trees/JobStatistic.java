@@ -52,43 +52,43 @@ public final class JobStatistic
   }
 
   /** the statistic value */
-  final int m_statValue;
+  final int mStatValue;
 
   /**
    * Create a double constant node
    *
-   * @param type
+   * @param pType
    *          the node type
-   * @param statValue
+   * @param pStatValue
    *          the statistics value
    */
-  public JobStatistic(final NodeType<JobStatistic> type,
-      final int statValue) {
-    super(type);
-    this.m_statValue = statValue;
-    if ((statValue < 0)
-        || (statValue >= JSSPTreeRepresentationMapping.DIM_VALUES)) {
+  public JobStatistic(final NodeType<JobStatistic> pType,
+      final int pStatValue) {
+    super(pType);
+    this.mStatValue = pStatValue;
+    if ((pStatValue < 0)
+        || (pStatValue >= JSSPTreeRepresentationMapping.DIM_VALUES)) {
       throw new IllegalArgumentException("invalid stat value: "//$NON-NLS-1$
-          + statValue);
+          + pStatValue);
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public double applyAsDouble(final double[] param) {
-    return param[this.m_statValue];
+    return param[this.mStatValue];
   }
 
   /** {@inheritDoc} */
   @Override
   public long applyAsLong(final double[] param) {
-    return Math.round(param[this.m_statValue]);
+    return Math.round(param[this.mStatValue]);
   }
 
   /** {@inheritDoc} */
   @Override
   public int applyAsInt(final double[] param) {
-    final long value = Math.round(param[this.m_statValue]);
+    final long value = Math.round(param[this.mStatValue]);
     if (value >= Integer.MAX_VALUE) {
       return Integer.MAX_VALUE;
     }
@@ -101,7 +101,7 @@ public final class JobStatistic
   /** {@inheritDoc} */
   @Override
   public void asText(final Appendable out) throws IOException {
-    out.append(JobStatistic.NAMES[this.m_statValue]);
+    out.append(JobStatistic.NAMES[this.mStatValue]);
   }
 
   /** {@inheritDoc} */
@@ -109,7 +109,7 @@ public final class JobStatistic
   public void asJavaPrintParameters(final Appendable out)
       throws IOException {
     out.append(',').append(' ').append(',').append(' ')
-        .append(Integer.toString(this.m_statValue));
+        .append(Integer.toString(this.mStatValue));
   }
 
   /** {@inheritDoc} */
@@ -123,7 +123,7 @@ public final class JobStatistic
     }
     if (o instanceof JobStatistic) {
       final JobStatistic q = ((JobStatistic) o);
-      return (q.m_statValue == this.m_statValue);
+      return (q.mStatValue == this.mStatValue);
     }
     return false;
   }
@@ -131,7 +131,7 @@ public final class JobStatistic
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    return (0x28947517 ^ Integer.hashCode(this.m_statValue));
+    return (0x28947517 ^ Integer.hashCode(this.mStatValue));
   }
 
   /**
@@ -148,7 +148,7 @@ public final class JobStatistic
       extends NodeType<JobStatistic> {
 
     /** a set of statistics */
-    private final JobStatistic[] m_statistics;
+    private final JobStatistic[] mStatistics;
 
     /**
      * create the constant node factory
@@ -159,10 +159,10 @@ public final class JobStatistic
     JobStatisticNodeType(final NodeTypeSet<?>[] children) {
       super(children);
 
-      this.m_statistics =
+      this.mStatistics =
           new JobStatistic[JSSPTreeRepresentationMapping.DIM_VALUES];
-      for (int i = this.m_statistics.length; (--i) >= 0;) {
-        this.m_statistics[i] = new JobStatistic(this, i);
+      for (int i = this.mStatistics.length; (--i) >= 0;) {
+        this.mStatistics[i] = new JobStatistic(this, i);
       }
     }
 
@@ -175,8 +175,8 @@ public final class JobStatistic
             "job statistics cannot have children, but you provided " //$NON-NLS-1$
                 + children.length);
       }
-      final int i = random.nextInt(this.m_statistics.length);
-      return (this.m_statistics[i]);
+      final int i = random.nextInt(this.mStatistics.length);
+      return (this.mStatistics[i]);
     }
 
     /** {@inheritDoc} */

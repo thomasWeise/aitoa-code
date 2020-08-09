@@ -11,15 +11,15 @@ import java.util.function.Function;
 public class NodeTypeSetBuilder {
 
   /** the node type set builders */
-  private ArrayList<Builder> m_builders;
+  private ArrayList<Builder> mBuilders;
 
   /** do we have the root builder? */
-  private boolean m_hasRoot;
+  private boolean mHasRoot;
 
   /** Create the node type system builder */
   public NodeTypeSetBuilder() {
     super();
-    this.m_builders = new ArrayList<>();
+    this.mBuilders = new ArrayList<>();
   }
 
   /**
@@ -29,7 +29,7 @@ public class NodeTypeSetBuilder {
    */
   public final Builder newNodeTypeSet() {
     final Builder n = new Builder(false);
-    this.m_builders.add(n);
+    this.mBuilders.add(n);
     return n;
   }
 
@@ -39,12 +39,12 @@ public class NodeTypeSetBuilder {
    * @return the node type set
    */
   public final Builder rootNodeTypeSet() {
-    if (this.m_hasRoot) {
+    if (this.mHasRoot) {
       throw new IllegalStateException(
           "only one root node type set can be constructed."); //$NON-NLS-1$
     }
     final Builder n = new Builder(true);
-    this.m_builders.add(0, n);
+    this.mBuilders.add(0, n);
     return n;
   }
 
@@ -55,15 +55,15 @@ public class NodeTypeSetBuilder {
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public final NodeTypeSet build() {
-    final ArrayList<Builder> builders = this.m_builders;
-    this.m_builders = null;
+    final ArrayList<Builder> builders = this.mBuilders;
+    this.mBuilders = null;
 
     final int size = builders.size();
     if (size <= 0) {
       throw new IllegalStateException(//
           "there must be builders."); //$NON-NLS-1$
     }
-    if (!(builders.get(0).m_isRoot)) {
+    if (!(builders.get(0).mIsRoot)) {
       throw new IllegalStateException(//
           "you must create a root node type.");//$NON-NLS-1$
     }
@@ -72,8 +72,8 @@ public class NodeTypeSetBuilder {
     final NodeTypeSet[] result = new NodeTypeSet[size];
     for (int i = size; (--i) >= 0;) {
       final Builder ntsb = builders.get(i);
-      ntsb.m_index = i;
-      final NodeType[] types = new NodeType[ntsb.m_types.size()];
+      ntsb.mIndex = i;
+      final NodeType[] types = new NodeType[ntsb.mTypes.size()];
       result[i] = new NodeTypeSet<>(types);
     }
 
@@ -86,7 +86,7 @@ public class NodeTypeSetBuilder {
 
       final NodeTypeSet current = result[i];
       final Builder ntsb = builders.get(i);
-      final ArrayList<Object[]> types = ntsb.m_types;
+      final ArrayList<Object[]> types = ntsb.mTypes;
 
       for (int j = types.size(); (--j) >= 0;) {
         // prepare each node type
@@ -100,7 +100,7 @@ public class NodeTypeSetBuilder {
         if (k > 0) {
           children = new NodeTypeSet[k];
           for (; (--k) >= 0;) {
-            children[k] = result[childTypes[k].m_index];
+            children[k] = result[childTypes[k].mIndex];
           }
         } else {
           children = empty;
@@ -108,16 +108,16 @@ public class NodeTypeSetBuilder {
 
         final NodeType type =
             Objects.requireNonNull(factory.apply(children));
-        current.m_types[j] = type;
-        type.m_typeSet = current;
+        current.mTypes[j] = type;
+        type.mTypeSet = current;
       } // end node type
 
       // the first sort
-      Arrays.sort(result[i].m_types);
-      for (final NodeType<?> type : result[i].m_types) {
-        type.m_id = (id++); // assign ids
-        if (type.m_childTypes.length <= 0) {
-          ++current.m_terminalCount;
+      Arrays.sort(result[i].mTypes);
+      for (final NodeType<?> type : result[i].mTypes) {
+        type.mId = (id++); // assign ids
+        if (type.mChildTypes.length <= 0) {
+          ++current.mTerminalCount;
         }
       } // end post-processing types
     } // end node type set
@@ -131,24 +131,24 @@ public class NodeTypeSetBuilder {
   public static final class Builder {
 
     /** the types */
-    final ArrayList<Object[]> m_types;
+    final ArrayList<Object[]> mTypes;
 
     /** is this a root builder? */
-    final boolean m_isRoot;
+    final boolean mIsRoot;
 
     /** the index */
-    int m_index;
+    int mIndex;
 
     /**
      * create
      *
-     * @param isRoot
+     * @param pIsRoot
      *          is this the root builder?
      */
-    Builder(final boolean isRoot) {
+    Builder(final boolean pIsRoot) {
       super();
-      this.m_types = new ArrayList<>();
-      this.m_isRoot = isRoot;
+      this.mTypes = new ArrayList<>();
+      this.mIsRoot = pIsRoot;
     }
 
     /**
@@ -165,7 +165,7 @@ public class NodeTypeSetBuilder {
     public final void add(
         final Function<NodeTypeSet<?>[], NodeType<?>> factory,
         final Builder... childTypes) {
-      this.m_types.add(new Object[] { //
+      this.mTypes.add(new Object[] { //
           Objects.requireNonNull(factory), //
           Objects.requireNonNull(childTypes) });
     }

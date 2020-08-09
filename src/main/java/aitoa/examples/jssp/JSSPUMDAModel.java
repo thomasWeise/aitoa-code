@@ -19,23 +19,23 @@ import aitoa.utils.RandomUtils;
 public class JSSPUMDAModel implements IModel<int[]> {
 
   /** the counters, i.e., the model */
-  private final long[][] m_M;
+  private final long[][] mModel;
   /**
    * the permutation used for picking indices to fill in a random
    * order
    */
-  private final int[] m_perm;
+  private final int[] mPerm;
 
   /** the probability vector */
-  private final long[] m_prob;
+  private final long[] mProb;
 
   /** the jobs we can choose from */
-  private final int[] m_jobChoseFrom;
+  private final int[] mJobChoseFrom;
 
   /** the remaining number of times a job can be scheduled */
-  private final int[] m_jobRemainingTimes;
+  private final int[] mJobRemainingTimes;
   /** the number of machines */
-  private final int m_m;
+  private final int mMachines;
 
   /** the probability base */
   public final long base;
@@ -43,48 +43,48 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /**
    * create a model for the given jssp instance
    *
-   * @param instance
+   * @param pInstance
    *          the instance
    */
-  public JSSPUMDAModel(final JSSPInstance instance) {
-    this(instance, Integer.MAX_VALUE);
+  public JSSPUMDAModel(final JSSPInstance pInstance) {
+    this(pInstance, Integer.MAX_VALUE);
   }
 
   /**
    * create a model for the given jssp instance
    *
-   * @param instance
+   * @param pInstance
    *          the instance
-   * @param _base
+   * @param pBase
    *          the number of probability units assigned for each
    *          occurrence of a given job at a given index
    */
-  public JSSPUMDAModel(final JSSPInstance instance,
-      final long _base) {
+  public JSSPUMDAModel(final JSSPInstance pInstance,
+      final long pBase) {
     super();
 
-    if (_base <= 0L) {
+    if (pBase <= 0L) {
       throw new IllegalArgumentException(
           "Base multiplier must be greater than 0, but is " //$NON-NLS-1$
-              + _base);
+              + pBase);
     }
-    this.base = _base;
+    this.base = pBase;
 
-    int n = instance.n;
-    this.m_m = instance.m;
-    int l = this.m_m * n;
-    this.m_M = new long[l][n];
-    this.m_perm = new int[l];
+    int n = pInstance.n;
+    this.mMachines = pInstance.m;
+    int l = this.mMachines * n;
+    this.mModel = new long[l][n];
+    this.mPerm = new int[l];
     for (; (--l) >= 0;) {
-      this.m_perm[l] = l;
+      this.mPerm[l] = l;
     }
 
-    this.m_jobRemainingTimes = new int[n];
-    this.m_jobChoseFrom = new int[n];
-    this.m_prob = new long[n];
+    this.mJobRemainingTimes = new int[n];
+    this.mJobChoseFrom = new int[n];
+    this.mProb = new long[n];
 
     for (; (--n) >= 0;) {
-      this.m_jobChoseFrom[n] = n;
+      this.mJobChoseFrom[n] = n;
     }
   }
 
@@ -119,7 +119,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
   public final void initialize() {
-    for (final long[] l : this.m_M) {
+    for (final long[] l : this.mModel) {
       Arrays.fill(l, 1L);
     }
   }
@@ -128,17 +128,17 @@ public class JSSPUMDAModel implements IModel<int[]> {
   @Override
 // start update
   public void update(final Iterable<int[]> selected) {
-    final int l = this.m_M.length; // == m*n
+    final int l = this.mModel.length; // == m*n
 
 // Make sure that all values are >= 1
-    for (final long[] a : this.m_M) {
+    for (final long[] a : this.mModel) {
       Arrays.fill(a, 1L);
     }
 
 // For each encountered job, add the large value this.base
     for (final int[] sel : selected) { // selected points
       for (int k = l; (--k) >= 0;) { // valid indices
-        this.m_M[k][sel[k]] += this.base;
+        this.mModel[k][sel[k]] += this.base;
       }
     }
   }
@@ -149,14 +149,14 @@ public class JSSPUMDAModel implements IModel<int[]> {
 // start sampling
   public final void apply(final int[] dest,
       final Random random) {
-    final int[] perm = this.m_perm; // all indices
+    final int[] perm = this.mPerm; // all indices
 // each job occurs m times
-    final int[] jobRemainingTimes = this.m_jobRemainingTimes;
-    Arrays.fill(jobRemainingTimes, this.m_m);
+    final int[] jobRemainingTimes = this.mJobRemainingTimes;
+    Arrays.fill(jobRemainingTimes, this.mMachines);
 // the jobs we can choose from:
-    final int[] jobChooseFrom = this.m_jobChoseFrom;
-    final long[] prob = this.m_prob; // used for cumulative sum
-    final long[][] M = this.m_M; // the model
+    final int[] jobChooseFrom = this.mJobChoseFrom;
+    final long[] prob = this.mProb; // used for cumulative sum
+    final long[][] M = this.mModel; // the model
 // we can choose from n jobs
     int jobChooseLength = jobChooseFrom.length; // = n
 

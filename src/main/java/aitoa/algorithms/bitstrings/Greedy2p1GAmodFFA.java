@@ -34,30 +34,30 @@ public final class Greedy2p1GAmodFFA<Y>
   /**
    * create
    *
-   * @param _UB
+   * @param pUB
    *          the upper bound of the objective value
    */
-  public Greedy2p1GAmodFFA(final int _UB) {
-    this(Greedy2p1GAmodBase.DEFAULT_C, _UB);
+  public Greedy2p1GAmodFFA(final int pUB) {
+    this(Greedy2p1GAmodBase.DEFAULT_C, pUB);
   }
 
   /**
    * create
    *
-   * @param _c
+   * @param pC
    *          the constant above n to define the mutation
    *          probability
-   * @param _UB
+   * @param pUB
    *          the upper bound of the objective value
    */
-  public Greedy2p1GAmodFFA(final double _c, final int _UB) {
-    super(_c);
-    if (_UB <= 0) {
+  public Greedy2p1GAmodFFA(final double pC, final int pUB) {
+    super(pC);
+    if (pUB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
-              + _UB);
+              + pUB);
     }
-    this.UB = _UB;
+    this.UB = pUB;
   }
 
   /** {@inheritDoc} */

@@ -34,18 +34,18 @@ public class InnerGreedy2p1GAmod<Y>
   /**
    * create
    *
-   * @param _m
+   * @param pM
    *          the constant above n to define the mutation
    *          probability
    */
-  public InnerGreedy2p1GAmod(final int _m) {
+  public InnerGreedy2p1GAmod(final int pM) {
     super();
-    if (_m <= 0) {
+    if (pM <= 0) {
       throw new IllegalArgumentException(
           "m must be at least 1, but you specified " //$NON-NLS-1$
-              + _m);
+              + pM);
     }
-    this.m = _m;
+    this.m = pM;
   }
 
   /** {@inheritDoc} */

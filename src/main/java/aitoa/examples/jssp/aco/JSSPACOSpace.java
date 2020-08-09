@@ -17,12 +17,12 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
   /**
    * create
    *
-   * @param instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPACOSpace(final JSSPInstance instance) {
+  public JSSPACOSpace(final JSSPInstance pInstance) {
     super();
-    this.Y = new JSSPSolutionSpace(instance);
+    this.Y = new JSSPSolutionSpace(pInstance);
   }
 
   /** {@inheritDoc} */

@@ -15,18 +15,18 @@ public final class JSSPACOMakespanObjectiveFunction
    * the inner makespan objective function, used only for
    * computing the bounds
    */
-  private final JSSPMakespanObjectiveFunction inner;
+  private final JSSPMakespanObjectiveFunction mInner;
 
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the instance
    */
   public JSSPACOMakespanObjectiveFunction(
-      final JSSPInstance _instance) {
+      final JSSPInstance pInstance) {
     super();
-    this.inner = new JSSPMakespanObjectiveFunction(_instance);
+    this.mInner = new JSSPMakespanObjectiveFunction(pInstance);
   }
 
   /**
@@ -35,24 +35,24 @@ public final class JSSPACOMakespanObjectiveFunction
    * @return the JSSP instance
    */
   public JSSPInstance getInstance() {
-    return this.inner.instance;
+    return this.mInner.instance;
   }
 
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the instance
    */
   public JSSPACOMakespanObjectiveFunction(
-      final String _instance) {
-    this(new JSSPInstance(_instance));
+      final String pInstance) {
+    this(new JSSPInstance(pInstance));
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.inner.toString();
+    return this.mInner.toString();
   }
 
   /** {@inheritDoc} */
@@ -64,12 +64,12 @@ public final class JSSPACOMakespanObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public double lowerBound() {
-    return this.inner.lowerBound();
+    return this.mInner.lowerBound();
   }
 
   /** {@inheritDoc} */
   @Override
   public double upperBound() {
-    return this.inner.upperBound();
+    return this.mInner.upperBound();
   }
 }

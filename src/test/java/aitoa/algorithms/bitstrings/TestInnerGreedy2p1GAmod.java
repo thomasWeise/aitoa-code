@@ -9,7 +9,7 @@ public class TestInnerGreedy2p1GAmod
   /** {@inheritDoc} */
   @Override
   protected IMetaheuristic<boolean[], boolean[]>
-      createMetaheuristic(final int n, final int UB) {
+      createMetaheuristic(final int pN, final int pUB) {
     return new InnerGreedy2p1GAmod<>(1);
   }
 }

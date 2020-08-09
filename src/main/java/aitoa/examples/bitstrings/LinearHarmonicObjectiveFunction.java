@@ -17,13 +17,13 @@ public final class LinearHarmonicObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public LinearHarmonicObjectiveFunction(final int _n) {
-    super(_n);
+  public LinearHarmonicObjectiveFunction(final int pN) {
+    super(pN);
 
-    this.upperBound = (((long) _n) * (_n + 1)) >>> 1;
+    this.upperBound = (((long) pN) * (pN + 1)) >>> 1;
   }
 
   /**

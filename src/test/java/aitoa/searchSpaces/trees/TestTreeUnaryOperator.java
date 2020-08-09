@@ -18,52 +18,52 @@ public class TestTreeUnaryOperator
     extends IUnarySearchOperatorTest<Node[]> {
 
   /** the type set */
-  private final NodeTypeSet<?> m_typeSet;
+  private final NodeTypeSet<?> mTypeSet;
 
   /** the space */
-  private final TreeSpace m_space;
+  private final TreeSpace mSpace;
 
   /** the nullary operator */
-  private final TreeNullaryOperator m_nullary;
+  private final TreeNullaryOperator mNullary;
   /** the unary operator */
-  private final TreeUnaryOperator m_unary;
+  private final TreeUnaryOperator mUnary;
 
   /**
    * create the unary operator
    *
-   * @param maxDepth
+   * @param pMaxDepth
    *          the maximum depth
    */
-  public TestTreeUnaryOperator(final int maxDepth) {
+  public TestTreeUnaryOperator(final int pMaxDepth) {
 
     super();
 
-    this.m_typeSet =
+    this.mTypeSet =
         TestFunctionNodeTypeSet.makeMathNodeTypeSet();
-    this.m_space = new TreeSpace(maxDepth);
-    this.m_nullary =
-        new TreeNullaryOperator(this.m_typeSet, maxDepth);
-    this.m_unary = new TreeUnaryOperator(maxDepth);
+    this.mSpace = new TreeSpace(pMaxDepth);
+    this.mNullary =
+        new TreeNullaryOperator(this.mTypeSet, pMaxDepth);
+    this.mUnary = new TreeUnaryOperator(pMaxDepth);
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeSpace getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeUnaryOperator
       getOperator(final ISpace<Node[]> space) {
-    return this.m_unary;
+    return this.mUnary;
   }
 
   /** {@inheritDoc} */
   @Override
   protected Node[] createValid() {
     final Node[] res = new Node[1];
-    this.m_nullary.apply(res, ThreadLocalRandom.current());
+    this.mNullary.apply(res, ThreadLocalRandom.current());
     return res;
   }
 
@@ -80,7 +80,7 @@ public class TestTreeUnaryOperator
     final Node[] copy = space.create();
     final Node[] dest = space.create();
 
-    final int maxDepth = op.m_maxDepth;
+    final int maxDepth = op.mMaxDepth;
     int count = 0;
     int different = 0;
     final int[] childDepths = new int[maxDepth];

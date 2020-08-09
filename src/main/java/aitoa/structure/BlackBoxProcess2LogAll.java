@@ -19,34 +19,34 @@ import aitoa.utils.IOUtils.IOConsumer;
 final class BlackBoxProcess2LogAll<X, Y>
     extends BlackBoxProcessBase<X, Y> {
   /** the current candidate solution */
-  final Y m_current;
+  final Y mCurrent;
   /** the best-so-far candidate solution */
-  final Y m_bestY;
+  final Y mBestY;
   /** the log file */
-  private final Writer m_logWriter;
+  private final Writer mLogWriter;
   /** the log */
-  private long[] m_log;
+  private long[] mLog;
   /** the log size */
-  private int m_logSize;
+  private int mLogSize;
 
   /**
    * Instantiate the black box problem of the black box problem
    *
-   * @param builder
+   * @param pBuilder
    *          the builder to copy the data from
    */
   BlackBoxProcess2LogAll(
-      final BlackBoxProcessBuilder<X, Y> builder) {
-    super(builder);
-    this.m_bestY = this.m_solutionSpace.create();
-    this.m_current = this.m_solutionSpace.create();
+      final BlackBoxProcessBuilder<X, Y> pBuilder) {
+    super(pBuilder);
+    this.mBestY = this.mSolutionSpace.create();
+    this.mCurrent = this.mSolutionSpace.create();
 
-    this.m_logWriter = builder.createLogWriter();
-    this.m_log = builder.createLog();
+    this.mLogWriter = pBuilder.createLogWriter();
+    this.mLog = pBuilder.createLog();
 
     // enqueue into terminator thread if needed only after
     // initialization is complete
-    if (this.m_maxTime < Long.MAX_VALUE) {
+    if (this.mMaxTime < Long.MAX_VALUE) {
       TerminationThread.enqueue(this);
     }
   }
@@ -54,29 +54,29 @@ final class BlackBoxProcess2LogAll<X, Y>
   /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
-    if (this.m_terminationTime <= 0L) {
-      this.m_terminationTime = System.currentTimeMillis();
+    if (this.mTerminationTime <= 0L) {
+      this.mTerminationTime = System.currentTimeMillis();
     }
     // make sure we are dequeued from terminator
     this.terminate();
 
     // write the log information and then close log
     IOUtils.synchronizedIO(() -> {
-      try (final Writer out = this.m_logWriter) {
-        BlackBoxProcessBase.writeLog(this.m_log, this.m_logSize,
-            this.m_startTime, out);
-        this.m_log = null;
+      try (final Writer out = this.mLogWriter) {
+        BlackBoxProcessBase.writeLog(this.mLog, this.mLogSize,
+            this.mStartTime, out);
+        this.mLog = null;
         this.printInfos(out);
-        if (this.m_consumedFEs > 0L) {
+        if (this.mConsumedFEs > 0L) {
           out.write("# BEST_X"); //$NON-NLS-1$
           out.write(System.lineSeparator());
-          this.m_searchSpace.print(this.m_bestX, out);
+          this.mSearchSpace.print(this.mBestX, out);
           out.write(System.lineSeparator());
           out.write("# END_BEST_X");//$NON-NLS-1$
           out.write(System.lineSeparator());
           out.write("# BEST_Y"); //$NON-NLS-1$
           out.write(System.lineSeparator());
-          this.m_solutionSpace.print(this.m_bestY, out);
+          this.mSolutionSpace.print(this.mBestY, out);
           out.write(System.lineSeparator());
           out.write("# END_BEST_Y"); //$NON-NLS-1$
           out.write(System.lineSeparator());
@@ -85,56 +85,56 @@ final class BlackBoxProcess2LogAll<X, Y>
     });
 
     // validate result: throw error if invalid
-    this.m_searchSpace.check(this.m_bestX);
-    this.m_solutionSpace.check(this.m_bestY);
+    this.mSearchSpace.check(this.mBestX);
+    this.mSolutionSpace.check(this.mBestY);
   }
 
   /** {@inheritDoc} */
   @Override
   public double evaluate(final X y) {
-    if (this.m_terminated) {
+    if (this.mTerminated) {
       // if we have already terminated, straight quit
       return Double.POSITIVE_INFINITY;
     }
-    final long fes = ++this.m_consumedFEs; // increase fes
+    final long fes = ++this.mConsumedFEs; // increase fes
     // map and evaluate
-    this.m_mapping.map(this.m_random, y, this.m_current);
-    final double result = this.m_f.evaluate(this.m_current);
+    this.mMapping.map(this.mRandom, y, this.mCurrent);
+    final double result = this.mF.evaluate(this.mCurrent);
 
     final long time = System.currentTimeMillis();
 
     // store the log information
-    final int size = this.m_logSize;
+    final int size = this.mLogSize;
     final int newSize = Math.addExact(size, 3);
-    if (newSize > this.m_log.length) { // grow log
-      this.m_log = BlackBoxProcessBase.growLog(this.m_log);
+    if (newSize > this.mLog.length) { // grow log
+      this.mLog = BlackBoxProcessBase.growLog(this.mLog);
     }
     // store log point
-    this.m_log[size] = Double.doubleToLongBits(result);
-    this.m_log[size + 1] = fes;
-    this.m_log[size + 2] = time;
-    this.m_logSize = newSize;
+    this.mLog[size] = Double.doubleToLongBits(result);
+    this.mLog[size + 1] = fes;
+    this.mLog[size + 2] = time;
+    this.mLogSize = newSize;
 
     // did we improve
-    if (result < this.m_bestF) {// yes, we did
+    if (result < this.mBestF) {// yes, we did
       // so remember a copy of this best solution
-      this.m_bestF = result;
-      this.m_searchSpace.copy(y, this.m_bestX);
-      this.m_solutionSpace.copy(this.m_current, this.m_bestY);
-      this.m_lastImprovementFE = fes; // and the current FE
+      this.mBestF = result;
+      this.mSearchSpace.copy(y, this.mBestX);
+      this.mSolutionSpace.copy(this.mCurrent, this.mBestY);
+      this.mLastImprovementFE = fes; // and the current FE
       // and the time when the improvement was made
-      this.m_lastImprovementTime = time;
+      this.mLastImprovementTime = time;
 
       // check if we have exhausted the granted runtime or
       // reached the quality goal
-      if ((this.m_lastImprovementTime >= this.m_endTime)
-          || (result <= this.m_goalF)) {
+      if ((this.mLastImprovementTime >= this.mEndTime)
+          || (result <= this.mGoalF)) {
         this.terminate();// terminate: we are finished
       }
     }
 
     // check if we have exhausted the granted FEs
-    if (fes >= this.m_maxFEs) {
+    if (fes >= this.mMaxFEs) {
       this.terminate();// terminate: no more FEs
     }
     // return result
@@ -144,8 +144,8 @@ final class BlackBoxProcess2LogAll<X, Y>
   /** {@inheritDoc} */
   @Override
   public void getBestY(final Y dest) {
-    if (this.m_consumedFEs > 0L) {
-      this.m_solutionSpace.copy(this.m_bestY, dest);
+    if (this.mConsumedFEs > 0L) {
+      this.mSolutionSpace.copy(this.mBestY, dest);
     } else {
       throw new IllegalStateException(//
           "No FE consumed yet."); //$NON-NLS-1$
@@ -157,15 +157,15 @@ final class BlackBoxProcess2LogAll<X, Y>
   public void printLogSection(final String sectionName,
       final IOConsumer<Writer> printer) throws IOException {
     IOUtils.synchronizedIO(() -> {
-      this.m_logWriter.write(LogFormat.COMMENT_CHAR);
-      this.m_logWriter.write(' ');
-      this.m_logWriter.write(sectionName);
-      this.m_logWriter.write(System.lineSeparator());
-      printer.accept(this.m_logWriter);
-      this.m_logWriter.write(LogFormat.COMMENT_CHAR);
-      this.m_logWriter.write(" END_"); //$NON-NLS-1$
-      this.m_logWriter.write(sectionName);
-      this.m_logWriter.write(System.lineSeparator());
+      this.mLogWriter.write(LogFormat.COMMENT_CHAR);
+      this.mLogWriter.write(' ');
+      this.mLogWriter.write(sectionName);
+      this.mLogWriter.write(System.lineSeparator());
+      printer.accept(this.mLogWriter);
+      this.mLogWriter.write(LogFormat.COMMENT_CHAR);
+      this.mLogWriter.write(" END_"); //$NON-NLS-1$
+      this.mLogWriter.write(sectionName);
+      this.mLogWriter.write(System.lineSeparator());
     });
   }
 }

@@ -37,34 +37,34 @@ public final class EDAWithFitness<X, Y>
   /**
    * Create a new instance of the estimation of distribution
    *
-   * @param _mu
+   * @param pMu
    *          the number of solution to be selected
-   * @param _lambda
+   * @param pLambda
    *          the number of new points per generation
-   * @param _model
+   * @param pModel
    *          the model
-   * @param _fitness
+   * @param pFitness
    *          the fitness assignment process
    */
-  public EDAWithFitness(final int _mu, final int _lambda,
-      final IModel<X> _model,
-      final FitnessAssignmentProcess<? super X> _fitness) {
+  public EDAWithFitness(final int pMu, final int pLambda,
+      final IModel<X> pModel,
+      final FitnessAssignmentProcess<? super X> pFitness) {
     super();
-    if ((_lambda < 1) || (_lambda > 100_000_000)) {
+    if ((pLambda < 1) || (pLambda > 100_000_000)) {
       throw new IllegalArgumentException(
-          "Invalid lambda: " + _lambda); //$NON-NLS-1$
+          "Invalid lambda: " + pLambda); //$NON-NLS-1$
     }
-    this.lambda = _lambda;
+    this.lambda = pLambda;
 
-    if ((_mu < 1) || (_mu > this.lambda)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu //$NON-NLS-1$
+    if ((pMu < 1) || (pMu > this.lambda)) {
+      throw new IllegalArgumentException("Invalid mu: " + pMu //$NON-NLS-1$
           + " must be in 1..lambda and lambda=" //$NON-NLS-1$
           + this.lambda);
     }
-    this.mu = _mu;
+    this.mu = pMu;
 
-    this.model = Objects.requireNonNull(_model);
-    this.fitness = Objects.requireNonNull(_fitness);
+    this.model = Objects.requireNonNull(pModel);
+    this.fitness = Objects.requireNonNull(pFitness);
   }
 
   /** {@inheritDoc} */

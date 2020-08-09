@@ -15,47 +15,47 @@ public class TestBitStringUnaryOperator
     extends IUnarySearchOperatorTest<boolean[]> {
 
   /** the space */
-  private final BitStringSpace m_space;
+  private final BitStringSpace mSpace;
   /** the nullary operator */
-  private final BitStringNullaryOperator m_nullary;
+  private final BitStringNullaryOperator mNullary;
   /** the unary operator */
-  private final IUnarySearchOperator<boolean[]> m_unary;
+  private final IUnarySearchOperator<boolean[]> mUnary;
 
   /**
    * create the unary operator test
    *
-   * @param length
+   * @param pLength
    *          the dimension of the bit strings
-   * @param unary
+   * @param pUnary
    *          the unary operator
    */
-  protected TestBitStringUnaryOperator(final int length,
-      final IUnarySearchOperator<boolean[]> unary) {
+  protected TestBitStringUnaryOperator(final int pLength,
+      final IUnarySearchOperator<boolean[]> pUnary) {
     super();
 
-    this.m_space = new BitStringSpace(length);
-    this.m_nullary = new BitStringNullaryOperator();
-    this.m_unary = Objects.requireNonNull(unary);
+    this.mSpace = new BitStringSpace(pLength);
+    this.mNullary = new BitStringNullaryOperator();
+    this.mUnary = Objects.requireNonNull(pUnary);
   }
 
   /** {@inheritDoc} */
   @Override
   protected BitStringSpace getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected IUnarySearchOperator<boolean[]>
       getOperator(final ISpace<boolean[]> space) {
-    return this.m_unary;
+    return this.mUnary;
   }
 
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
-    final boolean[] res = new boolean[this.m_space.length];
-    this.m_nullary.apply(res, ThreadLocalRandom.current());
+    final boolean[] res = new boolean[this.mSpace.length];
+    this.mNullary.apply(res, ThreadLocalRandom.current());
     return res;
   }
 }

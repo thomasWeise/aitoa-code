@@ -57,7 +57,7 @@ public class JSSPSolutionSpaceSizeEnumerate {
         new ValidGanttCounter(jobMachines));
 
     JSSPSolutionSpaceSizeEnumerate.permute(jobMachines, proc);
-    return (proc.m_min);
+    return (proc.mMin);
   }
 
   /**
@@ -130,28 +130,28 @@ public class JSSPSolutionSpaceSizeEnumerate {
       implements Predicate<int[][]> {
 
     /** the minimum number of valid Gantt charts */
-    long m_min;
+    long mMin;
 
     /** the gantt charts */
-    private final int[][] m_gantt;
+    private final int[][] mGantt;
 
     /** the counter */
-    private final ValidGanttCounter m_counter;
+    private final ValidGanttCounter mCounter;
 
     /**
      * create
      *
-     * @param gantt
+     * @param pGantt
      *          the gantt chart
-     * @param counter
+     * @param pCounter
      *          the counter
      */
-    InstanceProcessor(final int[][] gantt,
-        final ValidGanttCounter counter) {
+    InstanceProcessor(final int[][] pGantt,
+        final ValidGanttCounter pCounter) {
       super();
-      this.m_gantt = gantt;
-      this.m_min = Long.MAX_VALUE;
-      this.m_counter = counter;
+      this.mGantt = pGantt;
+      this.mMin = Long.MAX_VALUE;
+      this.mCounter = pCounter;
     }
 
     /** {@inheritDoc} */
@@ -159,14 +159,14 @@ public class JSSPSolutionSpaceSizeEnumerate {
     public boolean test(final int[][] jobMachines) {
       // then test all possible gantt diagrams and count
       // those which are deadlock-free
-      this.m_counter.counter = 0L;
-      this.m_counter.bound = this.m_min;
-      JSSPSolutionSpaceSizeEnumerate.permute(this.m_gantt,
-          this.m_counter);
+      this.mCounter.mCounter = 0L;
+      this.mCounter.mBound = this.mMin;
+      JSSPSolutionSpaceSizeEnumerate.permute(this.mGantt,
+          this.mCounter);
 
-      final long res = this.m_counter.counter;
-      if (res < this.m_min) {
-        this.m_min = res;
+      final long res = this.mCounter.mCounter;
+      if (res < this.mMin) {
+        this.mMin = res;
       }
       return false;
     }
@@ -176,40 +176,40 @@ public class JSSPSolutionSpaceSizeEnumerate {
   private static final class ValidGanttCounter
       implements Predicate<int[][]> {
     /** the counter */
-    long counter;
+    long mCounter;
     /** the interesting bound */
-    long bound;
+    long mBound;
 
     /** the job machines */
-    private final int[][] m_jobMachines;
+    private final int[][] mJobMachines;
 
     /** the index of the next sub-job for each job */
-    private final int[] m_jobStage;
+    private final int[] mJobStage;
     /** the index of the next sub-job of each machine */
-    private final int[] m_ganttStage;
+    private final int[] mGanttStage;
 
     /**
      * the job machines
      *
-     * @param jobMachines
+     * @param pJobMachines
      *          the assignments of jobs to machines
      */
-    ValidGanttCounter(final int[][] jobMachines) {
+    ValidGanttCounter(final int[][] pJobMachines) {
       super();
-      this.m_jobMachines = jobMachines;
-      this.m_jobStage = new int[this.m_jobMachines.length];
-      this.m_ganttStage = new int[this.m_jobMachines[0].length];
+      this.mJobMachines = pJobMachines;
+      this.mJobStage = new int[this.mJobMachines.length];
+      this.mGanttStage = new int[this.mJobMachines[0].length];
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean test(final int[][] gantt) {
       // set all job and machine indices to 0
-      Arrays.fill(this.m_jobStage, 0);
-      Arrays.fill(this.m_ganttStage, 0);
+      Arrays.fill(this.mJobStage, 0);
+      Arrays.fill(this.mGanttStage, 0);
 
       // jobCount=length
-      final int jobCount = this.m_jobMachines.length;
+      final int jobCount = this.mJobMachines.length;
       final int machineCount = gantt.length;
 
       // found: did we find a possible way to continue
@@ -220,18 +220,18 @@ public class JSSPSolutionSpaceSizeEnumerate {
         for (int machineIndex = machineCount;
             (--machineIndex) >= 0;) {
           final int nextStepinGanttForMachine =
-              this.m_ganttStage[machineIndex];
+              this.mGanttStage[machineIndex];
           if (nextStepinGanttForMachine < jobCount) {
             final int nextJobForMachine =
                 gantt[machineIndex][nextStepinGanttForMachine];
             final int nextStepForJob =
-                this.m_jobStage[nextJobForMachine];
+                this.mJobStage[nextJobForMachine];
             final int nextMachineForJob =
-                this.m_jobMachines[nextJobForMachine][nextStepForJob];
+                this.mJobMachines[nextJobForMachine][nextStepForJob];
             if (nextMachineForJob == machineIndex) {
-              this.m_ganttStage[machineIndex] =
+              this.mGanttStage[machineIndex] =
                   (nextStepinGanttForMachine + 1);
-              this.m_jobStage[nextJobForMachine] =
+              this.mJobStage[nextJobForMachine] =
                   (nextStepForJob + 1);
               found = true;
             }
@@ -239,13 +239,13 @@ public class JSSPSolutionSpaceSizeEnumerate {
         }
       } while (found);
 
-      for (final int completedJobs : this.m_ganttStage) {
+      for (final int completedJobs : this.mGanttStage) {
         if (completedJobs < jobCount) {
           return false; // we had a deadlock
         }
       }
       // do deadlock: Gantt chart is valid
-      return ((++this.counter) >= this.bound);
+      return ((++this.mCounter) >= this.mBound);
     }
   }
 
@@ -281,36 +281,36 @@ public class JSSPSolutionSpaceSizeEnumerate {
   /** the computer */
   private static final class Compute implements Runnable {
     /** the m */
-    private final int m_m;
+    private final int mM;
     /** the n */
-    private final int m_n;
+    private final int mN;
 
     /**
      * create
      *
-     * @param m
+     * @param pM
      *          the m
-     * @param n
+     * @param pN
      *          the n
      */
-    Compute(final int m, final int n) {
+    Compute(final int pM, final int pN) {
       super();
-      this.m_m = m;
-      this.m_n = n;
+      this.mM = pM;
+      this.mN = pN;
     }
 
     /** {@inheritDoc} */
     @Override
     public void run() {
       final long res = JSSPSolutionSpaceSizeEnumerate
-          .enumerate(this.m_m, this.m_n);
+          .enumerate(this.mM, this.mN);
       synchronized (System.out) {
         System.out.print('{');
-        System.out.print(this.m_m);
+        System.out.print(this.mM);
         System.out.print('L');
         System.out.print(',');
         System.out.print(' ');
-        System.out.print(this.m_n);
+        System.out.print(this.mN);
         System.out.print('L');
         System.out.print(',');
         System.out.print(' ');

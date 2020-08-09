@@ -12,11 +12,11 @@ public final class Ising1DObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public Ising1DObjectiveFunction(final int _n) {
-    super(_n);
+  public Ising1DObjectiveFunction(final int pN) {
+    super(pN);
   }
 
   /**

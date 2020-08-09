@@ -14,6 +14,6 @@ public class TestBitStringUnaryOperatorMOverNFlipDist
    */
   public TestBitStringUnaryOperatorMOverNFlipDist(
       final BitStringUnaryOperatorMOverNFlipDist unary) {
-    super(unary.n, unary);
+    super(unary.mN, unary);
   }
 }

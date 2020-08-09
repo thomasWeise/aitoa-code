@@ -12,45 +12,44 @@ public final class DiscreteZeroToOne
     extends DiscreteRandomDistribution {
 
   /** the inner distribution */
-  private final DiscreteRandomDistribution m_inner;
+  private final DiscreteRandomDistribution mInner;
 
   /**
    * Create the distribution
    *
-   * @param inner
+   * @param pInner
    *          the inner distribution
    */
   public DiscreteZeroToOne(
-      final DiscreteRandomDistribution inner) {
+      final DiscreteRandomDistribution pInner) {
     super();
-    this.m_inner = Objects.requireNonNull(inner);
+    this.mInner = Objects.requireNonNull(pInner);
   }
 
   /** {@inheritDoc} */
   @Override
   public int nextInt(final Random random) {
-    final int res = this.m_inner.nextInt(random);
+    final int res = this.mInner.nextInt(random);
     return (res > 0) ? res : 1;
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.m_inner.toString() + "_0to1"; //$NON-NLS-1$
+    return this.mInner.toString() + "_0to1"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    return this.m_inner.hashCode() ^ 0xdf24a157;
+    return this.mInner.hashCode() ^ 0xdf24a157;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object o) {
     if (o instanceof DiscreteZeroToOne) {
-      return this.m_inner
-          .equals(((DiscreteZeroToOne) o).m_inner);
+      return this.mInner.equals(((DiscreteZeroToOne) o).mInner);
     }
     return false;
   }

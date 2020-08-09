@@ -9,17 +9,17 @@ import aitoa.structure.ISpace;
 public final class TreeSpace implements ISpace<Node[]> {
 
   /** the maximum permitted node depth */
-  private final int m_maxDepth;
+  private final int mMaxDepth;
 
   /**
    * create the tree space
    *
-   * @param maxDepth
+   * @param pMaxDepth
    *          the maximum depth parameter
    */
-  public TreeSpace(final int maxDepth) {
+  public TreeSpace(final int pMaxDepth) {
     super();
-    this.m_maxDepth = TreeSpace.checkMaxDepth(maxDepth);
+    this.mMaxDepth = TreeSpace.checkMaxDepth(pMaxDepth);
   }
 
   /**
@@ -163,11 +163,11 @@ public final class TreeSpace implements ISpace<Node[]> {
           "Root node cannot be null.");//$NON-NLS-1$
     }
     final int d = n.depth();
-    if ((d <= 0) || (d > this.m_maxDepth)) {
+    if ((d <= 0) || (d > this.mMaxDepth)) {
       throw new IllegalArgumentException(
           "Invalid root node depth " //$NON-NLS-1$
               + d + ", must be in 1.." + //$NON-NLS-1$
-              this.m_maxDepth);
+              this.mMaxDepth);
     }
     TreeSpace.checkNode(n);
   }
@@ -175,12 +175,12 @@ public final class TreeSpace implements ISpace<Node[]> {
   /** {@inheritDoc} */
   @Override
   public double getScale() {
-    return this.m_maxDepth;
+    return this.mMaxDepth;
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "trees:" + this.m_maxDepth;//$NON-NLS-1$
+    return "trees:" + this.mMaxDepth;//$NON-NLS-1$
   }
 }

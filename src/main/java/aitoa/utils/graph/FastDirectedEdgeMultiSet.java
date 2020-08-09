@@ -9,37 +9,37 @@ import java.util.Arrays;
 final class FastDirectedEdgeMultiSet
     extends DirectedEdgeMultiSet {
   /** the number of times the edges exist in the set */
-  private final int[] m_edges;
+  private final int[] mEdges;
 
   /**
    * Create the multiset.
    *
-   * @param _L
+   * @param pL
    *          the number of nodes
-   * @param _K
+   * @param pK
    *          the maximum number of edges per node
    */
-  FastDirectedEdgeMultiSet(final int _L, final int _K) {
-    super(_L, _K);
-    this.m_edges = new int[(_L + 1) * _L];
+  FastDirectedEdgeMultiSet(final int pL, final int pK) {
+    super(pL, pK);
+    this.mEdges = new int[(pL + 1) * pL];
   }
 
   /** {@inheritDoc} */
   @Override
   public void clear() {
-    Arrays.fill(this.m_edges, 0);
+    Arrays.fill(this.mEdges, 0);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getEdgeCount(final int a, final int b) {
-    return this.m_edges[b + ((a + 1) * this.L)];
+    return this.mEdges[b + ((a + 1) * this.L)];
   }
 
   /** {@inheritDoc} */
   @Override
   public void addEdge(final int a, final int b) {
-    if ((++this.m_edges[b + ((a + 1) * this.L)]) > this.K) {
+    if ((++this.mEdges[b + ((a + 1) * this.L)]) > this.K) {
       throw new IllegalStateException(
           (("Edge (" + a) + ',') + b + //$NON-NLS-1$
               ") occurs more then " //$NON-NLS-1$
@@ -50,7 +50,7 @@ final class FastDirectedEdgeMultiSet
   /** {@inheritDoc} */
   @Override
   public void removeEdge(final int a, final int b) {
-    if ((--this.m_edges[b + ((a + 1) * this.L)]) < 0) {
+    if ((--this.mEdges[b + ((a + 1) * this.L)]) < 0) {
       throw new IllegalStateException(
           (("Edge (" + a) + ',') + b + //$NON-NLS-1$
               ") does not exist."); //$NON-NLS-1$

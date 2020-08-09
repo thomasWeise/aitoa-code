@@ -6,8 +6,8 @@ public class TestDefaultDirectedEdgeMultiSet
 
   /** {@inheritDoc} */
   @Override
-  protected final DirectedEdgeMultiSet create(final int L,
-      final int K) {
-    return DirectedEdgeMultiSet.create(L, K);
+  protected final DirectedEdgeMultiSet create(final int pL,
+      final int pK) {
+    return DirectedEdgeMultiSet.create(pL, pK);
   }
 }

@@ -23,22 +23,22 @@ public final class JSSPSolutionSpace
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPSolutionSpace(final JSSPInstance _instance) {
+  public JSSPSolutionSpace(final JSSPInstance pInstance) {
     super();
-    this.instance = Objects.requireNonNull(_instance);
+    this.instance = Objects.requireNonNull(pInstance);
   }
 
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPSolutionSpace(final String _instance) {
-    this(new JSSPInstance(_instance));
+  public JSSPSolutionSpace(final String pInstance) {
+    this(new JSSPInstance(pInstance));
   }
 
   /**

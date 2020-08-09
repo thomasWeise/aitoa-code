@@ -30,20 +30,20 @@ public abstract class DirectedEdgeMultiSet {
   /**
    * Create the multiset.
    *
-   * @param _L
+   * @param pL
    *          the number of nodes
-   * @param _K
+   * @param pK
    *          the maximum number of edges per node
    */
-  DirectedEdgeMultiSet(final int _L, final int _K) {
+  DirectedEdgeMultiSet(final int pL, final int pK) {
     super();
-    if ((_L <= 1) || (_K <= 0)) {
+    if ((pL <= 1) || (pK <= 0)) {
       throw new IllegalArgumentException(//
           "Invalid values for L=" //$NON-NLS-1$
-              + _L + " and K=" + _K);//$NON-NLS-1$
+              + pL + " and K=" + pK);//$NON-NLS-1$
     }
-    this.L = _L;
-    this.K = _K;
+    this.L = pL;
+    this.K = pK;
   }
 
   /** Clear the edge set */
@@ -115,21 +115,21 @@ public abstract class DirectedEdgeMultiSet {
    * Create a suitable implementation of the
    * {@link DirectedEdgeMultiSet}
    *
-   * @param L
+   * @param pL
    *          the number of nodes
-   * @param K
+   * @param pK
    *          the maximum number of edges per node
    * @return the new, empty multiset
    */
-  public static final DirectedEdgeMultiSet create(final int L,
-      final int K) {
-    if ((((L + 1L) * L) * 2L) < Integer.MAX_VALUE) {
+  public static final DirectedEdgeMultiSet create(final int pL,
+      final int pK) {
+    if ((((pL + 1L) * pL) * 2L) < Integer.MAX_VALUE) {
       try {
-        return new FastDirectedEdgeMultiSet(L, K);
+        return new FastDirectedEdgeMultiSet(pL, pK);
       } catch (@SuppressWarnings("unused") final OutOfMemoryError oome) {
         // ignore
       }
     }
-    return new CompactDirectedEdgeMultiSet(L, K);
+    return new CompactDirectedEdgeMultiSet(pL, pK);
   }
 }

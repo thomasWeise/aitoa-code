@@ -37,13 +37,13 @@ public final class EA1p1WithFitness<X, Y>
   /**
    * create
    *
-   * @param _fitness
+   * @param pFitness
    *          the fitness assignment process
    */
   public EA1p1WithFitness(
-      final FitnessAssignmentProcess<? super X> _fitness) {
+      final FitnessAssignmentProcess<? super X> pFitness) {
     super();
-    this.fitness = Objects.requireNonNull(_fitness);
+    this.fitness = Objects.requireNonNull(pFitness);
   }
 
   /** {@inheritDoc} */

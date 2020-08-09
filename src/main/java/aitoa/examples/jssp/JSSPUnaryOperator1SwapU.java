@@ -27,25 +27,25 @@ public final class JSSPUnaryOperator1SwapU
     implements IUnarySearchOperator<int[]> {
 
   /** the indexes */
-  final int[] m_indexes;
+  final int[] mIndexes;
 
   /**
    * create the representation
    *
-   * @param instance
+   * @param pInstance
    *          the jssp instance
    */
-  public JSSPUnaryOperator1SwapU(final JSSPInstance instance) {
+  public JSSPUnaryOperator1SwapU(final JSSPInstance pInstance) {
     super();
 
-    final int length = instance.m * instance.n;
+    final int length = pInstance.m * pInstance.n;
 
-    this.m_indexes = new int[length * (length - 1)];
+    this.mIndexes = new int[length * (length - 1)];
     int index = (-1);
     for (int i = length; (--i) > 0;) {
       for (int j = i; (--j) >= 0;) {
-        this.m_indexes[++index] = i;
-        this.m_indexes[++index] = j;
+        this.mIndexes[++index] = i;
+        this.mIndexes[++index] = j;
       }
     }
   }
@@ -120,7 +120,7 @@ public final class JSSPUnaryOperator1SwapU
 // indexes be the flattened list of unique index pairs and
 // pairCount their number.
 // end enumerate
-    final int[] indexes = this.m_indexes;
+    final int[] indexes = this.mIndexes;
     final int pairCount = indexes.length >> 1;
 // start enumerate
     System.arraycopy(x, 0, dest, 0, dest.length); // copy x

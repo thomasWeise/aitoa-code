@@ -19,12 +19,12 @@ public abstract class MathFunction<C> extends Node implements
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
    */
   protected MathFunction(
-      final NodeType<? extends MathFunction<C>> type) {
-    super(type);
+      final NodeType<? extends MathFunction<C>> pType) {
+    super(pType);
   }
 
   /**

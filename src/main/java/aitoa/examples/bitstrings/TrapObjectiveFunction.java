@@ -21,11 +21,11 @@ public final class TrapObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public TrapObjectiveFunction(final int _n) {
-    super(_n);
+  public TrapObjectiveFunction(final int pN) {
+    super(pN);
   }
 
   /**

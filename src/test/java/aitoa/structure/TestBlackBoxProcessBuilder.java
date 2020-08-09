@@ -80,7 +80,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
   @Override
   @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
   final IBlackBoxProcess<X, Y> doGet() {
-    if (this.m_mapping == null) {
+    if (this.mMapping == null) {
       return new BlackBoxProcessWrapper1(
           new BlackBoxProcess1NoLog(this));
     }
@@ -105,39 +105,39 @@ public class TestBlackBoxProcessBuilder<X, Y>
       implements IBlackBoxProcess<X, Y> {
 
     /** the wrapped process */
-    final P m_process;
+    final P mProcess;
 
     /**
      * does the calling algorithm know that it should have
      * terminated?
      */
-    boolean m_knowsThatTerminated;
+    boolean mKnowsThatTerminated;
 
     /** does the caller know that we are closed? */
-    boolean m_knowsThatClosed;
+    boolean mKnowsThatClosed;
 
     /** the lower bound */
-    final double m_lb;
+    final double mLb;
 
     /** the upper bound */
-    final double m_ub;
+    final double mUb;
 
     /**
      * create
      *
-     * @param process
+     * @param pProcess
      *          the wrapped process
      */
-    BlackBoxProcessWrapper(final P process) {
+    BlackBoxProcessWrapper(final P pProcess) {
       super();
-      this.m_process = Objects.requireNonNull(process);
-      this.m_lb = process.m_f.lowerBound();
-      this.m_ub = process.m_f.upperBound();
+      this.mProcess = Objects.requireNonNull(pProcess);
+      this.mLb = pProcess.mF.lowerBound();
+      this.mUb = pProcess.mF.upperBound();
     }
 
     /** fail if we are terminated */
     final void checkTerminated() {
-      if (this.m_knowsThatTerminated) {
+      if (this.mKnowsThatTerminated) {
         Assert.fail(//
             "Algorithm performs actions after being informed that it should have terminated!"); //$NON-NLS-1$
       }
@@ -147,17 +147,17 @@ public class TestBlackBoxProcessBuilder<X, Y>
     @Override
     public double evaluate(final X y) {
       this.checkTerminated();
-      return this.m_process.evaluate(y);
+      return this.mProcess.evaluate(y);
     }
 
     /** {@inheritDoc} */
     @Override
     public final boolean shouldTerminate() {
-      final boolean st = this.m_process.m_terminated;
+      final boolean st = this.mProcess.mTerminated;
       if (st) {
-        this.m_knowsThatTerminated = true;
+        this.mKnowsThatTerminated = true;
       } else {
-        if (this.m_knowsThatTerminated) {
+        if (this.mKnowsThatTerminated) {
           Assert.fail("Inconsistent termination state"); //$NON-NLS-1$
         }
       }
@@ -167,7 +167,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final Random getRandom() {
-      final Random r = this.m_process.getRandom();
+      final Random r = this.mProcess.getRandom();
       Assert.assertNotNull(r);
       return r;
     }
@@ -175,7 +175,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final ISpace<X> getSearchSpace() {
-      final ISpace<X> s = this.m_process.getSearchSpace();
+      final ISpace<X> s = this.mProcess.getSearchSpace();
       Assert.assertNotNull(s);
       return s;
     }
@@ -185,8 +185,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     public final INullarySearchOperator<X>
         getNullarySearchOperator() {
       this.checkTerminated();
-      Assert.assertNotNull(this.m_process.m_nullary);
-      return this.m_process.m_nullary;
+      Assert.assertNotNull(this.mProcess.mNullary);
+      return this.mProcess.mNullary;
     }
 
     /** {@inheritDoc} */
@@ -194,8 +194,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     public final IUnarySearchOperator<X>
         getUnarySearchOperator() {
       this.checkTerminated();
-      Assert.assertNotNull(this.m_process.m_unary);
-      return this.m_process.m_unary;
+      Assert.assertNotNull(this.mProcess.mUnary);
+      return this.mProcess.mUnary;
     }
 
     /** {@inheritDoc} */
@@ -203,8 +203,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     public final IBinarySearchOperator<X>
         getBinarySearchOperator() {
       this.checkTerminated();
-      Assert.assertNotNull(this.m_process.m_binary);
-      return this.m_process.m_binary;
+      Assert.assertNotNull(this.mProcess.mBinary);
+      return this.mProcess.mBinary;
     }
 
     /** {@inheritDoc} */
@@ -212,18 +212,18 @@ public class TestBlackBoxProcessBuilder<X, Y>
     public final ITernarySearchOperator<X>
         getTernarySearchOperator() {
       this.checkTerminated();
-      Assert.assertNotNull(this.m_process.m_ternary);
-      return this.m_process.m_ternary;
+      Assert.assertNotNull(this.mProcess.mTernary);
+      return this.mProcess.mTernary;
     }
 
     /** {@inheritDoc} */
     @Override
     public final double getBestF() {
-      final double f = this.m_process.m_bestF;
-      if (this.m_process.m_consumedFEs > 0L) {
+      final double f = this.mProcess.mBestF;
+      if (this.mProcess.mConsumedFEs > 0L) {
         TestTools.assertFinite(f);
-        TestTools.assertGreaterOrEqual(f, this.m_lb);
-        TestTools.assertLessOrEqual(f, this.m_ub);
+        TestTools.assertGreaterOrEqual(f, this.mLb);
+        TestTools.assertLessOrEqual(f, this.mUb);
       } else {
         Assert.assertTrue(f >= Double.POSITIVE_INFINITY);
       }
@@ -233,26 +233,26 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final double getGoalF() {
-      return this.m_process.m_goalF;
+      return this.mProcess.mGoalF;
     }
 
     /** {@inheritDoc} */
     @Override
     public final void getBestX(final X dest) {
-      this.m_process.getBestX(dest);
+      this.mProcess.getBestX(dest);
     }
 
     /** {@inheritDoc} */
     @Override
     public final void getBestY(final Y dest) {
-      this.m_process.getBestY(dest);
+      this.mProcess.getBestY(dest);
     }
 
     /** {@inheritDoc} */
     @Override
     public final long getConsumedFEs() {
       final long f;
-      f = this.m_process.m_consumedFEs;
+      f = this.mProcess.mConsumedFEs;
       TestTools.assertGreaterOrEqual(f, 0L);
       return f;
     }
@@ -260,8 +260,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final long getLastImprovementFE() {
-      final long i = this.m_process.m_lastImprovementFE;
-      final long f = this.m_process.m_consumedFEs;
+      final long i = this.mProcess.mLastImprovementFE;
+      final long f = this.mProcess.mConsumedFEs;
       TestTools.assertGreaterOrEqual(f, 0L);
       TestTools.assertGreaterOrEqual(f, i);
       return i;
@@ -270,8 +270,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final long getMaxFEs() {
-      final long f = this.m_process.m_consumedFEs;
-      final long m = this.m_process.m_maxFEs;
+      final long f = this.mProcess.mConsumedFEs;
+      final long m = this.mProcess.mMaxFEs;
       TestTools.assertGreaterOrEqual(f, 0L);
       TestTools.assertGreaterOrEqual(m, f);
       return m;
@@ -280,7 +280,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final long getConsumedTime() {
-      final long t = this.m_process.getConsumedTime();
+      final long t = this.mProcess.getConsumedTime();
       TestTools.assertGreaterOrEqual(t, 0L);
       return t;
     }
@@ -288,8 +288,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final long getLastImprovementTime() {
-      final long t = this.m_process.getConsumedTime();
-      final long i = this.m_process.getLastImprovementTime();
+      final long t = this.mProcess.getConsumedTime();
+      final long i = this.mProcess.getLastImprovementTime();
       TestTools.assertGreaterOrEqual(t, 0L);
       TestTools.assertGreaterOrEqual(t, i);
       return i;
@@ -298,8 +298,8 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final long getMaxTime() {
-      final long t = this.m_process.getConsumedTime();
-      final long m = this.m_process.getMaxTime();
+      final long t = this.mProcess.getConsumedTime();
+      final long m = this.mProcess.getMaxTime();
       TestTools.assertGreaterOrEqual(t, 0L);
       TestTools.assertGreaterOrEqual(m, t);
       return m;
@@ -308,29 +308,29 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final void close() throws IOException {
-      if (this.m_knowsThatClosed) {
+      if (this.mKnowsThatClosed) {
         Assert.fail("closed process twice?"); //$NON-NLS-1$
       }
-      this.m_knowsThatClosed = true;
-      this.m_process.close();
-      this.m_knowsThatTerminated = true;
-      final long fesc = this.m_process.m_consumedFEs;
-      final long fesi = this.m_process.m_lastImprovementFE;
-      final long fesm = this.m_process.m_maxFEs;
+      this.mKnowsThatClosed = true;
+      this.mProcess.close();
+      this.mKnowsThatTerminated = true;
+      final long fesc = this.mProcess.mConsumedFEs;
+      final long fesi = this.mProcess.mLastImprovementFE;
+      final long fesm = this.mProcess.mMaxFEs;
       TestTools.assertGreater(fesi, 0L);
       TestTools.assertGreaterOrEqual(fesc, fesi);
       TestTools.assertGreaterOrEqual(fesm, fesc);
 
-      final long tc = this.m_process.getConsumedTime();
-      final long ti = this.m_process.getLastImprovementTime();
-      final long tm = this.m_process.getMaxTime();
+      final long tc = this.mProcess.getConsumedTime();
+      final long ti = this.mProcess.getLastImprovementTime();
+      final long tm = this.mProcess.getMaxTime();
       TestTools.assertGreaterOrEqual(ti, 0L);
       TestTools.assertGreaterOrEqual(tc, ti);
       TestTools.assertGreaterOrEqual(tm + 30, tc);
 
-      TestTools.assertFinite(this.m_process.m_bestF);
-      TestTools.assertGreaterOrEqual(this.m_process.m_bestF,
-          this.m_lb);
+      TestTools.assertFinite(this.mProcess.mBestF);
+      TestTools.assertGreaterOrEqual(this.mProcess.mBestF,
+          this.mLb);
     }
   }
 
@@ -349,65 +349,63 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /**
      * create
      *
-     * @param process
+     * @param pProcess
      *          the wrapped process
      */
     BlackBoxProcessWrapper2(
-        final BlackBoxProcess2NoLog<X, Y> process) {
-      super(process);
+        final BlackBoxProcess2NoLog<X, Y> pProcess) {
+      super(pProcess);
     }
 
     /** {@inheritDoc} */
     @Override
     public final double evaluate(final X y) {
       this.checkTerminated();
-      this.m_process.m_searchSpace.check(y);
+      this.mProcess.mSearchSpace.check(y);
 
-      if (this.m_process.m_terminated) {
-        this.m_knowsThatTerminated = true;
+      if (this.mProcess.mTerminated) {
+        this.mKnowsThatTerminated = true;
         return Double.POSITIVE_INFINITY;
       }
 
-      final long fes = ++this.m_process.m_consumedFEs;
+      final long fes = ++this.mProcess.mConsumedFEs;
       // map and evaluate
-      this.m_process.m_mapping.map(this.m_process.m_random, y,
-          this.m_process.m_current);
+      this.mProcess.mMapping.map(this.mProcess.mRandom, y,
+          this.mProcess.mCurrent);
 
-      this.m_process.m_solutionSpace
-          .check(this.m_process.m_current);
+      this.mProcess.mSolutionSpace.check(this.mProcess.mCurrent);
 
       final double result =
-          this.m_process.m_f.evaluate(this.m_process.m_current);
+          this.mProcess.mF.evaluate(this.mProcess.mCurrent);
 
       TestTools.assertFinite(result);
-      TestTools.assertGreaterOrEqual(result, this.m_lb);
-      TestTools.assertLessOrEqual(result, this.m_ub);
+      TestTools.assertGreaterOrEqual(result, this.mLb);
+      TestTools.assertLessOrEqual(result, this.mUb);
 
       // did we improve
-      if (result < this.m_process.m_bestF) {// yes, we did
+      if (result < this.mProcess.mBestF) {// yes, we did
         // so remember a copy of this best solution
-        this.m_process.m_bestF = result;
-        this.m_process.m_searchSpace.copy(y,
-            this.m_process.m_bestX);
-        this.m_process.m_solutionSpace.copy(
-            this.m_process.m_current, this.m_process.m_bestY);
-        this.m_process.m_lastImprovementFE = fes; // and the
-                                                  // current FE
+        this.mProcess.mBestF = result;
+        this.mProcess.mSearchSpace.copy(y, this.mProcess.mBestX);
+        this.mProcess.mSolutionSpace.copy(this.mProcess.mCurrent,
+            this.mProcess.mBestY);
+        this.mProcess.mLastImprovementFE = fes; // and the
+                                                // current FE
         // and the time when the improvement was made
-        this.m_process.m_lastImprovementTime =
+        this.mProcess.mLastImprovementTime =
             System.currentTimeMillis();
 
         // check if we have exhausted the granted runtime or
         // reached the quality goal
-        if ((this.m_process.m_lastImprovementTime >= this.m_process.m_endTime)
-            || (result <= this.m_process.m_goalF)) {
-          this.m_process.terminate();// terminate
+        if ((this.mProcess.mLastImprovementTime >= this.mProcess.mEndTime)
+            || (result <= this.mProcess.mGoalF)) {
+          this.mProcess.terminate();// terminate
         }
       }
 
       // check if we have exhausted the granted FEs
-      if (fes >= this.m_process.m_maxFEs) {
-        this.m_process.terminate();// terminate: no more FEs
+      if (fes >= this.mProcess.mMaxFEs) {
+        this.mProcess.terminate();// terminate: no more FEs
       }
       // return result
       return result;
@@ -426,12 +424,12 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /**
      * create
      *
-     * @param process
+     * @param pProcess
      *          the wrapped process
      */
     BlackBoxProcessWrapper1(
-        final BlackBoxProcess1NoLog<X> process) {
-      super(process);
+        final BlackBoxProcess1NoLog<X> pProcess) {
+      super(pProcess);
     }
 
     /** {@inheritDoc} */
@@ -439,41 +437,40 @@ public class TestBlackBoxProcessBuilder<X, Y>
     public final double evaluate(final X y) {
       this.checkTerminated();
 
-      this.m_process.m_searchSpace.check(y);
+      this.mProcess.mSearchSpace.check(y);
 
-      if (this.m_process.m_terminated) {
+      if (this.mProcess.mTerminated) {
         return Double.POSITIVE_INFINITY;
       }
 
-      final long fes = ++this.m_process.m_consumedFEs;
-      final double result = this.m_process.m_f.evaluate(y);
+      final long fes = ++this.mProcess.mConsumedFEs;
+      final double result = this.mProcess.mF.evaluate(y);
 
       TestTools.assertFinite(result);
-      TestTools.assertGreaterOrEqual(result, this.m_lb);
+      TestTools.assertGreaterOrEqual(result, this.mLb);
 
       // did we improve
-      if (result < this.m_process.m_bestF) {// yes, we did
+      if (result < this.mProcess.mBestF) {// yes, we did
         // so remember a copy of this best solution
-        this.m_process.m_bestF = result;
-        this.m_process.m_searchSpace.copy(y,
-            this.m_process.m_bestX);
-        this.m_process.m_lastImprovementFE = fes;
+        this.mProcess.mBestF = result;
+        this.mProcess.mSearchSpace.copy(y, this.mProcess.mBestX);
+        this.mProcess.mLastImprovementFE = fes;
         // and the time when the improvement was made
-        this.m_process.m_lastImprovementTime =
+        this.mProcess.mLastImprovementTime =
             System.currentTimeMillis();
 
         // check if we have exhausted the granted runtime or
         // reached the quality goal
-        if ((this.m_process.m_lastImprovementTime >= this.m_process.m_endTime)
-            || (result <= this.m_process.m_goalF)) {
-          this.m_process.terminate();// terminate: we are
-                                     // finished
+        if ((this.mProcess.mLastImprovementTime >= this.mProcess.mEndTime)
+            || (result <= this.mProcess.mGoalF)) {
+          this.mProcess.terminate();// terminate: we are
+                                    // finished
         }
       }
 
       // check if we have exhausted the granted FEs
-      if (fes >= this.m_process.m_maxFEs) {
-        this.m_process.terminate();// terminate: no more FEs
+      if (fes >= this.mProcess.mMaxFEs) {
+        this.mProcess.terminate();// terminate: no more FEs
       }
       // return result
       return result;

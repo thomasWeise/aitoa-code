@@ -57,100 +57,100 @@ public final class EndResultStatistic
   /**
    * create
    *
-   * @param _algorithm
+   * @param pAlgorithm
    *          the algorithm name
-   * @param _instance
+   * @param pInstance
    *          the instance name
-   * @param _runs
+   * @param pRuns
    *          the number of runs
-   * @param _bestF
+   * @param pBestF
    *          the best f record
-   * @param _totalTime
+   * @param pTotalTime
    *          the total time record
-   * @param _totalFEs
+   * @param pTotalFEs
    *          the total fes record
-   * @param _lastImprovementTime
+   * @param pLastImprovementTime
    *          the last improvement time record
-   * @param _lastImprovementFE
+   * @param pLastImprovementFE
    *          the last improvement fe record
-   * @param _numberOfImprovements
+   * @param pNumberOfImprovements
    *          the number of improvements record
-   * @param _budgetTime
+   * @param pBudgetTime
    *          the budget time record
-   * @param _budgetFEs
+   * @param pBudgetFEs
    *          the budget fes record
-   * @param _successes
+   * @param pSuccesses
    *          the number of successes
-   * @param _ertTime
+   * @param pErtTime
    *          the expected running time in ms
-   * @param _ertFEs
+   * @param pErtFEs
    *          the expected running time in FEs
-   * @param _successTime
+   * @param pSuccessTime
    *          statistics regarding the last improvement time of
    *          successful runs, or {@code null} if no run was
    *          successful
-   * @param _successFEs
+   * @param pSuccessFEs
    *          statistics regarding the last improvement FEs of
    *          successful runs, or {@code null} if no run was
    *          successful
    */
-  public EndResultStatistic(final String _algorithm,
-      final String _instance, final int _runs,
-      final DoubleStatisticsBig _bestF,
-      final IntStatisticsBig _totalTime,
-      final IntStatisticsBig _totalFEs,
-      final IntStatisticsBig _lastImprovementTime,
-      final IntStatisticsBig _lastImprovementFE,
-      final IntStatisticsBig _numberOfImprovements,
-      final IntStatisticsSmall _budgetTime,
-      final IntStatisticsSmall _budgetFEs, final int _successes, //
-      final double _ertTime, //
-      final double _ertFEs, //
-      final IntStatisticsSmallWithSetups _successTime, //
-      final IntStatisticsSmallWithSetups _successFEs) {
+  public EndResultStatistic(final String pAlgorithm,
+      final String pInstance, final int pRuns,
+      final DoubleStatisticsBig pBestF,
+      final IntStatisticsBig pTotalTime,
+      final IntStatisticsBig pTotalFEs,
+      final IntStatisticsBig pLastImprovementTime,
+      final IntStatisticsBig pLastImprovementFE,
+      final IntStatisticsBig pNumberOfImprovements,
+      final IntStatisticsSmall pBudgetTime,
+      final IntStatisticsSmall pBudgetFEs, final int pSuccesses, //
+      final double pErtTime, //
+      final double pErtFEs, //
+      final IntStatisticsSmallWithSetups pSuccessTime, //
+      final IntStatisticsSmallWithSetups pSuccessFEs) {
     super();
 
-    this.algorithm = _algorithm.trim();
+    this.algorithm = pAlgorithm.trim();
     if (this.algorithm.isEmpty()) {
       throw new IllegalArgumentException(
-          "Cannot have '" + _algorithm + //$NON-NLS-1$
+          "Cannot have '" + pAlgorithm + //$NON-NLS-1$
               "' as algorithm name.");//$NON-NLS-1$
     }
 
-    this.instance = _instance.trim();
+    this.instance = pInstance.trim();
     if (this.instance.isEmpty()) {
       throw new IllegalArgumentException(
-          "Cannot have '" + _instance + //$NON-NLS-1$
+          "Cannot have '" + pInstance + //$NON-NLS-1$
               "' as instance name.");//$NON-NLS-1$
     }
 
-    this.runs = _runs;
+    this.runs = pRuns;
     if (this.runs <= 0) {
       throw new IllegalArgumentException(
           "Number of runs must be positive, but is "//$NON-NLS-1$
               + this.runs);
     }
 
-    this.bestF = Objects.requireNonNull(_bestF);
-    this.totalTime = Objects.requireNonNull(_totalTime);
-    this.totalFEs = Objects.requireNonNull(_totalFEs);
+    this.bestF = Objects.requireNonNull(pBestF);
+    this.totalTime = Objects.requireNonNull(pTotalTime);
+    this.totalFEs = Objects.requireNonNull(pTotalFEs);
     this.lastImprovementTime =
-        Objects.requireNonNull(_lastImprovementTime);
+        Objects.requireNonNull(pLastImprovementTime);
     this.lastImprovementFE =
-        Objects.requireNonNull(_lastImprovementFE);
+        Objects.requireNonNull(pLastImprovementFE);
     this.numberOfImprovements =
-        Objects.requireNonNull(_numberOfImprovements);
-    this.budgetTime = Objects.requireNonNull(_budgetTime);
-    this.budgetFEs = Objects.requireNonNull(_budgetFEs);
+        Objects.requireNonNull(pNumberOfImprovements);
+    this.budgetTime = Objects.requireNonNull(pBudgetTime);
+    this.budgetFEs = Objects.requireNonNull(pBudgetFEs);
 
-    this.successes = _successes;
+    this.successes = pSuccesses;
     if ((this.successes < 0) || (this.successes > this.runs)) {
       throw new IllegalArgumentException(
           "Invalid number of successes " + this.successes //$NON-NLS-1$
               + " for number of runs " + this.runs);//$NON-NLS-1$
     }
 
-    this.ertTime = _ertTime;
+    this.ertTime = pErtTime;
     if ((Double.isFinite(this.ertTime)
         ^ (this.ertTime < Double.POSITIVE_INFINITY))
         || (this.ertTime < 0d)) {
@@ -163,7 +163,7 @@ public final class EndResultStatistic
               + " for number of successes " + this.successes); //$NON-NLS-1$
     }
 
-    this.ertFEs = _ertFEs;
+    this.ertFEs = pErtFEs;
     if ((Double.isFinite(this.ertFEs)
         ^ (this.ertFEs < Double.POSITIVE_INFINITY))
         || (this.ertFEs < 1d)) {
@@ -177,8 +177,8 @@ public final class EndResultStatistic
     }
 
     if (this.successes > 0) {
-      this.successFEs = Objects.requireNonNull(_successFEs);
-      this.successTime = Objects.requireNonNull(_successTime);
+      this.successFEs = Objects.requireNonNull(pSuccessFEs);
+      this.successTime = Objects.requireNonNull(pSuccessTime);
 
       if (this.successFEs.max > this.lastImprovementFE.max) {
         throw new IllegalArgumentException(//
@@ -197,7 +197,7 @@ public final class EndResultStatistic
                 + ").");//$NON-NLS-1$
       }
     } else {
-      if ((_successTime != null) || (_successFEs != null)) {
+      if ((pSuccessTime != null) || (pSuccessFEs != null)) {
         throw new IllegalArgumentException(
             "If no run is successful, we also cannot have statistics about the time to success."); //$NON-NLS-1$
       }
@@ -351,27 +351,27 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _sd
+     * @param pSd
      *          the standard deviation
-     * @param _median
+     * @param pMedian
      *          the median
      */
-    StatBase(final double _mean, final double _sd,
-        final double _median) {
+    StatBase(final double pMean, final double pSd,
+        final double pMedian) {
       super();
 
-      this.sd = _sd;
-      this.median = _median;
-      this.mean = ((this.sd != 0d) ? _mean : this.median);
+      this.sd = pSd;
+      this.median = pMedian;
+      this.mean = ((this.sd != 0d) ? pMean : this.median);
 
       if (!Double.isFinite(this.mean)) {
         throw new IllegalArgumentException(
             "Invalid mean: " + this.mean); //$NON-NLS-1$
       }
 
-      if ((!Double.isFinite(this.sd)) || (_sd < 0d)) {
+      if ((!Double.isFinite(this.sd)) || (pSd < 0d)) {
         throw new IllegalArgumentException(
             "Invalid standard deviation: " + this.sd); //$NON-NLS-1$
       }
@@ -382,12 +382,12 @@ public final class EndResultStatistic
       }
 
       if (this.sd <= 0d) {
-        if (_mean != _median) {
+        if (pMean != pMedian) {
           throw new IllegalArgumentException(//
               "If sd=0, then mean "//$NON-NLS-1$
-                  + _mean + " should equal median "//$NON-NLS-1$
-                  + _median + "; difference " + //$NON-NLS-1$
-                  (_mean - _median));
+                  + pMean + " should equal median "//$NON-NLS-1$
+                  + pMedian + "; difference " + //$NON-NLS-1$
+                  (pMean - pMedian));
         }
       }
     }
@@ -437,39 +437,39 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _q050
+     * @param pQ050
      *          the 5% quantile
-     * @param _q159
+     * @param pQ159
      *          the 15.9% quantile
-     * @param _q250
+     * @param pQ250
      *          the 25% quantile
-     * @param _q750
+     * @param pQ750
      *          the 75% quantile
-     * @param _q841
+     * @param pQ841
      *          the 84.1% quantile
-     * @param _q950
+     * @param pQ950
      *          the 95% quantile
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _sd
+     * @param pSd
      *          the standard deviation
-     * @param _median
+     * @param pMedian
      *          the median
      */
-    StatQuantiles(final double _q050, final double _q159,
-        final double _q250, final double _median,
-        final double _q750, final double _q841,
-        final double _q950, final double _mean,
-        final double _sd) {
-      super(_mean, _sd, _median);
+    StatQuantiles(final double pQ050, final double pQ159,
+        final double pQ250, final double pMedian,
+        final double pQ750, final double pQ841,
+        final double pQ950, final double pMean,
+        final double pSd) {
+      super(pMean, pSd, pMedian);
 
-      this.q050 = _q050;
-      if (!Double.isFinite(_q050)) {
+      this.q050 = pQ050;
+      if (!Double.isFinite(pQ050)) {
         throw new IllegalArgumentException(
             "Invalid q050: " + this.q050); //$NON-NLS-1$
       }
 
-      this.q159 = _q159;
+      this.q159 = pQ159;
       if ((!Double.isFinite(this.q159))
           || (this.q159 < this.q050)) {
         throw new IllegalArgumentException(
@@ -477,7 +477,7 @@ public final class EndResultStatistic
                 + " for q050: " + this.q050);//$NON-NLS-1$
       }
 
-      this.q250 = _q250;
+      this.q250 = pQ250;
       if ((!Double.isFinite(this.q250))
           || (this.q250 < this.q159)) {
         throw new IllegalArgumentException(
@@ -491,7 +491,7 @@ public final class EndResultStatistic
                 + " for q250: " + this.q250);//$NON-NLS-1$
       }
 
-      this.q750 = _q750;
+      this.q750 = pQ750;
       if ((!Double.isFinite(this.q750))
           || (this.q750 < this.median)) {
         throw new IllegalArgumentException(
@@ -499,7 +499,7 @@ public final class EndResultStatistic
                 + " for median: " + this.median);//$NON-NLS-1$
       }
 
-      this.q841 = _q841;
+      this.q841 = pQ841;
       if ((!Double.isFinite(this.q841))
           || (this.q841 < this.q159)) {
         throw new IllegalArgumentException(
@@ -507,7 +507,7 @@ public final class EndResultStatistic
                 + " for q750: " + this.q750);//$NON-NLS-1$
       }
 
-      this.q950 = _q950;
+      this.q950 = pQ950;
       if ((!Double.isFinite(this.q950))
           || (this.q950 < this.q841)) {
         throw new IllegalArgumentException(
@@ -569,45 +569,45 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _min
+     * @param pMin
      *          the minimum
-     * @param _q050
+     * @param pQ050
      *          the 5% quantile
-     * @param _q159
+     * @param pQ159
      *          the 15.9% quantile
-     * @param _q250
+     * @param pQ250
      *          the 25% quantile
-     * @param _q750
+     * @param pQ750
      *          the 75% quantile
-     * @param _q841
+     * @param pQ841
      *          the 84.1% quantile
-     * @param _q950
+     * @param pQ950
      *          the 95% quantile
-     * @param _max
+     * @param pMax
      *          the maximum
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _sd
+     * @param pSd
      *          the standard deviation
-     * @param _median
+     * @param pMedian
      *          the median
      */
-    public IntStatisticsBig(final long _min, final double _q050,
-        final double _q159, final double _q250,
-        final double _median, final double _q750,
-        final double _q841, final double _q950, final long _max,
-        final double _mean, final double _sd) {
-      super(_q050, _q159, _q250, _median, _q750, _q841, _q950,
-          _mean, _sd);
+    public IntStatisticsBig(final long pMin, final double pQ050,
+        final double pQ159, final double pQ250,
+        final double pMedian, final double pQ750,
+        final double pQ841, final double pQ950, final long pMax,
+        final double pMean, final double pSd) {
+      super(pQ050, pQ159, pQ250, pMedian, pQ750, pQ841, pQ950,
+          pMean, pSd);
 
-      this.min = _min;
+      this.min = pMin;
       if (this.min > this.q050) {
         throw new IllegalArgumentException(
             "Invalid minimum: " + this.min //$NON-NLS-1$
                 + " for q050: " + this.q050);//$NON-NLS-1$
       }
 
-      this.max = _max;
+      this.max = pMax;
       if (this.max < this.q950) {
         throw new IllegalArgumentException(
             "Invalid maximum: " + this.max //$NON-NLS-1$
@@ -742,75 +742,75 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _min
+     * @param pMin
      *          the minimum
-     * @param _minSetup
+     * @param pMinSetup
      *          the minimum setup
-     * @param _q050
+     * @param pQ050
      *          the 5% quantile
-     * @param _q050Setup
+     * @param pQ050Setup
      *          the 5% quantile setup
-     * @param _q159
+     * @param pQ159
      *          the 15.9% quantile
-     * @param _q159Setup
+     * @param pQ159Setup
      *          the 15.9% quantile setup
-     * @param _q250
+     * @param pQ250
      *          the 25% quantile
-     * @param _q250Setup
+     * @param pQ250Setup
      *          the 25% quantile setup
-     * @param _medianSetup
+     * @param pMedianSetup
      *          the median setup
-     * @param _q750
+     * @param pQ750
      *          the 75% quantile
-     * @param _q750Setup
+     * @param pQ750Setup
      *          the 75% quantile setup
-     * @param _q841
+     * @param pQ841
      *          the 84.1% quantile
-     * @param _q841Setup
+     * @param pQ841Setup
      *          the 84.1% quantile setup
-     * @param _q950
+     * @param pQ950
      *          the 95% quantile
-     * @param _q950Setup
+     * @param pQ950Setup
      *          the 95% quantile setup
-     * @param _max
+     * @param pMax
      *          the maximum
-     * @param _maxSetup
+     * @param pMaxSetup
      *          the maximum setup
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _meanSetup
+     * @param pMeanSetup
      *          the mean setup
-     * @param _sd
+     * @param pSd
      *          the standard deviation
-     * @param _median
+     * @param pMedian
      *          the median
      */
     public DoubleStatisticsBig(//
-        final double _min, //
-        final Setup _minSetup, //
-        final double _q050, //
-        final Setup _q050Setup, //
-        final double _q159, //
-        final Setup _q159Setup, //
-        final double _q250, //
-        final Setup _q250Setup, //
-        final double _median, //
-        final Setup _medianSetup, //
-        final double _q750, //
-        final Setup _q750Setup, //
-        final double _q841, //
-        final Setup _q841Setup, //
-        final double _q950, //
-        final Setup _q950Setup, //
-        final double _max, //
-        final Setup _maxSetup, //
-        final double _mean, //
-        final Setup _meanSetup, //
-        final double _sd) {
-      super(_q050, _q159, _q250, _median, _q750, _q841, _q950,
-          _mean, _sd);
+        final double pMin, //
+        final Setup pMinSetup, //
+        final double pQ050, //
+        final Setup pQ050Setup, //
+        final double pQ159, //
+        final Setup pQ159Setup, //
+        final double pQ250, //
+        final Setup pQ250Setup, //
+        final double pMedian, //
+        final Setup pMedianSetup, //
+        final double pQ750, //
+        final Setup pQ750Setup, //
+        final double pQ841, //
+        final Setup pQ841Setup, //
+        final double pQ950, //
+        final Setup pQ950Setup, //
+        final double pMax, //
+        final Setup pMaxSetup, //
+        final double pMean, //
+        final Setup pMeanSetup, //
+        final double pSd) {
+      super(pQ050, pQ159, pQ250, pMedian, pQ750, pQ841, pQ950,
+          pMean, pSd);
 
-      this.min = _min;
+      this.min = pMin;
       if ((!Double.isFinite(this.min))
           || (this.min > this.q050)) {
         throw new IllegalArgumentException(
@@ -818,7 +818,7 @@ public final class EndResultStatistic
                 + " for q050: " + this.q050);//$NON-NLS-1$
       }
 
-      this.max = _max;
+      this.max = pMax;
       if ((!Double.isFinite(this.max))
           || (this.max < this.q950)) {
         throw new IllegalArgumentException(
@@ -832,16 +832,16 @@ public final class EndResultStatistic
                 + this.min) + '/') + this.max) + '/') + this.sd);
       }
 
-      this.minSetup = Objects.requireNonNull(_minSetup);
-      this.q050Setup = Objects.requireNonNull(_q050Setup);
-      this.q159Setup = Objects.requireNonNull(_q159Setup);
-      this.q250Setup = Objects.requireNonNull(_q250Setup);
-      this.medianSetup = Objects.requireNonNull(_medianSetup);
-      this.q750Setup = Objects.requireNonNull(_q750Setup);
-      this.q841Setup = Objects.requireNonNull(_q841Setup);
-      this.q950Setup = Objects.requireNonNull(_q950Setup);
-      this.maxSetup = Objects.requireNonNull(_maxSetup);
-      this.meanSetup = Objects.requireNonNull(_meanSetup);
+      this.minSetup = Objects.requireNonNull(pMinSetup);
+      this.q050Setup = Objects.requireNonNull(pQ050Setup);
+      this.q159Setup = Objects.requireNonNull(pQ159Setup);
+      this.q250Setup = Objects.requireNonNull(pQ250Setup);
+      this.medianSetup = Objects.requireNonNull(pMedianSetup);
+      this.q750Setup = Objects.requireNonNull(pQ750Setup);
+      this.q841Setup = Objects.requireNonNull(pQ841Setup);
+      this.q950Setup = Objects.requireNonNull(pQ950Setup);
+      this.maxSetup = Objects.requireNonNull(pMaxSetup);
+      this.meanSetup = Objects.requireNonNull(pMeanSetup);
     }
 
     /** {@inheritDoc} */
@@ -1006,30 +1006,30 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _min
+     * @param pMin
      *          the minimum
-     * @param _median
+     * @param pMedian
      *          the median
-     * @param _max
+     * @param pMax
      *          the maximum
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _sd
+     * @param pSd
      *          the standard deviation
      */
-    public IntStatisticsSmall(final long _min,
-        final double _median, final long _max,
-        final double _mean, final double _sd) {
-      super(_mean, _sd, _median);
+    public IntStatisticsSmall(final long pMin,
+        final double pMedian, final long pMax,
+        final double pMean, final double pSd) {
+      super(pMean, pSd, pMedian);
 
-      this.min = _min;
+      this.min = pMin;
       if (this.min > this.median) {
         throw new IllegalArgumentException(
             "Invalid minimum: " + this.min //$NON-NLS-1$
                 + " for median: " + this.median);//$NON-NLS-1$
       }
 
-      this.max = _max;
+      this.max = pMax;
       if (this.max < this.median) {
         throw new IllegalArgumentException(
             "Invalid maximum: " + this.max //$NON-NLS-1$
@@ -1119,28 +1119,28 @@ public final class EndResultStatistic
     /**
      * create
      *
-     * @param _min
+     * @param pMin
      *          the minimum
-     * @param _minSetup
+     * @param pMinSetup
      *          the setup where the minimum value was achieved
-     * @param _median
+     * @param pMedian
      *          the median
-     * @param _max
+     * @param pMax
      *          the maximum
-     * @param _maxSetup
+     * @param pMaxSetup
      *          the setup where the maximum value was achieved
-     * @param _mean
+     * @param pMean
      *          the mean
-     * @param _sd
+     * @param pSd
      *          the standard deviation
      */
-    public IntStatisticsSmallWithSetups(final long _min,
-        final Setup _minSetup, final double _median,
-        final long _max, final Setup _maxSetup,
-        final double _mean, final double _sd) {
-      super(_min, _median, _max, _mean, _sd);
-      this.minSetup = Objects.requireNonNull(_minSetup);
-      this.maxSetup = Objects.requireNonNull(_maxSetup);
+    public IntStatisticsSmallWithSetups(final long pMin,
+        final Setup pMinSetup, final double pMedian,
+        final long pMax, final Setup pMaxSetup,
+        final double pMean, final double pSd) {
+      super(pMin, pMedian, pMax, pMean, pSd);
+      this.minSetup = Objects.requireNonNull(pMinSetup);
+      this.maxSetup = Objects.requireNonNull(pMaxSetup);
     }
 
     /** {@inheritDoc} */

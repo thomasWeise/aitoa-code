@@ -14,30 +14,30 @@ import aitoa.structure.ISpaceTest;
 public class TestBitStringSpace extends ISpaceTest<boolean[]> {
 
   /** the space */
-  private final BitStringSpace m_space;
+  private final BitStringSpace mSpace;
 
   /**
    * create
    *
-   * @param length
+   * @param pLength
    *          the length
    */
-  protected TestBitStringSpace(final int length) {
+  protected TestBitStringSpace(final int pLength) {
     super();
-    this.m_space = new BitStringSpace(length);
+    this.mSpace = new BitStringSpace(pLength);
   }
 
   /** {@inheritDoc} */
   @Override
   protected ISpace<boolean[]> getInstance() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected void assertValid(final boolean[] a) {
     Assert.assertNotNull(a);
-    Assert.assertEquals(this.m_space.length, a.length);
+    Assert.assertEquals(this.mSpace.length, a.length);
   }
 
   /** {@inheritDoc} */
@@ -52,7 +52,7 @@ public class TestBitStringSpace extends ISpaceTest<boolean[]> {
   /** {@inheritDoc} */
   @Override
   protected boolean[] createValid() {
-    final boolean[] b = new boolean[this.m_space.length];
+    final boolean[] b = new boolean[this.mSpace.length];
     this.fillWithRandomData(b);
     return b;
   }
@@ -68,8 +68,8 @@ public class TestBitStringSpace extends ISpaceTest<boolean[]> {
 
     for (;;) {
       final int len =
-          random.nextInt(2 + (2 * this.m_space.length));
-      if (len != this.m_space.length) {
+          random.nextInt(2 + (2 * this.mSpace.length));
+      if (len != this.mSpace.length) {
         return new boolean[len];
       }
     }

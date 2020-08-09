@@ -198,15 +198,15 @@ public class RandomUtilsTest {
   /**
    * test the shuffling of arrays of length {@code n}
    *
-   * @param n
+   * @param pN
    *          the array length
    */
-  private static final void permShuffleTest(final int n) {
-    final int[] perm = new int[n];
-    final int[] temp1 = new int[n];
-    final int[] temp2 = new int[n];
+  private static final void permShuffleTest(final int pN) {
+    final int[] perm = new int[pN];
+    final int[] temp1 = new int[pN];
+    final int[] temp2 = new int[pN];
     int count = 1;
-    for (int i = n; i >= 1; i--) {
+    for (int i = pN; i >= 1; i--) {
       count = Math.multiplyExact(count, i);
     }
     final Random random = ThreadLocalRandom.current();
@@ -229,32 +229,32 @@ public class RandomUtilsTest {
   /**
    * convert a permutation to a number
    *
-   * @param perm
+   * @param pPerm
    *          the permutation
-   * @param temp1
+   * @param pTemp1
    *          the first temporary array (same length as
    *          {@code perm})
-   * @param temp2
+   * @param pTemp2
    *          the second temporary array (same length as
    *          {@code perm})
    * @return the number representation see
    *         https://stackoverflow.com/a/24689277
    */
-  private static final int permToInt(final int[] perm,
-      final int[] temp1, final int[] temp2) {
+  private static final int permToInt(final int[] pPerm,
+      final int[] pTemp1, final int[] pTemp2) {
     int i, k = 0, m = 1;
-    final int n = perm.length;
+    final int n = pPerm.length;
 
     for (i = 0; i < n; i++) {
-      temp1[i] = i;
-      temp2[i] = i;
+      pTemp1[i] = i;
+      pTemp2[i] = i;
     }
 
     for (i = 0; i < (n - 1); i++) {
-      k += m * temp1[perm[i]];
+      k += m * pTemp1[pPerm[i]];
       m = m * (n - i);
-      temp1[temp2[n - i - 1]] = temp1[perm[i]];
-      temp2[temp1[perm[i]]] = temp2[n - i - 1];
+      pTemp1[pTemp2[n - i - 1]] = pTemp1[pPerm[i]];
+      pTemp2[pTemp1[pPerm[i]]] = pTemp2[n - i - 1];
     }
 
     return k;
@@ -359,19 +359,19 @@ public class RandomUtilsTest {
    * Test whether the internal uniformFromMtoN function works
    * correct
    *
-   * @param M
+   * @param pM
    *          the lower bound
-   * @param N
+   * @param pN
    *          the upper bound
    */
-  private static final void testUniformFromMtoNSmall(final int M,
-      final int N) {
+  private static final void
+      testUniformFromMtoNSmall(final int pM, final int pN) {
     final Random r = ThreadLocalRandom.current();
-    final int[] count = new int[(N - M) + 1];
-    for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
-      final long l = RandomUtils.uniformFromMtoN(r, M, N);
-      TestTools.assertInRange(l, M, N);
-      ++count[(int) (l - M)];
+    final int[] count = new int[(pN - pM) + 1];
+    for (int i = Math.max(10000, pN * 1000); (--i) >= 0;) {
+      final long l = RandomUtils.uniformFromMtoN(r, pM, pN);
+      TestTools.assertInRange(l, pM, pN);
+      ++count[(int) (l - pM)];
     }
 
     int min = Integer.MAX_VALUE;
@@ -451,17 +451,17 @@ public class RandomUtilsTest {
    * Test whether the internal uniformFromMtoN function works
    * correct
    *
-   * @param M
+   * @param pM
    *          the lower bound
-   * @param N
+   * @param pN
    *          the upper bound
    */
-  private static final void testUniformFromMtoNBig(final long M,
-      final long N) {
+  private static final void testUniformFromMtoNBig(final long pM,
+      final long pN) {
     final Random r = ThreadLocalRandom.current();
     for (int i = 10000; (--i) >= 0;) {
       TestTools.assertInRange(
-          RandomUtils.uniformFromMtoN(r, M, N), M, N);
+          RandomUtils.uniformFromMtoN(r, pM, pN), pM, pN);
     }
   }
 

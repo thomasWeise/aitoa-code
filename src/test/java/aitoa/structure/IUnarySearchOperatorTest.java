@@ -110,7 +110,7 @@ public abstract class IUnarySearchOperatorTest<X>
    * method works correctly and respects the return values of the
    * visitor
    */
-  @SuppressWarnings( "unchecked" )
+  @SuppressWarnings("unchecked")
   @Test(timeout = 3600000)
   public void testEnumerate() {
     final ISpace<X> space = this.getSpace();

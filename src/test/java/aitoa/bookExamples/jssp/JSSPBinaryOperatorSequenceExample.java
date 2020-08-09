@@ -21,32 +21,32 @@ public final class JSSPBinaryOperatorSequenceExample
     implements IBinarySearchOperator<int[]> {
 
   /** the done elements from x0 */
-  private final boolean[] m_done_x0;
+  private final boolean[] mDoneX0;
   /** the done elements from x1 */
-  private final boolean[] m_done_x1;
+  private final boolean[] mDoneX1;
 
   /** the parent */
-  private final int[] m_parent;
+  private final int[] mParent;
   /** the done index for parent 0 */
-  private final int[] m_doneP0;
+  private final int[] mDoneP0;
   /** the done index for parent 1 */
-  private final int[] m_doneP1;
+  private final int[] mDoneP1;
 
   /**
    * create the sequence crossover operator
    *
-   * @param instance
+   * @param pInstance
    *          the JSSP instance
    */
   public JSSPBinaryOperatorSequenceExample(
-      final JSSPInstance instance) {
+      final JSSPInstance pInstance) {
     super();
-    final int length = instance.n * instance.m;
-    this.m_done_x0 = new boolean[length];
-    this.m_done_x1 = new boolean[length];
-    this.m_parent = new int[length];
-    this.m_doneP0 = new int[length];
-    this.m_doneP1 = new int[length];
+    final int length = pInstance.n * pInstance.m;
+    this.mDoneX0 = new boolean[length];
+    this.mDoneX1 = new boolean[length];
+    this.mParent = new int[length];
+    this.mDoneP0 = new int[length];
+    this.mDoneP1 = new int[length];
   }
 
   /** {@inheritDoc} */
@@ -68,9 +68,9 @@ public final class JSSPBinaryOperatorSequenceExample
 // length=m*n to all false; and indices desti, x0i, x10 to 0
 // end relevant
 
-    final boolean[] done_x0 = this.m_done_x0;
+    final boolean[] done_x0 = this.mDoneX0;
     Arrays.fill(done_x0, false); // nothing used from x0 yet
-    final boolean[] done_x1 = this.m_done_x1;
+    final boolean[] done_x1 = this.mDoneX1;
     Arrays.fill(done_x1, false); // nothing used from xy yet
 
     final int length = done_x0.length; // length = m*n
@@ -79,7 +79,7 @@ public final class JSSPBinaryOperatorSequenceExample
     for (;;) { // repeat until dest is filled, i.e., desti=length
 // randomly chose a source point and pick next sub-job from it
       final int parent = (random.nextBoolean() ? 0 : 1);
-      this.m_parent[desti] = parent;
+      this.mParent[desti] = parent;
       final int add = (parent == 0) ? x0[x0i] : x1[x1i];
 
       dest[desti++] = add; // we picked a sub-job and added it
@@ -90,7 +90,7 @@ public final class JSSPBinaryOperatorSequenceExample
       for (int i = x0i;; i++) { // mark the sub-job as done in x0
         if ((x0[i] == add) && (!done_x0[i])) { // find added job
           done_x0[i] = true;// found it and marked it
-          this.m_doneP0[desti - 1] = i;
+          this.mDoneP0[desti - 1] = i;
           break; // quit sub-job finding loop
         }
       }
@@ -101,7 +101,7 @@ public final class JSSPBinaryOperatorSequenceExample
       for (int i = x1i;; i++) { // mark the sub-job as done in x1
         if ((x1[i] == add) && (!done_x1[i])) { // find added job
           done_x1[i] = true; // found it and marked it
-          this.m_doneP1[desti - 1] = i;
+          this.mDoneP1[desti - 1] = i;
           break; // quit sub-job finding loop
         }
       }
@@ -218,10 +218,10 @@ public final class JSSPBinaryOperatorSequenceExample
     System.out.println(
         " ======================== operator ===================="); //$NON-NLS-1$
     System.out.print("parent: "); //$NON-NLS-1$
-    System.out.println(Arrays.toString(op2.m_parent));
+    System.out.println(Arrays.toString(op2.mParent));
     System.out.print("p0-marked-per-step: "); //$NON-NLS-1$
-    System.out.println(Arrays.toString(op2.m_doneP0));
+    System.out.println(Arrays.toString(op2.mDoneP0));
     System.out.print("p1-marked-per-step: "); //$NON-NLS-1$
-    System.out.println(Arrays.toString(op2.m_doneP1));
+    System.out.println(Arrays.toString(op2.mDoneP1));
   }
 }

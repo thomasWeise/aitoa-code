@@ -18,52 +18,52 @@ public class TestTreeBinaryOperator
     extends IBinarySearchOperatorTest<Node[]> {
 
   /** the type set */
-  private final NodeTypeSet<?> m_typeSet;
+  private final NodeTypeSet<?> mTypeSet;
 
   /** the space */
-  private final TreeSpace m_space;
+  private final TreeSpace mSpace;
 
   /** the nullary operator */
-  private final TreeNullaryOperator m_nullary;
+  private final TreeNullaryOperator mNullary;
   /** the unary operator */
-  private final TreeBinaryOperator m_binary;
+  private final TreeBinaryOperator mBinary;
 
   /**
    * create the unary operator
    *
-   * @param maxDepth
+   * @param pMaxDepth
    *          the maximum depth
    */
-  public TestTreeBinaryOperator(final int maxDepth) {
+  public TestTreeBinaryOperator(final int pMaxDepth) {
 
     super();
 
-    this.m_typeSet =
+    this.mTypeSet =
         TestFunctionNodeTypeSet.makeMathNodeTypeSet();
-    this.m_space = new TreeSpace(maxDepth);
-    this.m_nullary =
-        new TreeNullaryOperator(this.m_typeSet, maxDepth);
-    this.m_binary = new TreeBinaryOperator(maxDepth);
+    this.mSpace = new TreeSpace(pMaxDepth);
+    this.mNullary =
+        new TreeNullaryOperator(this.mTypeSet, pMaxDepth);
+    this.mBinary = new TreeBinaryOperator(pMaxDepth);
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeSpace getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeBinaryOperator
       getOperator(final ISpace<Node[]> space) {
-    return this.m_binary;
+    return this.mBinary;
   }
 
   /** {@inheritDoc} */
   @Override
   protected Node[] createValid() {
     final Node[] res = new Node[1];
-    this.m_nullary.apply(res, ThreadLocalRandom.current());
+    this.mNullary.apply(res, ThreadLocalRandom.current());
     return res;
   }
 
@@ -76,7 +76,7 @@ public class TestTreeBinaryOperator
     final TreeSpace space = this.getSpace();
     final TreeBinaryOperator op = this.getOperator(space);
     final Random random = ThreadLocalRandom.current();
-    final int maxDepth = op.m_maxDepth;
+    final int maxDepth = op.mMaxDepth;
 
     final Node[] copy1 = space.create();
     final Node[] copy2 = space.create();

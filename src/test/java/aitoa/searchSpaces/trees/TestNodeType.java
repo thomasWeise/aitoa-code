@@ -19,7 +19,7 @@ public class TestNodeType<T extends Node>
     extends StructureTest<NodeType<T>> implements Cloneable {
 
   /** the node type */
-  private NodeType<T> m_nodeType;
+  private NodeType<T> mNodeType;
 
   /**
    * test a node type
@@ -32,7 +32,7 @@ public class TestNodeType<T extends Node>
   private TestNodeType(final StructureTest<?> owner,
       final NodeType<T> type) {
     super(owner);
-    this.m_nodeType = Objects.requireNonNull(type);
+    this.mNodeType = Objects.requireNonNull(type);
   }
 
   /**
@@ -135,7 +135,7 @@ public class TestNodeType<T extends Node>
   /** {@inheritDoc} */
   @Override
   protected NodeType<T> getInstance() {
-    return this.m_nodeType;
+    return this.mNodeType;
   }
 
   /**
@@ -155,10 +155,10 @@ public class TestNodeType<T extends Node>
   /**
    * Apply the default tests to a given node
    *
-   * @param nodeType
+   * @param pNodeType
    *          the node type
    */
-  public static void testNodeType(final NodeType<?> nodeType) {
-    new TestNodeType<>(nodeType).runAllTests();
+  public static void testNodeType(final NodeType<?> pNodeType) {
+    new TestNodeType<>(pNodeType).runAllTests();
   }
 }

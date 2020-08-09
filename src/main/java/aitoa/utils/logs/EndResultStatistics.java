@@ -148,10 +148,10 @@ public class EndResultStatistics {
     while (lower <= upper) {
       mid = (lower + upper) >>> 1;
       final Holder.InnerSetup midVal = unique[mid];
-      if (midVal.m_bestF2 < value) {
+      if (midVal.mBestF2 < value) {
         lower = mid + 1;
       } else {
-        if (midVal.m_bestF2 > value) {
+        if (midVal.mBestF2 > value) {
           upper = mid - 1;
         } else {
           return midVal;
@@ -161,7 +161,7 @@ public class EndResultStatistics {
 
     // second: try to re-adjust
     Holder.InnerSetup best = unique[mid];
-    double testVal = best.m_bestF2;
+    double testVal = best.mBestF2;
     if (testVal == value) {
       return best;
     }
@@ -176,7 +176,7 @@ public class EndResultStatistics {
     int lenience = 2;
     while ((--lower) >= 0) {
       final Holder.InnerSetup test = unique[lower];
-      testVal = test.m_bestF2;
+      testVal = test.mBestF2;
       if (testVal == value) {
         return test;
       }
@@ -197,7 +197,7 @@ public class EndResultStatistics {
     lenience = 2;
     while ((++upper) < unique.length) {
       final Holder.InnerSetup test = unique[upper];
-      testVal = test.m_bestF2;
+      testVal = test.mBestF2;
       if (testVal == value) {
         return test;
       }
@@ -453,132 +453,132 @@ public class EndResultStatistics {
         Holder h = results[i];
         results[i] = null;
 
-        if (!h.m_finalized) {
+        if (!h.mFinalized) {
           throw new IllegalStateException();
         }
 
-        bw.write(h.algorithm);
+        bw.write(h.mAlgorithm);
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-        bw.write(h.instance);
+        bw.write(h.mInstance);
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-        final int runs = h.m_bestF.size();
+        final int runs = h.mBestF.size();
         if (runs <= 0) {
           throw new IllegalStateException(
               "no runs for algorithm '" + //$NON-NLS-1$
-                  h.algorithm + "' on instance '" + //$NON-NLS-1$
-                  h.instance + "'."); //$NON-NLS-1$
+                  h.mAlgorithm + "' on instance '" + //$NON-NLS-1$
+                  h.mInstance + "'."); //$NON-NLS-1$
         }
-        if (runs < h.m_successes) {
+        if (runs < h.mSuccesses) {
           throw new IllegalStateException(
-              "more successes(" + h.m_successes//$NON-NLS-1$
+              "more successes(" + h.mSuccesses//$NON-NLS-1$
                   + ") for algorithm '" + //$NON-NLS-1$
-                  h.algorithm + "' on instance '" + //$NON-NLS-1$
-                  h.instance + "' than runs (" //$NON-NLS-1$
+                  h.mAlgorithm + "' on instance '" + //$NON-NLS-1$
+                  h.mInstance + "' than runs (" //$NON-NLS-1$
                   + runs + ").");//$NON-NLS-1$
         }
-        final boolean allSuccess = (runs == h.m_successes);
+        final boolean allSuccess = (runs == h.mSuccesses);
         bw.write(Integer.toString(runs));
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
         EndResultStatistics.printStat(//
-            h.m_bestF, //
+            h.mBestF, //
             EndResultStatistics.QUANTILES_BIG, //
-            h.m_uniqueBestF, null, null, //
+            h.mUniqueBestF, null, null, //
             bw);
-        h.m_bestF = null;
-        h.m_uniqueBestF = null;
+        h.mBestF = null;
+        h.mUniqueBestF = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_totalTime.size() != runs) {
+        if (h.mTotalTime.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         EndResultStatistics.printStat(//
-            h.m_totalTime, //
+            h.mTotalTime, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
             bw);
-        h.m_totalTime = null;
+        h.mTotalTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_totalFEs.size() != runs) {
+        if (h.mTotalFEs.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         EndResultStatistics.printStat(//
-            h.m_totalFEs, //
+            h.mTotalFEs, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
             bw);
-        h.m_totalFEs = null;
+        h.mTotalFEs = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_lastImprovementTime.size() != runs) {
+        if (h.mLastImprovementTime.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         final Number lastImprovementTimeMean = //
             EndResultStatistics.printStat(//
-                h.m_lastImprovementTime, //
+                h.mLastImprovementTime, //
                 EndResultStatistics.QUANTILES_BIG, //
                 null, null, null, //
                 bw);
-        h.m_lastImprovementTime = null;
+        h.mLastImprovementTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_lastImprovementFE.size() != runs) {
+        if (h.mLastImprovementFE.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         final Number lastImprovementFEMean =
             EndResultStatistics.printStat(//
-                h.m_lastImprovementFE, //
+                h.mLastImprovementFE, //
                 EndResultStatistics.QUANTILES_BIG, //
                 null, null, null, //
                 bw);
-        h.m_lastImprovementFE = null;
+        h.mLastImprovementFE = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_numberOfImprovements.size() != runs) {
+        if (h.mNumberOfImprovements.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         EndResultStatistics.printStat(//
-            h.m_numberOfImprovements, //
+            h.mNumberOfImprovements, //
             EndResultStatistics.QUANTILES_BIG, //
             null, null, null, //
             bw);
-        h.m_numberOfImprovements = null;
+        h.mNumberOfImprovements = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_budgetTime.size() != runs) {
+        if (h.mBudgetTime.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         EndResultStatistics.printStat(//
-            h.m_budgetTime, //
+            h.mBudgetTime, //
             EndResultStatistics.QUANTILES_SMALL, //
             null, null, null, //
             bw);
-        h.m_budgetTime = null;
+        h.mBudgetTime = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_budgetFEs.size() != runs) {
+        if (h.mBudgetFEs.size() != runs) {
           throw new IllegalStateException(
               "inconsistent number of runs."); //$NON-NLS-1$
         }
         EndResultStatistics.printStat(//
-            h.m_budgetFEs, //
+            h.mBudgetFEs, //
             EndResultStatistics.QUANTILES_SMALL, //
             null, null, null, //
             bw);
-        h.m_budgetFEs = null;
+        h.mBudgetFEs = null;
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        bw.write(Integer.toString(h.m_successes));
+        bw.write(Integer.toString(h.mSuccesses));
         bw.write(LogFormat.CSV_SEPARATOR_CHAR);
 
-        if (h.m_successes > 0) {
+        if (h.mSuccesses > 0) {
           if (allSuccess) {
             bw.write(LogFormat.numberToStringForLog(//
                 lastImprovementTimeMean));
@@ -587,35 +587,35 @@ public class EndResultStatistics {
                 lastImprovementFEMean));
           } else {
             bw.write(LogFormat.numberToStringForLog(
-                h.m_ertTime.divideSumBy(h.m_successes)));
+                h.mErtTime.divideSumBy(h.mSuccesses)));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(LogFormat.numberToStringForLog(
-                h.m_ertFEs.divideSumBy(h.m_successes)));
+                h.mErtFEs.divideSumBy(h.mSuccesses)));
           }
 
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
           EndResultStatistics.printStat(//
-              h.m_successTime, //
+              h.mSuccessTime, //
               EndResultStatistics.QUANTILES_SMALL, //
               null, //
-              h.m_fastestSuccessTimeSetup, //
-              h.m_slowestSuccessTimeSetup, //
+              h.mFastestSuccessTimeSetup, //
+              h.mSlowestSuccessTimeSetup, //
               bw);
-          h.m_successTime = null;
-          h.m_fastestSuccessTimeSetup = null;
-          h.m_slowestSuccessTimeSetup = null;
+          h.mSuccessTime = null;
+          h.mFastestSuccessTimeSetup = null;
+          h.mSlowestSuccessTimeSetup = null;
 
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
           EndResultStatistics.printStat(//
-              h.m_successFEs, //
+              h.mSuccessFEs, //
               EndResultStatistics.QUANTILES_SMALL, //
               null, //
-              h.m_fastestSuccessFEsSetup, //
-              h.m_slowestSuccessFEsSetup, //
+              h.mFastestSuccessFEsSetup, //
+              h.mSlowestSuccessFEsSetup, //
               bw);
-          h.m_successFEs = null;
-          h.m_fastestSuccessFEsSetup = null;
-          h.m_slowestSuccessFEsSetup = null;
+          h.mSuccessFEs = null;
+          h.mFastestSuccessFEsSetup = null;
+          h.mSlowestSuccessFEsSetup = null;
 
         } else {
           final String s =
@@ -639,8 +639,8 @@ public class EndResultStatistics {
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
           bw.write(LogFormat.CSV_SEPARATOR_CHAR);
         }
-        h.m_ertFEs = null;
-        h.m_ertTime = null;
+        h.mErtFEs = null;
+        h.mErtTime = null;
         h = null;
 
         bw.newLine();
@@ -2589,61 +2589,61 @@ public class EndResultStatistics {
   private static final class Parser
       implements Consumer<EndResult> {
     /** the holders */
-    private HashMap<String, HashMap<String, Holder>> m_holders;
+    private HashMap<String, HashMap<String, Holder>> mHolders;
     /** the success predicate */
-    private Predicate<EndResult> m_success;
+    private Predicate<EndResult> mSuccess;
     /** the instance name mapper */
-    private final Function<String, String> m_instanceNameMapper;
+    private final Function<String, String> mInstanceNameMapper;
     /** the algorithm name mapper */
-    private final Function<String, String> m_algorithmNameMapper;
+    private final Function<String, String> mAlgorithmNameMapper;
 
     /**
      * create
      *
-     * @param success
+     * @param pSuccess
      *          the success predicate
-     * @param instanceNameMapper
+     * @param pInstanceNameMapper
      *          the instance name mapper
-     * @param algorithmNameMapper
+     * @param pAlgorithmNameMapper
      *          he algorithm name mapper
      */
-    Parser(final Predicate<EndResult> success,
-        final Function<String, String> instanceNameMapper,
-        final Function<String, String> algorithmNameMapper) {
+    Parser(final Predicate<EndResult> pSuccess,
+        final Function<String, String> pInstanceNameMapper,
+        final Function<String, String> pAlgorithmNameMapper) {
       super();
-      this.m_holders = new HashMap<>();
-      this.m_success = Objects.requireNonNull(success);
-      this.m_instanceNameMapper =
-          Objects.requireNonNull(instanceNameMapper);
-      this.m_algorithmNameMapper =
-          Objects.requireNonNull(algorithmNameMapper);
+      this.mHolders = new HashMap<>();
+      this.mSuccess = Objects.requireNonNull(pSuccess);
+      this.mInstanceNameMapper =
+          Objects.requireNonNull(pInstanceNameMapper);
+      this.mAlgorithmNameMapper =
+          Objects.requireNonNull(pAlgorithmNameMapper);
     }
 
     /** {@inheritDoc} */
     @Override
     public void accept(final EndResult t) {
       final String useAlgo =
-          this.m_algorithmNameMapper.apply(t.algorithm);
+          this.mAlgorithmNameMapper.apply(t.algorithm);
       if (useAlgo == null) {
         return;
       }
       final String useInst =
-          this.m_instanceNameMapper.apply(t.instance);
+          this.mInstanceNameMapper.apply(t.instance);
       if (useInst == null) {
         return;
       }
 
-      HashMap<String, Holder> ifa = this.m_holders.get(useAlgo);
+      HashMap<String, Holder> ifa = this.mHolders.get(useAlgo);
       if (ifa == null) {
         ifa = new HashMap<>();
-        if (this.m_holders.put(useAlgo, ifa) != null) {
+        if (this.mHolders.put(useAlgo, ifa) != null) {
           throw new ConcurrentModificationException();
         }
       }
 
       Holder h = ifa.get(useInst);
       if (h == null) {
-        h = new Holder(useAlgo, useInst, this.m_success);
+        h = new Holder(useAlgo, useInst, this.mSuccess);
         if (ifa.put(useInst, h) != null) {
           throw new ConcurrentModificationException();
         }
@@ -2658,12 +2658,12 @@ public class EndResultStatistics {
      * @return the holder array
      */
     Holder[] doFinalize() {
-      final Holder[] holders = this.m_holders.values().stream()
+      final Holder[] holders = this.mHolders.values().stream()
           .flatMap(v -> v.values().stream()).sorted()
           .toArray(i -> new Holder[i]);
-      this.m_holders.clear();
-      this.m_holders = null;
-      this.m_success = null;
+      this.mHolders.clear();
+      this.mHolders = null;
+      this.mSuccess = null;
       for (final Holder h : holders) {
         h.doFinalize();
       }
@@ -2675,99 +2675,99 @@ public class EndResultStatistics {
   private static final class Holder
       implements Comparable<Holder>, Consumer<EndResult> {
     /** the algorithm */
-    final String algorithm;
+    final String mAlgorithm;
 
     /** the instance */
-    final String instance;
+    final String mInstance;
 
     /** the setups */
-    private HashSet<InnerSetup> m_setups;
+    private HashSet<InnerSetup> mSetups;
     /** the unique best f setups */
-    InnerSetup[] m_uniqueBestF;
+    InnerSetup[] mUniqueBestF;
 
     /** the success predicate */
-    private Predicate<EndResult> m_success;
+    private Predicate<EndResult> mSuccess;
 
     /** the fastest successful run in terms of runtime */
-    Setup m_fastestSuccessTimeSetup;
+    Setup mFastestSuccessTimeSetup;
     /** the fastest successful run in terms of runtime */
-    long m_fastestSuccessTime;
+    long mFastestSuccessTime;
     /** the slowest successful run in terms of runtime */
-    Setup m_slowestSuccessTimeSetup;
+    Setup mSlowestSuccessTimeSetup;
     /** the slowest successful run in terms of runtime */
-    long m_slowestSuccessTime;
+    long mSlowestSuccessTime;
     /** the fastest successful run in terms of runFEs */
-    Setup m_fastestSuccessFEsSetup;
+    Setup mFastestSuccessFEsSetup;
     /** the fastest successful run in terms of runFEs */
-    long m_fastestSuccessFEs;
+    long mFastestSuccessFEs;
     /** the slowest successful run in terms of runFEs */
-    Setup m_slowestSuccessFEsSetup;
+    Setup mSlowestSuccessFEsSetup;
     /** the slowest successful run in terms of runFEs */
-    long m_slowestSuccessFEs;
+    long mSlowestSuccessFEs;
 
     /** the best-f statistic */
-    Statistic m_bestF;
+    Statistic mBestF;
     /** the total time statistic */
-    Statistic m_totalTime;
+    Statistic mTotalTime;
     /** the total FEs statistic */
-    Statistic m_totalFEs;
+    Statistic mTotalFEs;
     /** the last improvement time statistic */
-    Statistic m_lastImprovementTime;
+    Statistic mLastImprovementTime;
     /** the last improvement FEs statistic */
-    Statistic m_lastImprovementFE;
+    Statistic mLastImprovementFE;
     /** the number of improvements statistic */
-    Statistic m_numberOfImprovements;
+    Statistic mNumberOfImprovements;
     /** the budget time statistic */
-    Statistic m_budgetTime;
+    Statistic mBudgetTime;
     /** the budget FEs statistic */
-    Statistic m_budgetFEs;
+    Statistic mBudgetFEs;
     /** the empirical expected running time statistic */
-    Statistic m_ertTime;
+    Statistic mErtTime;
     /** the empirical expected running FEs statistic */
-    Statistic m_ertFEs;
+    Statistic mErtFEs;
     /** the success FEs */
-    Statistic m_successFEs;
+    Statistic mSuccessFEs;
     /** the success time */
-    Statistic m_successTime;
+    Statistic mSuccessTime;
 
     /** the number of successes */
-    int m_successes;
+    int mSuccesses;
     /** are we finalized? */
-    boolean m_finalized;
+    boolean mFinalized;
 
     /**
      * create the holder
      *
-     * @param _algo
+     * @param pAlgo
      *          the algorithm
-     * @param _inst
+     * @param pInst
      *          the instance
-     * @param success
+     * @param pSuccess
      *          the success predicate
      */
-    Holder(final String _algo, final String _inst,
-        final Predicate<EndResult> success) {
-      this.algorithm = Objects.requireNonNull(_algo);
-      this.instance = Objects.requireNonNull(_inst);
-      this.m_setups = new HashSet<>();
+    Holder(final String pAlgo, final String pInst,
+        final Predicate<EndResult> pSuccess) {
+      this.mAlgorithm = Objects.requireNonNull(pAlgo);
+      this.mInstance = Objects.requireNonNull(pInst);
+      this.mSetups = new HashSet<>();
 
-      this.m_bestF = new Doubles();
-      this.m_totalTime = new Longs();
-      this.m_totalFEs = new Longs();
-      this.m_lastImprovementTime = new Longs();
-      this.m_lastImprovementFE = new Longs();
-      this.m_numberOfImprovements = new Longs();
-      this.m_budgetTime = new Longs();
-      this.m_budgetFEs = new Longs();
-      this.m_ertTime = new Longs();
-      this.m_ertFEs = new Longs();
-      this.m_successFEs = new Longs();
-      this.m_successTime = new Longs();
-      this.m_success = Objects.requireNonNull(success);
-      this.m_fastestSuccessFEs = Long.MAX_VALUE;
-      this.m_slowestSuccessFEs = Long.MIN_VALUE;
-      this.m_fastestSuccessTime = Long.MAX_VALUE;
-      this.m_slowestSuccessTime = Long.MIN_VALUE;
+      this.mBestF = new Doubles();
+      this.mTotalTime = new Longs();
+      this.mTotalFEs = new Longs();
+      this.mLastImprovementTime = new Longs();
+      this.mLastImprovementFE = new Longs();
+      this.mNumberOfImprovements = new Longs();
+      this.mBudgetTime = new Longs();
+      this.mBudgetFEs = new Longs();
+      this.mErtTime = new Longs();
+      this.mErtFEs = new Longs();
+      this.mSuccessFEs = new Longs();
+      this.mSuccessTime = new Longs();
+      this.mSuccess = Objects.requireNonNull(pSuccess);
+      this.mFastestSuccessFEs = Long.MAX_VALUE;
+      this.mSlowestSuccessFEs = Long.MIN_VALUE;
+      this.mFastestSuccessTime = Long.MAX_VALUE;
+      this.mSlowestSuccessTime = Long.MIN_VALUE;
     }
 
     /** {@inheritDoc} */
@@ -2776,85 +2776,85 @@ public class EndResultStatistics {
       if (o == this) {
         return 0;
       }
-      int r = this.algorithm.compareTo(o.algorithm);
+      int r = this.mAlgorithm.compareTo(o.mAlgorithm);
       if (r != 0) {
         return r;
       }
-      r = this.instance.compareTo(o.instance);
+      r = this.mInstance.compareTo(o.mInstance);
       if (r != 0) {
         return r;
       }
       throw new IllegalStateException(
           "Identical setups discovered for algorithm '" //$NON-NLS-1$
-              + this.algorithm + "' and instance '" //$NON-NLS-1$
-              + this.instance + "'."); //$NON-NLS-1$
+              + this.mAlgorithm + "' and instance '" //$NON-NLS-1$
+              + this.mInstance + "'."); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
     @Override
     public void accept(final EndResult t) {
-      if (!this.m_setups.add(new InnerSetup(t))) {
+      if (!this.mSetups.add(new InnerSetup(t))) {
         throw new IllegalStateException("Seed '" + //$NON-NLS-1$
             t.seed + "' appears twice for algorithm '"//$NON-NLS-1$
             + t.algorithm + "' on instance '"//$NON-NLS-1$
             + t.instance + "'.");//$NON-NLS-1$
       }
 
-      this.m_bestF.add(t.bestF);
-      this.m_totalTime.add(t.totalTime);
-      this.m_totalFEs.add(t.totalFEs);
-      this.m_lastImprovementTime.add(t.lastImprovementTime);
-      this.m_lastImprovementFE.add(t.lastImprovementFE);
-      this.m_numberOfImprovements.add(t.numberOfImprovements);
-      this.m_budgetTime.add(t.budgetTime);
-      this.m_budgetFEs.add(t.budgetFEs);
+      this.mBestF.add(t.bestF);
+      this.mTotalTime.add(t.totalTime);
+      this.mTotalFEs.add(t.totalFEs);
+      this.mLastImprovementTime.add(t.lastImprovementTime);
+      this.mLastImprovementFE.add(t.lastImprovementFE);
+      this.mNumberOfImprovements.add(t.numberOfImprovements);
+      this.mBudgetTime.add(t.budgetTime);
+      this.mBudgetFEs.add(t.budgetFEs);
 
-      if (this.m_success.test(t)) {
-        ++this.m_successes;
-        this.m_ertTime.add(t.lastImprovementTime);
-        this.m_ertFEs.add(t.lastImprovementFE);
-        this.m_successFEs.add(t.lastImprovementFE);
-        this.m_successTime.add(t.lastImprovementTime);
+      if (this.mSuccess.test(t)) {
+        ++this.mSuccesses;
+        this.mErtTime.add(t.lastImprovementTime);
+        this.mErtFEs.add(t.lastImprovementFE);
+        this.mSuccessFEs.add(t.lastImprovementFE);
+        this.mSuccessTime.add(t.lastImprovementTime);
 
         Setup use = null;
-        if (t.lastImprovementFE < this.m_fastestSuccessFEs) {
-          this.m_fastestSuccessFEs = t.lastImprovementFE;
-          this.m_fastestSuccessFEsSetup = use = new Setup(t);
+        if (t.lastImprovementFE < this.mFastestSuccessFEs) {
+          this.mFastestSuccessFEs = t.lastImprovementFE;
+          this.mFastestSuccessFEsSetup = use = new Setup(t);
         }
 
-        if (t.lastImprovementFE > this.m_slowestSuccessFEs) {
-          this.m_slowestSuccessFEs = t.lastImprovementFE;
-          this.m_slowestSuccessFEsSetup =
+        if (t.lastImprovementFE > this.mSlowestSuccessFEs) {
+          this.mSlowestSuccessFEs = t.lastImprovementFE;
+          this.mSlowestSuccessFEsSetup =
               ((use == null) ? (use = new Setup(t)) : use);
         }
 
-        if (t.lastImprovementTime < this.m_fastestSuccessTime) {
-          this.m_fastestSuccessTime = t.lastImprovementTime;
-          this.m_fastestSuccessTimeSetup =
+        if (t.lastImprovementTime < this.mFastestSuccessTime) {
+          this.mFastestSuccessTime = t.lastImprovementTime;
+          this.mFastestSuccessTimeSetup =
               ((use == null) ? (use = new Setup(t)) : use);
         }
 
-        if (t.lastImprovementTime > this.m_slowestSuccessTime) {
-          this.m_slowestSuccessTime = t.lastImprovementTime;
-          this.m_slowestSuccessTimeSetup =
+        if (t.lastImprovementTime > this.mSlowestSuccessTime) {
+          this.mSlowestSuccessTime = t.lastImprovementTime;
+          this.mSlowestSuccessTimeSetup =
               ((use == null) ? (use = new Setup(t)) : use);
         }
 
       } else {
-        this.m_ertTime.add(t.totalTime);
-        this.m_ertFEs.add(t.totalFEs);
+        this.mErtTime.add(t.totalTime);
+        this.mErtFEs.add(t.totalFEs);
       }
     }
 
     /** finalize */
     void doFinalize() {
-      if (this.m_finalized) {
+      if (this.mFinalized) {
         throw new IllegalStateException();
       }
-      this.m_finalized = true;
+      this.mFinalized = true;
 
-      final HashSet<InnerSetup> data = this.m_setups;
-      this.m_setups = null;
+      final HashSet<InnerSetup> data = this.mSetups;
+      this.mSetups = null;
       final InnerSetup[] tmp =
           data.toArray(new InnerSetup[data.size()]);
       data.clear();
@@ -2863,55 +2863,55 @@ public class EndResultStatistics {
       }
       data.toArray(tmp);
       Arrays.sort(
-          this.m_uniqueBestF = Arrays.copyOf(tmp, data.size()));
+          this.mUniqueBestF = Arrays.copyOf(tmp, data.size()));
       data.clear();
 
-      this.m_success = null;
+      this.mSuccess = null;
 
-      this.m_bestF = this.m_bestF.doFinalize();
-      this.m_totalTime = this.m_totalTime.doFinalize();
-      this.m_totalFEs = this.m_totalFEs.doFinalize();
-      this.m_lastImprovementTime =
-          this.m_lastImprovementTime.doFinalize();
-      this.m_lastImprovementFE =
-          this.m_lastImprovementFE.doFinalize();
-      this.m_numberOfImprovements =
-          this.m_numberOfImprovements.doFinalize();
-      this.m_budgetTime = this.m_budgetTime.doFinalize();
-      this.m_budgetFEs = this.m_budgetFEs.doFinalize();
-      this.m_ertTime = this.m_ertTime.doFinalize();
-      this.m_ertFEs = this.m_ertFEs.doFinalize();
+      this.mBestF = this.mBestF.doFinalize();
+      this.mTotalTime = this.mTotalTime.doFinalize();
+      this.mTotalFEs = this.mTotalFEs.doFinalize();
+      this.mLastImprovementTime =
+          this.mLastImprovementTime.doFinalize();
+      this.mLastImprovementFE =
+          this.mLastImprovementFE.doFinalize();
+      this.mNumberOfImprovements =
+          this.mNumberOfImprovements.doFinalize();
+      this.mBudgetTime = this.mBudgetTime.doFinalize();
+      this.mBudgetFEs = this.mBudgetFEs.doFinalize();
+      this.mErtTime = this.mErtTime.doFinalize();
+      this.mErtFEs = this.mErtFEs.doFinalize();
 
-      if (this.m_successes > 0) {
-        this.m_successFEs = this.m_successFEs.doFinalize();
-        this.m_successTime = this.m_successTime.doFinalize();
+      if (this.mSuccesses > 0) {
+        this.mSuccessFEs = this.mSuccessFEs.doFinalize();
+        this.mSuccessTime = this.mSuccessTime.doFinalize();
       } else {
-        this.m_successFEs = null;
-        this.m_successTime = null;
+        this.mSuccessFEs = null;
+        this.mSuccessTime = null;
       }
     }
 
     /** the inner setup */
     private final class InnerSetup extends Setup {
       /** the inner setup */
-      final double m_bestF2;
+      final double mBestF2;
 
       /**
        * create the inner setup
        *
-       * @param e
+       * @param pE
        *          the end result record
        */
-      InnerSetup(final EndResult e) {
-        super(e);
-        this.m_bestF2 = e.bestF;
+      InnerSetup(final EndResult pE) {
+        super(pE);
+        this.mBestF2 = pE.bestF;
       }
 
       /** {@inheritDoc} */
       @Override
       public int hashCode() {
-        if (Holder.this.m_finalized) {
-          return Double.hashCode(this.m_bestF2);
+        if (Holder.this.mFinalized) {
+          return Double.hashCode(this.mBestF2);
         }
         return super.hashCode();
       }
@@ -2922,9 +2922,9 @@ public class EndResultStatistics {
         if (o == this) {
           return true;
         }
-        if (Holder.this.m_finalized) {
-          return Double.compare(this.m_bestF2,
-              ((InnerSetup) o).m_bestF2) == 0;
+        if (Holder.this.mFinalized) {
+          return Double.compare(this.mBestF2,
+              ((InnerSetup) o).mBestF2) == 0;
         }
         return super.equals(o);
       }
@@ -2932,9 +2932,9 @@ public class EndResultStatistics {
       /** {@inheritDoc} */
       @Override
       public int compareTo(final Setup s) {
-        if (Holder.this.m_finalized) {
-          return Double.compare(this.m_bestF2,
-              ((InnerSetup) s).m_bestF2);
+        if (Holder.this.mFinalized) {
+          return Double.compare(this.mBestF2,
+              ((InnerSetup) s).mBestF2);
         }
         return super.compareTo(s);
       }

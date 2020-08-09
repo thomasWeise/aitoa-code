@@ -67,9 +67,9 @@ public class TestJSSPUnaryOperator1SwapU
       final JSSPUnaryOperator1SwapU op,
       final HashSet<Long> test) {
     test.clear();
-    for (int k = 0; k < op.m_indexes.length;) {
-      final long v = op.m_indexes[k++];
-      final long w = op.m_indexes[k++];
+    for (int k = 0; k < op.mIndexes.length;) {
+      final long v = op.mIndexes[k++];
+      final long w = op.mIndexes[k++];
       final long key =
           (v < w) ? ((v << 32L) | w) : ((w << 32L) | v);
       Assert.assertTrue(test.add(Long.valueOf(key)));

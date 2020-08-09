@@ -25,22 +25,22 @@ public final class JSSPBinaryOperatorSequence
 // end relevant
 
   /** the done elements from x0 */
-  private final boolean[] m_done_x0;
+  private final boolean[] mDoneX0;
   /** the done elements from x1 */
-  private final boolean[] m_done_x1;
+  private final boolean[] mDoneX1;
 
   /**
    * create the sequence crossover operator
    *
-   * @param instance
+   * @param pInstance
    *          the JSSP instance
    */
   public JSSPBinaryOperatorSequence(
-      final JSSPInstance instance) {
+      final JSSPInstance pInstance) {
     super();
-    final int length = instance.n * instance.m;
-    this.m_done_x0 = new boolean[length];
-    this.m_done_x1 = new boolean[length];
+    final int length = pInstance.n * pInstance.m;
+    this.mDoneX0 = new boolean[length];
+    this.mDoneX1 = new boolean[length];
   }
 
   /** {@inheritDoc} */
@@ -59,9 +59,9 @@ public final class JSSPBinaryOperatorSequence
 // length=m*n to all false; and indices desti, x0i, x10 to 0
 // end relevant
 
-    final boolean[] done_x0 = this.m_done_x0;
+    final boolean[] done_x0 = this.mDoneX0;
     Arrays.fill(done_x0, false); // nothing used from x0 yet
-    final boolean[] done_x1 = this.m_done_x1;
+    final boolean[] done_x1 = this.mDoneX1;
     Arrays.fill(done_x1, false); // nothing used from xy yet
 
     final int length = done_x0.length; // length = m*n

@@ -19,42 +19,42 @@ public class TestTreeNullaryOperator
     extends INullarySearchOperatorTest<Node[]> {
 
   /** the type set */
-  private final NodeTypeSet<?> m_typeSet;
+  private final NodeTypeSet<?> mTypeSet;
 
   /** the space */
-  private final TreeSpace m_space;
+  private final TreeSpace mSpace;
 
   /** the nullary operator */
-  private final TreeNullaryOperator m_nullary;
+  private final TreeNullaryOperator mNullary;
 
   /**
    * create the nullary operator
    *
-   * @param maxDepth
+   * @param pMaxDepth
    *          the maximum depth
    */
-  public TestTreeNullaryOperator(final int maxDepth) {
+  public TestTreeNullaryOperator(final int pMaxDepth) {
 
     super();
 
-    this.m_typeSet =
+    this.mTypeSet =
         TestFunctionNodeTypeSet.makeMathNodeTypeSet();
-    this.m_space = new TreeSpace(maxDepth);
-    this.m_nullary =
-        new TreeNullaryOperator(this.m_typeSet, maxDepth);
+    this.mSpace = new TreeSpace(pMaxDepth);
+    this.mNullary =
+        new TreeNullaryOperator(this.mTypeSet, pMaxDepth);
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeSpace getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected TreeNullaryOperator
       getOperator(final ISpace<Node[]> space) {
-    return this.m_nullary;
+    return this.mNullary;
   }
 
   /**
@@ -68,7 +68,7 @@ public class TestTreeNullaryOperator
     final Random random = ThreadLocalRandom.current();
     final ArrayList<Node> list = new ArrayList<>();
 
-    final int maxDepth = op.m_maxDepth;
+    final int maxDepth = op.mMaxDepth;
     final int[] depths = new int[maxDepth];
     final int max = Math.max(512, 100 * maxDepth);
 

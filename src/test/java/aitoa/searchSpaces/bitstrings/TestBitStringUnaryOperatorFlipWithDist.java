@@ -68,13 +68,13 @@ public class TestBitStringUnaryOperatorFlipWithDist {
     /**
      * create the unary operator
      *
-     * @param _n
+     * @param pN
      *          the number of bits to flip
-     * @param _m
+     * @param pM
      *          the number of bits to flip
      */
-    TheTest(final int _n, final int _m) {
-      super(_n, new DiscreteConstant(_m));
+    TheTest(final int pN, final int pM) {
+      super(pN, new DiscreteConstant(pM));
     }
 
     /** {@inheritDoc} */

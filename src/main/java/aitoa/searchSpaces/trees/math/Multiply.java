@@ -17,14 +17,14 @@ public final class Multiply<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public Multiply(final NodeType<Multiply<C>> type,
-      final Node[] _inner) {
-    super(type, _inner);
+  public Multiply(final NodeType<Multiply<C>> pType,
+      final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

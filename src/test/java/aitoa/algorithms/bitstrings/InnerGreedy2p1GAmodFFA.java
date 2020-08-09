@@ -40,26 +40,26 @@ public class InnerGreedy2p1GAmodFFA<Y>
   /**
    * create
    *
-   * @param _m
+   * @param pM
    *          the constant above n to define the mutation
    *          probability
-   * @param _UB
+   * @param pUB
    *          the upper bound of the objective value
    */
-  public InnerGreedy2p1GAmodFFA(final int _m, final int _UB) {
+  public InnerGreedy2p1GAmodFFA(final int pM, final int pUB) {
     super();
-    if (_m <= 0) {
+    if (pM <= 0) {
       throw new IllegalArgumentException(
           "m must be at least 1, but you specified " //$NON-NLS-1$
-              + _m);
+              + pM);
     }
-    this.m = _m;
-    if (_UB <= 0) {
+    this.m = pM;
+    if (pUB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
-              + _UB);
+              + pUB);
     }
-    this.UB = _UB;
+    this.UB = pUB;
   }
 
   /** {@inheritDoc} */

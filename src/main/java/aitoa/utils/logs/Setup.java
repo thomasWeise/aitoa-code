@@ -20,67 +20,67 @@ public class Setup implements Comparable<Setup> {
   /**
    * create
    *
-   * @param _algorithm
+   * @param pAlgorithm
    *          the algorithm id
-   * @param _instance
+   * @param pInstance
    *          the instance id
-   * @param _seed
+   * @param pSeed
    *          the seed
    */
-  public Setup(final String _algorithm, final String _instance,
-      final String _seed) {
-    this(_algorithm, _instance,
-        RandomUtils.stringToRandSeed(_seed));
+  public Setup(final String pAlgorithm, final String pInstance,
+      final String pSeed) {
+    this(pAlgorithm, pInstance,
+        RandomUtils.stringToRandSeed(pSeed));
   }
 
   /**
    * create
    *
-   * @param _algorithm
+   * @param pAlgorithm
    *          the algorithm id
-   * @param _instance
+   * @param pInstance
    *          the instance id
-   * @param _seed
+   * @param pSeed
    *          the seed
    */
-  public Setup(final String _algorithm, final String _instance,
-      final long _seed) {
-    this.algorithm = _algorithm.trim();
+  public Setup(final String pAlgorithm, final String pInstance,
+      final long pSeed) {
+    this.algorithm = pAlgorithm.trim();
     if (this.algorithm.isEmpty()) {
       throw new IllegalArgumentException(
-          "Cannot have '" + _algorithm + //$NON-NLS-1$
+          "Cannot have '" + pAlgorithm + //$NON-NLS-1$
               "' as algorithm name.");//$NON-NLS-1$
     }
 
-    this.instance = _instance.trim();
+    this.instance = pInstance.trim();
     if (this.instance.isEmpty()) {
       throw new IllegalArgumentException(
-          "Cannot have '" + _instance + //$NON-NLS-1$
+          "Cannot have '" + pInstance + //$NON-NLS-1$
               "' as instance name.");//$NON-NLS-1$
     }
 
-    this.seed = _seed;
+    this.seed = pSeed;
   }
 
   /**
    * create
    *
-   * @param strings
+   * @param pStrings
    *          the strings
    */
-  private Setup(final String[] strings) {
-    this(strings[0], strings[1], strings[2]);
+  private Setup(final String[] pStrings) {
+    this(pStrings[0], pStrings[1], pStrings[2]);
   }
 
   /**
    * Create the setup from a single string, as returned by
    * {@link #toString()}
    *
-   * @param s
+   * @param pS
    *          the string
    */
-  public Setup(final String s) {
-    this(Setup.split(s));
+  public Setup(final String pS) {
+    this(Setup.split(pS));
   }
 
   /**
@@ -112,14 +112,14 @@ public class Setup implements Comparable<Setup> {
   /**
    * create
    *
-   * @param other
+   * @param pOther
    *          the setup to copy
    */
-  protected Setup(final Setup other) {
+  protected Setup(final Setup pOther) {
     super();
-    this.algorithm = other.algorithm;
-    this.instance = other.instance;
-    this.seed = other.seed;
+    this.algorithm = pOther.algorithm;
+    this.instance = pOther.instance;
+    this.seed = pOther.seed;
   }
 
   /** {@inheritDoc} */

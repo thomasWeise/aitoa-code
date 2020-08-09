@@ -16,76 +16,76 @@ import java.util.Random;
 abstract class BlackBoxProcessBase<X, Y> extends
     BlackBoxProcessData<X, Y> implements IBlackBoxProcess<X, Y> {
   /** the random number generator */
-  final Random m_random;
+  final Random mRandom;
   /**
    * the end time, i.e., the time when the process should
    * terminate
    */
-  final long m_endTime;
+  final long mEndTime;
   /** the start time */
-  final long m_startTime;
+  final long mStartTime;
   /** did we terminate ? */
-  volatile boolean m_terminated;
+  volatile boolean mTerminated;
   /** the consumed FEs */
-  long m_consumedFEs;
+  long mConsumedFEs;
   /** the last improvement FE */
-  long m_lastImprovementFE;
+  long mLastImprovementFE;
   /** the last improvement time */
-  long m_lastImprovementTime;
+  long mLastImprovementTime;
   /** the best x */
-  final X m_bestX;
+  final X mBestX;
   /** the best objective value */
-  double m_bestF;
+  double mBestF;
   /**
    * the time when the process was actually terminated:
    * <em>must</em> be set by subclasses in their overwritten
    * {@link #close()} method (and before doing any
    * synchronization stuff)!
    */
-  long m_terminationTime;
+  long mTerminationTime;
 
   /** a linked list link */
-  volatile transient BlackBoxProcessBase<?, ?> m_next;
+  volatile transient BlackBoxProcessBase<?, ?> mNext;
 
   /**
    * Create the base class of the black box problem
    *
-   * @param builder
+   * @param pBuilder
    *          the builder to copy the data from
    */
   BlackBoxProcessBase(
-      final BlackBoxProcessBuilder<X, Y> builder) {
-    super(builder);
+      final BlackBoxProcessBuilder<X, Y> pBuilder) {
+    super(pBuilder);
 
-    this.m_bestX = this.m_searchSpace.create();
-    this.m_bestF = Double.POSITIVE_INFINITY;
+    this.mBestX = this.mSearchSpace.create();
+    this.mBestF = Double.POSITIVE_INFINITY;
 
     // compute time limits
-    this.m_lastImprovementTime =
-        this.m_startTime = System.currentTimeMillis();
-    if (this.m_maxTime >= Long.MAX_VALUE) {
-      this.m_endTime = Long.MAX_VALUE;
+    this.mLastImprovementTime =
+        this.mStartTime = System.currentTimeMillis();
+    if (this.mMaxTime >= Long.MAX_VALUE) {
+      this.mEndTime = Long.MAX_VALUE;
     } else {
-      this.m_endTime =
-          Math.addExact(this.m_startTime, this.m_maxTime);
-      if (this.m_endTime >= Long.MAX_VALUE) {
+      this.mEndTime =
+          Math.addExact(this.mStartTime, this.mMaxTime);
+      if (this.mEndTime >= Long.MAX_VALUE) {
         throw new IllegalArgumentException(//
             "Invalid end time " //$NON-NLS-1$
-                + this.m_endTime + //
+                + this.mEndTime + //
                 " due to long overflow.");//$NON-NLS-1$
       }
     }
 
-    this.m_random = new Random();
-    this.m_random.setSeed(this.m_randSeed);
+    this.mRandom = new Random();
+    this.mRandom.setSeed(this.mRandSeed);
   }
 
   /** terminate this problem */
   final void terminate() {
-    final boolean term = this.m_terminated;
-    this.m_terminated = true;
+    final boolean term = this.mTerminated;
+    this.mTerminated = true;
     if (!term) {
-      if (this.m_maxTime < Long.MAX_VALUE) {
+      if (this.mMaxTime < Long.MAX_VALUE) {
         TerminationThread.dequeue(this);
       }
     }
@@ -94,14 +94,14 @@ abstract class BlackBoxProcessBase<X, Y> extends
   /** {@inheritDoc} */
   @Override
   public final double getBestF() {
-    return this.m_bestF;
+    return this.mBestF;
   }
 
   /** {@inheritDoc} */
   @Override
   public final void getBestX(final X dest) {
-    if (this.m_consumedFEs > 0L) {
-      this.m_searchSpace.copy(this.m_bestX, dest);
+    if (this.mConsumedFEs > 0L) {
+      this.mSearchSpace.copy(this.mBestX, dest);
     } else {
       throw new IllegalStateException(//
           "No FE consumed yet."); //$NON-NLS-1$
@@ -111,42 +111,42 @@ abstract class BlackBoxProcessBase<X, Y> extends
   /** {@inheritDoc} */
   @Override
   public final long getConsumedFEs() {
-    return this.m_consumedFEs;
+    return this.mConsumedFEs;
   }
 
   /** {@inheritDoc} */
   @Override
   public final long getLastImprovementFE() {
-    return this.m_lastImprovementFE;
+    return this.mLastImprovementFE;
   }
 
   /** {@inheritDoc} */
   @Override
   public final long getConsumedTime() {
     final long time = System.currentTimeMillis();
-    if (time >= this.m_endTime) {
+    if (time >= this.mEndTime) {
       this.terminate();
     }
-    return (time - this.m_startTime);
+    return (time - this.mStartTime);
   }
 
   /** {@inheritDoc} */
   @Override
   public final long getLastImprovementTime() {
-    return (this.m_lastImprovementTime - this.m_startTime);
+    return (this.mLastImprovementTime - this.mStartTime);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean shouldTerminate() {
-    return this.m_terminated;
+    return this.mTerminated;
   }
 
   /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
-    if (this.m_terminationTime <= 0L) {
-      this.m_terminationTime = System.currentTimeMillis();
+    if (this.mTerminationTime <= 0L) {
+      this.mTerminationTime = System.currentTimeMillis();
     }
     this.terminate();
   }
@@ -154,7 +154,7 @@ abstract class BlackBoxProcessBase<X, Y> extends
   /** {@inheritDoc} */
   @Override
   public final Random getRandom() {
-    return this.m_random;
+    return this.mRandom;
   }
 
   /**
@@ -246,34 +246,34 @@ abstract class BlackBoxProcessBase<X, Y> extends
   /** {@inheritDoc} */
   @Override
   void printInfos(final Writer out) throws IOException {
-    if ((this.m_terminationTime <= 0L) || //
-        (this.m_terminationTime > System.currentTimeMillis())) {
+    if ((this.mTerminationTime <= 0L) || //
+        (this.mTerminationTime > System.currentTimeMillis())) {
       throw new IllegalStateException(//
           "Invalid termination time: " + //$NON-NLS-1$
-              this.m_terminationTime);
+              this.mTerminationTime);
     }
     super.printInfos(out);
     out.write(BlackBoxProcessBase.BEGIN_STATE);
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_FES,
-        this.m_consumedFEs));
+        this.mConsumedFEs));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_FE,
-        this.m_lastImprovementFE));
+        this.mLastImprovementFE));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.CONSUMED_TIME,
-        this.m_terminationTime - this.m_startTime));
+        this.mTerminationTime - this.mStartTime));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.LAST_IMPROVEMENT_TIME,
         this.getLastImprovementTime()));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.BEST_F,
-        LogFormat.doubleToStringForLog(this.m_bestF)));
+        LogFormat.doubleToStringForLog(this.mBestF)));
     out.write(BlackBoxProcessBase.END_STATE);
   }
 
   /** {@inheritDoc} */
   @Override
   public final double lowerBound() {
-    return this.m_f.lowerBound();
+    return this.mF.lowerBound();
   }
 }

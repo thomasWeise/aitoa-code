@@ -15,33 +15,34 @@ public final class JSSPRepresentationMapping implements
 // end relevant
 
   /** the current time at a given machine */
-  final int[] m_machineTime;
+  final int[] mMachineTime;
   /** the current step index at a given machine */
-  final int[] m_machineState;
+  final int[] mMachineState;
   /** the step index of the current job */
-  final int[] m_jobState;
+  final int[] mJobState;
   /** the time of the current job */
-  final int[] m_jobTime;
+  final int[] mJobTime;
 
   /**
    * the instance data: for each job, the sequence of machines
    * and times
    */
-  private final int[][] m_jobs;
+  private final int[][] mJobs;
 
   /**
    * create the representation
    *
-   * @param instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPRepresentationMapping(final JSSPInstance instance) {
+  public JSSPRepresentationMapping(
+      final JSSPInstance pInstance) {
     super();
-    this.m_jobs = instance.jobs;
-    this.m_jobState = new int[instance.n];
-    this.m_jobTime = new int[instance.n];
-    this.m_machineTime = new int[instance.m];
-    this.m_machineState = new int[instance.m];
+    this.mJobs = pInstance.jobs;
+    this.mJobState = new int[pInstance.n];
+    this.mJobTime = new int[pInstance.n];
+    this.mMachineTime = new int[pInstance.m];
+    this.mMachineState = new int[pInstance.m];
   }
 
   /** {@inheritDoc} */
@@ -70,10 +71,10 @@ public final class JSSPRepresentationMapping implements
 // create variables machineState, machineTime of length m and
 // jobState, jobTime of length n, filled with 0 [omitted brevity]
 // end relevant
-    final int[] machineState = this.m_machineState;
-    final int[] machineTime = this.m_machineTime;
-    final int[] jobState = this.m_jobState;
-    final int[] jobTime = this.m_jobTime;
+    final int[] machineState = this.mMachineState;
+    final int[] machineTime = this.mMachineTime;
+    final int[] jobState = this.mJobState;
+    final int[] jobTime = this.mJobTime;
     Arrays.fill(machineState, 0);
     Arrays.fill(jobState, 0);
     Arrays.fill(machineTime, 0);
@@ -83,7 +84,7 @@ public final class JSSPRepresentationMapping implements
     for (final int nextJob : x) {
 // get the definition of the steps that we need to take for
 // nextJob from the instance data stored in this.m_jobs
-      final int[] jobSteps = this.m_jobs[nextJob];
+      final int[] jobSteps = this.mJobs[nextJob];
 // jobState tells us the index in this list for the next step to
 // do, but since the list contains machine/time pairs, we
 // multiply by 2 (by left-shifting by 1)

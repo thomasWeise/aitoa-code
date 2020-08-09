@@ -6,8 +6,8 @@ public class TestCompactDirectedEdgeMultiSet
 
   /** {@inheritDoc} */
   @Override
-  protected final DirectedEdgeMultiSet create(final int L,
-      final int K) {
-    return new CompactDirectedEdgeMultiSet(L, K);
+  protected final DirectedEdgeMultiSet create(final int pL,
+      final int pK) {
+    return new CompactDirectedEdgeMultiSet(pL, pK);
   }
 }

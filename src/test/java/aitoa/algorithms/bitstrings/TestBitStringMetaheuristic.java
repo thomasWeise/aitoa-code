@@ -31,14 +31,14 @@ public abstract class TestBitStringMetaheuristic
   /**
    * Create the metaheuristic
    *
-   * @param n
+   * @param pN
    *          the number of bits
-   * @param UB
+   * @param pUB
    *          the upper bound for objective values
    * @return the instance
    */
   protected abstract IMetaheuristic<boolean[], boolean[]>
-      createMetaheuristic(final int n, final int UB);
+      createMetaheuristic(final int pN, final int pUB);
 
   /** {@inheritDoc} */
   @Override

@@ -9,31 +9,31 @@ import java.util.Arrays;
 final class CompactDirectedEdgeMultiSet
     extends DirectedEdgeMultiSet {
   /** the stored edges */
-  private final int[][] m_edges;
+  private final int[][] mEdges;
   /** the number of times these edges occur */
-  private final int[][] m_counts;
+  private final int[][] mCounts;
 
   /**
    * Create the multiset.
    *
-   * @param _L
+   * @param pL
    *          the number of nodes
-   * @param _K
+   * @param pK
    *          the maximum number of edges per node
    */
-  CompactDirectedEdgeMultiSet(final int _L, final int _K) {
-    super(_L, _K);
-    this.m_edges = new int[_L + 1][_K];
-    this.m_counts = new int[_L + 1][_K];
+  CompactDirectedEdgeMultiSet(final int pL, final int pK) {
+    super(pL, pK);
+    this.mEdges = new int[pL + 1][pK];
+    this.mCounts = new int[pL + 1][pK];
   }
 
   /** {@inheritDoc} */
   @Override
   public void clear() {
-    for (final int[] nodes : this.m_edges) {
+    for (final int[] nodes : this.mEdges) {
       Arrays.fill(nodes, Integer.MAX_VALUE);
     }
-    for (final int[] counts : this.m_counts) {
+    for (final int[] counts : this.mCounts) {
       Arrays.fill(counts, 0);
     }
   }
@@ -41,15 +41,15 @@ final class CompactDirectedEdgeMultiSet
   /** {@inheritDoc} */
   @Override
   public int getEdgeCount(final int a, final int b) {
-    final int i = Arrays.binarySearch(this.m_edges[a + 1], b);
-    return (i < 0) ? 0 : this.m_counts[a + 1][i];
+    final int i = Arrays.binarySearch(this.mEdges[a + 1], b);
+    return (i < 0) ? 0 : this.mCounts[a + 1][i];
   }
 
   /** {@inheritDoc} */
   @Override
   public void addEdge(final int a, final int b) {
-    final int[] edges = this.m_edges[a + 1];
-    final int[] counts = this.m_counts[a + 1];
+    final int[] edges = this.mEdges[a + 1];
+    final int[] counts = this.mCounts[a + 1];
 
     int i = Arrays.binarySearch(edges, b);
     if (i >= 0) { // (a,b) is already present:
@@ -68,11 +68,11 @@ final class CompactDirectedEdgeMultiSet
   /** {@inheritDoc} */
   @Override
   public void removeEdge(final int a, final int b) {
-    final int[] edges = this.m_edges[a + 1];
+    final int[] edges = this.mEdges[a + 1];
 
     final int i = Arrays.binarySearch(edges, b);
     if (i >= 0) { // (a,b) is already present:
-      final int[] counts = this.m_counts[a + 1];
+      final int[] counts = this.mCounts[a + 1];
       if ((--counts[i]) <= 0) {
 // the edge reached count 0: remove it
         final int src = i + 1;

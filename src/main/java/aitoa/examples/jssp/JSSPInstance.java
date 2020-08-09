@@ -46,29 +46,29 @@ public class JSSPInstance {
    * Create a Job Shop Scheduling Problem instance from raw data
    * and a name
    *
-   * @param data
+   * @param pData
    *          the data
-   * @param instance
+   * @param pInstance
    *          the instance
    */
-  public JSSPInstance(final int[][] data,
-      final String instance) {
+  public JSSPInstance(final int[][] pData,
+      final String pInstance) {
     super();
 
-    this.n = data.length;
-    this.m = (data[0].length >>> 1);
+    this.n = pData.length;
+    this.m = (pData[0].length >>> 1);
     final int cmp = (this.m << 1);
-    for (final int[] job : data) {
+    for (final int[] job : pData) {
       if (job.length != cmp) {
         throw new IllegalArgumentException(//
             "Job length " + job.length + //$NON-NLS-1$
                 " should be " + cmp); //$NON-NLS-1$
       }
     }
-    this.jobs = data;
+    this.jobs = pData;
 
-    this.id = instance.trim();
-    if (instance.length() <= 0) {
+    this.id = pInstance.trim();
+    if (pInstance.length() <= 0) {
       throw new IllegalArgumentException(//
           "Instance name cannot be empty.");//$NON-NLS-1$
     }
@@ -123,11 +123,12 @@ public class JSSPInstance {
   /**
    * Load the specified instance from a text resource.
    *
-   * @param instance
+   * @param pInstance
    *          the name of the instance
    */
-  public JSSPInstance(final String instance) {
-    this(JSSPInstance.loadDataFromResource(instance), instance);
+  public JSSPInstance(final String pInstance) {
+    this(JSSPInstance.loadDataFromResource(pInstance),
+        pInstance);
   }
 
   /**

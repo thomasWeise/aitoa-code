@@ -18,28 +18,28 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   /** the problem instance */
   public final JSSPInstance instance;
   /** the length */
-  private final int length;
+  private final int mLength;
 
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPSearchSpace(final JSSPInstance _instance) {
+  public JSSPSearchSpace(final JSSPInstance pInstance) {
     super();
-    this.instance = Objects.requireNonNull(_instance);
-    this.length = (_instance.m * _instance.n);
+    this.instance = Objects.requireNonNull(pInstance);
+    this.mLength = (pInstance.m * pInstance.n);
   }
 
   /**
    * Load the space from a given instance name
    *
-   * @param _instance
+   * @param pInstance
    *          the instance name
    */
-  public JSSPSearchSpace(final String _instance) {
-    this(new JSSPInstance(_instance));
+  public JSSPSearchSpace(final String pInstance) {
+    this(new JSSPInstance(pInstance));
   }
 
 // start relevant
@@ -50,13 +50,13 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
    */
   @Override
   public int[] create() {
-    return new int[this.length];
+    return new int[this.mLength];
   }
 
   /** {@inheritDoc} */
   @Override
   public void copy(final int[] from, final int[] to) {
-    System.arraycopy(from, 0, to, 0, this.length);
+    System.arraycopy(from, 0, to, 0, this.mLength);
   }
 // end relevant
 
@@ -115,7 +115,7 @@ public final class JSSPSearchSpace implements ISpace<int[]> {
   @Override
   public String toString() {
     return ((("jssp:int[" + //$NON-NLS-1$
-        this.length) + "]:") //$NON-NLS-1$
+        this.mLength) + "]:") //$NON-NLS-1$
         + this.instance.toString());
   }
 // start relevant

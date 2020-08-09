@@ -47,30 +47,30 @@ public final class EDAWithClearing<X, Y>
   /**
    * Create a new instance of the estimation of distribution
    *
-   * @param _mu
+   * @param pMu
    *          the number of solution to be selected
-   * @param _lambda
+   * @param pLambda
    *          the number of new points per generation
-   * @param _model
+   * @param pModel
    *          the model
    */
-  public EDAWithClearing(final int _mu, final int _lambda,
-      final IModel<X> _model) {
+  public EDAWithClearing(final int pMu, final int pLambda,
+      final IModel<X> pModel) {
     super();
-    if ((_lambda < 1) || (_lambda > 100_000_000)) {
+    if ((pLambda < 1) || (pLambda > 100_000_000)) {
       throw new IllegalArgumentException(
-          "Invalid lambda: " + _lambda); //$NON-NLS-1$
+          "Invalid lambda: " + pLambda); //$NON-NLS-1$
     }
-    this.lambda = _lambda;
+    this.lambda = pLambda;
 
-    if ((_mu < 1) || (_mu > this.lambda)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu //$NON-NLS-1$
+    if ((pMu < 1) || (pMu > this.lambda)) {
+      throw new IllegalArgumentException("Invalid mu: " + pMu //$NON-NLS-1$
           + " must be in 1..lambda and lambda=" //$NON-NLS-1$
           + this.lambda);
     }
-    this.mu = _mu;
+    this.mu = pMu;
 
-    this.model = Objects.requireNonNull(_model);
+    this.model = Objects.requireNonNull(pModel);
   }
 
   /** {@inheritDoc} */

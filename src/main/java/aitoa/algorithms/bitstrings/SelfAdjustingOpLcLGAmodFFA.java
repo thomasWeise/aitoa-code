@@ -42,17 +42,17 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
   /**
    * create
    *
-   * @param _UB
+   * @param pUB
    *          the upper bound of the objective function
    */
-  public SelfAdjustingOpLcLGAmodFFA(final int _UB) {
+  public SelfAdjustingOpLcLGAmodFFA(final int pUB) {
     super();
-    if (_UB <= 0) {
+    if (pUB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
-              + _UB);
+              + pUB);
     }
-    this.UB = _UB;
+    this.UB = pUB;
   }
 
   /** {@inheritDoc} */
@@ -340,22 +340,22 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
     /**
      * create the holder
      *
-     * @param _x
+     * @param pX
      *          the value to store
      */
-    Holder(final boolean[] _x) {
-      this.x = _x;
+    Holder(final boolean[] pX) {
+      this.x = pX;
       this.f = -1;
     }
 
     /**
      * create the holder
      *
-     * @param n
+     * @param pN
      *          the bit width
      */
-    Holder(final int n) {
-      this(new boolean[n]);
+    Holder(final int pN) {
+      this(new boolean[pN]);
     }
   }
 }

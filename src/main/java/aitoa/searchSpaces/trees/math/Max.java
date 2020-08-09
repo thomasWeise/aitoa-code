@@ -15,13 +15,13 @@ public final class Max<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public Max(final NodeType<Max<C>> type, final Node[] _inner) {
-    super(type, _inner);
+  public Max(final NodeType<Max<C>> pType, final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

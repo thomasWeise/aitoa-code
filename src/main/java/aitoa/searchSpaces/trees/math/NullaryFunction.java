@@ -14,12 +14,12 @@ public abstract class NullaryFunction<C>
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
    */
   protected NullaryFunction(
-      final NodeType<? extends NullaryFunction<C>> type) {
-    super(type);
+      final NodeType<? extends NullaryFunction<C>> pType) {
+    super(pType);
   }
 
   /** {@inheritDoc} */

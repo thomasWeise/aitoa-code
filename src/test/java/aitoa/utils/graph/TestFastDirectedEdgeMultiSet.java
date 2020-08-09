@@ -6,8 +6,8 @@ public class TestFastDirectedEdgeMultiSet
 
   /** {@inheritDoc} */
   @Override
-  protected final DirectedEdgeMultiSet create(final int L,
-      final int K) {
-    return new FastDirectedEdgeMultiSet(L, K);
+  protected final DirectedEdgeMultiSet create(final int pL,
+      final int pK) {
+    return new FastDirectedEdgeMultiSet(pL, pK);
   }
 }

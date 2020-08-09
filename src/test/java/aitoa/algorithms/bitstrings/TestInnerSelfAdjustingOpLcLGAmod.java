@@ -9,7 +9,7 @@ public class TestInnerSelfAdjustingOpLcLGAmod
   /** {@inheritDoc} */
   @Override
   protected IMetaheuristic<boolean[], boolean[]>
-      createMetaheuristic(final int n, final int UB) {
+      createMetaheuristic(final int pN, final int pUB) {
     return new InnerSelfAdjustingOpLcLGAmod<>();
   }
 }

@@ -29,18 +29,18 @@ abstract class Greedy2p1GAmodBase<Y>
   /**
    * create
    *
-   * @param _c
+   * @param pC
    *          the constant above n to define the mutation
    *          probability
    */
-  Greedy2p1GAmodBase(final double _c) {
+  Greedy2p1GAmodBase(final double pC) {
     super();
-    if ((!(Double.isFinite(_c))) || (_c <= 0d) || (_c > 1e5d)) {
+    if ((!(Double.isFinite(pC))) || (pC <= 0d) || (pC > 1e5d)) {
       throw new IllegalArgumentException(
           "m must be in (0, 1e5], but you specified " //$NON-NLS-1$
-              + _c);
+              + pC);
     }
-    this.c = _c;
+    this.c = pC;
   }
 
   /** {@inheritDoc} */

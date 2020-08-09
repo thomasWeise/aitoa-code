@@ -14,12 +14,12 @@ public class FitnessIndividual<X> extends Individual<X> {
   /**
    * create the individual record
    *
-   * @param _x
+   * @param pX
    *          the point in the search space
-   * @param _q
+   * @param pQ
    *          the quality
    */
-  public FitnessIndividual(final X _x, final double _q) {
-    super(_x, _q);
+  public FitnessIndividual(final X pX, final double pQ) {
+    super(pX, pQ);
   }
 }

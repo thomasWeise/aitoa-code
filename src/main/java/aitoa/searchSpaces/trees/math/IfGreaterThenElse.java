@@ -16,15 +16,15 @@ public final class IfGreaterThenElse<C>
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
   public IfGreaterThenElse(
-      final NodeType<IfGreaterThenElse<C>> type,
-      final Node[] _inner) {
-    super(type, _inner);
+      final NodeType<IfGreaterThenElse<C>> pType,
+      final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

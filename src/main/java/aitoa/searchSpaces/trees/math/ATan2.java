@@ -16,14 +16,14 @@ public final class ATan2<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public ATan2(final NodeType<ATan2<C>> type,
-      final Node[] _inner) {
-    super(type, _inner);
+  public ATan2(final NodeType<ATan2<C>> pType,
+      final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

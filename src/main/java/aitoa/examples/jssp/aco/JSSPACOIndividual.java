@@ -20,14 +20,14 @@ public final class JSSPACOIndividual {
   /**
    * create the individual
    *
-   * @param m
+   * @param pM
    *          the number of machines
-   * @param n
+   * @param pN
    *          the number of jobs
    */
-  public JSSPACOIndividual(final int m, final int n) {
+  public JSSPACOIndividual(final int pM, final int pN) {
     super();
-    this.permutation = new int[m * n];
-    this.solution = new JSSPCandidateSolution(m, n);
+    this.permutation = new int[pM * pN];
+    this.solution = new JSSPCandidateSolution(pM, pN);
   }
 }

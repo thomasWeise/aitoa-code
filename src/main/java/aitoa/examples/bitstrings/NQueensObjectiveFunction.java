@@ -23,20 +23,20 @@ public final class NQueensObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public NQueensObjectiveFunction(final int _n) {
-    super(_n);
+  public NQueensObjectiveFunction(final int pN) {
+    super(pN);
 
-    if (_n <= 15) {
+    if (pN <= 15) {
       throw new IllegalArgumentException(
           "The N-Queens problem can only be defined for n>=16, i.e., for at least four queens, but you specified "//$NON-NLS-1$
-              + _n);
+              + pN);
     }
 
-    this.k = ((int) (Math.sqrt(_n) + 0.5d));
-    if ((this.k * this.k) != _n) {
+    this.k = ((int) (Math.sqrt(pN) + 0.5d));
+    if ((this.k * this.k) != pN) {
       throw new IllegalArgumentException((((((((//
       "Cannot have N-Queens problem with n=" //$NON-NLS-1$
           + this.n) + ", because n must be a square number but ")//$NON-NLS-1$

@@ -20,17 +20,17 @@ final class ReflectiveNodeTypes<T extends Node>
     implements Function<NodeTypeSet<?>[], NodeType<T>> {
 
   /** the class */
-  private final Class<T> m_clazz;
+  private final Class<T> mClazz;
 
   /**
    * create
    *
-   * @param clazz
+   * @param pClazz
    *          the class
    */
-  ReflectiveNodeTypes(final Class<T> clazz) {
+  ReflectiveNodeTypes(final Class<T> pClazz) {
     super();
-    this.m_clazz = Objects.requireNonNull(clazz);
+    this.mClazz = Objects.requireNonNull(pClazz);
   }
 
   /** {@inheritDoc} */
@@ -40,10 +40,10 @@ final class ReflectiveNodeTypes<T extends Node>
     final boolean hasChildren = (t.length > 0);
     try {
       final Constructor<T>[] cs =
-          (Constructor<T>[]) (this.m_clazz.getConstructors());
+          (Constructor<T>[]) (this.mClazz.getConstructors());
       if (cs == null) {
         throw new IllegalArgumentException("class " + //$NON-NLS-1$
-            ReflectionUtils.className(this.m_clazz)
+            ReflectionUtils.className(this.mClazz)
             + " has no public constructors."); //$NON-NLS-1$
       }
 
@@ -70,12 +70,12 @@ final class ReflectiveNodeTypes<T extends Node>
       }
 
       throw new IllegalArgumentException("class " + //$NON-NLS-1$
-          ReflectionUtils.className(this.m_clazz)//
+          ReflectionUtils.className(this.mClazz)//
           + " has no fitting public constructor."); //$NON-NLS-1$
     } catch (final SecurityException se) {
       throw new IllegalArgumentException(
           "cannot get constructors of class "//$NON-NLS-1$
-              + ReflectionUtils.className(this.m_clazz),
+              + ReflectionUtils.className(this.mClazz),
           se);
     }
   }
@@ -90,20 +90,20 @@ final class ReflectiveNodeTypes<T extends Node>
       T extends Node> extends NodeType<T> {
 
     /** the constructor */
-    final Constructor<T> m_constructor;
+    final Constructor<T> mConstructor;
 
     /**
      * create the node factory
      *
-     * @param constr
+     * @param pConstr
      *          the constructor
-     * @param childTypes
+     * @param pChildTypes
      *          the child types
      */
-    ReflectiveNodeType(final NodeTypeSet<?>[] childTypes,
-        final Constructor<T> constr) {
-      super(childTypes);
-      this.m_constructor = Objects.requireNonNull(constr);
+    ReflectiveNodeType(final NodeTypeSet<?>[] pChildTypes,
+        final Constructor<T> pConstr) {
+      super(pChildTypes);
+      this.mConstructor = Objects.requireNonNull(pConstr);
     }
 
     /**
@@ -116,7 +116,7 @@ final class ReflectiveNodeTypes<T extends Node>
     final IllegalStateException doThrow(final Throwable error) {
       return new IllegalStateException(//
           "reflective node instantiation failed to invoke " + //$NON-NLS-1$
-              this.m_constructor,
+              this.mConstructor,
           error);
     }
   }
@@ -131,20 +131,20 @@ final class ReflectiveNodeTypes<T extends Node>
       extends ReflectiveNodeType<T> {
 
     /** the parameters */
-    private final Object[] m_params;
+    private final Object[] mParams;
 
     /**
      * create the node factory
      *
-     * @param constr
+     * @param pConstr
      *          the constructor
-     * @param childTypes
+     * @param pChildTypes
      *          the child types
      */
-    ReflectiveNodeType0(final NodeTypeSet<?>[] childTypes,
-        final Constructor<T> constr) {
-      super(childTypes, constr);
-      this.m_params = new Object[] { this };
+    ReflectiveNodeType0(final NodeTypeSet<?>[] pChildTypes,
+        final Constructor<T> pConstr) {
+      super(pChildTypes, pConstr);
+      this.mParams = new Object[] { this };
     }
 
     /** {@inheritDoc} */
@@ -152,7 +152,7 @@ final class ReflectiveNodeTypes<T extends Node>
     public T instantiate(final Node[] children,
         final Random random) {
       try {
-        return this.m_constructor.newInstance(this.m_params);
+        return this.mConstructor.newInstance(this.mParams);
       } catch (final Throwable error) {
         throw this.doThrow(error);
       }
@@ -171,14 +171,14 @@ final class ReflectiveNodeTypes<T extends Node>
     /**
      * create the node factory
      *
-     * @param constr
+     * @param pConstr
      *          the constructor
-     * @param childTypes
+     * @param pChildTypes
      *          the child types
      */
-    ReflectiveNodeType1(final NodeTypeSet<?>[] childTypes,
-        final Constructor<T> constr) {
-      super(childTypes, constr);
+    ReflectiveNodeType1(final NodeTypeSet<?>[] pChildTypes,
+        final Constructor<T> pConstr) {
+      super(pChildTypes, pConstr);
     }
 
     /** {@inheritDoc} */
@@ -186,7 +186,7 @@ final class ReflectiveNodeTypes<T extends Node>
     public T instantiate(final Node[] children,
         final Random random) {
       try {
-        return this.m_constructor.newInstance(this, children);
+        return this.mConstructor.newInstance(this, children);
       } catch (final Throwable error) {
         throw this.doThrow(error);
       }

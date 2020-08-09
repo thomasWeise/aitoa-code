@@ -15,12 +15,12 @@ final class LSFitnessIndividual<X> extends FitnessIndividual<X> {
   /**
    * create the individual record
    *
-   * @param _x
+   * @param pX
    *          the point in the search space
-   * @param _q
+   * @param pQ
    *          the quality
    */
-  LSFitnessIndividual(final X _x, final double _q) {
-    super(_x, _q);
+  LSFitnessIndividual(final X pX, final double pQ) {
+    super(pX, pQ);
   }
 }

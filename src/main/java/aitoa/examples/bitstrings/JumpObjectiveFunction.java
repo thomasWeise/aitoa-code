@@ -23,20 +23,20 @@ public final class JumpObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
-   * @param _k
+   * @param pK
    *          the length of the deceptive bit
    */
-  public JumpObjectiveFunction(final int _n, final int _k) {
-    super(_n);
-    if ((_k <= 1) || (_k >= (_n >>> 1))) {
+  public JumpObjectiveFunction(final int pN, final int pK) {
+    super(pN);
+    if ((pK <= 1) || (pK >= (pN >>> 1))) {
       throw new IllegalArgumentException(
           "k must be greater than 1 and less than half of n, but we got k=" //$NON-NLS-1$
-              + _k + " and n=" + _n);//$NON-NLS-1$
+              + pK + " and n=" + pN);//$NON-NLS-1$
     }
-    this.k = _k;
-    this.nMinusk = (_n - _k);
+    this.k = pK;
+    this.nMinusk = (pN - pK);
   }
 
   /**

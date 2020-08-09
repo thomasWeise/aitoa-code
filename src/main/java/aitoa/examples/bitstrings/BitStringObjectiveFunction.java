@@ -15,17 +15,17 @@ public abstract class BitStringObjectiveFunction
   /**
    * Create the bit string objective function / space
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public BitStringObjectiveFunction(final int _n) {
+  public BitStringObjectiveFunction(final int pN) {
     super();
-    if (_n <= 0) {
+    if (pN <= 0) {
       throw new IllegalArgumentException(
           "n must be at least one, but is " //$NON-NLS-1$
-              + _n);
+              + pN);
     }
-    this.n = _n;
+    this.n = pN;
   }
 
   /**

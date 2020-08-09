@@ -203,27 +203,27 @@ public final class EndResults {
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(instName);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(line.seed);
+            bw.write(line.mSeed);
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResults.str(line.lastLine.f_min));
+            bw.write(EndResults.str(line.mLastLine.fMin));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.lastLine.time_max));
+            bw.write(Long.toString(line.mLastLine.timeMax));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.lastLine.fe_max));
+            bw.write(Long.toString(line.mLastLine.feMax));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long
-                .toString(line.lastLine.time_last_improvement));
+                .toString(line.mLastLine.timeLastImprovement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
             bw.write(Long.toString(//
-                line.lastLine.fe_last_improvement));
+                line.mLastLine.feLastImprovement));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.lastLine.improvements));
+            bw.write(Long.toString(line.mLastLine.improvements));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.budgetTime));
+            bw.write(Long.toString(line.mBudgetTime));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(Long.toString(line.budgetFEs));
+            bw.write(Long.toString(line.mBudgetFEs));
             bw.write(LogFormat.CSV_SEPARATOR_CHAR);
-            bw.write(EndResults.str(line.goalF));
+            bw.write(EndResults.str(line.mGoalF));
             bw.newLine();
           }
         }
@@ -256,15 +256,15 @@ public final class EndResults {
   private static final class Line implements Consumer<LogLine> {
 
     /** the random seed */
-    String seed;
+    String mSeed;
     /** the last log line */
-    LogLine lastLine;
+    LogLine mLastLine;
     /** the FEs budget */
-    long budgetFEs;
+    long mBudgetFEs;
     /** the time budget */
-    long budgetTime;
+    long mBudgetTime;
     /** the goal objective value */
-    double goalF;
+    double mGoalF;
 
     /** create */
     Line() {
@@ -279,16 +279,16 @@ public final class EndResults {
      */
     void acceptSetup(//
         final SetupData setup) {
-      this.budgetFEs = setup.budgetFEs;
-      this.seed = setup.randSeedString;
-      this.budgetTime = setup.budgetTime;
-      this.goalF = setup.goalF;
+      this.mBudgetFEs = setup.budgetFEs;
+      this.mSeed = setup.randSeedString;
+      this.mBudgetTime = setup.budgetTime;
+      this.mGoalF = setup.goalF;
     }
 
     /** {@inheritDoc} */
     @Override
     public void accept(final LogLine t) {
-      this.lastLine = Objects.requireNonNull(t);
+      this.mLastLine = Objects.requireNonNull(t);
     }
   }
 

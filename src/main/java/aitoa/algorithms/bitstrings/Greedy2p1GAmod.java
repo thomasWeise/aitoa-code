@@ -30,12 +30,12 @@ public final class Greedy2p1GAmod<Y>
   /**
    * create
    *
-   * @param _c
+   * @param pC
    *          the constant above n to define the mutation
    *          probability
    */
-  public Greedy2p1GAmod(final double _c) {
-    super(_c);
+  public Greedy2p1GAmod(final double pC) {
+    super(pC);
   }
 
   /** {@inheritDoc} */

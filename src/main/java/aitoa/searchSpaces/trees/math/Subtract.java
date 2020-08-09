@@ -17,14 +17,14 @@ public final class Subtract<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public Subtract(final NodeType<Subtract<C>> type,
-      final Node[] _inner) {
-    super(type, _inner);
+  public Subtract(final NodeType<Subtract<C>> pType,
+      final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

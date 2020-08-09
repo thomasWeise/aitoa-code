@@ -27,47 +27,47 @@ public final class BinomialDistribution
   public final int n;
 
   /** internal variable */
-  private final double m_par;
+  private final double mPar;
   /** internal variable */
-  private final double m_np;
+  private final double mNp;
   /** internal variable */
-  private final double m_p0;
+  private final double mP0;
   /** internal variable */
-  private final double m_q;
+  private final double mQ;
   /** internal variable */
-  private final int m_b;
+  private final int mB;
   /** internal variable */
-  private final int m_m;
+  private final int mM;
   /** internal variable */
-  private final int m_nm;
+  private final int mNm;
   /** internal variable */
-  private final double m_pq;
+  private final double mPq;
   /** internal variable */
-  private final double m_rc;
+  private final double mRc;
   /** internal variable */
-  private final double m_ss;
+  private final double mSs;
   /** internal variable */
-  private final double m_xm;
+  private final double mXm;
   /** internal variable */
-  private final double m_xl;
+  private final double mXl;
   /** internal variable */
-  private final double m_xr;
+  private final double mXr;
   /** internal variable */
-  private final double m_ll;
+  private final double mLl;
   /** internal variable */
-  private final double m_lr;
+  private final double mLr;
   /** internal variable */
-  private final double m_c;
+  private final double mC;
   /** internal variable */
-  private final double m_p1;
+  private final double mP1;
   /** internal variable */
-  private final double m_p2;
+  private final double mP2;
   /** internal variable */
-  private final double m_p3;
+  private final double mP3;
   /** internal variable */
-  private final double m_p4;
+  private final double mP4;
   /** internal variable */
-  private final double m_ch;
+  private final double mCh;
 
   /** internal constant for 1/3 */
   private static final double C1_3 = 1d / 3d;
@@ -108,75 +108,75 @@ public final class BinomialDistribution
   /**
    * create the distribution
    *
-   * @param _n
+   * @param pN
    *          the maximum number
-   * @param _p
+   * @param pP
    *          the probability
    */
-  public BinomialDistribution(final int _n, final double _p) {
+  public BinomialDistribution(final int pN, final double pP) {
     super();
 
-    if (_n <= 0) {
+    if (pN <= 0) {
       throw new IllegalArgumentException("n must be > 0 but is " //$NON-NLS-1$
-          + _n);
+          + pN);
     }
-    this.n = _n;
+    this.n = pN;
 
-    if ((_p <= 0d) || (!Double.isFinite(_p))) {
+    if ((pP <= 0d) || (!Double.isFinite(pP))) {
       throw new IllegalArgumentException(
           "Probability must be > 0, but is " //$NON-NLS-1$
-              + _p);
+              + pP);
     }
-    this.p = _p;
+    this.p = pP;
 
     int bh, i;
     double f, rm;
 
-    this.m_par = Math.min(this.p, 1.0d - this.p);
-    this.m_q = 1.0d - this.m_par;
-    this.m_np = this.n * this.m_par;
+    this.mPar = Math.min(this.p, 1.0d - this.p);
+    this.mQ = 1.0d - this.mPar;
+    this.mNp = this.n * this.mPar;
 
     // Check for invalid input values
 
-    if (this.m_np <= 0.0d) {
+    if (this.mNp <= 0.0d) {
       throw new IllegalArgumentException("Cannot have n="//$NON-NLS-1$
-          + _n + " and p=" + _p);//$NON-NLS-1$
+          + pN + " and p=" + pP);//$NON-NLS-1$
     }
 
-    rm = this.m_np + this.m_par;
-    this.m_m = (int) rm; // mode, integer
-    this.m_xm = this.m_m + 0.5d;
-    this.m_pq = this.m_par / this.m_q;
+    rm = this.mNp + this.mPar;
+    this.mM = (int) rm; // mode, integer
+    this.mXm = this.mM + 0.5d;
+    this.mPq = this.mPar / this.mQ;
 
-    this.m_p0 = Math.exp(this.n * Math.log(this.m_q)); // Chop-down
-    bh = (int) (this.m_np
-        + (10.0d * Math.sqrt(this.m_np * this.m_q)));
-    this.m_b = Math.min(this.n, bh);
+    this.mP0 = Math.exp(this.n * Math.log(this.mQ)); // Chop-down
+    bh = (int) (this.mNp
+        + (10.0d * Math.sqrt(this.mNp * this.mQ)));
+    this.mB = Math.min(this.n, bh);
 
-    this.m_rc = (this.n + 1.0d) * this.m_pq; // recurr.
+    this.mRc = (this.n + 1.0d) * this.mPq; // recurr.
 
-    this.m_ss = this.m_np * this.m_q; // variance
-    i = (int) ((2.195d * Math.sqrt(this.m_ss))
-        - (4.6d * this.m_q));
-    this.m_xl = this.m_m - i; // limit left
-    this.m_xr = this.m_m + i + 1L; // limit right
-    f = (rm - this.m_xl) / (rm - (this.m_xl * this.m_par));
-    this.m_ll = f * (1.0d + (0.5d * f));
-    f = (this.m_xr - rm) / (this.m_xr * this.m_q);
-    this.m_lr = f * (1.0d + (0.5d * f));
-    this.m_c = 0.134d + (20.5d / (15.3d + this.m_m)); // parallelogram
+    this.mSs = this.mNp * this.mQ; // variance
+    i = (int) ((2.195d * Math.sqrt(this.mSs))
+        - (4.6d * this.mQ));
+    this.mXl = this.mM - i; // limit left
+    this.mXr = this.mM + i + 1L; // limit right
+    f = (rm - this.mXl) / (rm - (this.mXl * this.mPar));
+    this.mLl = f * (1.0d + (0.5d * f));
+    f = (this.mXr - rm) / (this.mXr * this.mQ);
+    this.mLr = f * (1.0d + (0.5d * f));
+    this.mC = 0.134d + (20.5d / (15.3d + this.mM)); // parallelogram
     // height
-    this.m_p1 = i + 0.5d;
-    this.m_p2 = this.m_p1 * (1.0d + this.m_c + this.m_c); // probabilities
-    this.m_p3 = this.m_p2 + (this.m_c / this.m_ll); // of regions
-                                                    // 1-4
-    this.m_p4 = this.m_p3 + (this.m_c / this.m_lr);
+    this.mP1 = i + 0.5d;
+    this.mP2 = this.mP1 * (1.0d + this.mC + this.mC); // probabilities
+    this.mP3 = this.mP2 + (this.mC / this.mLl); // of regions
+                                                // 1-4
+    this.mP4 = this.mP3 + (this.mC / this.mLr);
 
-    this.m_nm = (this.n - this.m_m) + 1;
-    this.m_ch = (this.m_xm
-        * Math.log((this.m_m + 1.0d) / (this.m_pq * this.m_nm)))
-        + BinomialDistribution.stirlingCorrection(this.m_m + 1)
-        + BinomialDistribution.stirlingCorrection(this.m_nm);
+    this.mNm = (this.n - this.mM) + 1;
+    this.mCh = (this.mXm
+        * Math.log((this.mM + 1.0d) / (this.mPq * this.mNm)))
+        + BinomialDistribution.stirlingCorrection(this.mM + 1)
+        + BinomialDistribution.stirlingCorrection(this.mNm);
   }
 
   /**
@@ -247,22 +247,22 @@ public final class BinomialDistribution
     double f;
     double U, V, X, T, E;
 
-    if (this.m_np < 10) { // Inversion Chop-down
+    if (this.mNp < 10) { // Inversion Chop-down
       double pk;
 
       K = 0;
-      pk = this.m_p0;
+      pk = this.mP0;
       U = BinomialDistribution.raw(random);
       while (U > pk) {
         ++K;
-        if (K > this.m_b) {
+        if (K > this.mB) {
           U = BinomialDistribution.raw(random);
           K = 0;
-          pk = this.m_p0;
+          pk = this.mP0;
         } else {
           U -= pk;
-          pk = (((this.n - K) + 1) * this.m_par * pk)
-              / (K * this.m_q);
+          pk = (((this.n - K) + 1) * this.mPar * pk)
+              / (K * this.mQ);
         }
       }
       return ((this.p > 0.5d) ? (this.n - K) : K);
@@ -271,50 +271,50 @@ public final class BinomialDistribution
     for (;;) {
       V = BinomialDistribution.raw(random);
       if ((U = BinomialDistribution.raw(random)
-          * this.m_p4) <= this.m_p1) { // triangular
+          * this.mP4) <= this.mP1) { // triangular
         // region
-        K = (int) ((this.m_xm - U) + (this.m_p1 * V));
+        K = (int) ((this.mXm - U) + (this.mP1 * V));
         return (this.p > 0.5d) ? (this.n - K) : K; // immediate
                                                    // accept
       }
-      if (U <= this.m_p2) { // parallelogram
-        X = this.m_xl + ((U - this.m_p1) / this.m_c);
-        if ((V = ((V * this.m_c) + 1.0d)
-            - (Math.abs(this.m_xm - X) / this.m_p1)) >= 1.0d) {
+      if (U <= this.mP2) { // parallelogram
+        X = this.mXl + ((U - this.mP1) / this.mC);
+        if ((V = ((V * this.mC) + 1.0d)
+            - (Math.abs(this.mXm - X) / this.mP1)) >= 1.0d) {
           continue;
         }
         K = (int) X;
-      } else if (U <= this.m_p3) { // left tail
-        if ((X = this.m_xl + (Math.log(V) / this.m_ll)) < 0.0d) {
+      } else if (U <= this.mP3) { // left tail
+        if ((X = this.mXl + (Math.log(V) / this.mLl)) < 0.0d) {
           continue;
         }
         K = (int) X;
-        V *= (U - this.m_p2) * this.m_ll;
+        V *= (U - this.mP2) * this.mLl;
       } else { // right tail
-        if ((K = (int) (this.m_xr
-            - (Math.log(V) / this.m_lr))) > this.n) {
+        if ((K = (int) (this.mXr
+            - (Math.log(V) / this.mLr))) > this.n) {
           continue;
         }
-        V *= (U - this.m_p3) * this.m_lr;
+        V *= (U - this.mP3) * this.mLr;
       }
 
       // acceptance test : two cases, depending on |K - m_m|
-      if (((Km = Math
-          .abs(K - this.m_m)) <= BinomialDistribution.DMAX_KM)
-          || ((Km + Km + 2L) >= this.m_ss)) {
+      if (((Km =
+          Math.abs(K - this.mM)) <= BinomialDistribution.DMAX_KM)
+          || ((Km + Km + 2L) >= this.mSs)) {
 
         // computation of p(K) via recurrence relationship from
         // the mode
         f = 1.0d; // f(m_m)
-        if (this.m_m < K) {
-          for (i = this.m_m; i < K;) {
-            if ((f *= ((this.m_rc / ++i) - this.m_pq)) < V) {
+        if (this.mM < K) {
+          for (i = this.mM; i < K;) {
+            if ((f *= ((this.mRc / ++i) - this.mPq)) < V) {
               break; // multiply f
             }
           }
         } else {
-          for (i = K; i < this.m_m;) {
-            if ((V *= ((this.m_rc / ++i) - this.m_pq)) > f) {
+          for (i = K; i < this.mM;) {
+            if ((V *= ((this.mRc / ++i) - this.mPq)) > f) {
               break; // multiply V
             }
           }
@@ -326,12 +326,11 @@ public final class BinomialDistribution
         // lower and upper squeeze tests, based on lower bounds
         // for log p(K)
         V = Math.log(V);
-        T = (-Km * Km) / (this.m_ss + this.m_ss);
-        E = (Km / this.m_ss)
+        T = (-Km * Km) / (this.mSs + this.mSs);
+        E = (Km / this.mSs)
             * ((((Km * ((Km * BinomialDistribution.C1_3)
                 + BinomialDistribution.C5_8))
-                + BinomialDistribution.C1_6) / this.m_ss)
-                + 0.5d);
+                + BinomialDistribution.C1_6) / this.mSs) + 0.5d);
         if (V <= (T - E)) {
           break;
         }
@@ -340,11 +339,11 @@ public final class BinomialDistribution
 
           // computation of log f(K) via Stirling's formula
           // final acceptance-rejection test
-          if (V <= ((this.m_ch
+          if (V <= ((this.mCh
               + ((this.n + 1.0d)
-                  * Math.log((double) this.m_nm / (double) nK))
+                  * Math.log((double) this.mNm / (double) nK))
               + ((K + 0.5d)
-                  * Math.log((nK * this.m_pq) / (K + 1.0d))))
+                  * Math.log((nK * this.mPq) / (K + 1.0d))))
               - BinomialDistribution.stirlingCorrection(K + 1)
               - BinomialDistribution.stirlingCorrection(nK))) {
             break;

@@ -17,42 +17,42 @@ public abstract class BitStringUnaryOperatorFlipWithDist
     implements IUnarySearchOperator<boolean[]> {
 
   /** the index list */
-  private final int[] m_indexes;
+  private final int[] mIndexes;
 
   /** the number of bits in the representation */
-  protected final int n;
+  protected final int mN;
 
   /** the distribution to sample from */
-  private final DiscreteRandomDistribution m_dist;
+  private final DiscreteRandomDistribution mDistribution;
 
   /**
    * create the unary operator
    *
-   * @param _n
+   * @param pN
    *          the number of bits that could be flipped
-   * @param _dist
+   * @param pDistribution
    *          the discrete random distribution to use
    */
-  protected BitStringUnaryOperatorFlipWithDist(final int _n,
-      final DiscreteRandomDistribution _dist) {
+  protected BitStringUnaryOperatorFlipWithDist(final int pN,
+      final DiscreteRandomDistribution pDistribution) {
     super();
-    if (_n <= 0) {
+    if (pN <= 0) {
       throw new IllegalArgumentException(
           "there must be at least 1 bit to flip, but you specified " //$NON-NLS-1$
-              + _n);
+              + pN);
     }
-    this.m_dist = Objects.requireNonNull(_dist);
-    this.n = _n;
-    this.m_indexes = new int[_n];
-    for (int i = _n; (--i) >= 0;) {
-      this.m_indexes[i] = i;
+    this.mDistribution = Objects.requireNonNull(pDistribution);
+    this.mN = pN;
+    this.mIndexes = new int[pN];
+    for (int i = pN; (--i) >= 0;) {
+      this.mIndexes[i] = i;
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.m_dist + "_flip"; //$NON-NLS-1$
+    return this.mDistribution + "_flip"; //$NON-NLS-1$
   }
 
   /**
@@ -68,11 +68,11 @@ public abstract class BitStringUnaryOperatorFlipWithDist
   @Override
   public final void apply(final boolean[] x,
       final boolean[] dest, final Random random) {
-    final int[] indexes = this.m_indexes;
-    final int _n = this.n;
+    final int[] indexes = this.mIndexes;
+    final int _n = this.mN;
     System.arraycopy(x, 0, dest, 0, _n);
 
-    final int flip = this.m_dist.nextInt(random);
+    final int flip = this.mDistribution.nextInt(random);
 
     // shuffle the first flip elements in a Fisher-Yates style
     for (int i = 0; i < flip; i++) {

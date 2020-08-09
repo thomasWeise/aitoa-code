@@ -36,62 +36,62 @@ public final class EndResult extends Setup {
   /**
    * create
    *
-   * @param _algorithm
+   * @param pAlgorithm
    *          the algorithm id
-   * @param _instance
+   * @param pInstance
    *          the instance id
-   * @param _seed
+   * @param pSeed
    *          the seed
-   * @param _bestF
+   * @param pBestF
    *          the best objective value achieved by the run
-   * @param _totalTime
+   * @param pTotalTime
    *          the total time consumed by the run
-   * @param _totalFEs
+   * @param pTotalFEs
    *          the total FEs consumed by the run
-   * @param _lastImprovementTime
+   * @param pLastImprovementTime
    *          the last time at which an improvement was achieved
-   * @param _lastImprovementFE
+   * @param pLastImprovementFE
    *          the last FE at which an improvement was achieved
-   * @param _numberOfImprovements
+   * @param pNumberOfImprovements
    *          the total number of times the run improved its
    *          result
-   * @param _budgetTime
+   * @param pBudgetTime
    *          the time budget
-   * @param _budgetFEs
+   * @param pBudgetFEs
    *          the FE budget
-   * @param _goalF
+   * @param pGoalF
    *          the goal objective value
    */
-  public EndResult(final String _algorithm,
-      final String _instance, final long _seed,
-      final double _bestF, final long _totalTime,
-      final long _totalFEs, final long _lastImprovementTime,
-      final long _lastImprovementFE,
-      final long _numberOfImprovements, final long _budgetTime,
-      final long _budgetFEs, final double _goalF) {
-    super(_algorithm, _instance, _seed);
+  public EndResult(final String pAlgorithm,
+      final String pInstance, final long pSeed,
+      final double pBestF, final long pTotalTime,
+      final long pTotalFEs, final long pLastImprovementTime,
+      final long pLastImprovementFE,
+      final long pNumberOfImprovements, final long pBudgetTime,
+      final long pBudgetFEs, final double pGoalF) {
+    super(pAlgorithm, pInstance, pSeed);
 
-    this.bestF = _bestF;
+    this.bestF = pBestF;
     if (!Double.isFinite(this.bestF)) {
       throw new IllegalArgumentException(
           "Invalid f.best: " + this.bestF);//$NON-NLS-1$
     }
 
-    this.totalTime = _totalTime;
+    this.totalTime = pTotalTime;
     if ((this.totalTime < 0L)
         || (this.totalTime > 315360000000000L)) {
       throw new IllegalArgumentException(
           "Invalid total time: " + this.totalTime);//$NON-NLS-1$
     }
 
-    this.totalFEs = _totalFEs;
+    this.totalFEs = pTotalFEs;
     if ((this.totalFEs < 1L)
         || (this.totalFEs > 315360000000000L)) {
       throw new IllegalArgumentException(
           "Invalid total FEs: " + this.totalFEs);//$NON-NLS-1$
     }
 
-    this.lastImprovementTime = _lastImprovementTime;
+    this.lastImprovementTime = pLastImprovementTime;
     if ((this.lastImprovementTime < 0L)
         || (this.lastImprovementTime > this.totalTime)) {
       throw new IllegalArgumentException(
@@ -100,7 +100,7 @@ public final class EndResult extends Setup {
               + this.totalTime);
     }
 
-    this.lastImprovementFE = _lastImprovementFE;
+    this.lastImprovementFE = pLastImprovementFE;
     if ((this.lastImprovementFE <= 0L)
         || (this.lastImprovementFE > this.totalFEs)) {
       throw new IllegalArgumentException(
@@ -109,14 +109,14 @@ public final class EndResult extends Setup {
               + this.totalFEs);
     }
 
-    this.budgetTime = _budgetTime;
+    this.budgetTime = pBudgetTime;
     if (this.budgetTime < 0L) {
       throw new IllegalArgumentException(
           "Invalid time budget: " + this.budgetTime);//$NON-NLS-1$
     }
     LogParser.checkTime(this.totalTime, this.budgetTime);
 
-    this.budgetFEs = _budgetFEs;
+    this.budgetFEs = pBudgetFEs;
     if ((this.budgetFEs < 1L)
         || (this.budgetFEs < this.totalFEs)) {
       throw new IllegalArgumentException(
@@ -124,7 +124,7 @@ public final class EndResult extends Setup {
               " for total FEs: " + this.totalFEs);//$NON-NLS-1$
     }
 
-    this.numberOfImprovements = _numberOfImprovements;
+    this.numberOfImprovements = pNumberOfImprovements;
     if ((this.numberOfImprovements <= 0)
         || (this.numberOfImprovements > this.lastImprovementFE)) {
       throw new IllegalArgumentException(
@@ -134,12 +134,12 @@ public final class EndResult extends Setup {
               this.lastImprovementFE);
     }
 
-    this.goalF = _goalF;
+    this.goalF = pGoalF;
     if ((!Double.isFinite(this.goalF))
         && (!(this.goalF <= Double.NEGATIVE_INFINITY))) {
       throw new IllegalArgumentException(
           "Invalid goal objective value: "//$NON-NLS-1$
-              + _goalF);
+              + pGoalF);
     }
   }
 

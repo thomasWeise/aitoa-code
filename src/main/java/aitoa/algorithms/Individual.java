@@ -25,15 +25,15 @@ public class Individual<X> implements Supplier<X> {
   /**
    * create the individual record
    *
-   * @param _x
+   * @param pX
    *          the point in the search space
-   * @param _q
+   * @param pQ
    *          the quality
    */
-  public Individual(final X _x, final double _q) {
+  public Individual(final X pX, final double pQ) {
     super();
-    this.x = Objects.requireNonNull(_x);
-    this.quality = _q;
+    this.x = Objects.requireNonNull(pX);
+    this.quality = pQ;
   }
 
   /** {@inheritDoc} */

@@ -21,12 +21,12 @@ public final class BitStringSpace implements ISpace<boolean[]> {
   /**
    * create the bit string space
    *
-   * @param _length
+   * @param pLength
    *          the _length
    */
-  public BitStringSpace(final int _length) {
+  public BitStringSpace(final int pLength) {
     super();
-    this.length = BitStringSpace.checkLength(_length);
+    this.length = BitStringSpace.checkLength(pLength);
   }
 
   /**

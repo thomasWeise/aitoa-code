@@ -182,11 +182,11 @@ public final class ErtEcdf {
 
     double maxErt = Double.NEGATIVE_INFINITY;
     double minErt = Double.POSITIVE_INFINITY;
-    for (final Algorithm a : result.algorithms) {
-      if (a.solutions.length > 0) {
-        minErt = Math.min(minErt, a.solutions[0]);
+    for (final Algorithm a : result.mAlgorithms) {
+      if (a.mSolutions.length > 0) {
+        minErt = Math.min(minErt, a.mSolutions[0]);
         maxErt = Math.max(maxErt,
-            a.solutions[a.solutions.length - 1]);
+            a.mSolutions[a.mSolutions.length - 1]);
       }
     }
     if (minErt >= maxErt) {
@@ -206,9 +206,9 @@ public final class ErtEcdf {
         ertName, ErtEcdf.COL_ECDF_REL, ErtEcdf.COL_ECDF_ABS,
         ErtEcdf.COL_INSTANCES);
 
-    for (final Algorithm algo : result.algorithms) {
+    for (final Algorithm algo : result.mAlgorithms) {
       final Path path = IOUtils.canonicalizePath(
-          endFolder.resolve(algo.algorithm + ".txt"));//$NON-NLS-1$
+          endFolder.resolve(algo.mAlgorithm + ".txt"));//$NON-NLS-1$
 
       try (final BufferedWriter bw =
           Files.newBufferedWriter(path)) {
@@ -217,16 +217,16 @@ public final class ErtEcdf {
 
         double time = 0d;
         int ecdf = 0;
-        for (final double d : algo.solutions) {
+        for (final double d : algo.mSolutions) {
           if (d > time) {
-            ErtEcdf.line(time, ecdf, result.instances, bw);
+            ErtEcdf.line(time, ecdf, result.mInstances, bw);
           }
           ++ecdf;
           time = d;
         }
-        ErtEcdf.line(time, ecdf, result.instances, bw);
+        ErtEcdf.line(time, ecdf, result.mInstances, bw);
         if (time < maxErt) {
-          ErtEcdf.line(maxErt, ecdf, result.instances, bw);
+          ErtEcdf.line(maxErt, ecdf, result.mInstances, bw);
         } else {
           if (time > maxErt) {
             throw new IllegalStateException(//
@@ -235,10 +235,10 @@ public final class ErtEcdf {
         }
       }
 
-      if (output.put(algo.algorithm,
+      if (output.put(algo.mAlgorithm,
           IOUtils.requireFile(path)) != null) {
         throw new ConcurrentModificationException(
-            algo.algorithm);
+            algo.mAlgorithm);
       }
     }
 
@@ -259,69 +259,69 @@ public final class ErtEcdf {
   private static final class Parser
       implements Consumer<EndResultStatistic> {
     /** which instance to use */
-    private final Predicate<String> m_useInstance;
+    private final Predicate<String> mUseInstance;
     /** which algorithms to use */
-    private final Predicate<String> m_useAlgorithm;
+    private final Predicate<String> mUseAlgorithm;
     /** the time getter */
     private final ToDoubleFunction<
-        EndResultStatistic> m_timeGetter;
+        EndResultStatistic> mTimeGetter;
     /** the data */
-    private HashMap<String, ArrayList<Solution>> m_data;
+    private HashMap<String, ArrayList<Solution>> mData;
     /** the instance counters */
-    private HashMap<String, int[]> m_instanceCounters;
+    private HashMap<String, int[]> mInstanceCounters;
 
     /**
      * create
      *
-     * @param timeGetter
+     * @param pTimeGetter
      *          the method to extract the time
-     * @param useInstance
+     * @param pUseInstance
      *          a predicate checking whether an instance should
      *          be included in the diagram; if this is
      *          {@code null}, all instances will be considered
-     * @param useAlgorithm
+     * @param pUseAlgorithm
      *          a predicate checking whether an algorithm should
      *          be included in the diagram; if this is
      *          {@code null}, all algorithms will be considered
      */
-    Parser(final ToDoubleFunction<EndResultStatistic> timeGetter,
-        final Predicate<String> useInstance,
-        final Predicate<String> useAlgorithm) {
+    Parser(
+        final ToDoubleFunction<EndResultStatistic> pTimeGetter,
+        final Predicate<String> pUseInstance,
+        final Predicate<String> pUseAlgorithm) {
       super();
-      this.m_timeGetter = Objects.requireNonNull(timeGetter);
-      this.m_useAlgorithm = Objects.requireNonNull(useAlgorithm);
-      this.m_useInstance = Objects.requireNonNull(useInstance);
-      this.m_data = new HashMap<>();
-      this.m_instanceCounters = new HashMap<>();
+      this.mTimeGetter = Objects.requireNonNull(pTimeGetter);
+      this.mUseAlgorithm = Objects.requireNonNull(pUseAlgorithm);
+      this.mUseInstance = Objects.requireNonNull(pUseInstance);
+      this.mData = new HashMap<>();
+      this.mInstanceCounters = new HashMap<>();
     }
 
     /** {@inheritDoc} */
     @Override
     public void accept(final EndResultStatistic t) {
-      if (this.m_useAlgorithm.test(t.algorithm)
-          && this.m_useInstance.test(t.instance)) {
+      if (this.mUseAlgorithm.test(t.algorithm)
+          && this.mUseInstance.test(t.instance)) {
 
         final int[] count =
-            this.m_instanceCounters.get(t.instance);
+            this.mInstanceCounters.get(t.instance);
         if (count == null) {
-          this.m_instanceCounters.put(t.instance,
+          this.mInstanceCounters.put(t.instance,
               new int[] { 1 });
         } else {
           ++count[0];
         }
 
-        final double time = this.m_timeGetter.applyAsDouble(t);
+        final double time = this.mTimeGetter.applyAsDouble(t);
 
         if (Double.isFinite(time)) {
           if (time < 0d) {
             throw new IllegalArgumentException(//
                 "time cannot be <0, but is " + time); //$NON-NLS-1$
           }
-          ArrayList<Solution> sols =
-              this.m_data.get(t.algorithm);
+          ArrayList<Solution> sols = this.mData.get(t.algorithm);
           if (sols == null) {
             sols = new ArrayList<>();
-            this.m_data.put(t.algorithm, sols);
+            this.mData.put(t.algorithm, sols);
           }
           sols.add(new Solution(t.instance, time));
         }
@@ -334,20 +334,20 @@ public final class ErtEcdf {
      * @return the results
      */
     Result doFinalize() {
-      if (this.m_data.isEmpty()) {
+      if (this.mData.isEmpty()) {
         throw new IllegalStateException("no algorithm found."); //$NON-NLS-1$
       }
-      if (this.m_instanceCounters.isEmpty()) {
+      if (this.mInstanceCounters.isEmpty()) {
         throw new IllegalStateException("no instance found."); //$NON-NLS-1$
       }
 
       // we only consider instances to which all algorithms were
       // applied
-      final int requiredCount = this.m_data.size();
+      final int requiredCount = this.mData.size();
 
-      this.m_instanceCounters.entrySet()
+      this.mInstanceCounters.entrySet()
           .removeIf(e -> (e.getValue()[0] < requiredCount));
-      final int instances = this.m_instanceCounters.size();
+      final int instances = this.mInstanceCounters.size();
       if (instances <= 0) {
         throw new IllegalStateException(
             "no common instance found."); //$NON-NLS-1$
@@ -355,23 +355,23 @@ public final class ErtEcdf {
 
       // filter the algorithms
       final Algorithm[] algorithms =
-          this.m_data.entrySet().stream()//
+          this.mData.entrySet().stream()//
               .map(e -> new Algorithm(e.getKey(), //
                   e.getValue().stream()//
                       // keep only those instances to which
                       // all algorithms were applied
-                      .filter(v -> (this.m_instanceCounters
-                          .containsKey(v.instance)))//
-                      .mapToDouble(s -> s.ert)//
+                      .filter(v -> (this.mInstanceCounters
+                          .containsKey(v.mInstance)))//
+                      .mapToDouble(s -> s.mErt)//
                       .toArray())//
               ).toArray(i -> new Algorithm[i]);
 
-      this.m_data.clear();
-      this.m_data = null;
+      this.mData.clear();
+      this.mData = null;
 
       final Result result = new Result(instances, algorithms);
-      this.m_instanceCounters.clear();
-      this.m_instanceCounters = null;
+      this.mInstanceCounters.clear();
+      this.mInstanceCounters = null;
 
       return result;
     }
@@ -380,27 +380,27 @@ public final class ErtEcdf {
   /** the algorithm data */
   private static final class Result {
     /** the instances */
-    final int instances;
+    final int mInstances;
     /** the algorithms */
-    final Algorithm[] algorithms;
+    final Algorithm[] mAlgorithms;
 
     /**
      * create
      *
-     * @param i
+     * @param pI
      *          the instances
-     * @param a
+     * @param pA
      *          the algorithm data
      */
-    Result(final int i, final Algorithm[] a) {
+    Result(final int pI, final Algorithm[] pA) {
       super();
-      this.instances = i;
-      if (i <= 0) {
+      this.mInstances = pI;
+      if (pI <= 0) {
         throw new IllegalStateException("no instances?"); //$NON-NLS-1$
       }
-      this.algorithms = Objects.requireNonNull(a);
-      Arrays.sort(a);
-      if (a.length <= 0) {
+      this.mAlgorithms = Objects.requireNonNull(pA);
+      Arrays.sort(pA);
+      if (pA.length <= 0) {
         throw new IllegalStateException("no algorithms?"); //$NON-NLS-1$
       }
     }
@@ -410,29 +410,29 @@ public final class ErtEcdf {
   private static final class Algorithm
       implements Comparable<Algorithm> {
     /** the algorithm */
-    final String algorithm;
+    final String mAlgorithm;
     /** the data */
-    final double[] solutions;
+    final double[] mSolutions;
 
     /**
      * create the algorithm
      *
-     * @param a
+     * @param pA
      *          the algorithm
-     * @param d
+     * @param pD
      *          the data
      */
-    Algorithm(final String a, final double[] d) {
+    Algorithm(final String pA, final double[] pD) {
       super();
-      this.algorithm = Objects.requireNonNull(a);
-      this.solutions = Objects.requireNonNull(d);
-      Arrays.sort(d);
+      this.mAlgorithm = Objects.requireNonNull(pA);
+      this.mSolutions = Objects.requireNonNull(pD);
+      Arrays.sort(pD);
     }
 
     /** {@inheritDoc} */
     @Override
     public int compareTo(final Algorithm o) {
-      return this.algorithm.compareTo(o.algorithm);
+      return this.mAlgorithm.compareTo(o.mAlgorithm);
     }
   }
 
@@ -440,35 +440,35 @@ public final class ErtEcdf {
   private static final class Solution
       implements Comparable<Solution> {
     /** the solved instance */
-    final String instance;
+    final String mInstance;
     /** the ert */
-    final double ert;
+    final double mErt;
 
     /**
      * create the record
      *
-     * @param i
+     * @param pI
      *          the instance
-     * @param e
+     * @param pE
      *          the ert
      */
-    Solution(final String i, final double e) {
+    Solution(final String pI, final double pE) {
       super();
-      this.instance = Objects.requireNonNull(i);
-      if ((!Double.isFinite(e)) || (e < 0d)) {
-        throw new IllegalStateException("invalid ert: " + e); //$NON-NLS-1$
+      this.mInstance = Objects.requireNonNull(pI);
+      if ((!Double.isFinite(pE)) || (pE < 0d)) {
+        throw new IllegalStateException("invalid ert: " + pE); //$NON-NLS-1$
       }
-      this.ert = e;
+      this.mErt = pE;
     }
 
     /** {@inheritDoc} */
     @Override
     public int compareTo(final Solution o) {
-      final int i = Double.compare(this.ert, o.ert);
+      final int i = Double.compare(this.mErt, o.mErt);
       if (i != 0) {
         return i;
       }
-      return this.instance.compareTo(o.instance);
+      return this.mInstance.compareTo(o.mInstance);
     }
   }
 

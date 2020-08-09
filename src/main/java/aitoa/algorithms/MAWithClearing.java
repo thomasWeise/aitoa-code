@@ -61,31 +61,31 @@ public final class MAWithClearing<X, Y>
   /**
    * Create a new instance of the evolutionary algorithm
    *
-   * @param _mu
+   * @param pMu
    *          the number of parents to be selected
-   * @param _lambda
+   * @param pLambda
    *          the number of offspring to be created
-   * @param _maxLSSteps
+   * @param pMaxLSSteps
    *          the maximum number of local search steps
    */
-  public MAWithClearing(final int _mu, final int _lambda,
-      final int _maxLSSteps) {
+  public MAWithClearing(final int pMu, final int pLambda,
+      final int pMaxLSSteps) {
     super();
-    if ((_mu <= 1) || (_mu > 1_000_000)) {
-      throw new IllegalArgumentException("Invalid mu: " + _mu); //$NON-NLS-1$
+    if ((pMu <= 1) || (pMu > 1_000_000)) {
+      throw new IllegalArgumentException("Invalid mu: " + pMu); //$NON-NLS-1$
     }
-    this.mu = _mu;
-    if ((_lambda < 1) || (_lambda > 1_000_000)) {
+    this.mu = pMu;
+    if ((pLambda < 1) || (pLambda > 1_000_000)) {
       throw new IllegalArgumentException(
-          "Invalid lambda: " + _lambda); //$NON-NLS-1$
+          "Invalid lambda: " + pLambda); //$NON-NLS-1$
     }
-    this.lambda = _lambda;
-    if (_maxLSSteps <= 0) {
+    this.lambda = pLambda;
+    if (pMaxLSSteps <= 0) {
       throw new IllegalArgumentException(
           "Invalid number of maximum local search steps: " //$NON-NLS-1$
-              + _maxLSSteps);
+              + pMaxLSSteps);
     }
-    this.maxLSSteps = _maxLSSteps;
+    this.maxLSSteps = pMaxLSSteps;
   }
 
   /** {@inheritDoc} */

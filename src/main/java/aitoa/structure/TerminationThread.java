@@ -30,9 +30,10 @@ final class TerminationThread extends Thread {
   private static final Object SYNC = new Object();
 
   /** the queue */
-  private static volatile BlackBoxProcessBase<?, ?> queue = null;
+  private static volatile BlackBoxProcessBase<?, ?> sQueue =
+      null;
   /** the instance */
-  private static volatile TerminationThread instance = null;
+  private static volatile TerminationThread sInstance = null;
 
   /** create */
   private TerminationThread() {
@@ -50,7 +51,7 @@ final class TerminationThread extends Thread {
     final long t;
     BlackBoxProcessBase<?, ?> prev, next;
 
-    t = f.m_endTime; // throw NullPointerException if null
+    t = f.mEndTime; // throw NullPointerException if null
     if ((t >= Long.MAX_VALUE) || (t <= 0L)) {
       throw new IllegalArgumentException(
           "Invalid end time for enquing: " //$NON-NLS-1$
@@ -60,34 +61,34 @@ final class TerminationThread extends Thread {
     // find right place for insertion
     synchronized (TerminationThread.SYNC) {
       prev = null;
-      next = TerminationThread.queue;
+      next = TerminationThread.sQueue;
 
       while (next != null) {
         if (next == f) {
           throw new IllegalArgumentException(
               "Attempt to enqueue problem twice!"); //$NON-NLS-1$
         }
-        if (next.m_endTime > f.m_endTime) {
+        if (next.mEndTime > f.mEndTime) {
           break; // found it
         }
         prev = next;
-        next = next.m_next;
+        next = next.mNext;
       }
 
-      f.m_next = next;
+      f.mNext = next;
       if (prev != null) {
         // no need to wake up thread, as there is already a
         // pending sleep
-        prev.m_next = f;
+        prev.mNext = f;
         return;
       }
 
-      TerminationThread.queue = f;
+      TerminationThread.sQueue = f;
 
-      if (TerminationThread.instance == null) {
+      if (TerminationThread.sInstance == null) {
         // create thread if necessary
-        TerminationThread.instance = new TerminationThread();
-        TerminationThread.instance.start();
+        TerminationThread.sInstance = new TerminationThread();
+        TerminationThread.sInstance.start();
         return;
       }
 
@@ -112,23 +113,23 @@ final class TerminationThread extends Thread {
 
     synchronized (TerminationThread.SYNC) {
       cur = null;
-      next = TerminationThread.queue;
+      next = TerminationThread.sQueue;
 
       // find element in queue
       while (next != null) {
         if (next == f) {
           if (cur == null) {
             // delete first element
-            TerminationThread.queue = next.m_next;
+            TerminationThread.sQueue = next.mNext;
             TerminationThread.SYNC.notifyAll();
             return;
           }
           // delete element which is not the first one
-          cur.m_next = next.m_next;
+          cur.mNext = next.mNext;
           return;
         }
         cur = next;
-        next = next.m_next;
+        next = next.mNext;
       }
     }
   }
@@ -143,17 +144,17 @@ final class TerminationThread extends Thread {
       synchronized (TerminationThread.SYNC) {
 
         inner: for (;;) {
-          if (TerminationThread.queue == null) {
+          if (TerminationThread.sQueue == null) {
             // nothing pending anymore: quit thread
-            TerminationThread.instance = null;
+            TerminationThread.sInstance = null;
             return;
           }
 
-          if (TerminationThread.queue.m_endTime <= time) {
+          if (TerminationThread.sQueue.mEndTime <= time) {
             // terminate one element from queue
-            TerminationThread.queue.m_terminated = true;
-            TerminationThread.queue =
-                TerminationThread.queue.m_next;
+            TerminationThread.sQueue.mTerminated = true;
+            TerminationThread.sQueue =
+                TerminationThread.sQueue.mNext;
           } else {
             break inner;
           }
@@ -161,7 +162,7 @@ final class TerminationThread extends Thread {
 
         try {
           TerminationThread.SYNC.wait(Math.max(0L,
-              (TerminationThread.queue.m_endTime - time)));
+              (TerminationThread.sQueue.mEndTime - time)));
         } catch (@SuppressWarnings("unused") //
         final InterruptedException ie) {
           continue;

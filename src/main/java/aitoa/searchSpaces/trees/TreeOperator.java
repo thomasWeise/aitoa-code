@@ -9,17 +9,17 @@ class TreeOperator {
   static final int MAX_TRIALS = 1000;
 
   /** the maximum depth */
-  final int m_maxDepth;
+  final int mMaxDepth;
 
   /**
    * Create a new tree operation
    *
-   * @param maxDepth
+   * @param pMaxDepth
    *          the maximum tree depth
    */
-  TreeOperator(final int maxDepth) {
+  TreeOperator(final int pMaxDepth) {
     super();
-    this.m_maxDepth = TreeSpace.checkMaxDepth(maxDepth);
+    this.mMaxDepth = TreeSpace.checkMaxDepth(pMaxDepth);
   }
 
   /**
@@ -49,10 +49,10 @@ class TreeOperator {
       return t.instantiate(null, rand);
     }
 
-    int i = t.m_childTypes.length;
+    int i = t.mChildTypes.length;
     final Node[] x = new Node[i];
     for (; (--i) >= 0;) {
-      if ((x[i] = TreeOperator.createTree(t.m_childTypes[i],
+      if ((x[i] = TreeOperator.createTree(t.mChildTypes[i],
           maxDepth - 1, rand)) == null) {
         return null;
       }

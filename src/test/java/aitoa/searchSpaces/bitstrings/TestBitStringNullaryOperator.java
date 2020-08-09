@@ -17,44 +17,44 @@ public class TestBitStringNullaryOperator
     extends INullarySearchOperatorTest<boolean[]> {
 
   /** the space */
-  private final BitStringSpace m_space;
+  private final BitStringSpace mSpace;
 
   /** the operator */
-  private final BitStringNullaryOperator m_operator;
+  private final BitStringNullaryOperator mOperator;
 
   /**
    * create
    *
-   * @param length
+   * @param pLength
    *          the length
    */
-  protected TestBitStringNullaryOperator(final int length) {
+  protected TestBitStringNullaryOperator(final int pLength) {
     super();
-    this.m_space = new BitStringSpace(length);
-    this.m_operator = new BitStringNullaryOperator();
+    this.mSpace = new BitStringSpace(pLength);
+    this.mOperator = new BitStringNullaryOperator();
   }
 
   /** {@inheritDoc} */
   @Override
   protected ISpace<boolean[]> getSpace() {
-    return this.m_space;
+    return this.mSpace;
   }
 
   /** {@inheritDoc} */
   @Override
   protected INullarySearchOperator<boolean[]>
       getOperator(final ISpace<boolean[]> space) {
-    return this.m_operator;
+    return this.mOperator;
   }
 
   /** test whether all options are sampled */
   @Test(timeout = 3600000)
   public final void testRandom() {
-    if (this.m_space.length > 12) {
+    if (this.mSpace.length > 12) {
       return;
     }
-    final int[] count = new int[1 << this.m_space.length];
-    final boolean[] x = new boolean[this.m_space.length];
+    final int[] count = new int[1 << this.mSpace.length];
+    final boolean[] x = new boolean[this.mSpace.length];
     final INullarySearchOperator<boolean[]> op =
         this.getInstance();
     final Random random = ThreadLocalRandom.current();

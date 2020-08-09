@@ -20,23 +20,23 @@ public final class JSSPMakespanObjectiveFunction
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the instance
    */
   public JSSPMakespanObjectiveFunction(
-      final JSSPInstance _instance) {
+      final JSSPInstance pInstance) {
     super();
-    this.instance = Objects.requireNonNull(_instance);
+    this.instance = Objects.requireNonNull(pInstance);
   }
 
   /**
    * create
    *
-   * @param _instance
+   * @param pInstance
    *          the instance
    */
-  public JSSPMakespanObjectiveFunction(final String _instance) {
-    this(new JSSPInstance(_instance));
+  public JSSPMakespanObjectiveFunction(final String pInstance) {
+    this(new JSSPInstance(pInstance));
   }
 
   /** {@inheritDoc} */

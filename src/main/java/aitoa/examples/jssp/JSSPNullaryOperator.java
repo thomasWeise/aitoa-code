@@ -20,12 +20,12 @@ public final class JSSPNullaryOperator
   /**
    * create the representation
    *
-   * @param instance
+   * @param pInstance
    *          the problem instance
    */
-  public JSSPNullaryOperator(final JSSPInstance instance) {
+  public JSSPNullaryOperator(final JSSPInstance pInstance) {
     super();
-    this.n = instance.n;
+    this.n = pInstance.n;
   }
 
   /** {@inheritDoc} */

@@ -20,60 +20,59 @@ public final class DiscretePowerLawDistribution
   public final double alpha;
 
   /** the minimum power */
-  private final double m_powMin;
+  private final double mPowMin;
 
   /** the difference between the maximum and minimum power */
-  private final double m_powMaxMinDiv;
+  private final double mPowMaxMinDiv;
 
   /** the fraction */
-  private final double m_frac;
+  private final double mFrac;
 
   /**
    * create the distribution
    *
-   * @param _minInclusive
+   * @param pMinInclusive
    *          the inclusive minimum
-   * @param _maxExclusive
+   * @param pMaxExclusive
    *          the inclusive maximum
-   * @param _alpha
+   * @param pAlpha
    *          the alpha parameter
    */
-  public DiscretePowerLawDistribution(final int _minInclusive,
-      final int _maxExclusive, final double _alpha) {
+  public DiscretePowerLawDistribution(final int pMinInclusive,
+      final int pMaxExclusive, final double pAlpha) {
     super();
 
-    if (_minInclusive <= 0) {
+    if (pMinInclusive <= 0) {
       throw new IllegalArgumentException(
           "Minimum must be > 0, but is " //$NON-NLS-1$
-              + _minInclusive);
+              + pMinInclusive);
     }
-    if (_minInclusive >= _maxExclusive) {
+    if (pMinInclusive >= pMaxExclusive) {
       throw new IllegalArgumentException(("min (" + //$NON-NLS-1$
-          _minInclusive + ") must be less than max (" //$NON-NLS-1$
-          + _maxExclusive) + ')');// $NON-NLS-1$
+          pMinInclusive + ") must be less than max (" //$NON-NLS-1$
+          + pMaxExclusive) + ')');// $NON-NLS-1$
     }
-    if ((_alpha < 0d) || (!Double.isFinite(_alpha))) {
+    if ((pAlpha < 0d) || (!Double.isFinite(pAlpha))) {
       throw new IllegalArgumentException(
           "alpha must be positive, but is " //$NON-NLS-1$
-              + _alpha);
+              + pAlpha);
     }
 
-    this.minInclusive = _minInclusive;
-    this.maxExclusive = _maxExclusive;
-    this.alpha = _alpha;
+    this.minInclusive = pMinInclusive;
+    this.maxExclusive = pMaxExclusive;
+    this.alpha = pAlpha;
 
-    this.m_powMin = Math.pow(_minInclusive, ((-_alpha) + 1d));
-    this.m_powMaxMinDiv =
-        Math.pow(_maxExclusive, ((-_alpha) + 1d))
-            - this.m_powMin;
-    this.m_frac = 1d / ((-_alpha) + 1d);
+    this.mPowMin = Math.pow(pMinInclusive, ((-pAlpha) + 1d));
+    this.mPowMaxMinDiv =
+        Math.pow(pMaxExclusive, ((-pAlpha) + 1d)) - this.mPowMin;
+    this.mFrac = 1d / ((-pAlpha) + 1d);
 
-    if (!(Double.isFinite(this.m_powMin)
-        && Double.isFinite(this.m_powMaxMinDiv)
-        && Double.isFinite(this.m_frac))) {
+    if (!(Double.isFinite(this.mPowMin)
+        && Double.isFinite(this.mPowMaxMinDiv)
+        && Double.isFinite(this.mFrac))) {
       throw new IllegalArgumentException(((((("The combination [" //$NON-NLS-1$
-          + _minInclusive) + ',') + _maxExclusive) + ',')
-          + _alpha) + "] does not work.");//$NON-NLS-1$
+          + pMinInclusive) + ',') + pMaxExclusive) + ',')
+          + pAlpha) + "] does not work.");//$NON-NLS-1$
     }
   }
 
@@ -81,9 +80,9 @@ public final class DiscretePowerLawDistribution
   @Override
   public int nextInt(final Random random) {
     return ((int) (Math.pow(//
-        ((this.m_powMaxMinDiv * random.nextDouble())
-            + this.m_powMin),
-        this.m_frac)));
+        ((this.mPowMaxMinDiv * random.nextDouble())
+            + this.mPowMin),
+        this.mFrac)));
   }
 
   /** {@inheritDoc} */

@@ -23,15 +23,15 @@ public final class LongConstant<C> extends NullaryFunction<C> {
   /**
    * Create a long constant node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _value
+   * @param pValue
    *          the constant value
    */
-  public LongConstant(final NodeType<LongConstant<C>> type,
-      final long _value) {
-    super(type);
-    this.value = _value;
+  public LongConstant(final NodeType<LongConstant<C>> pType,
+      final long pValue) {
+    super(pType);
+    this.value = pValue;
   }
 
   /** {@inheritDoc} */

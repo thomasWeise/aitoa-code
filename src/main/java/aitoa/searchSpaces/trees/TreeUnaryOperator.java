@@ -38,7 +38,7 @@ public final class TreeUnaryOperator extends TreePathOperator
           ? this.tryModifyEnd(random)//
           : this.replaceEnd(
               TreeOperator.createTree(this.getEndChoices(),
-                  (this.m_maxDepth - length) + 1, random));
+                  (this.mMaxDepth - length) + 1, random));
       if ((yy != null) && (!Objects.equals(xx, yy))) {
         dest[0] = yy;
         return;
@@ -54,6 +54,6 @@ public final class TreeUnaryOperator extends TreePathOperator
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "rep" + this.m_maxDepth;//$NON-NLS-1$
+    return "rep" + this.mMaxDepth;//$NON-NLS-1$
   }
 }

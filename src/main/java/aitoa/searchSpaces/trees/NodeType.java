@@ -26,23 +26,23 @@ public abstract class NodeType<T extends Node>
     implements Comparable<NodeType<?>> {
 
   /** a list of possible node types for each child */
-  final NodeTypeSet<?>[] m_childTypes;
+  final NodeTypeSet<?>[] mChildTypes;
 
   /** the type set */
-  NodeTypeSet<? super T> m_typeSet;
+  NodeTypeSet<? super T> mTypeSet;
 
   /** the node type id */
-  int m_id;
+  int mId;
 
   /**
    * Create a new node type record
    *
-   * @param childTypes
+   * @param pChildTypes
    *          the child types
    */
-  protected NodeType(final NodeTypeSet<?>[] childTypes) {
+  protected NodeType(final NodeTypeSet<?>[] pChildTypes) {
     super();
-    this.m_childTypes = Objects.requireNonNull(childTypes);
+    this.mChildTypes = Objects.requireNonNull(pChildTypes);
   }
 
   /**
@@ -51,7 +51,7 @@ public abstract class NodeType<T extends Node>
    * @return the owning node type set
    */
   public final NodeTypeSet<? super T> getTypeSet() {
-    return this.m_typeSet;
+    return this.mTypeSet;
   }
 
   /**
@@ -100,7 +100,7 @@ public abstract class NodeType<T extends Node>
    */
   public T replaceChild(final T original, final Node child,
       final int index) {
-    int i = this.m_childTypes.length;
+    int i = this.mChildTypes.length;
     if (i <= index) {
       throw new IndexOutOfBoundsException(//
           "index " + index //$NON-NLS-1$
@@ -123,7 +123,7 @@ public abstract class NodeType<T extends Node>
    * @return the number of chTypes of this node type
    */
   public final int getChildCount() {
-    return this.m_childTypes.length;
+    return this.mChildTypes.length;
   }
 
   /**
@@ -135,7 +135,7 @@ public abstract class NodeType<T extends Node>
    * @return the possible types of that child
    */
   public final NodeTypeSet<?> getChildTypes(final int index) {
-    return this.m_childTypes[index];
+    return this.mChildTypes[index];
   }
 
   /**
@@ -145,7 +145,7 @@ public abstract class NodeType<T extends Node>
    *         false otherwise
    */
   public final boolean isTerminal() {
-    return (this.m_childTypes.length <= 0);
+    return (this.mChildTypes.length <= 0);
   }
 
   /**
@@ -163,13 +163,13 @@ public abstract class NodeType<T extends Node>
     if (o == null) {
       return (-1);
     }
-    final int r = Integer.compare(this.m_id, o.m_id);
+    final int r = Integer.compare(this.mId, o.mId);
     if (r != 0) {
       return r;
     }
 
-    return Integer.compare(this.m_childTypes.length,
-        o.m_childTypes.length);
+    return Integer.compare(this.mChildTypes.length,
+        o.mChildTypes.length);
   }
 
   /** {@inheritDoc} */
@@ -185,9 +185,8 @@ public abstract class NodeType<T extends Node>
     if (o instanceof NodeType) {
       if (this.hashCode() == o.hashCode()) {
         final NodeType t = ((NodeType) o);
-        if (t.m_id == this.m_id) {
-          return Arrays.equals(this.m_childTypes,
-              t.m_childTypes);
+        if (t.mId == this.mId) {
+          return Arrays.equals(this.mChildTypes, t.mChildTypes);
         }
       }
     }

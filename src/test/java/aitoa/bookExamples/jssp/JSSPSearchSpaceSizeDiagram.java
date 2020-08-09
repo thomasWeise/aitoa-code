@@ -45,11 +45,11 @@ public class JSSPSearchSpaceSizeDiagram {
     for (final Row row : all) {
       System.out.println(',');
       System.out.print('"');
-      System.out.print(row.m);
+      System.out.print(row.mM);
       System.out.print(',');
-      System.out.print(row.n);
+      System.out.print(row.mN);
       System.out.print(',');
-      System.out.print(row.size);
+      System.out.print(row.mSize);
       System.out.print('"');
     }
   }
@@ -57,27 +57,27 @@ public class JSSPSearchSpaceSizeDiagram {
   /** one row of the diagram */
   private static final class Row {
     /** the m */
-    final int m;
+    final int mM;
     /** the n */
-    final int n;
+    final int mN;
     /** the size */
-    final BigInteger size;
+    final BigInteger mSize;
 
     /**
      * create a new row
      *
-     * @param _m
+     * @param pM
      *          the m
-     * @param _n
+     * @param pN
      *          the n
-     * @param _size
+     * @param pSize
      *          the size
      */
-    Row(final int _m, final int _n, final BigInteger _size) {
+    Row(final int pM, final int pN, final BigInteger pSize) {
       super();
-      this.m = _m;
-      this.n = _n;
-      this.size = Objects.requireNonNull(_size);
+      this.mM = pM;
+      this.mN = pN;
+      this.mSize = Objects.requireNonNull(pSize);
     }
   }
 }

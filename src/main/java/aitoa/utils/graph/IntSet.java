@@ -20,39 +20,38 @@ import aitoa.utils.RandomUtils;
 public final class IntSet {
 
   /** the set of values */
-  private final int[] m_values;
+  private final int[] mValues;
 
   /** the value positions */
-  private final int[] m_positions;
+  private final int[] mPositions;
 
   /** the number of current values present in the set */
-  private int m_size;
+  private int mSize;
 
   /**
    * instantiate the integer set
    *
-   * @param _L
+   * @param pL
    *          the number of value
    */
-  public IntSet(final int _L) {
+  public IntSet(final int pL) {
     super();
-    this.m_values = new int[_L];
-    this.m_positions = new int[_L];
+    this.mValues = new int[pL];
+    this.mPositions = new int[pL];
     this.clear();
   }
 
   /** Add all the values to the set. */
   public void fill() {
-    for (int i = this.m_size = this.m_values.length;
-        (--i) >= 0;) {
-      this.m_values[i] = i;
+    for (int i = this.mSize = this.mValues.length; (--i) >= 0;) {
+      this.mValues[i] = i;
     }
   }
 
   /** Clear the value set. */
   public void clear() {
-    this.m_size = 0;
-    Arrays.fill(this.m_positions, -1);
+    this.mSize = 0;
+    Arrays.fill(this.mPositions, -1);
   }
 
   /**
@@ -63,9 +62,9 @@ public final class IntSet {
    *          a random number generator
    */
   public void shuffle(final Random random) {
-    RandomUtils.shuffle(random, this.m_values, 0, this.m_size);
-    for (int i = this.m_size; (--i) >= 0;) {
-      this.m_positions[this.m_values[i]] = i;
+    RandomUtils.shuffle(random, this.mValues, 0, this.mSize);
+    for (int i = this.mSize; (--i) >= 0;) {
+      this.mPositions[this.mValues[i]] = i;
     }
   }
 
@@ -77,9 +76,9 @@ public final class IntSet {
    *          the value
    */
   public void delete(final int value) {
-    final int[] positions = this.m_positions;
-    final int[] nodes = this.m_values;
-    final int size = (--this.m_size);
+    final int[] positions = this.mPositions;
+    final int[] nodes = this.mValues;
+    final int size = (--this.mSize);
     final int pos = positions[value];
     if (pos < 0) {
       throw new IllegalStateException(//
@@ -103,15 +102,15 @@ public final class IntSet {
    *          the value to be added
    */
   public void add(final int value) {
-    final int[] positions = this.m_positions;
+    final int[] positions = this.mPositions;
     final int pos = positions[value];
     if (pos >= 0) {
       throw new IllegalStateException(//
           "Node " + pos + //$NON-NLS-1$
               " already in the set.");//$NON-NLS-1$
     }
-    final int[] nodes = this.m_values;
-    nodes[positions[value] = this.m_size++] = value;
+    final int[] nodes = this.mValues;
+    nodes[positions[value] = this.mSize++] = value;
   }
 
   /**
@@ -123,8 +122,8 @@ public final class IntSet {
    * @return the deleted value
    */
   public int deleteLast() {
-    final int id = this.m_values[--this.m_size];
-    this.m_positions[id] = -1;
+    final int id = this.mValues[--this.mSize];
+    this.mPositions[id] = -1;
     return id;
   }
 
@@ -136,7 +135,7 @@ public final class IntSet {
    * @return {@code true} if the node has not yet been deleted
    */
   public boolean has(final int value) {
-    return (this.m_positions[value] >= 0);
+    return (this.mPositions[value] >= 0);
   }
 
   /**
@@ -147,12 +146,12 @@ public final class IntSet {
    * @return the randomly chosen (and deleted) value
    */
   public int deleteRandom(final Random r) {
-    int size = this.m_size;
+    int size = this.mSize;
     final int pos = r.nextInt(size);
-    this.m_size = (--size);
+    this.mSize = (--size);
 
-    final int[] positions = this.m_positions;
-    final int[] nodes = this.m_values;
+    final int[] positions = this.mPositions;
+    final int[] nodes = this.mValues;
     final int id = nodes[pos];
     if (size > pos) {
       final int replace = nodes[size];
@@ -169,7 +168,7 @@ public final class IntSet {
    * @return the number of values in the set
    */
   public int size() {
-    return this.m_size;
+    return this.mSize;
   }
 
   /**
@@ -180,7 +179,7 @@ public final class IntSet {
    *         extracted
    */
   public boolean isEmpty() {
-    return (this.m_size <= 0);
+    return (this.mSize <= 0);
   }
 
   /**
@@ -192,6 +191,6 @@ public final class IntSet {
    * @return the value at that index
    */
   public int get(final int i) {
-    return this.m_values[i];
+    return this.mValues[i];
   }
 }

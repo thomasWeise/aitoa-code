@@ -26,29 +26,29 @@ public final class SetupData implements Comparable<SetupData> {
   /**
    * this method accepts a setup point from the log file
    *
-   * @param _randSeedString
+   * @param pRandSeedString
    *          the random seed string
-   * @param _randSeedLong
+   * @param pRandSeedLong
    *          the random seed long
-   * @param _budgetFEs
+   * @param pBudgetFEs
    *          the number of FEs marking the budget
-   * @param _budgetTime
+   * @param pBudgetTime
    *          the budget time
-   * @param _goalF
+   * @param pGoalF
    *          the goal objective value
-   * @param _setup
+   * @param pSetup
    *          all the setup key/values together
    */
   SetupData(//
-      final String _randSeedString, //
-      final long _randSeedLong, //
-      final long _budgetFEs, //
-      final long _budgetTime, //
-      final double _goalF, final Map<String, String> _setup) {
+      final String pRandSeedString, //
+      final long pRandSeedLong, //
+      final long pBudgetFEs, //
+      final long pBudgetTime, //
+      final double pGoalF, final Map<String, String> pSetup) {
     super();
 
-    this.randSeedString = _randSeedString.trim();
-    this.randSeedLong = _randSeedLong;
+    this.randSeedString = pRandSeedString.trim();
+    this.randSeedLong = pRandSeedLong;
 
     try {
       final long l =
@@ -66,19 +66,19 @@ public final class SetupData implements Comparable<SetupData> {
           error);
     }
 
-    this.budgetFEs = _budgetFEs;
+    this.budgetFEs = pBudgetFEs;
     if (this.budgetFEs <= 0) {
       throw new IllegalArgumentException(
           "Invalid FEs budget: " + this.budgetFEs);//$NON-NLS-1$
     }
 
-    this.budgetTime = _budgetTime;
+    this.budgetTime = pBudgetTime;
     if (this.budgetTime <= 0) {
       throw new IllegalArgumentException(
           "Invalid time budget: " + this.budgetTime);//$NON-NLS-1$
     }
 
-    this.goalF = _goalF;
+    this.goalF = pGoalF;
     if ((!Double.isFinite(this.goalF))
         && (!(this.goalF >= Double.NEGATIVE_INFINITY))) {
       throw new IllegalArgumentException(
@@ -86,7 +86,7 @@ public final class SetupData implements Comparable<SetupData> {
     }
 
     this.setup = Collections.unmodifiableMap(
-        new TreeMap<>(Objects.requireNonNull(_setup)));
+        new TreeMap<>(Objects.requireNonNull(pSetup)));
   }
 
   /** {@inheritDoc} */

@@ -30,20 +30,20 @@ public final class JSSPUnaryOperator12SwapR
     implements IUnarySearchOperator<int[]> {
   // end relevant
   /** the indexes */
-  private final int[] m_indexes;
+  private final int[] mIndexes;
 
   /**
    * create the representation
    *
-   * @param instance
+   * @param pInstance
    *          the jssp instance
    */
-  public JSSPUnaryOperator12SwapR(final JSSPInstance instance) {
+  public JSSPUnaryOperator12SwapR(final JSSPInstance pInstance) {
     super();
 
-    this.m_indexes = new int[instance.m * instance.n];
-    for (int i = this.m_indexes.length; (--i) >= 0;) {
-      this.m_indexes[i] = i;
+    this.mIndexes = new int[pInstance.m * pInstance.n];
+    for (int i = this.mIndexes.length; (--i) >= 0;) {
+      this.mIndexes[i] = i;
     }
   }
 
@@ -131,7 +131,7 @@ public final class JSSPUnaryOperator12SwapR
   public boolean enumerate(final Random random, final int[] x,
       final int[] dest, final Predicate<int[]> visitor) {
 // end enumerate
-    final int[] indexes = this.m_indexes;
+    final int[] indexes = this.mIndexes;
 // start enumerate
     int ii = x.length; // get the length
     // randomize the order in which indices are processed

@@ -21,18 +21,18 @@ public abstract class TemperatureSchedule {
   /**
    * create
    *
-   * @param _startTemperature
+   * @param pStartTemperature
    *          the start temperature
    */
-  protected TemperatureSchedule(final double _startTemperature) {
+  protected TemperatureSchedule(final double pStartTemperature) {
     super();
-    if ((_startTemperature <= 0d)
-        || (!(Double.isFinite(_startTemperature)))) {
+    if ((pStartTemperature <= 0d)
+        || (!(Double.isFinite(pStartTemperature)))) {
       throw new IllegalArgumentException(
           "start temperature must be positive, but is " //$NON-NLS-1$
-              + _startTemperature);
+              + pStartTemperature);
     }
-    this.startTemperature = _startTemperature;
+    this.startTemperature = pStartTemperature;
   }
 
   /**
@@ -82,21 +82,21 @@ public abstract class TemperatureSchedule {
     /**
      * create
      *
-     * @param _startTemperature
+     * @param pStartTemperature
      *          the start temperature
-     * @param _epsilon
+     * @param pEpsilon
      *          the epsilon
      */
-    public Exponential(final double _startTemperature,
-        final double _epsilon) {
-      super(_startTemperature);
-      if ((_epsilon <= 0d) || (_epsilon >= 1d)
-          || (!(Double.isFinite(_epsilon)))) {
+    public Exponential(final double pStartTemperature,
+        final double pEpsilon) {
+      super(pStartTemperature);
+      if ((pEpsilon <= 0d) || (pEpsilon >= 1d)
+          || (!(Double.isFinite(pEpsilon)))) {
         throw new IllegalArgumentException(
             "epsilon must be in (0,1), but is "//$NON-NLS-1$
-                + _epsilon);
+                + pEpsilon);
       }
-      this.epsilon = _epsilon;
+      this.epsilon = pEpsilon;
     }
 
     /** {@inheritDoc} */
@@ -148,20 +148,20 @@ public abstract class TemperatureSchedule {
     /**
      * create
      *
-     * @param _startTemperature
+     * @param pStartTemperature
      *          the start temperature
-     * @param _epsilon
+     * @param pEpsilon
      *          the epsilon
      */
-    public Logarithmic(final double _startTemperature,
-        final double _epsilon) {
-      super(_startTemperature);
-      if ((_epsilon <= 0d) || (!(Double.isFinite(_epsilon)))) {
+    public Logarithmic(final double pStartTemperature,
+        final double pEpsilon) {
+      super(pStartTemperature);
+      if ((pEpsilon <= 0d) || (!(Double.isFinite(pEpsilon)))) {
         throw new IllegalArgumentException(
             "epsilon must be in greater than 0, but is "//$NON-NLS-1$
-                + _epsilon);
+                + pEpsilon);
       }
-      this.epsilon = _epsilon;
+      this.epsilon = pEpsilon;
     }
 
     /** {@inheritDoc} */

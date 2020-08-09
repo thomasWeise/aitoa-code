@@ -53,42 +53,42 @@ public final class HillClimberWithRestarts<X, Y>
   /**
    * create
    *
-   * @param _failsBeforeRestart
+   * @param pFailsBeforeRestart
    *          the number of non-improving steps before restarts
    */
   public HillClimberWithRestarts(
-      final long _failsBeforeRestart) {
-    this(_failsBeforeRestart,
-        Long.toString(_failsBeforeRestart));
+      final long pFailsBeforeRestart) {
+    this(pFailsBeforeRestart,
+        Long.toString(pFailsBeforeRestart));
   }
 
   /**
    * create
    *
-   * @param _failsBeforeRestart
+   * @param pFailsBeforeRestart
    *          the number of non-improving steps before restarts
-   * @param _failsBeforeRestartStrategy
+   * @param pFailsBeforeRestartStrategy
    *          the the strategy that determined the value of
    *          {@code _failsBeforeRestart}output.write(System.lineSeparator());
    */
-  public HillClimberWithRestarts(final long _failsBeforeRestart,
-      final String _failsBeforeRestartStrategy) {
+  public HillClimberWithRestarts(final long pFailsBeforeRestart,
+      final String pFailsBeforeRestartStrategy) {
     super();
 
-    if ((_failsBeforeRestart < 1L)
-        || (_failsBeforeRestart > 1_000_000_000L)) {
+    if ((pFailsBeforeRestart < 1L)
+        || (pFailsBeforeRestart > 1_000_000_000L)) {
       throw new IllegalArgumentException(
           "failsBeforeRestart must be in 1...1_000_000_000, but is " //$NON-NLS-1$
-              + _failsBeforeRestart);
+              + pFailsBeforeRestart);
     }
-    this.failsBeforeRestart = _failsBeforeRestart;
+    this.failsBeforeRestart = pFailsBeforeRestart;
 
     this.failsBeforeRestartStrategy =
-        _failsBeforeRestartStrategy.trim();
+        pFailsBeforeRestartStrategy.trim();
     if (this.failsBeforeRestartStrategy.isEmpty()) {
       throw new IllegalArgumentException(
           "Invalid failsBeforeRestartStrategy: '" //$NON-NLS-1$
-              + _failsBeforeRestartStrategy + "'."); //$NON-NLS-1$
+              + pFailsBeforeRestartStrategy + "'."); //$NON-NLS-1$
     }
   }
 

@@ -12,21 +12,20 @@ import aitoa.utils.RandomUtils;
 public final class BitStringUnaryOperator2Flip
     implements IUnarySearchOperator<boolean[]> {
   /** the indexes */
-  private final int[] m_indexes;
+  private final int[] mIndexes;
 
   /**
    * create the 2-bit flip unary operator
    *
-   * @param _length
+   * @param pLength
    *          the _length
    */
-  public BitStringUnaryOperator2Flip(final int _length) {
+  public BitStringUnaryOperator2Flip(final int pLength) {
     super();
 
-    this.m_indexes =
-        new int[BitStringSpace.checkLength(_length)];
-    for (int i = this.m_indexes.length; (--i) >= 0;) {
-      this.m_indexes[i] = i;
+    this.mIndexes = new int[BitStringSpace.checkLength(pLength)];
+    for (int i = this.mIndexes.length; (--i) >= 0;) {
+      this.mIndexes[i] = i;
     }
   }
 
@@ -79,7 +78,7 @@ public final class BitStringUnaryOperator2Flip
   public boolean enumerate(final Random random,
       final boolean[] x, final boolean[] dest,
       final Predicate<boolean[]> visitor) {
-    final int[] indexes = this.m_indexes;
+    final int[] indexes = this.mIndexes;
     // randomize the order in which indices are processed
     System.arraycopy(x, 0, dest, 0, x.length); // copy x to dest
     RandomUtils.shuffle(random, indexes, 0, indexes.length);

@@ -8,7 +8,7 @@ import aitoa.algorithms.IntFFA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
-import aitoa.examples.jssp.JSSPUMDAModelP;
+import aitoa.examples.jssp.JSSPUMDAModel;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -27,7 +27,7 @@ public class TestUMDAWithFitnessOnJSSP
     final int mu = 1 + rand.nextInt(lambda);
 
     return new EDAWithFitness<>(mu, lambda,
-        new JSSPUMDAModelP(instance, 1 + rand.nextInt(2)),
+        new JSSPUMDAModel(instance, 1 + rand.nextInt(2)),
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)
                 .upperBound())));

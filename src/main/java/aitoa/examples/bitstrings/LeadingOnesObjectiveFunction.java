@@ -16,11 +16,11 @@ public final class LeadingOnesObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public LeadingOnesObjectiveFunction(final int _n) {
-    super(_n);
+  public LeadingOnesObjectiveFunction(final int pN) {
+    super(pN);
   }
 
   /**

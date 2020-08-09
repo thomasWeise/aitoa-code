@@ -21,19 +21,19 @@ public class BlackBoxProcessBuilder<X, Y>
     implements Supplier<IBlackBoxProcess<X, Y>> {
 
   /** the log path */
-  private Path m_logPath;
+  private Path mLogPath;
 
   /** the expected log length */
-  private int m_expectedLogLength;
+  private int mExpectedLogLength;
 
   /** should we log all data? */
-  private boolean m_logAll;
+  private boolean mLogAll;
 
   /** Create the base class of the black box problem */
   public BlackBoxProcessBuilder() {
     super();
     this.setRandomRandSeed();
-    this.m_expectedLogLength = 1024;
+    this.mExpectedLogLength = 1024;
   }
 
   /**
@@ -45,7 +45,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setSolutionSpace(final ISpace<Y> space) {
-    this.m_solutionSpace = Objects.requireNonNull(space);
+    this.mSolutionSpace = Objects.requireNonNull(space);
     return this;
   }
 
@@ -58,7 +58,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setObjectiveFunction(final IObjectiveFunction<Y> f) {
-    this.m_f = Objects.requireNonNull(f);
+    this.mF = Objects.requireNonNull(f);
     return this;
   }
 
@@ -72,7 +72,7 @@ public class BlackBoxProcessBuilder<X, Y>
   public final BlackBoxProcessBuilder<X, Y>
       setRepresentationMapping(
           final IRepresentationMapping<X, Y> mapping) {
-    this.m_mapping = Objects.requireNonNull(mapping);
+    this.mMapping = Objects.requireNonNull(mapping);
     return this;
   }
 
@@ -82,7 +82,7 @@ public class BlackBoxProcessBuilder<X, Y>
    * @return the random seed
    */
   public final long getRandSeed() {
-    return this.m_randSeed;
+    return this.mRandSeed;
   }
 
   /**
@@ -94,7 +94,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setRandSeed(final long seed) {
-    this.m_randSeed = seed;
+    this.mRandSeed = seed;
     return this;
   }
 
@@ -117,7 +117,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setSearchSpace(final ISpace<X> space) {
-    this.m_searchSpace = Objects.requireNonNull(space);
+    this.mSearchSpace = Objects.requireNonNull(space);
     return this;
   }
 
@@ -131,7 +131,7 @@ public class BlackBoxProcessBuilder<X, Y>
   public final BlackBoxProcessBuilder<X, Y>
       setNullarySearchOperator(
           final INullarySearchOperator<X> op) {
-    this.m_nullary = Objects.requireNonNull(op);
+    this.mNullary = Objects.requireNonNull(op);
     return this;
   }
 
@@ -144,7 +144,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setUnarySearchOperator(final IUnarySearchOperator<X> op) {
-    this.m_unary = Objects.requireNonNull(op);
+    this.mUnary = Objects.requireNonNull(op);
     return this;
   }
 
@@ -158,7 +158,7 @@ public class BlackBoxProcessBuilder<X, Y>
   public final BlackBoxProcessBuilder<X, Y>
       setBinarySearchOperator(
           final IBinarySearchOperator<X> op) {
-    this.m_binary = Objects.requireNonNull(op);
+    this.mBinary = Objects.requireNonNull(op);
     return this;
   }
 
@@ -172,7 +172,7 @@ public class BlackBoxProcessBuilder<X, Y>
   public final BlackBoxProcessBuilder<X, Y>
       setTernarySearchOperator(
           final ITernarySearchOperator<X> op) {
-    this.m_ternary = Objects.requireNonNull(op);
+    this.mTernary = Objects.requireNonNull(op);
     return (this);
   }
 
@@ -188,7 +188,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setGoalF(final double goal) {
-    this.m_goalF = BlackBoxProcessData.checkGoalF(goal);
+    this.mGoalF = BlackBoxProcessData.checkGoalF(goal);
     return this;
   }
 
@@ -203,7 +203,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setMaxFEs(final long max) {
-    this.m_maxFEs = BlackBoxProcessData.checkMaxFEs(max);
+    this.mMaxFEs = BlackBoxProcessData.checkMaxFEs(max);
     return this;
   }
 
@@ -218,7 +218,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setMaxTime(final long max) {
-    this.m_maxTime = BlackBoxProcessData.checkMaxTime(max);
+    this.mMaxTime = BlackBoxProcessData.checkMaxTime(max);
     return this;
   }
 
@@ -233,9 +233,9 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   BlackBoxProcessBuilder<X, Y> doSetLogPath(final Path path) {
     if (path != null) {
-      this.m_logPath = path.toAbsolutePath();
+      this.mLogPath = path.toAbsolutePath();
     } else {
-      this.m_logPath = null;
+      this.mLogPath = null;
     }
     return this;
   }
@@ -258,7 +258,7 @@ public class BlackBoxProcessBuilder<X, Y>
    * @return the log path
    */
   public final Path getLogPath() {
-    return this.m_logPath;
+    return this.mLogPath;
   }
 
   /**
@@ -267,7 +267,7 @@ public class BlackBoxProcessBuilder<X, Y>
    * @return the expected log length
    */
   public final int getExpectedLogLength() {
-    return this.m_expectedLogLength;
+    return this.mExpectedLogLength;
   }
 
   /**
@@ -281,9 +281,9 @@ public class BlackBoxProcessBuilder<X, Y>
       setExpectedLogLength(final int length) {
     if (length > 0) {
       Math.multiplyExact(length, 3);// test
-      this.m_expectedLogLength = length;
+      this.mExpectedLogLength = length;
     } else {
-      this.m_expectedLogLength = 1024;
+      this.mExpectedLogLength = 1024;
     }
     return this;
   }
@@ -298,10 +298,10 @@ public class BlackBoxProcessBuilder<X, Y>
     // make sure the file exists, so other threads may skip over
     // the problem
     try {
-      return Files.newBufferedWriter(this.m_logPath);
+      return Files.newBufferedWriter(this.mLogPath);
     } catch (final IOException ioe) {
       throw new IllegalArgumentException("File '" //$NON-NLS-1$
-          + this.m_logPath + //
+          + this.mLogPath + //
           "' cannot be created.", //$NON-NLS-1$
           ioe);
     }
@@ -315,7 +315,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   final long[] createLog() {
     return new long[Math.multiplyExact(
-        Integer.highestOneBit(this.m_expectedLogLength * 3), 2)];
+        Integer.highestOneBit(this.mExpectedLogLength * 3), 2)];
   }
 
   /**
@@ -325,7 +325,7 @@ public class BlackBoxProcessBuilder<X, Y>
    *         {@code false} otherwise.
    */
   public final boolean isLoggingAll() {
-    return this.m_logAll;
+    return this.mLogAll;
   }
 
   /**
@@ -338,7 +338,7 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   public final BlackBoxProcessBuilder<X, Y>
       setLogAll(final boolean logAll) {
-    this.m_logAll = logAll;
+    this.mLogAll = logAll;
     return this;
   }
 
@@ -351,12 +351,12 @@ public class BlackBoxProcessBuilder<X, Y>
    */
   @SuppressWarnings({ "unchecked", "rawtypes", "resource" })
   IBlackBoxProcess<X, Y> doGet() {
-    if (this.m_logAll && (this.m_logPath == null)) {
+    if (this.mLogAll && (this.mLogPath == null)) {
       throw new IllegalArgumentException(
           "No log path is provided, while logging is set to ALL."); //$NON-NLS-1$
     }
 
-    if (this.m_logPath != null) {
+    if (this.mLogPath != null) {
 // Try to pre-load the system data to avoid any timing issues
 // later. If we load the system data while flushing the first log
 // file after the first run, this might have an impact on other
@@ -370,21 +370,21 @@ public class BlackBoxProcessBuilder<X, Y>
       }
     }
 
-    if (this.m_mapping == null) {
+    if (this.mMapping == null) {
       // search space == solution space
-      if (this.m_logPath == null) {
+      if (this.mLogPath == null) {
         return new BlackBoxProcess1NoLog(this);
       }
-      return this.m_logAll //
+      return this.mLogAll //
           ? new BlackBoxProcess1LogAll(this)//
           : new BlackBoxProcess1Log(this);
     }
 
     // search and solution space are different
-    if (this.m_logPath == null) {
+    if (this.mLogPath == null) {
       return new BlackBoxProcess2NoLog(this);
     }
-    return this.m_logAll //
+    return this.mLogAll //
         ? new BlackBoxProcess2LogAll(this)//
         : new BlackBoxProcess2Log(this);
   }

@@ -22,20 +22,20 @@ public abstract class BinaryFunction<C> extends MathFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
   @SuppressWarnings("unchecked")
   protected BinaryFunction(
-      final NodeType<? extends BinaryFunction<C>> type,
-      final Node[] _inner) {
-    super(type);
+      final NodeType<? extends BinaryFunction<C>> pType,
+      final Node[] pInner) {
+    super(pType);
     this.inner0 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[0]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[0]));
     this.inner1 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[1]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[1]));
   }
 
   /** {@inheritDoc} */

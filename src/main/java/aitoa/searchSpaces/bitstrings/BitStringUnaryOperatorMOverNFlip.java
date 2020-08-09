@@ -19,29 +19,29 @@ public final class BitStringUnaryOperatorMOverNFlip
     implements IUnarySearchOperator<boolean[]> {
 
   /** the multiplier */
-  private final int m_m;
+  private final int mM;
 
   /**
    * create the unary operator
    *
-   * @param _m
+   * @param pM
    *          the multiplier
    */
-  public BitStringUnaryOperatorMOverNFlip(final int _m) {
+  public BitStringUnaryOperatorMOverNFlip(final int pM) {
     super();
-    if (_m <= 0) {
+    if (pM <= 0) {
       throw new IllegalArgumentException(
           "bit flip multiplier must be at least 1, but is " //$NON-NLS-1$
-              + _m + //
+              + pM + //
               ", which would mean a zero probability to flip bits"); //$NON-NLS-1$
     }
-    this.m_m = _m;
+    this.mM = pM;
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.m_m + "/n-flip"; //$NON-NLS-1$
+    return this.mM + "/n-flip"; //$NON-NLS-1$
   }
 
   /**
@@ -64,7 +64,7 @@ public final class BitStringUnaryOperatorMOverNFlip
     System.arraycopy(x, 0, dest, 0, n);
     do {
       for (int i = n; (--i) >= 0;) {
-        if (random.nextInt(n) < this.m_m) {
+        if (random.nextInt(n) < this.mM) {
           dest[i] ^= true;
           done = true;
         }

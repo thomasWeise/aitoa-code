@@ -15,23 +15,23 @@ public final class ErtEcdfPoint
   /**
    * create
    *
-   * @param _ert
+   * @param pErt
    *          the time measure value
-   * @param _ecdfRel
+   * @param pEcdfRel
    *          the relative ecdf value
-   * @param _ecdfAbs
+   * @param pEcdfAbs
    *          the absolute number of successfully solved
    *          instances
-   * @param _instances
+   * @param pInstances
    *          the number of instances we aggregate over
    */
-  ErtEcdfPoint(final double _ert, final double _ecdfRel,
-      final int _ecdfAbs, final int _instances) {
+  ErtEcdfPoint(final double pErt, final double pEcdfRel,
+      final int pEcdfAbs, final int pInstances) {
     super();
-    this.ert = _ert;
-    this.ecdfRel = _ecdfRel;
-    this.ecdfAbs = _ecdfAbs;
-    this.instances = _instances;
+    this.ert = pErt;
+    this.ecdfRel = pEcdfRel;
+    this.ecdfAbs = pEcdfAbs;
+    this.instances = pInstances;
 
     if (!Double.isFinite(this.ert)) {
       if (!(this.ert >= Double.POSITIVE_INFINITY)) {

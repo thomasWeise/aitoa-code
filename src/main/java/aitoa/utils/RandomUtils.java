@@ -22,20 +22,20 @@ public final class RandomUtils {
    * entirely independent, since they depend on the same original
    * random seed.
    *
-   * @param string
+   * @param pString
    *          the string to be used to generate the random seeds
-   * @param count
+   * @param pCount
    *          the number of seeds to generate
    * @return an array of length {@code code} with the unique
    *         seeds
    */
-  public static long[] uniqueRandomSeeds(final String string,
-      final int count) {
+  public static long[] uniqueRandomSeeds(final String pString,
+      final int pCount) {
     final long a, b;
 
-    if (count <= 0) {
+    if (pCount <= 0) {
       throw new IllegalArgumentException(
-          "invalid count: " + count); //$NON-NLS-1$
+          "invalid count: " + pCount); //$NON-NLS-1$
     }
 
     // compute the 16 byte MD5 digest from the string, which will
@@ -46,7 +46,7 @@ public final class RandomUtils {
       try (
           final ByteArrayInputStream bis =
               new ByteArrayInputStream(
-                  digest.digest(string.getBytes()));
+                  digest.digest(pString.getBytes()));
           final DataInputStream dis = new DataInputStream(bis)) {
         a = dis.readLong();
         b = dis.readLong();
@@ -54,25 +54,25 @@ public final class RandomUtils {
     } catch (final Throwable error) {
       throw new IllegalArgumentException(
           "Error when computing random seed from string '" + //$NON-NLS-1$
-              string + "'.", //$NON-NLS-1$
+              pString + "'.", //$NON-NLS-1$
           error);
     }
 
 // if we only want at most 1 random seed, that may already be
 // enough
-    if (count <= 1) {// yes
+    if (pCount <= 1) {// yes
       return new long[] { a };
     }
 
 // to generate "count" unique seeds
-    final long[] seeds = new long[count];
+    final long[] seeds = new long[pCount];
     int have;
 
 // sort the two seeds we already have
     if (a < b) {
       seeds[0] = a;
       seeds[1] = b;
-      if (count <= 2) {
+      if (pCount <= 2) {
         return seeds;
       }
       have = 2;
@@ -80,7 +80,7 @@ public final class RandomUtils {
       if (a > b) {
         seeds[1] = a;
         seeds[0] = b;
-        if (count <= 2) {
+        if (pCount <= 2) {
           return seeds;
         }
         have = 2;
@@ -104,7 +104,7 @@ public final class RandomUtils {
 
     int ridx = 0; // the currently used random number generator
     // do count times:
-    for (; have < count; have++) {
+    for (; have < pCount; have++) {
       // find a new unique, not yet discovered seed
       findNextUnique: for (;;) {
         // generate the seed from current random number generator
@@ -149,15 +149,15 @@ public final class RandomUtils {
   /**
    * Convert a random seed to a character string
    *
-   * @param seed
+   * @param pSeed
    *          the seed
    * @return the string
    */
-  public static String randSeedToString(final long seed) {
+  public static String randSeedToString(final long pSeed) {
     final int l = LogFormat.RANDOM_SEED_PREFIX.length();
     final char[] str = new char[l + 16];
     LogFormat.RANDOM_SEED_PREFIX.getChars(0, l, str, 0);
-    long cmp = seed;
+    long cmp = pSeed;
     for (int i = (l + 16); (--i) >= l;) {
       str[i] = RandomUtils.CHOOSE[(int) (cmp & 0xfL)];
       cmp >>>= 4L;
@@ -168,28 +168,28 @@ public final class RandomUtils {
   /**
    * Parse a random seed string to a {@code long}
    *
-   * @param randSeedString
+   * @param pRandSeedString
    *          the random seed string
    * @return the {@code long} representing the string
    */
   public static long
-      stringToRandSeed(final String randSeedString) {
-    if ((!randSeedString
+      stringToRandSeed(final String pRandSeedString) {
+    if ((!pRandSeedString
         .startsWith(LogFormat.RANDOM_SEED_PREFIX))
-        || (randSeedString.length() < 3)) {
+        || (pRandSeedString.length() < 3)) {
       throw new IllegalArgumentException(
           "Random seed must start with '" //$NON-NLS-1$
               + LogFormat.RANDOM_SEED_PREFIX
               + "' and contain at least one hexadecimal digit, but is "//$NON-NLS-1$
-              + randSeedString);
+              + pRandSeedString);
     }
     try {
-      return Long.parseUnsignedLong(randSeedString
+      return Long.parseUnsignedLong(pRandSeedString
           .substring(LogFormat.RANDOM_SEED_PREFIX.length()), 16);
     } catch (final NumberFormatException nfe) {
       throw new IllegalArgumentException(
           "Invalid random seed: " + //$NON-NLS-1$
-              randSeedString,
+              pRandSeedString,
           nfe);
     }
   }
@@ -200,27 +200,27 @@ public final class RandomUtils {
    * {@code count} elements of the array beginning at index
    * {@code start} are uniformly randomly distributed.
    *
-   * @param array
+   * @param pArray
    *          the array of {@code java.lang.Object}s whose
    *          sub-sequence to be randomized
-   * @param start
+   * @param pStart
    *          the start index
-   * @param count
+   * @param pCount
    *          the number of elements to be randomized
-   * @param random
+   * @param pRandom
    *          the randomizer
    */
-  public static void shuffle(final Random random,
-      final java.lang.Object[] array, final int start,
-      final int count) {
-    if (count > 0) {
-      final int n = array.length;
-      for (int i = count; i > 1;) {
-        final int j = ((start + random.nextInt(i--)) % n);
-        final int k = ((start + i) % n);
-        final Object t = array[k];
-        array[k] = array[j];
-        array[j] = t;
+  public static void shuffle(final Random pRandom,
+      final java.lang.Object[] pArray, final int pStart,
+      final int pCount) {
+    if (pCount > 0) {
+      final int n = pArray.length;
+      for (int i = pCount; i > 1;) {
+        final int j = ((pStart + pRandom.nextInt(i--)) % n);
+        final int k = ((pStart + i) % n);
+        final Object t = pArray[k];
+        pArray[k] = pArray[j];
+        pArray[j] = t;
       }
     }
   }
@@ -231,26 +231,26 @@ public final class RandomUtils {
    * {@code count} elements of the array beginning at index
    * {@code start} are uniformly randomly distributed.
    *
-   * @param array
+   * @param pArray
    *          the array of {@code java.lang.Object}s whose
    *          sub-sequence to be randomized
-   * @param start
+   * @param pStart
    *          the start index
-   * @param count
+   * @param pCount
    *          the number of elements to be randomized
-   * @param random
+   * @param pRandom
    *          the randomizer
    */
-  public static void shuffle(final Random random,
-      final long[] array, final int start, final int count) {
-    if (count > 0) {
-      final int n = array.length;
-      for (int i = count; i > 1;) {
-        final int j = ((start + random.nextInt(i--)) % n);
-        final int k = ((start + i) % n);
-        final long t = array[k];
-        array[k] = array[j];
-        array[j] = t;
+  public static void shuffle(final Random pRandom,
+      final long[] pArray, final int pStart, final int pCount) {
+    if (pCount > 0) {
+      final int n = pArray.length;
+      for (int i = pCount; i > 1;) {
+        final int j = ((pStart + pRandom.nextInt(i--)) % n);
+        final int k = ((pStart + i) % n);
+        final long t = pArray[k];
+        pArray[k] = pArray[j];
+        pArray[j] = t;
       }
     }
   }
@@ -261,26 +261,26 @@ public final class RandomUtils {
    * {@code count} elements of the array beginning at index
    * {@code start} are uniformly randomly distributed.
    *
-   * @param array
+   * @param pArray
    *          the array of {@code java.lang.Object}s whose
    *          sub-sequence to be randomized
-   * @param start
+   * @param pStart
    *          the start index
-   * @param count
+   * @param pCount
    *          the number of elements to be randomized
-   * @param random
+   * @param pRandom
    *          the randomizer
    */
-  public static void shuffle(final Random random,
-      final int[] array, final int start, final int count) {
-    if (count > 0) {
-      final int n = array.length;
-      for (int i = count; i > 1;) {
-        final int j = ((start + random.nextInt(i--)) % n);
-        final int k = ((start + i) % n);
-        final int t = array[k];
-        array[k] = array[j];
-        array[j] = t;
+  public static void shuffle(final Random pRandom,
+      final int[] pArray, final int pStart, final int pCount) {
+    if (pCount > 0) {
+      final int n = pArray.length;
+      for (int i = pCount; i > 1;) {
+        final int j = ((pStart + pRandom.nextInt(i--)) % n);
+        final int k = ((pStart + i) % n);
+        final int t = pArray[k];
+        pArray[k] = pArray[j];
+        pArray[j] = t;
       }
     }
   }
@@ -291,19 +291,19 @@ public final class RandomUtils {
    * {@link java.util.Random#nextInt(int)} translated to
    * {@code long}.
    *
-   * @param random
+   * @param pRandom
    *          the random number generator
-   * @param N
+   * @param pN
    *          the exclusive upper bound
    * @return the long
    */
-  public static long uniformFrom0ToNminus1(final Random random,
-      final long N) {
+  public static long uniformFrom0ToNminus1(final Random pRandom,
+      final long pN) {
     long bits, val;
     do {
-      bits = (random.nextLong() << 1L) >>> 1L;
-      val = bits % N;
-    } while (((bits - val) + (N - 1L)) < 0L);
+      bits = (pRandom.nextLong() << 1L) >>> 1L;
+      val = bits % pN;
+    } while (((bits - val) + (pN - 1L)) < 0L);
     return val;
   }
 
@@ -311,32 +311,32 @@ public final class RandomUtils {
    * Create a uniformly distributed random {@code long} from
    * 0...(N-1).
    *
-   * @param random
+   * @param pRandom
    *          the random number generator
-   * @param M
+   * @param pM
    *          the inclusive lower bound
-   * @param N
+   * @param pN
    *          the inclusive upper bound
    * @return the long
    */
-  public static long uniformFromMtoN(final Random random,
-      final long M, final long N) {
+  public static long uniformFromMtoN(final Random pRandom,
+      final long pM, final long pN) {
 
-    long r = random.nextLong();
-    final long m = N - M;
+    long r = pRandom.nextLong();
+    final long m = pN - pM;
     final long n = m + 1L;
     if ((n & m) == 0L) { // power of two
-      r = ((r & m) + M);
+      r = ((r & m) + pM);
     } else {
       if (n > 0L) { // reject over-represented candidates
         for (long u = (r >>> 1); // ensure nonnegative
             ((u + m) - (r = (u % n))) < 0L; // rejection check
-            u = (random.nextLong() >>> 1)) {
+            u = (pRandom.nextLong() >>> 1)) {
           /* */}
-        r += M;
+        r += pM;
       } else { // range not representable as long
-        while ((r < M) || (r > N)) {
-          r = random.nextLong();
+        while ((r < pM) || (r > pN)) {
+          r = pRandom.nextLong();
         }
       }
     }

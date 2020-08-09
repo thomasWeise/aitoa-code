@@ -15,12 +15,12 @@ final class LSIndividual<X> extends Individual<X> {
   /**
    * create the individual record
    *
-   * @param _x
+   * @param pX
    *          the point in the search space
-   * @param _q
+   * @param pQ
    *          the quality
    */
-  LSIndividual(final X _x, final double _q) {
-    super(_x, _q);
+  LSIndividual(final X pX, final double pQ) {
+    super(pX, pQ);
   }
 }

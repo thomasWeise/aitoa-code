@@ -10,34 +10,34 @@ import java.util.Arrays;
 public final class IntFFA
     extends FitnessAssignmentProcess<Object> {
   /** the frequency table **/
-  private final long[] m_frequencies;
+  private final long[] mFrequencies;
 
   /**
    * create the integer FFA table
    *
-   * @param max
+   * @param pMax
    *          the maximum possible quality value
    */
-  public IntFFA(final int max) {
+  public IntFFA(final int pMax) {
     super();
-    this.m_frequencies = new long[max + 1];
+    this.mFrequencies = new long[pMax + 1];
   }
 
   /** {@inheritDoc} */
   @Override
   public void initialize() {
-    Arrays.fill(this.m_frequencies, 0L);
+    Arrays.fill(this.mFrequencies, 0L);
   }
 
   /** {@inheritDoc} */
   @Override
   public void assignFitness(
-      final FitnessIndividual<? extends Object>[] P) {
-    for (final FitnessIndividual<? extends Object> ind : P) {
-      ++this.m_frequencies[((int) (ind.quality))];
+      final FitnessIndividual<? extends Object>[] pop) {
+    for (final FitnessIndividual<? extends Object> ind : pop) {
+      ++this.mFrequencies[((int) (ind.quality))];
     }
-    for (final FitnessIndividual<? extends Object> ind : P) {
-      ind.fitness = this.m_frequencies[((int) (ind.quality))];
+    for (final FitnessIndividual<? extends Object> ind : pop) {
+      ind.fitness = this.mFrequencies[((int) (ind.quality))];
     }
   }
 

@@ -80,74 +80,74 @@ public final class JSSPTreeRepresentationMapping implements
       JSSPTreeRepresentationMapping.MACHINE_TOTAL_WORKTIME + 1;
 
   /** the state used by the mathematical functions */
-  final double[] m_state;
+  final double[] mState;
 
   /** the jobs data from the instance */
-  final int[][] m_jobs;
+  final int[][] mJobs;
   /** the total work time required by the job */
-  final int[] m_jobTotalTime;
+  final int[] mJobTotalTime;
   /** the total work time required by the machine */
-  final int[] m_machineTotalTime;
+  final int[] mMachineTotalTime;
 
   /** the job ids */
-  final int[] m_jobIDs;
+  final int[] mJobIDs;
   /** the best jobs ids */
-  final int[] m_bestJobIDs;
+  final int[] mBestJobIDs;
   /** the best jobs indexes */
-  final int[] m_bestJobIndexes;
+  final int[] mBestJobIndexes;
   /** the steo if the job */
-  final int[] m_jobCompletedSubjobs;
+  final int[] mJobCompletedSubjobs;
   /** the next job machine */
-  final int[] m_jobNextMachine;
+  final int[] mJobNextMachine;
   /** the last time a sub-job of this job was finished */
-  final int[] m_jobLastSubjobFinishedTime;
+  final int[] mJobLastSubjobFinishedTime;
   /** the the work time already performed by the job */
-  final int[] m_jobFinishedWorkTime;
+  final int[] mJobFinishedWorkTime;
 
   /** the time the machine has spent on processing jobs */
-  final int[] m_machineFinishedWorkTime;
+  final int[] mMachineFinishedWorkTime;
   /** the index of the machine into the solution */
-  final int[] m_machineLastSubjobFinishedTime;
+  final int[] mMachineLastSubjobFinishedTime;
   /** the number of subjobs processed by the machine */
-  final int[] m_machineCompletedSubjobs;
+  final int[] mMachineCompletedSubjobs;
 
   /**
    * create the representation
    *
-   * @param instance
+   * @param pInstance
    *          the problem instance
    */
   public JSSPTreeRepresentationMapping(
-      final JSSPInstance instance) {
+      final JSSPInstance pInstance) {
     super();
 
-    this.m_jobs = instance.jobs;
-    this.m_state =
+    this.mJobs = pInstance.jobs;
+    this.mState =
         new double[JSSPTreeRepresentationMapping.DIM_VALUES];
 
-    this.m_jobTotalTime = new int[instance.n];
-    this.m_machineTotalTime = new int[instance.m];
-    for (int i = instance.n; (--i) >= 0;) {
-      final int[] job = this.m_jobs[i];
-      for (int k = 0; k < instance.m;) {
+    this.mJobTotalTime = new int[pInstance.n];
+    this.mMachineTotalTime = new int[pInstance.m];
+    for (int i = pInstance.n; (--i) >= 0;) {
+      final int[] job = this.mJobs[i];
+      for (int k = 0; k < pInstance.m;) {
         final int machine = job[k++];
         final int time = job[k++];
-        this.m_jobTotalTime[i] += time;
-        this.m_machineTotalTime[machine] += time;
+        this.mJobTotalTime[i] += time;
+        this.mMachineTotalTime[machine] += time;
       }
     }
 
-    this.m_jobIDs = new int[instance.n];
-    this.m_bestJobIDs = new int[instance.n];
-    this.m_bestJobIndexes = new int[instance.n];
-    this.m_jobCompletedSubjobs = new int[instance.n];
-    this.m_jobNextMachine = new int[instance.n];
-    this.m_jobLastSubjobFinishedTime = new int[instance.n];
-    this.m_jobFinishedWorkTime = new int[instance.n];
+    this.mJobIDs = new int[pInstance.n];
+    this.mBestJobIDs = new int[pInstance.n];
+    this.mBestJobIndexes = new int[pInstance.n];
+    this.mJobCompletedSubjobs = new int[pInstance.n];
+    this.mJobNextMachine = new int[pInstance.n];
+    this.mJobLastSubjobFinishedTime = new int[pInstance.n];
+    this.mJobFinishedWorkTime = new int[pInstance.n];
 
-    this.m_machineFinishedWorkTime = new int[instance.m];
-    this.m_machineLastSubjobFinishedTime = new int[instance.m];
-    this.m_machineCompletedSubjobs = new int[instance.m];
+    this.mMachineFinishedWorkTime = new int[pInstance.m];
+    this.mMachineLastSubjobFinishedTime = new int[pInstance.m];
+    this.mMachineCompletedSubjobs = new int[pInstance.m];
   }
 
   /** {@inheritDoc} */
@@ -176,20 +176,20 @@ public final class JSSPTreeRepresentationMapping implements
       final JSSPCandidateSolution y) {
     final MathFunction<double[]> func = ((MathFunction) (x[0]));
 
-    final int n = this.m_jobIDs.length;
-    final int m = this.m_machineLastSubjobFinishedTime.length;
+    final int n = this.mJobIDs.length;
+    final int m = this.mMachineLastSubjobFinishedTime.length;
 
     for (int i = n; (--i) >= 0;) {
-      this.m_jobIDs[i] = i;
+      this.mJobIDs[i] = i;
     }
-    Arrays.fill(this.m_jobCompletedSubjobs, 0);
-    Arrays.fill(this.m_jobNextMachine, 0);
-    Arrays.fill(this.m_jobLastSubjobFinishedTime, 0);
-    Arrays.fill(this.m_jobFinishedWorkTime, 0);
-    Arrays.fill(this.m_machineFinishedWorkTime, 0);
-    Arrays.fill(this.m_machineLastSubjobFinishedTime, 0);
-    Arrays.fill(this.m_machineCompletedSubjobs, 0);
-    final double[] state = this.m_state;
+    Arrays.fill(this.mJobCompletedSubjobs, 0);
+    Arrays.fill(this.mJobNextMachine, 0);
+    Arrays.fill(this.mJobLastSubjobFinishedTime, 0);
+    Arrays.fill(this.mJobFinishedWorkTime, 0);
+    Arrays.fill(this.mMachineFinishedWorkTime, 0);
+    Arrays.fill(this.mMachineLastSubjobFinishedTime, 0);
+    Arrays.fill(this.mMachineCompletedSubjobs, 0);
+    final double[] state = this.mState;
 
     for (int count = n; count > 0;) {
 // now we have computed all necessary statistics, so we can
@@ -200,10 +200,10 @@ public final class JSSPTreeRepresentationMapping implements
       if (count > 1) {
         // now we need to find the job index to execute
         for (int i = count; (--i) >= 0;) {
-          final int job = this.m_jobIDs[i];
-          final int next = this.m_jobCompletedSubjobs[job];
-          final int machine = this.m_jobs[job][next << 1];
-          final int time = this.m_jobs[job][1 + (next << 1)];
+          final int job = this.mJobIDs[i];
+          final int next = this.mJobCompletedSubjobs[job];
+          final int machine = this.mJobs[job][next << 1];
+          final int time = this.mJobs[job][1 + (next << 1)];
 
           state[JSSPTreeRepresentationMapping.JOB_ID] = job;
           state[JSSPTreeRepresentationMapping.JOB_COMPLETED_SUBJOBS] =
@@ -211,33 +211,33 @@ public final class JSSPTreeRepresentationMapping implements
           state[JSSPTreeRepresentationMapping.JOB_NEXT_SUBJOB_WORK_TIME] =
               time;
           state[JSSPTreeRepresentationMapping.JOB_LAST_SUBJOB_FINISHED_TIME] =
-              this.m_jobLastSubjobFinishedTime[job];
+              this.mJobLastSubjobFinishedTime[job];
           state[JSSPTreeRepresentationMapping.JOB_FINISHED_WORKTIME] =
-              this.m_jobFinishedWorkTime[job];
+              this.mJobFinishedWorkTime[job];
           state[JSSPTreeRepresentationMapping.JOB_TOTAL_WORKTIME] =
-              this.m_jobTotalTime[job];
+              this.mJobTotalTime[job];
           state[JSSPTreeRepresentationMapping.MACHINE_ID] =
               machine;
           state[JSSPTreeRepresentationMapping.MACHINE_LAST_SUBJOB_FINISHED_TIME] =
-              this.m_machineLastSubjobFinishedTime[machine];
+              this.mMachineLastSubjobFinishedTime[machine];
           state[JSSPTreeRepresentationMapping.MACHINE_COMPLETED_SUBJOBS] =
-              this.m_machineCompletedSubjobs[machine];
+              this.mMachineCompletedSubjobs[machine];
           state[JSSPTreeRepresentationMapping.MACHINE_FINISHED_WORKTIME] =
-              this.m_machineFinishedWorkTime[machine];
+              this.mMachineFinishedWorkTime[machine];
           state[JSSPTreeRepresentationMapping.MACHINE_TOTAL_WORKTIME] =
-              this.m_machineTotalTime[machine];
+              this.mMachineTotalTime[machine];
 
           // compute the score for the job
-          final double score = func.applyAsDouble(this.m_state);
+          final double score = func.applyAsDouble(this.mState);
           if (score < bestScore) {
             bestCount = 1;
-            this.m_bestJobIDs[0] = job;
-            this.m_bestJobIndexes[0] = i;
+            this.mBestJobIDs[0] = job;
+            this.mBestJobIndexes[0] = i;
             bestScore = score;
           } else {
             if (score == bestScore) {
-              this.m_bestJobIDs[bestCount] = job;
-              this.m_bestJobIndexes[bestCount] = i;
+              this.mBestJobIDs[bestCount] = job;
+              this.mBestJobIndexes[bestCount] = i;
               ++bestCount;
             }
           }
@@ -245,38 +245,36 @@ public final class JSSPTreeRepresentationMapping implements
       }
 
       if (bestCount == 0) {
-        this.m_bestJobIndexes[0] = random.nextInt(count);
-        this.m_bestJobIDs[0] =
-            this.m_jobIDs[this.m_bestJobIndexes[0]];
+        this.mBestJobIndexes[0] = random.nextInt(count);
+        this.mBestJobIDs[0] =
+            this.mJobIDs[this.mBestJobIndexes[0]];
       } else {
         bestCount = random.nextInt(bestCount);
       }
 
       // ok, we have selected a job to execute, now we need to
       // execute it and update the data
-      final int bestJob = this.m_bestJobIDs[bestCount];
-      int next = this.m_jobCompletedSubjobs[bestJob];
-      final int machine = this.m_jobs[bestJob][next << 1];
-      final int time = this.m_jobs[bestJob][1 + (next << 1)];
+      final int bestJob = this.mBestJobIDs[bestCount];
+      int next = this.mJobCompletedSubjobs[bestJob];
+      final int machine = this.mJobs[bestJob][next << 1];
+      final int time = this.mJobs[bestJob][1 + (next << 1)];
 
-      this.m_jobCompletedSubjobs[bestJob] = (++next);
+      this.mJobCompletedSubjobs[bestJob] = (++next);
       if (next >= m) {
-        final int bestJobIndex =
-            this.m_bestJobIndexes[bestCount];
-        this.m_jobIDs[bestJobIndex] = this.m_jobIDs[--count];
-        this.m_jobIDs[count] = -1;
+        final int bestJobIndex = this.mBestJobIndexes[bestCount];
+        this.mJobIDs[bestJobIndex] = this.mJobIDs[--count];
+        this.mJobIDs[count] = -1;
       }
 
       final int beginTime =
-          Math.max(this.m_jobLastSubjobFinishedTime[bestJob],
-              this.m_machineLastSubjobFinishedTime[machine]);
+          Math.max(this.mJobLastSubjobFinishedTime[bestJob],
+              this.mMachineLastSubjobFinishedTime[machine]);
       final int endTime = beginTime + time;
-      this.m_machineLastSubjobFinishedTime[machine] = endTime;
-      this.m_jobLastSubjobFinishedTime[bestJob] = endTime;
-      this.m_jobFinishedWorkTime[bestJob] += time;
-      int machineNext =
-          this.m_machineCompletedSubjobs[machine]++;
-      this.m_machineFinishedWorkTime[machine] += time;
+      this.mMachineLastSubjobFinishedTime[machine] = endTime;
+      this.mJobLastSubjobFinishedTime[bestJob] = endTime;
+      this.mJobFinishedWorkTime[bestJob] += time;
+      int machineNext = this.mMachineCompletedSubjobs[machine]++;
+      this.mMachineFinishedWorkTime[machine] += time;
 
       // store everything in the schedule
       machineNext *= 3;

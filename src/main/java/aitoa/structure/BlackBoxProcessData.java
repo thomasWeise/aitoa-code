@@ -25,70 +25,70 @@ abstract class BlackBoxProcessData<X, Y> {
   }
 
   /** the random number generator seed */
-  long m_randSeed;
+  long mRandSeed;
   /** the search space */
-  ISpace<X> m_searchSpace;
+  ISpace<X> mSearchSpace;
   /** the solution space */
-  ISpace<Y> m_solutionSpace;
+  ISpace<Y> mSolutionSpace;
   /** the representation mapping */
-  IRepresentationMapping<X, Y> m_mapping;
+  IRepresentationMapping<X, Y> mMapping;
   /** the objective function */
-  IObjectiveFunction<Y> m_f;
+  IObjectiveFunction<Y> mF;
   /** the maximum FEs */
-  long m_maxFEs;
+  long mMaxFEs;
   /** the maximum time */
-  long m_maxTime;
+  long mMaxTime;
   /** the goal objective value */
-  double m_goalF;
+  double mGoalF;
   /** the nullary search operator */
-  INullarySearchOperator<X> m_nullary;
+  INullarySearchOperator<X> mNullary;
   /** the unary search operator */
-  IUnarySearchOperator<X> m_unary;
+  IUnarySearchOperator<X> mUnary;
   /** the binary search operator */
-  IBinarySearchOperator<X> m_binary;
+  IBinarySearchOperator<X> mBinary;
   /** the ternary search operator */
-  ITernarySearchOperator<X> m_ternary;
+  ITernarySearchOperator<X> mTernary;
 
   /** Create the base class of the black box problem */
   BlackBoxProcessData() {
     super();
-    this.m_goalF = Double.NEGATIVE_INFINITY;
-    this.m_maxFEs = Long.MAX_VALUE;
-    this.m_maxTime = Long.MAX_VALUE;
+    this.mGoalF = Double.NEGATIVE_INFINITY;
+    this.mMaxFEs = Long.MAX_VALUE;
+    this.mMaxTime = Long.MAX_VALUE;
   }
 
   /**
    * Create the base class of the black box problem by copying
    * another instance
    *
-   * @param copy
+   * @param pCopy
    *          the instance to copy
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  BlackBoxProcessData(final BlackBoxProcessData<X, Y> copy) {
+  BlackBoxProcessData(final BlackBoxProcessData<X, Y> pCopy) {
     super();
-    this.m_searchSpace =
-        Objects.requireNonNull(copy.m_searchSpace);
-    this.m_solutionSpace = (((copy.m_solutionSpace == null)
-        || (copy.m_solutionSpace.equals(this.m_searchSpace)))
-            ? ((ISpace) this.m_searchSpace)
-            : copy.m_solutionSpace);
-    if (this.m_searchSpace.equals(this.m_solutionSpace)) {
-      this.m_mapping = copy.m_mapping;
+    this.mSearchSpace =
+        Objects.requireNonNull(pCopy.mSearchSpace);
+    this.mSolutionSpace = (((pCopy.mSolutionSpace == null)
+        || (pCopy.mSolutionSpace.equals(this.mSearchSpace)))
+            ? ((ISpace) this.mSearchSpace)
+            : pCopy.mSolutionSpace);
+    if (this.mSearchSpace.equals(this.mSolutionSpace)) {
+      this.mMapping = pCopy.mMapping;
     } else {
-      this.m_mapping = Objects.requireNonNull(copy.m_mapping);
+      this.mMapping = Objects.requireNonNull(pCopy.mMapping);
     }
-    this.m_f = Objects.requireNonNull(copy.m_f);
-    this.m_maxFEs =
-        BlackBoxProcessData.checkMaxFEs(copy.m_maxFEs);
-    this.m_maxTime =
-        BlackBoxProcessData.checkMaxTime(copy.m_maxTime);
-    this.m_goalF = BlackBoxProcessData.checkGoalF(copy.m_goalF);
-    this.m_nullary = copy.m_nullary;
-    this.m_unary = copy.m_unary;
-    this.m_binary = copy.m_binary;
-    this.m_ternary = copy.m_ternary;
-    this.m_randSeed = copy.m_randSeed;
+    this.mF = Objects.requireNonNull(pCopy.mF);
+    this.mMaxFEs =
+        BlackBoxProcessData.checkMaxFEs(pCopy.mMaxFEs);
+    this.mMaxTime =
+        BlackBoxProcessData.checkMaxTime(pCopy.mMaxTime);
+    this.mGoalF = BlackBoxProcessData.checkGoalF(pCopy.mGoalF);
+    this.mNullary = pCopy.mNullary;
+    this.mUnary = pCopy.mUnary;
+    this.mBinary = pCopy.mBinary;
+    this.mTernary = pCopy.mTernary;
+    this.mRandSeed = pCopy.mRandSeed;
   }
 
   /**
@@ -152,40 +152,40 @@ abstract class BlackBoxProcessData<X, Y> {
     out.write(LogFormat.asComment(LogFormat.BEGIN_SETUP));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SEARCH_SPACE,
-        this.m_searchSpace));
-    out.write(System.lineSeparator());
-    out.write(LogFormat.mapEntry(LogFormat.NULLARY_OP,
-        this.m_nullary));
+        this.mSearchSpace));
     out.write(System.lineSeparator());
     out.write(
-        LogFormat.mapEntry(LogFormat.UNARY_OP, this.m_unary));
+        LogFormat.mapEntry(LogFormat.NULLARY_OP, this.mNullary));
     out.write(System.lineSeparator());
     out.write(
-        LogFormat.mapEntry(LogFormat.BINARY_OP, this.m_binary));
+        LogFormat.mapEntry(LogFormat.UNARY_OP, this.mUnary));
     out.write(System.lineSeparator());
-    out.write(LogFormat.mapEntry(LogFormat.TERNARY_OP,
-        this.m_ternary));
+    out.write(
+        LogFormat.mapEntry(LogFormat.BINARY_OP, this.mBinary));
+    out.write(System.lineSeparator());
+    out.write(
+        LogFormat.mapEntry(LogFormat.TERNARY_OP, this.mTernary));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SOLUTION_SPACE,
-        this.m_solutionSpace));
+        this.mSolutionSpace));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(
-        LogFormat.REPRESENTATION_MAPPING, this.m_mapping));
+        LogFormat.REPRESENTATION_MAPPING, this.mMapping));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.OBJECTIVE_FUNCTION,
-        this.m_f));
+        this.mF));
     out.write(System.lineSeparator());
     out.write(
-        LogFormat.mapEntry(LogFormat.MAX_FES, this.m_maxFEs));
+        LogFormat.mapEntry(LogFormat.MAX_FES, this.mMaxFEs));
     out.write(System.lineSeparator());
     out.write(
-        LogFormat.mapEntry(LogFormat.MAX_TIME, this.m_maxTime));
+        LogFormat.mapEntry(LogFormat.MAX_TIME, this.mMaxTime));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.GOAL_F,
-        LogFormat.doubleToStringForLog(this.m_goalF)));
+        LogFormat.doubleToStringForLog(this.mGoalF)));
     out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.RANDOM_SEED,
-        RandomUtils.randSeedToString(this.m_randSeed)));
+        RandomUtils.randSeedToString(this.mRandSeed)));
     out.write(System.lineSeparator());
     out.write(LogFormat.asComment(LogFormat.END_SETUP));
     out.write(System.lineSeparator());
@@ -211,7 +211,7 @@ abstract class BlackBoxProcessData<X, Y> {
    * @return the search space
    */
   public final ISpace<X> getSearchSpace() {
-    return this.m_searchSpace;
+    return this.mSearchSpace;
   }
 
   /**
@@ -221,7 +221,7 @@ abstract class BlackBoxProcessData<X, Y> {
    */
   public final INullarySearchOperator<X>
       getNullarySearchOperator() {
-    return this.m_nullary;
+    return this.mNullary;
   }
 
   /**
@@ -230,7 +230,7 @@ abstract class BlackBoxProcessData<X, Y> {
    * @return the unary search operator
    */
   public final IUnarySearchOperator<X> getUnarySearchOperator() {
-    return this.m_unary;
+    return this.mUnary;
   }
 
   /**
@@ -240,7 +240,7 @@ abstract class BlackBoxProcessData<X, Y> {
    */
   public final IBinarySearchOperator<X>
       getBinarySearchOperator() {
-    return this.m_binary;
+    return this.mBinary;
   }
 
   // end relevant
@@ -251,7 +251,7 @@ abstract class BlackBoxProcessData<X, Y> {
    */
   public final ITernarySearchOperator<X>
       getTernarySearchOperator() {
-    return this.m_ternary;
+    return this.mTernary;
   }
 
   /**
@@ -263,7 +263,7 @@ abstract class BlackBoxProcessData<X, Y> {
    *         specified
    */
   public final double getGoalF() {
-    return this.m_goalF;
+    return this.mGoalF;
   }
 
   /**
@@ -274,7 +274,7 @@ abstract class BlackBoxProcessData<X, Y> {
    *         unlimited
    */
   public final long getMaxFEs() {
-    return this.m_maxFEs;
+    return this.mMaxFEs;
   }
 
   /**
@@ -285,7 +285,7 @@ abstract class BlackBoxProcessData<X, Y> {
    *         {@link Long#MAX_VALUE} for unlimited
    */
   public final long getMaxTime() {
-    return this.m_maxTime;
+    return this.mMaxTime;
   }
 
   /**
@@ -294,7 +294,7 @@ abstract class BlackBoxProcessData<X, Y> {
    * @return the objective function
    */
   public final IObjectiveFunction<Y> getObjectiveFunction() {
-    return this.m_f;
+    return this.mF;
   }
 
   /**
@@ -303,7 +303,7 @@ abstract class BlackBoxProcessData<X, Y> {
    * @return the solution space
    */
   public final ISpace<Y> getSolutionSpace() {
-    return this.m_solutionSpace;
+    return this.mSolutionSpace;
   }
 
   /**

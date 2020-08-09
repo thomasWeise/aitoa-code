@@ -18,22 +18,22 @@ public final class Ising2DObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public Ising2DObjectiveFunction(final int _n) {
-    super(_n);
-    this.k = ((int) (Math.sqrt(_n) + 0.5d));
-    if ((this.k * this.k) != _n) {
+  public Ising2DObjectiveFunction(final int pN) {
+    super(pN);
+    this.k = ((int) (Math.sqrt(pN) + 0.5d));
+    if ((this.k * this.k) != pN) {
       throw new IllegalArgumentException((((((((//
       "Cannot have Ising model on two-dimensional torus with n=" //$NON-NLS-1$
           + this.n) + ", because n must be a square number but ")//$NON-NLS-1$
           + this.n) + "!=") + this.k) + '*') + this.k) + '.');//$NON-NLS-1$
     }
 
-    this.upperBound = _n + _n;
+    this.upperBound = pN + pN;
     if (((this.upperBound / this.k) != (this.k + this.k))
-        || (_n >= (Integer.MAX_VALUE >>> 1))) {
+        || (pN >= (Integer.MAX_VALUE >>> 1))) {
       throw new IllegalArgumentException(((//
       "Cannot have Ising model on two-dimensional torus with n=" //$NON-NLS-1$
           + this.n)

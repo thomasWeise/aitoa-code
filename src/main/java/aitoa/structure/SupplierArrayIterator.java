@@ -15,16 +15,16 @@ final class SupplierArrayIterator<X>
   /**
    * create
    *
-   * @param array
+   * @param pArray
    *          the array
-   * @param start
+   * @param pStart
    *          the start index
-   * @param end
+   * @param pEnd
    *          the end index
    */
-  SupplierArrayIterator(final Supplier<X>[] array,
-      final int start, final int end) {
-    super(array, start, end);
+  SupplierArrayIterator(final Supplier<X>[] pArray,
+      final int pStart, final int pEnd) {
+    super(pArray, pStart, pEnd);
   }
 
   /** {@inheritDoc} */

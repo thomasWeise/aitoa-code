@@ -15,11 +15,11 @@ public final class OneMaxObjectiveFunction
   /**
    * create
    *
-   * @param _n
+   * @param pN
    *          the length of the bit string
    */
-  public OneMaxObjectiveFunction(final int _n) {
-    super(_n);
+  public OneMaxObjectiveFunction(final int pN) {
+    super(pN);
   }
 
   /**

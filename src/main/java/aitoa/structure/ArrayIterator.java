@@ -11,16 +11,16 @@ final class ArrayIterator<X> extends IteratorBase<X, X> {
   /**
    * create
    *
-   * @param array
+   * @param pArray
    *          the array
-   * @param start
+   * @param pStart
    *          the start index
-   * @param end
+   * @param pEnd
    *          the end index
    */
-  ArrayIterator(final X[] array, final int start,
-      final int end) {
-    super(array, start, end);
+  ArrayIterator(final X[] pArray, final int pStart,
+      final int pEnd) {
+    super(pArray, pStart, pEnd);
   }
 
   /** {@inheritDoc} */

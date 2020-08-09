@@ -25,17 +25,17 @@ public abstract class ACOModel<X> implements IModel<X> {
   /**
    * Create the ACO model.
    *
-   * @param _L
+   * @param pL
    *          the length of the permutation
    */
-  protected ACOModel(final int _L) {
+  protected ACOModel(final int pL) {
     super();
-    if ((_L < 2) || (_L > 1_000_000)) {
+    if ((pL < 2) || (pL > 1_000_000)) {
       throw new IllegalArgumentException(
           "L should be from 2..1'000'000, but is " //$NON-NLS-1$
-              + _L);
+              + pL);
     }
-    this.L = _L;
+    this.L = pL;
   }
 
   /**

@@ -17,13 +17,13 @@ public final class Add<C> extends BinaryFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
-  public Add(final NodeType<Add<C>> type, final Node[] _inner) {
-    super(type, _inner);
+  public Add(final NodeType<Add<C>> pType, final Node[] pInner) {
+    super(pType, pInner);
   }
 
   /** {@inheritDoc} */

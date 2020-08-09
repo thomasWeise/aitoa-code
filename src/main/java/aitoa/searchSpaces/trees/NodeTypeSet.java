@@ -21,24 +21,24 @@ public final class NodeTypeSet<T extends Node> {
    * the list of types: each type can have arbitrary child types,
    * but must extend NT
    */
-  final NodeType<? extends T>[] m_types;
+  final NodeType<? extends T>[] mTypes;
 
   /** the number of terminal node type records */
-  int m_terminalCount;
+  int mTerminalCount;
 
   /**
    * Create a new node type set
    *
-   * @param types
+   * @param pTypes
    *          the types
    */
-  NodeTypeSet(final NodeType<? extends T>[] types) {
+  NodeTypeSet(final NodeType<? extends T>[] pTypes) {
     super();
-    if (types.length <= 0) {
+    if (pTypes.length <= 0) {
       throw new IllegalArgumentException(
           "a node type set must contain at least one node type."); //$NON-NLS-1$
     }
-    this.m_types = types;
+    this.mTypes = pTypes;
   }
 
   /**
@@ -47,7 +47,7 @@ public final class NodeTypeSet<T extends Node> {
    * @return the number of entries
    */
   public int getTypeCount() {
-    return this.m_types.length;
+    return this.mTypes.length;
   }
 
   /**
@@ -58,7 +58,7 @@ public final class NodeTypeSet<T extends Node> {
    * @return the node type at the specified index
    */
   public NodeType<? extends T> getType(final int index) {
-    return this.m_types[index];
+    return this.mTypes[index];
   }
 
   /**
@@ -67,7 +67,7 @@ public final class NodeTypeSet<T extends Node> {
    * @return the number of terminal node types
    */
   public int getTerminalTypeCount() {
-    return this.m_terminalCount;
+    return this.mTerminalCount;
   }
 
   /**
@@ -78,13 +78,13 @@ public final class NodeTypeSet<T extends Node> {
    * @return the node type at the specified index
    */
   public NodeType<? extends T> getTerminalType(final int index) {
-    if ((index >= 0) && (index < this.m_terminalCount)) {
-      return this.m_types[index];
+    if ((index >= 0) && (index < this.mTerminalCount)) {
+      return this.mTypes[index];
     }
     throw new IndexOutOfBoundsException("index "//$NON-NLS-1$
         + index //
         + " is invalid, there are only "//$NON-NLS-1$
-        + this.m_terminalCount + //
+        + this.mTerminalCount + //
         " terminal node types in total."); //$NON-NLS-1$
   }
 
@@ -94,7 +94,7 @@ public final class NodeTypeSet<T extends Node> {
    * @return the number of non-terminal node types
    */
   public int getNonTerminalTypeCount() {
-    return this.m_types.length - this.m_terminalCount;
+    return this.mTypes.length - this.mTerminalCount;
   }
 
   /**
@@ -106,10 +106,10 @@ public final class NodeTypeSet<T extends Node> {
    */
   public NodeType<? extends T>
       getNonTerminalType(final int index) {
-    final int tc = this.m_terminalCount;
-    final int ts = (this.m_types.length - tc);
+    final int tc = this.mTerminalCount;
+    final int ts = (this.mTypes.length - tc);
     if ((index >= 0) && (index < ts)) {
-      return this.m_types[tc + index];
+      return this.mTypes[tc + index];
     }
     throw new IndexOutOfBoundsException("index "//$NON-NLS-1$
         + index //
@@ -126,11 +126,11 @@ public final class NodeTypeSet<T extends Node> {
    * @return the node type
    */
   public NodeType<? extends T> getRandomType(final Random r) {
-    final int i = this.m_types.length;
+    final int i = this.mTypes.length;
     if (i <= 0) {
       return null;
     }
-    return this.m_types[r.nextInt(i)];
+    return this.mTypes[r.nextInt(i)];
   }
 
   /**
@@ -142,11 +142,11 @@ public final class NodeTypeSet<T extends Node> {
    */
   public NodeType<? extends T>
       getRandomTerminalType(final Random r) {
-    final int i = this.m_terminalCount;
+    final int i = this.mTerminalCount;
     if (i <= 0) {
       return null;
     }
-    return this.m_types[r.nextInt(i)];
+    return this.mTypes[r.nextInt(i)];
   }
 
   /**
@@ -158,12 +158,12 @@ public final class NodeTypeSet<T extends Node> {
    */
   public NodeType<? extends T>
       getRandomNonTerminalType(final Random r) {
-    final int o = this.m_terminalCount;
-    final int i = this.m_types.length - o;
+    final int o = this.mTerminalCount;
+    final int i = this.mTypes.length - o;
     if (i <= 0) {
       return null;
     }
-    return this.m_types[r.nextInt(i) + o];
+    return this.mTypes[r.nextInt(i) + o];
   }
 
   /**
@@ -176,7 +176,7 @@ public final class NodeTypeSet<T extends Node> {
    */
   public boolean containsType(final NodeType<?> t) {
     return ((t != null) && //
-        (Arrays.binarySearch(this.m_types, t) >= 0));
+        (Arrays.binarySearch(this.mTypes, t) >= 0));
   }
 
   /**
@@ -191,7 +191,7 @@ public final class NodeTypeSet<T extends Node> {
    */
   public boolean containsNode(final Node n) {
     return ((n != null) && //
-        (Arrays.binarySearch(this.m_types, n.m_type) >= 0));
+        (Arrays.binarySearch(this.mTypes, n.mType) >= 0));
   }
 
   /** {@inheritDoc} */
@@ -207,7 +207,7 @@ public final class NodeTypeSet<T extends Node> {
     if (o instanceof NodeTypeSet) {
       if (this.hashCode() == o.hashCode()) {
         final NodeTypeSet t = ((NodeTypeSet) o);
-        return Arrays.equals(this.m_types, t.m_types);
+        return Arrays.equals(this.mTypes, t.mTypes);
       }
     }
     return false;

@@ -49,14 +49,14 @@ public final class SimulatedAnnealing<X, Y>
   /**
    * create
    *
-   * @param _schedule
+   * @param pSchedule
    *          the temperature schedule
    */
   public SimulatedAnnealing(
-      final TemperatureSchedule _schedule) {
+      final TemperatureSchedule pSchedule) {
     super();
 
-    this.schedule = Objects.requireNonNull(_schedule);
+    this.schedule = Objects.requireNonNull(pSchedule);
   }
 
   /** {@inheritDoc} */

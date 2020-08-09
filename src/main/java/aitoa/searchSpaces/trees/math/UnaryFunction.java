@@ -19,18 +19,18 @@ public abstract class UnaryFunction<C> extends MathFunction<C> {
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
   @SuppressWarnings("unchecked")
   protected UnaryFunction(
-      final NodeType<? extends UnaryFunction<C>> type,
-      final Node[] _inner) {
-    super(type);
+      final NodeType<? extends UnaryFunction<C>> pType,
+      final Node[] pInner) {
+    super(pType);
     this.inner =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[0]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[0]));
   }
 
   /** {@inheritDoc} */

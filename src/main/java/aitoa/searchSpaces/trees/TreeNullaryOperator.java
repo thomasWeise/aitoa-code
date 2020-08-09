@@ -11,20 +11,20 @@ public final class TreeNullaryOperator extends TreeOperator
     implements INullarySearchOperator<Node[]> {
 
   /** the types to choose from */
-  private final NodeTypeSet<?> m_types;
+  private final NodeTypeSet<?> mTypes;
 
   /**
    * Create a new ramped-half-and-half
    *
-   * @param md
+   * @param pMd
    *          the maximum tree depth
-   * @param ptypes
+   * @param pTypes
    *          the types
    */
-  public TreeNullaryOperator(final NodeTypeSet<?> ptypes,
-      final int md) {
-    super(md);
-    this.m_types = ptypes;
+  public TreeNullaryOperator(final NodeTypeSet<?> pTypes,
+      final int pMd) {
+    super(pMd);
+    this.mTypes = pTypes;
   }
 
   /** {@inheritDoc} */
@@ -32,8 +32,8 @@ public final class TreeNullaryOperator extends TreeOperator
   public void apply(final Node[] dest, final Random random) {
     for (int trials = TreeOperator.MAX_TRIALS;
         (--trials) >= 0;) {
-      if ((dest[0] = TreeOperator.createTree(this.m_types,
-          (1 + random.nextInt(this.m_maxDepth)),
+      if ((dest[0] = TreeOperator.createTree(this.mTypes,
+          (1 + random.nextInt(this.mMaxDepth)),
           random)) != null) {
         return;
       }
@@ -46,6 +46,6 @@ public final class TreeNullaryOperator extends TreeOperator
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "create" + this.m_maxDepth;//$NON-NLS-1$
+    return "create" + this.mMaxDepth;//$NON-NLS-1$
   }
 }

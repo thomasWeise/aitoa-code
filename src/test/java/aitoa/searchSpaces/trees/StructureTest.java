@@ -17,18 +17,18 @@ import aitoa.ObjectTest;
 abstract class StructureTest<T> extends ObjectTest<T> {
 
   /** the done objects */
-  private final Checker m_done;
+  private final Checker mDone;
 
   /**
    * create the structured test
    *
-   * @param owner
+   * @param pOwner
    *          the owner
    */
-  StructureTest(final StructureTest<?> owner) {
+  StructureTest(final StructureTest<?> pOwner) {
     super();
-    this.m_done =
-        ((owner != null) ? owner.m_done : (new Checker()));
+    this.mDone =
+        ((pOwner != null) ? pOwner.mDone : (new Checker()));
   }
 
   /**
@@ -40,7 +40,7 @@ abstract class StructureTest<T> extends ObjectTest<T> {
    *          the runnable
    */
   final void test(final Object o, final Runnable r) {
-    this.m_done.accept(o, r);
+    this.mDone.accept(o, r);
   }
 
   /** the internal checker */
@@ -48,27 +48,27 @@ abstract class StructureTest<T> extends ObjectTest<T> {
       implements BiConsumer<Object, Runnable> {
 
     /** the objects which are done */
-    private final HashSet<Object> m_done;
+    private final HashSet<Object> mIsDone;
 
     /** the depth */
-    private int m_depth;
+    private int mDepth;
 
     /** create */
     Checker() {
       super();
-      this.m_done = new HashSet<>();
+      this.mIsDone = new HashSet<>();
     }
 
     /** do the test */
     @Override
     public void accept(final Object t, final Runnable u) {
-      if (this.m_depth < 20) {
-        if ((t == null) || this.m_done.add(t)) {
-          ++this.m_depth;
+      if (this.mDepth < 20) {
+        if ((t == null) || this.mIsDone.add(t)) {
+          ++this.mDepth;
           try {
             u.run();
           } finally {
-            --this.m_depth;
+            --this.mDepth;
           }
         }
       }

@@ -18,7 +18,7 @@ import java.nio.file.Path;
 public final class TempDir implements Closeable {
 
   /** the directory */
-  private final Path m_dir;
+  private final Path mDir;
 
   /**
    * create the temporary directory
@@ -38,7 +38,7 @@ public final class TempDir implements Closeable {
           "Failed to create temporary directory."); //$NON-NLS-1$
     }
     p2 = p1.normalize();
-    this.m_dir = ((p2 != null) ? p2 : p1);
+    this.mDir = ((p2 != null) ? p2 : p1);
   }
 
   /**
@@ -47,14 +47,14 @@ public final class TempDir implements Closeable {
    * @return the path to the directory
    */
   public Path getPath() {
-    return this.m_dir;
+    return this.mDir;
   }
 
   /** {@inheritDoc} */
   @Override
   public void close() throws IOException {
     try {
-      IOUtils.delete(this.m_dir);
+      IOUtils.delete(this.mDir);
     } catch (@SuppressWarnings("unused") final Throwable error) {
       // ignore
     }

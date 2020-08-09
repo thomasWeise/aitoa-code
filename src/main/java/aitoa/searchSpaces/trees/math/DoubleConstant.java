@@ -39,15 +39,15 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
   /**
    * Create a double constant node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _value
+   * @param pValue
    *          the constant value
    */
-  public DoubleConstant(final NodeType<DoubleConstant<C>> type,
-      final double _value) {
-    super(type);
-    this.value = _value;
+  public DoubleConstant(final NodeType<DoubleConstant<C>> pType,
+      final double pValue) {
+    super(pType);
+    this.value = pValue;
   }
 
   /** {@inheritDoc} */

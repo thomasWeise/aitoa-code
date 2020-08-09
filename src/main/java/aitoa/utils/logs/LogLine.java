@@ -6,166 +6,166 @@ package aitoa.utils.logs;
 public final class LogLine implements Comparable<LogLine> {
 
   /** the last improvement FE */
-  public final long fe_last_improvement;
+  public final long feLastImprovement;
   /** the total number of consumed FEs */
-  public final long fe_max;
+  public final long feMax;
   /** the time when the last improvement took place */
-  public final long time_last_improvement;
+  public final long timeLastImprovement;
   /** the total time consumed so far */
-  public final long time_max;
+  public final long timeMax;
   /** the total number of improvements */
   public final long improvements;
   /** best objective value reached so far */
-  public final double f_min;
+  public final double fMin;
   /** was this line an improvement? */
-  public final boolean is_improvement;
+  public final boolean isImprovement;
 
   /**
    * create
    *
-   * @param _fe_last_improvement
+   * @param pFeLastImprovement
    *          the FE where the last improvement took place (will
    *          be this one, if {@code is_improvement} is
    *          {@code true})
-   * @param _fe_max
+   * @param pFeMax
    *          the total consumed function evaluations
-   * @param _time_last_improvement
+   * @param pTimeLastImprovement
    *          the time where the last improvement took place
    *          (will be this one, if {@code is_improvement} is
    *          {@code true})
-   * @param _time_max
+   * @param pTimeMax
    *          the total consumed runtime
-   * @param _improvements
+   * @param pImprovements
    *          the total number of improvements (including this
    *          one, if {@code is_improvement} is {@code true})
-   * @param _f_min
+   * @param pFMin
    *          the best-so-far objective value
-   * @param _is_improvement
+   * @param pIsImprovement
    *          {@code true} if this log point has a better
    *          {@code f_min} value than the one before,
    *          {@code false} otherwise
    */
-  public LogLine(final long _fe_last_improvement,
-      final long _fe_max, final long _time_last_improvement,
-      final long _time_max, final long _improvements,
-      final double _f_min, final boolean _is_improvement) {
-    this(_fe_last_improvement, _fe_max, _time_last_improvement,
-        _time_max, _improvements, _f_min, _is_improvement, true);
+  public LogLine(final long pFeLastImprovement,
+      final long pFeMax, final long pTimeLastImprovement,
+      final long pTimeMax, final long pImprovements,
+      final double pFMin, final boolean pIsImprovement) {
+    this(pFeLastImprovement, pFeMax, pTimeLastImprovement,
+        pTimeMax, pImprovements, pFMin, pIsImprovement, true);
   }
 
   /**
    * create
    *
-   * @param _fe_last_improvement
+   * @param pFeLastImprovement
    *          the FE where the last improvement took place (will
    *          be this one, if {@code is_improvement} is
    *          {@code true})
-   * @param _fe_max
+   * @param pFeMax
    *          the total consumed function evaluations
-   * @param _time_last_improvement
+   * @param pTimeLastImprovement
    *          the time where the last improvement took place
    *          (will be this one, if {@code is_improvement} is
    *          {@code true})
-   * @param _time_max
+   * @param pTimeMax
    *          the total consumed runtime
-   * @param _improvements
+   * @param pImprovements
    *          the total number of improvements (including this
    *          one, if {@code is_improvement} is {@code true})
-   * @param _f_min
+   * @param pFMin
    *          the best-so-far objective value
-   * @param _is_improvement
+   * @param pIsImprovement
    *          {@code true} if this log point has a better
    *          {@code f_min} value than the one before,
    *          {@code false} otherwise
-   * @param enforce_first_must_be_improvement
+   * @param pEnforceFirstMustBeImprovement
    *          must we enforce that the first FE must be an
    *          improvement?
    */
-  LogLine(final long _fe_last_improvement, final long _fe_max,
-      final long _time_last_improvement, final long _time_max,
-      final long _improvements, final double _f_min,
-      final boolean _is_improvement,
-      final boolean enforce_first_must_be_improvement) {
+  LogLine(final long pFeLastImprovement, final long pFeMax,
+      final long pTimeLastImprovement, final long pTimeMax,
+      final long pImprovements, final double pFMin,
+      final boolean pIsImprovement,
+      final boolean pEnforceFirstMustBeImprovement) {
     super();
 
-    this.f_min = _f_min;
-    if (!Double.isFinite(this.f_min)) {
+    this.fMin = pFMin;
+    if (!Double.isFinite(this.fMin)) {
       throw new IllegalArgumentException("Invalid best.f value: " //$NON-NLS-1$
-          + this.f_min);
+          + this.fMin);
     }
 
-    this.fe_max = _fe_max;
-    if ((this.fe_max <= 0L)
-        || (this.fe_max >= 1_000_000_000_000_000L)) {
+    this.feMax = pFeMax;
+    if ((this.feMax <= 0L)
+        || (this.feMax >= 1_000_000_000_000_000L)) {
       throw new IllegalArgumentException(
-          "Invalid total FEs: " + this.fe_max); //$NON-NLS-1$
+          "Invalid total FEs: " + this.feMax); //$NON-NLS-1$
     }
-    this.fe_last_improvement = _fe_last_improvement;
-    if ((this.fe_last_improvement <= 0)
-        || (this.fe_last_improvement > this.fe_max)) {
+    this.feLastImprovement = pFeLastImprovement;
+    if ((this.feLastImprovement <= 0)
+        || (this.feLastImprovement > this.feMax)) {
       throw new IllegalArgumentException(
           "Invalid last improvement FE: "//$NON-NLS-1$
-              + this.fe_last_improvement + " for total FEs:  "//$NON-NLS-1$
-              + this.fe_max);
+              + this.feLastImprovement + " for total FEs:  "//$NON-NLS-1$
+              + this.feMax);
     }
 
-    this.time_max = _time_max;
-    if ((this.time_max < 0L)
-        || (this.time_max >= 0x19C6F8000000000L)) {
+    this.timeMax = pTimeMax;
+    if ((this.timeMax < 0L)
+        || (this.timeMax >= 0x19C6F8000000000L)) {
       throw new IllegalArgumentException(
-          "Invalid total time: " + this.time_max); //$NON-NLS-1$
+          "Invalid total time: " + this.timeMax); //$NON-NLS-1$
     }
-    this.time_last_improvement = _time_last_improvement;
-    if ((this.time_last_improvement < 0)
-        || (this.time_last_improvement > this.time_max)) {
+    this.timeLastImprovement = pTimeLastImprovement;
+    if ((this.timeLastImprovement < 0)
+        || (this.timeLastImprovement > this.timeMax)) {
       throw new IllegalArgumentException(
           "Invalid last improvement time: "//$NON-NLS-1$
-              + this.time_last_improvement + " for total time:  "//$NON-NLS-1$
-              + this.time_max);
+              + this.timeLastImprovement + " for total time:  "//$NON-NLS-1$
+              + this.timeMax);
     }
 
-    this.improvements = _improvements;
+    this.improvements = pImprovements;
     if (this.improvements <= 0L) {
       throw new IllegalArgumentException(
           "Invalid number of improvements: "//$NON-NLS-1$
               + this.improvements);
     }
 
-    this.is_improvement = _is_improvement;
-    if (enforce_first_must_be_improvement && (this.fe_max == 1L)
-        && (!this.is_improvement)) {
+    this.isImprovement = pIsImprovement;
+    if (pEnforceFirstMustBeImprovement && (this.feMax == 1L)
+        && (!this.isImprovement)) {
       throw new IllegalArgumentException(
           "First FE must be an improvement.");//$NON-NLS-1$
     }
-    if (this.is_improvement
-        && (this.fe_last_improvement != this.fe_max)) {
+    if (this.isImprovement
+        && (this.feLastImprovement != this.feMax)) {
       throw new IllegalArgumentException(
           "If FE led to an improvmenet, then last improvement FE ("//$NON-NLS-1$
-              + this.fe_last_improvement
+              + this.feLastImprovement
               + ") must equal total FEs ("//$NON-NLS-1$
-              + this.fe_max + ") but does not.");//$NON-NLS-1$
+              + this.feMax + ") but does not.");//$NON-NLS-1$
     }
 
-    if (this.is_improvement
-        && (this.time_last_improvement != this.time_max)) {
+    if (this.isImprovement
+        && (this.timeLastImprovement != this.timeMax)) {
       throw new IllegalArgumentException(
           "If FE led to an improvmenet, then last improvement time ("//$NON-NLS-1$
-              + this.time_last_improvement
+              + this.timeLastImprovement
               + ") must equal total time ("//$NON-NLS-1$
-              + this.time_max + ") but does not.");//$NON-NLS-1$
+              + this.timeMax + ") but does not.");//$NON-NLS-1$
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    int hc = Long.hashCode(this.fe_last_improvement);
-    hc = (31 * hc) + Long.hashCode(this.fe_max);
-    hc = (31 * hc) + Long.hashCode(this.time_last_improvement);
-    hc = (31 * hc) + Long.hashCode(this.time_max);
+    int hc = Long.hashCode(this.feLastImprovement);
+    hc = (31 * hc) + Long.hashCode(this.feMax);
+    hc = (31 * hc) + Long.hashCode(this.timeLastImprovement);
+    hc = (31 * hc) + Long.hashCode(this.timeMax);
     hc = (31 * hc) + Long.hashCode(this.improvements);
-    hc = (31 * hc) + Double.hashCode(this.f_min);
-    hc = (31 * hc) + Boolean.hashCode(this.is_improvement);
+    hc = (31 * hc) + Double.hashCode(this.fMin);
+    hc = (31 * hc) + Boolean.hashCode(this.isImprovement);
     return hc;
   }
 
@@ -177,13 +177,13 @@ public final class LogLine implements Comparable<LogLine> {
     }
     if (o instanceof LogLine) {
       final LogLine e = ((LogLine) o);
-      return ((this.fe_last_improvement == e.fe_last_improvement)//
-          && (this.fe_max == e.fe_max)//
-          && (this.time_last_improvement == e.time_last_improvement)//
-          && (this.time_max == e.time_max)//
+      return ((this.feLastImprovement == e.feLastImprovement)//
+          && (this.feMax == e.feMax)//
+          && (this.timeLastImprovement == e.timeLastImprovement)//
+          && (this.timeMax == e.timeMax)//
           && (this.improvements == e.improvements)//
-          && (Double.compare(this.f_min, e.f_min) == 0)//
-          && (this.is_improvement == e.is_improvement));
+          && (Double.compare(this.fMin, e.fMin) == 0)//
+          && (this.isImprovement == e.isImprovement));
     }
     return false;
   }
@@ -195,25 +195,25 @@ public final class LogLine implements Comparable<LogLine> {
       return 0;
     }
 
-    int r = Double.compare(this.f_min, o.f_min);
+    int r = Double.compare(this.fMin, o.fMin);
     if (r != 0) {
       return r;
     }
-    r = Long.compare(this.fe_last_improvement,
-        o.fe_last_improvement);
+    r = Long.compare(this.feLastImprovement,
+        o.feLastImprovement);
     if (r != 0) {
       return r;
     }
-    r = Long.compare(this.time_last_improvement,
-        o.time_last_improvement);
+    r = Long.compare(this.timeLastImprovement,
+        o.timeLastImprovement);
     if (r != 0) {
       return r;
     }
-    r = Long.compare(this.fe_max, o.fe_max);
+    r = Long.compare(this.feMax, o.feMax);
     if (r != 0) {
       return r;
     }
-    r = Long.compare(this.time_max, o.time_max);
+    r = Long.compare(this.timeMax, o.timeMax);
     if (r != 0) {
       return r;
     }
@@ -221,7 +221,6 @@ public final class LogLine implements Comparable<LogLine> {
     if (r != 0) {
       return r;
     }
-    return Boolean.compare(o.is_improvement,
-        this.is_improvement);
+    return Boolean.compare(o.isImprovement, this.isImprovement);
   }
 }

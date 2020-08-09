@@ -68,18 +68,18 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** the maximum pheromone that can be assigned to any edge */
   public final double tauMax;
   /** the pheromone multiplier */
-  private final double m_pheroMultiplier;
+  private final double mPheroMultiplier;
 
   /** the maximum size of the population */
   public final int K;
 
   /** the edge matrix used for pheromones */
-  private final DirectedEdgeMultiSet m_matrix;
+  private final DirectedEdgeMultiSet mMatrix;
   /** the node set managing the nodes */
-  protected final IntSet m_nodes;
+  protected final IntSet mNodes;
 
   /** the population of size of at most {@link #K} */
-  private final int[][] m_population;
+  private final int[][] mPopulation;
 
   /**
    * the actual size of the population: will initially be
@@ -87,64 +87,64 @@ public class PACOModelAge<X> extends ACOModel<X> {
    * population, until it eventually remains fixed at {@link #K}
    * once the population is full
    */
-  private int m_popSize;
+  private int mPopSize;
   /**
    * the index where the next permutation can be stored in the
    * population: The population is a ring buffer, where the
    * oldest ant is overwritten with new ants coming in.
-   * {@link #m_popIndex} therefore increases by {@code 1} and is
+   * {@link #mPopIndex} therefore increases by {@code 1} and is
    * modulo-divided by {@link #K} every time an ant enters the
    * population.
    */
-  private int m_popIndex;
+  private int mPopIndex;
 
   /**
    * the temporary storage of the edge values, used when
    * random-proportional node choices are done
    */
-  private final double[] m_vs;
+  private final double[] mVs;
 
   /**
    * Create the PACO model.
    *
-   * @param _L
+   * @param pL
    *          the length of the permutation
-   * @param _K
+   * @param pK
    *          the size of the population
-   * @param _q0
+   * @param pQ0
    *          the fraction of edges to be chosen greedily based
    *          on the pheromone-cost combination
-   * @param _beta
+   * @param pBeta
    *          the power to be applied to the heuristic value
-   * @param _tauMax
+   * @param pTauMax
    *          the maximum pheromone that can be assigned to any
    *          edge
    */
-  protected PACOModelAge(final int _L, final int _K,
-      final double _q0, final double _beta,
-      final double _tauMax) {
-    super(_L);
+  protected PACOModelAge(final int pL, final int pK,
+      final double pQ0, final double pBeta,
+      final double pTauMax) {
+    super(pL);
 
-    if (_K <= 0) {
+    if (pK <= 0) {
       throw new IllegalArgumentException(//
-          "K must be > 0, but is " + _K);//$NON-NLS-1$
+          "K must be > 0, but is " + pK);//$NON-NLS-1$
     }
-    this.K = _K;
+    this.K = pK;
 
-    if (Double.isFinite(_q0) && (_q0 >= 0d) && (_q0 <= 1d)) {
-      this.q0 = _q0;
+    if (Double.isFinite(pQ0) && (pQ0 >= 0d) && (pQ0 <= 1d)) {
+      this.q0 = pQ0;
     } else {
       throw new IllegalArgumentException(
           "q0 must be fron [0,1], but is " //$NON-NLS-1$
-              + _q0);
+              + pQ0);
     }
 
-    if (Double.isFinite(_beta) && (_beta >= 0d)) {
-      this.beta = _beta;
+    if (Double.isFinite(pBeta) && (pBeta >= 0d)) {
+      this.beta = pBeta;
     } else {
       throw new IllegalArgumentException(
           "beta must be >= 0, but is "//$NON-NLS-1$
-              + _beta);
+              + pBeta);
     }
 
     this.tau0 = (1d / (this.L - 1));
@@ -154,33 +154,32 @@ public class PACOModelAge<X> extends ACOModel<X> {
               + " for L=" + this.L);//$NON-NLS-1$
     }
 
-    if (Double.isFinite(_tauMax)
-        && (_tauMax > (1d / (this.L - 1)))) {
-      this.tauMax = _tauMax;
+    if (Double.isFinite(pTauMax)
+        && (pTauMax > (1d / (this.L - 1)))) {
+      this.tauMax = pTauMax;
     } else {
       throw new IllegalArgumentException(((//
       "tauMax must be > 1/(L-1), i.e., > 1/"//$NON-NLS-1$
           + (this.L - 1)) + ", i.e., > "//$NON-NLS-1$
           + this.tau0) + ", but is "//$NON-NLS-1$
-          + _tauMax);
+          + pTauMax);
     }
 
-    this.m_pheroMultiplier = (this.tauMax - this.tau0) / this.K;
-    if ((!Double.isFinite(this.m_pheroMultiplier))
-        || (this.m_pheroMultiplier <= 0d)) {
+    this.mPheroMultiplier = (this.tauMax - this.tau0) / this.K;
+    if ((!Double.isFinite(this.mPheroMultiplier))
+        || (this.mPheroMultiplier <= 0d)) {
       throw new IllegalArgumentException(
           "Invalid pheromone multiplier " //$NON-NLS-1$
-              + this.m_pheroMultiplier
-              + " resulting from tauMax=" + //$NON-NLS-1$
-              this.tauMax + " and K=" //$NON-NLS-1$
+              + this.mPheroMultiplier + " resulting from tauMax=" //$NON-NLS-1$
+              + this.tauMax + " and K=" //$NON-NLS-1$
               + this.K + " at L=" + this.L); //$NON-NLS-1$
     }
 
-    this.m_nodes = new IntSet(this.L);
-    this.m_matrix = DirectedEdgeMultiSet.create(this.L, this.K);
+    this.mNodes = new IntSet(this.L);
+    this.mMatrix = DirectedEdgeMultiSet.create(this.L, this.K);
 
-    this.m_population = new int[this.K][this.L];
-    this.m_vs = new double[this.L];
+    this.mPopulation = new int[this.K][this.L];
+    this.mVs = new double[this.L];
   }
 
   /** {@inheritDoc} */
@@ -193,9 +192,9 @@ public class PACOModelAge<X> extends ACOModel<X> {
   /** {@inheritDoc} */
   @Override
   public void initialize() {
-    this.m_matrix.clear();
-    this.m_popSize = 0;
-    this.m_popIndex = 0;
+    this.mMatrix.clear();
+    this.mPopSize = 0;
+    this.mPopIndex = 0;
   }
 
   /**
@@ -211,8 +210,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
    * @return the pheromone value
    */
   final double getPheromone(final int a, final int b) {
-    return this.tau0 + (this.m_matrix.getEdgeCount(a, b)
-        * this.m_pheroMultiplier);
+    return this.tau0 + (this.mMatrix.getEdgeCount(a, b)
+        * this.mPheroMultiplier);
   }
 
   /** {@inheritDoc} */
@@ -220,16 +219,16 @@ public class PACOModelAge<X> extends ACOModel<X> {
   public final void update(final Iterable<X> selected) {
     for (final X x : selected) { // for each ant to be added
       final int[] pi = this.permutationFromX(x);
-      final int size = this.m_popSize;
-      final int index = this.m_popIndex;
-      final int[] dest = this.m_population[index];
+      final int size = this.mPopSize;
+      final int index = this.mPopIndex;
+      final int[] dest = this.mPopulation[index];
       if (size >= this.K) { // population is full: remove oldest
-        this.m_matrix.removePermutation(dest);
+        this.mMatrix.removePermutation(dest);
       }
       System.arraycopy(pi, 0, dest, 0, this.L); // copy
-      this.m_matrix.addPermutation(pi); // add edges to pheros
-      this.m_popSize = Math.min(this.K, size + 1);
-      this.m_popIndex = (index + 1) % this.K; // move index
+      this.mMatrix.addPermutation(pi); // add edges to pheros
+      this.mPopSize = Math.min(this.K, size + 1);
+      this.mPopIndex = (index + 1) % this.K; // move index
     }
   }
 
@@ -246,7 +245,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
    *          the random number generator
    */
   protected void initNodeSet(final Random random) {
-    this.m_nodes.fill();
+    this.mNodes.fill();
   }
 
   /**
@@ -261,20 +260,20 @@ public class PACOModelAge<X> extends ACOModel<X> {
   @Override
   public void apply(final X dest, final Random random) {
     this.initNodeSet(random); // get all potential first nodes
-    this.m_nodes.shuffle(random); // shuffle them
+    this.mNodes.shuffle(random); // shuffle them
 
     int i = 0;
     final int[] x = this.permutationFromX(dest);
-    final double[] vs = this.m_vs;
+    final double[] vs = this.mVs;
     int nodesLeft = -1;
 
     int bestNode = -1; // we start at virtual node -1
-    while ((nodesLeft = this.m_nodes.size()) > 0) {
+    while ((nodesLeft = this.mNodes.size()) > 0) {
       final int lastNode = bestNode; // previously chosen node
 
       if (nodesLeft <= 1) {
 // Only one node can be chosen: Pick it directly
-        bestNode = this.m_nodes.get(0);
+        bestNode = this.mNodes.get(0);
       } else { // multiple choices: compute costs and pheromones
 
 // With probability q0, always choose best node directly.
@@ -288,7 +287,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
 // Then: for each node which is not yet assigned...
         for (int j = 0; j < nodesLeft; j++) {
-          final int curNode = this.m_nodes.get(j);
+          final int curNode = this.mNodes.get(j);
 
 // Get the cost of adding the node: Must be >= 0
           final double cost =
@@ -296,8 +295,8 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
 // Compute the value v = [pheromone^1 * (1/cost)^beta].
           final double v = (this.tau0
-              + (this.m_matrix.getEdgeCount(lastNode, curNode)
-                  * this.m_pheroMultiplier)) // compute pheromone
+              + (this.mMatrix.getEdgeCount(lastNode, curNode)
+                  * this.mPheroMultiplier)) // compute pheromone
               * Math.pow(cost, -this.beta); // compute cost
 
 // Is v the best pheromone/heuristic value?
@@ -328,13 +327,13 @@ public class PACOModelAge<X> extends ACOModel<X> {
           if (j < 0) {
             j = (-(j + 1));
           }
-          bestNode = this.m_nodes.get(j);
+          bestNode = this.mNodes.get(j);
         } // else: No random decision: keep the best.
       } // bestNode is either only possible node or chosen node
 
 // Visit the chosen node by adding it to the permutation.
       x[i++] = bestNode;// Store node in solution.
-      this.m_nodes.delete(bestNode);// bestNode done
+      this.mNodes.delete(bestNode);// bestNode done
       this.append(bestNode, dest); // potential internal update
     }
   }
@@ -359,7 +358,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry(//
         LogFormat.classKey("edgeSet"), //$NON-NLS-1$
-        ReflectionUtils.className(this.m_matrix)));
+        ReflectionUtils.className(this.mMatrix)));
     output.write(System.lineSeparator());
   }
 }

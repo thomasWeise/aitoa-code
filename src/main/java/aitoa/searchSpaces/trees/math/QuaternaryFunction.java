@@ -27,24 +27,24 @@ public abstract class QuaternaryFunction<C>
   /**
    * Create a node
    *
-   * @param type
+   * @param pType
    *          the node type record
-   * @param _inner
+   * @param pInner
    *          the inner function
    */
   @SuppressWarnings("unchecked")
   protected QuaternaryFunction(
-      final NodeType<? extends QuaternaryFunction<C>> type,
-      final Node[] _inner) {
-    super(type);
+      final NodeType<? extends QuaternaryFunction<C>> pType,
+      final Node[] pInner) {
+    super(pType);
     this.inner0 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[0]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[0]));
     this.inner1 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[1]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[1]));
     this.inner2 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[2]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[2]));
     this.inner3 =
-        (MathFunction<C>) (Objects.requireNonNull(_inner[3]));
+        (MathFunction<C>) (Objects.requireNonNull(pInner[3]));
   }
 
   /** {@inheritDoc} */

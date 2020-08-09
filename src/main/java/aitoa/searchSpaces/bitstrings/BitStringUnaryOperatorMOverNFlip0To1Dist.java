@@ -20,32 +20,32 @@ public final class BitStringUnaryOperatorMOverNFlip0To1Dist
     extends BitStringUnaryOperatorFlipWithDist {
 
   /** the multiplier */
-  private final int m_m;
+  private final int mM;
 
   /**
    * create the unary operator
    *
-   * @param _n
+   * @param pN
    *          the number of bits that could be flipped
-   * @param _m
+   * @param pM
    *          the multiplier
    */
-  public BitStringUnaryOperatorMOverNFlip0To1Dist(final int _n,
-      final int _m) {
-    super(_n, new DiscreteZeroToOne(
-        new BinomialDistribution(_n, ((double) _m) / _n)));
-    if (_m <= 0) {
+  public BitStringUnaryOperatorMOverNFlip0To1Dist(final int pN,
+      final int pM) {
+    super(pN, new DiscreteZeroToOne(
+        new BinomialDistribution(pN, ((double) pM) / pN)));
+    if (pM <= 0) {
       throw new IllegalArgumentException(
           "bit flip multiplier must be at least 1, but is " //$NON-NLS-1$
-              + _m + //
+              + pM + //
               ", which would mean a zero probability to flip bits"); //$NON-NLS-1$
     }
-    this.m_m = _m;
+    this.mM = pM;
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.m_m + "/n-flip01D"; //$NON-NLS-1$
+    return this.mM + "/n-flip01D"; //$NON-NLS-1$
   }
 }

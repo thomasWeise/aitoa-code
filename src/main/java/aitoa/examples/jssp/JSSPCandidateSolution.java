@@ -19,28 +19,28 @@ public final class JSSPCandidateSolution {
   /**
    * create a blank candidate solution
    *
-   * @param m
+   * @param pM
    *          the number of machines
-   * @param n
+   * @param pN
    *          the number of jobs
    */
-  public JSSPCandidateSolution(final int m, final int n) {
+  public JSSPCandidateSolution(final int pM, final int pN) {
     super();
 // allocate one array for each of the m machine, big enough to
 // hold the IDs of all n jobs and their start- and end-times at
 // the machine
-    this.schedule = new int[m][3 * n];
+    this.schedule = new int[pM][3 * pN];
   }
 
   /**
    * create a candidate solution initialized from an array
    *
-   * @param _schedule
+   * @param pSchedule
    *          the array
    */
-  public JSSPCandidateSolution(final int[][] _schedule) {
+  public JSSPCandidateSolution(final int[][] pSchedule) {
     super();
-    this.schedule = Objects.requireNonNull(_schedule);
+    this.schedule = Objects.requireNonNull(pSchedule);
   }
 
 // start relevant

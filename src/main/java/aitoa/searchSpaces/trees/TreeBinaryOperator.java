@@ -19,20 +19,20 @@ public final class TreeBinaryOperator extends TreePathOperator
     implements IBinarySearchOperator<Node[]> {
 
   /** the collector for child nodes */
-  private Node[] m_cuts;
+  private Node[] mCuts;
   /** the number of cuts collected */
-  private int m_cutsSize;
+  private int mCutsSize;
 
   /**
    * Create a new tree recombination operation
    *
-   * @param md
+   * @param pMd
    *          the maximum tree depth
    */
-  public TreeBinaryOperator(final int md) {
-    super(md);
-    this.m_cuts =
-        new Node[Math.max(16, Math.min(168384, (2 << md)))];
+  public TreeBinaryOperator(final int pMd) {
+    super(pMd);
+    this.mCuts =
+        new Node[Math.max(16, Math.min(168384, (2 << pMd)))];
   }
 
   /**
@@ -49,11 +49,11 @@ public final class TreeBinaryOperator extends TreePathOperator
       final NodeTypeSet<?> allowed, final int maxDepth) {
     if ((root.depth() <= maxDepth)
         && (allowed.containsNode(root))) {
-      if (this.m_cutsSize >= this.m_cuts.length) {
-        this.m_cuts = Arrays.copyOf(this.m_cuts,
-            Math.addExact(this.m_cutsSize, this.m_cutsSize));
+      if (this.mCutsSize >= this.mCuts.length) {
+        this.mCuts = Arrays.copyOf(this.mCuts,
+            Math.addExact(this.mCutsSize, this.mCutsSize));
       }
-      this.m_cuts[this.m_cutsSize++] = root;
+      this.mCuts[this.mCutsSize++] = root;
     }
     for (int i = root.getChildCount(); (--i) >= 0;) {
       this.collectCuts(root.getChild(i), allowed, maxDepth);
@@ -90,12 +90,12 @@ public final class TreeBinaryOperator extends TreePathOperator
 
         final int length = this.randomPath(p0, random);
         final NodeTypeSet<?> allowed = this.getEndChoices();
-        this.m_cutsSize = 0;
+        this.mCutsSize = 0;
         this.collectCuts(p1, allowed,
-            (this.m_maxDepth - length) + 1);
-        if (this.m_cutsSize > 0) {
+            (this.mMaxDepth - length) + 1);
+        if (this.mCutsSize > 0) {
           final Node yy = this.replaceEnd(
-              this.m_cuts[random.nextInt(this.m_cutsSize)]);
+              this.mCuts[random.nextInt(this.mCutsSize)]);
           if ((yy != null) && (!(Objects.equals(yy, p0)
               || Objects.equals(yy, p1)))) {
             dest[0] = yy;
@@ -112,6 +112,6 @@ public final class TreeBinaryOperator extends TreePathOperator
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "rec" + this.m_maxDepth;//$NON-NLS-1$
+    return "rec" + this.mMaxDepth;//$NON-NLS-1$
   }
 }
