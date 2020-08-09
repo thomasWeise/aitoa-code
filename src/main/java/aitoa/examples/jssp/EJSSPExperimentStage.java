@@ -74,7 +74,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hillClimbers();
+      return EJSSPExperimentStage.hillClimbers();
     }
 
     /**
@@ -112,7 +112,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hillClimbers();
+      return EJSSPExperimentStage.hillClimbers();
     }
 
     /**
@@ -150,12 +150,12 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.concat(//
-          EJSSPExperimentStage._eas(//
+          EJSSPExperimentStage.eas(//
               new int[] { 128, 256, 512, 1024, 2048, 4096, 8192,
                   16384, 32768, 65536 }, //
               new double[] { 0, 0.05, 0.3 }, //
               false), //
-          EJSSPExperimentStage._eas(//
+          EJSSPExperimentStage.eas(//
               new int[] { 128, 256, 512, 1024, }, //
               new double[] { 0, 0.05, 0.3 }, //
               true));
@@ -215,11 +215,11 @@ public enum EJSSPExperimentStage implements
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
       return Stream.concat(//
-          EJSSPExperimentStage._eas(
+          EJSSPExperimentStage.eas(
               new int[] { 128, 256, 512, 1024, 2048, 4096, 8192,
                   16384, 16384, 32768, 65536 },
               new double[] { 0, 0.05, 0.3, 0.98 }, false),
-          EJSSPExperimentStage._eas(
+          EJSSPExperimentStage.eas(
               new int[] { 4, 8, 16, 32, 64, 128, 256, 512, 1024,
                   2048, 4096, 8192, 16384, 16384, 32768, 65536 },
               new double[] { 0.05 }, true));
@@ -341,7 +341,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2();
+      return EJSSPExperimentStage.hc2();
     }
 
     /**
@@ -379,7 +379,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2();
+      return EJSSPExperimentStage.hc2();
     }
 
     /**
@@ -421,7 +421,7 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      return EJSSPExperimentStage._hc2();
+      return EJSSPExperimentStage.hc2();
     }
 
     /**
@@ -680,7 +680,7 @@ public enum EJSSPExperimentStage implements
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _hillClimbers() {
+      hillClimbers() {
     final ArrayList<Supplier<
         IMetaheuristic<int[], JSSPCandidateSolution>>> list =
             new ArrayList<>();
@@ -708,7 +708,7 @@ public enum EJSSPExperimentStage implements
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _eas(final int[] populationSizes,
+      eas(final int[] populationSizes,
           final double[] crossoverRates,
           final boolean withPruning) {
 
@@ -738,7 +738,7 @@ public enum EJSSPExperimentStage implements
   static final
       Stream<
           Supplier<IMetaheuristic<int[], JSSPCandidateSolution>>>
-      _hc2() {
+      hc2() {
     return Stream.of(//
         HillClimber2::new, //
         HillClimber2WithRestarts::new);

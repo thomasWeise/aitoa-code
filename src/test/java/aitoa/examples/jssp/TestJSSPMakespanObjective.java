@@ -54,7 +54,7 @@ public class TestJSSPMakespanObjective
   /** test the makespan */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_objective() {
+  public void testObjective() {
     final JSSPMakespanObjectiveFunction f =
         new JSSPMakespanObjectiveFunction(
             TestJSSPMakespanObjective.INSTANCE);
@@ -114,7 +114,7 @@ public class TestJSSPMakespanObjective
   /** test the makespan */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_lowerBounds() {
+  public void testLowerBounds() {
     Assert
         .assertEquals(1005,
             (int) (new JSSPMakespanObjectiveFunction(

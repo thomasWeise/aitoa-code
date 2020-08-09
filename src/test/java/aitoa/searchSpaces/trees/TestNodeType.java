@@ -63,7 +63,7 @@ public class TestNodeType<T extends Node>
         final int choice = random.nextInt(i);
         final NodeTypeSet sel = ch[choice];
         ch[choice] = ch[--i];
-        TestNodeTypeSet._testNodeTypeSet(this, sel);
+        TestNodeTypeSet.testNodeTypeSet(this, sel);
       }
     } else {
       Assert.assertTrue(type.isTerminal());
@@ -82,7 +82,7 @@ public class TestNodeType<T extends Node>
    * @return the node
    */
   @SuppressWarnings("rawtypes")
-  static final Node _instantiate(final NodeType type,
+  static final Node instantiate(final NodeType type,
       final Random r, final int d) {
     final Node n;
 
@@ -93,10 +93,10 @@ public class TestNodeType<T extends Node>
       for (int i = ns.length; (--i) >= 0;) {
         final NodeTypeSet nts = type.getChildTypes(i);
         if ((nts.getTerminalTypeCount() > 0) && (d > 4)) {
-          ns[i] = TestNodeType._instantiate(
+          ns[i] = TestNodeType.instantiate(
               nts.getRandomTerminalType(r), r, d + 1);
         } else {
-          ns[i] = TestNodeType._instantiate(nts.getRandomType(r),
+          ns[i] = TestNodeType.instantiate(nts.getRandomType(r),
               r, d + 1);
         }
       }
@@ -112,10 +112,10 @@ public class TestNodeType<T extends Node>
   /** test whether the type can be instantiated properly */
   @Test(timeout = 3600000)
   public void testInstantiate() {
-    final Node n = TestNodeType._instantiate(this.getInstance(),
+    final Node n = TestNodeType.instantiate(this.getInstance(),
         ThreadLocalRandom.current(), 0);
     Assert.assertNotNull(n);
-    TestNode._testNode(this, n);
+    TestNode.testNode(this, n);
   }
 
   /**
@@ -146,9 +146,9 @@ public class TestNodeType<T extends Node>
    * @param nodeType
    *          the node type
    */
-  static void _testNodeType(final StructureTest<?> owner,
+  static void testNodeType(final StructureTest<?> owner,
       final NodeType<?> nodeType) {
-    owner._test(nodeType,
+    owner.test(nodeType,
         () -> new TestNodeType<>(owner, nodeType).runAllTests());
   }
 

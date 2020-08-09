@@ -19,7 +19,7 @@ public abstract class TestDirectedEdgeMultiSet {
    *          the set
    */
   private static final void
-      __testForLK(final DirectedEdgeMultiSet e) {
+      testForLK(final DirectedEdgeMultiSet e) {
     e.clear();
 
     final ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -178,85 +178,85 @@ public abstract class TestDirectedEdgeMultiSet {
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_2_1() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(2, 1));
+  public final void testFor2x1() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(2, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_2_2() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(2, 2));
+  public final void testFor2x2() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(2, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_3_1() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 1));
+  public final void testFor3x1() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(3, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_3_2() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 2));
+  public final void testFor3x2() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(3, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_3_3() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(3, 3));
+  public final void testFor3x3() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(3, 3));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_4_1() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 1));
+  public final void testFor4x1() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(4, 1));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_4_2() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 2));
+  public final void testFor4x2() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(4, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_4_3() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 3));
+  public final void testFor4x3() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(4, 3));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_4_4() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(4, 4));
+  public final void testFor4x4() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(4, 4));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_10_2() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(10, 2));
+  public final void testFor10x2() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(10, 2));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_10_5() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(10, 5));
+  public final void testFor10x5() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(10, 5));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_100_30() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(100, 30));
+  public final void testFor100x30() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(100, 30));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_200_200() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(200, 200));
+  public final void testFor200x200() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(200, 200));
   }
 
   /** test the set */
   @Test(timeout = 3600000)
-  public final void testFor_70_200() {
-    TestDirectedEdgeMultiSet.__testForLK(this.create(70, 200));
+  public final void testFor70x200() {
+    TestDirectedEdgeMultiSet.testForLK(this.create(70, 200));
   }
 }

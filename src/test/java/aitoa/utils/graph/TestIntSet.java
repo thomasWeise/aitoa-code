@@ -18,7 +18,7 @@ public class TestIntSet {
    * @param L
    *          the length of the permutations
    */
-  private static final void __testForL(final int L) {
+  private static final void testForL(final int L) {
     final IntSet n = new IntSet(L);
     final Random r = ThreadLocalRandom.current();
 
@@ -189,42 +189,42 @@ public class TestIntSet {
   /** test the set */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public final void testFor_2() {
-    TestIntSet.__testForL(2);
+  public final void testFor2() {
+    TestIntSet.testForL(2);
   }
 
   /** test the set */
   @Test(timeout = 3600000)
   @SuppressWarnings("static-method")
-  public final void testFor_3() {
-    TestIntSet.__testForL(3);
+  public final void testFor3() {
+    TestIntSet.testForL(3);
   }
 
   /** test the set */
   @Test(timeout = 3600000)
   @SuppressWarnings("static-method")
-  public final void testFor_4() {
-    TestIntSet.__testForL(4);
+  public final void testFor4() {
+    TestIntSet.testForL(4);
   }
 
   /** test the set */
   @Test(timeout = 3600000)
   @SuppressWarnings("static-method")
-  public final void testFor_5() {
-    TestIntSet.__testForL(5);
+  public final void testFor5() {
+    TestIntSet.testForL(5);
   }
 
   /** test the set */
   @Test(timeout = 3600000)
   @SuppressWarnings("static-method")
-  public final void testFor_10() {
-    TestIntSet.__testForL(10);
+  public final void testFor10() {
+    TestIntSet.testForL(10);
   }
 
   /** test the set */
   @Test(timeout = 3600000)
   @SuppressWarnings("static-method")
-  public final void testFor_100() {
-    TestIntSet.__testForL(100);
+  public final void testFor100() {
+    TestIntSet.testForL(100);
   }
 }

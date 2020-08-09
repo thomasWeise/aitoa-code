@@ -132,7 +132,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle2() {
-    RandomUtilsTest.__permShuffleTest(2);
+    RandomUtilsTest.permShuffleTest(2);
   }
 
   /**
@@ -142,7 +142,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle3() {
-    RandomUtilsTest.__permShuffleTest(3);
+    RandomUtilsTest.permShuffleTest(3);
   }
 
   /**
@@ -152,7 +152,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle4() {
-    RandomUtilsTest.__permShuffleTest(4);
+    RandomUtilsTest.permShuffleTest(4);
   }
 
   /**
@@ -162,7 +162,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle5() {
-    RandomUtilsTest.__permShuffleTest(5);
+    RandomUtilsTest.permShuffleTest(5);
   }
 
   /**
@@ -172,7 +172,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle6() {
-    RandomUtilsTest.__permShuffleTest(6);
+    RandomUtilsTest.permShuffleTest(6);
   }
 
   /**
@@ -182,7 +182,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle7() {
-    RandomUtilsTest.__permShuffleTest(7);
+    RandomUtilsTest.permShuffleTest(7);
   }
 
   /**
@@ -192,7 +192,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
   public void testIntShuffle8() {
-    RandomUtilsTest.__permShuffleTest(8);
+    RandomUtilsTest.permShuffleTest(8);
   }
 
   /**
@@ -201,7 +201,7 @@ public class RandomUtilsTest {
    * @param n
    *          the array length
    */
-  private static final void __permShuffleTest(final int n) {
+  private static final void permShuffleTest(final int n) {
     final int[] perm = new int[n];
     final int[] temp1 = new int[n];
     final int[] temp2 = new int[n];
@@ -218,8 +218,7 @@ public class RandomUtilsTest {
         perm[i] = i;
       }
       RandomUtils.shuffle(random, perm, 0, perm.length);
-      ++counters[RandomUtilsTest.__perm_to_int(perm, temp1,
-          temp2)];
+      ++counters[RandomUtilsTest.permToInt(perm, temp1, temp2)];
     }
 
     for (final int v : counters) {
@@ -241,7 +240,7 @@ public class RandomUtilsTest {
    * @return the number representation see
    *         https://stackoverflow.com/a/24689277
    */
-  private static final int __perm_to_int(final int[] perm,
+  private static final int permToInt(final int[] perm,
       final int[] temp1, final int[] temp2) {
     int i, k = 0, m = 1;
     final int n = perm.length;
@@ -365,8 +364,8 @@ public class RandomUtilsTest {
    * @param N
    *          the upper bound
    */
-  private static final void
-      __testUniformFromMtoNSmall(final int M, final int N) {
+  private static final void testUniformFromMtoNSmall(final int M,
+      final int N) {
     final Random r = ThreadLocalRandom.current();
     final int[] count = new int[(N - M) + 1];
     for (int i = Math.max(10000, N * 1000); (--i) >= 0;) {
@@ -394,7 +393,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFrom0To10() {
-    RandomUtilsTest.__testUniformFromMtoNSmall(0, 10);
+    RandomUtilsTest.testUniformFromMtoNSmall(0, 10);
   }
 
   /**
@@ -403,7 +402,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus10To10() {
-    RandomUtilsTest.__testUniformFromMtoNSmall(-10, 10);
+    RandomUtilsTest.testUniformFromMtoNSmall(-10, 10);
   }
 
   /**
@@ -412,7 +411,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus10To0() {
-    RandomUtilsTest.__testUniformFromMtoNSmall(-10, 0);
+    RandomUtilsTest.testUniformFromMtoNSmall(-10, 0);
   }
 
   /**
@@ -421,7 +420,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus0To1() {
-    RandomUtilsTest.__testUniformFromMtoNSmall(0, 1);
+    RandomUtilsTest.testUniformFromMtoNSmall(0, 1);
   }
 
   /**
@@ -430,7 +429,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinus20To31() {
-    RandomUtilsTest.__testUniformFromMtoNSmall(20, 31);
+    RandomUtilsTest.testUniformFromMtoNSmall(20, 31);
   }
 
   /**
@@ -457,8 +456,8 @@ public class RandomUtilsTest {
    * @param N
    *          the upper bound
    */
-  private static final void
-      __testUniformFromMtoNBig(final long M, final long N) {
+  private static final void testUniformFromMtoNBig(final long M,
+      final long N) {
     final Random r = ThreadLocalRandom.current();
     for (int i = 10000; (--i) >= 0;) {
       TestTools.assertInRange(
@@ -472,7 +471,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMinTo0() {
-    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE, 0);
+    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE, 0);
   }
 
   /**
@@ -481,7 +480,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMinToMax() {
-    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE,
+    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE,
         Long.MAX_VALUE);
   }
 
@@ -492,7 +491,7 @@ public class RandomUtilsTest {
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
   public final void testUniformFromMinusMin2ToMax2() {
-    RandomUtilsTest.__testUniformFromMtoNBig(Long.MIN_VALUE / 2,
+    RandomUtilsTest.testUniformFromMtoNBig(Long.MIN_VALUE / 2,
         Long.MAX_VALUE / 2);
   }
 

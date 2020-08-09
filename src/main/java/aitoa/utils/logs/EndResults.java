@@ -470,7 +470,7 @@ public final class EndResults {
                 "Invalid time budget: " //$NON-NLS-1$
                     + budgetTime);
           }
-          LogParser._checkTime(totalTime, budgetTime);
+          LogParser.checkTime(totalTime, budgetTime);
           lastSemi = nextSemi;
 
           nextSemi = line.indexOf(LogFormat.CSV_SEPARATOR_CHAR, //

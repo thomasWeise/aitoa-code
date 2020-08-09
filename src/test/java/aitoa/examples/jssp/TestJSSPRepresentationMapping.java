@@ -54,7 +54,7 @@ public class TestJSSPRepresentationMapping extends
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_JSSPRepresentationMappingExample() {
+  public void testJSSPRepresentationMappingExample() {
     final JSSPInstance instance =
         JSSPRepresentationMappingExample.INSTANCE;
     Assert.assertNotNull(instance);
@@ -96,7 +96,7 @@ public class TestJSSPRepresentationMapping extends
    *          the instance
    */
   private static final void
-      __testInstance(final JSSPInstance instance) {
+      testInstance(final JSSPInstance instance) {
     final ISpace<JSSPCandidateSolution> solutionSpace =
         new JSSPSolutionSpace(instance);
     final ISpace<int[]> searchSpace =
@@ -130,48 +130,48 @@ public class TestJSSPRepresentationMapping extends
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_JSSPRepresentationMappingExampleInstance() {
-    TestJSSPRepresentationMapping.__testInstance(
-        JSSPRepresentationMappingExample.INSTANCE);
+  public void testJSSPRepresentationMappingExampleInstance() {
+    TestJSSPRepresentationMapping
+        .testInstance(JSSPRepresentationMappingExample.INSTANCE);
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_demo() {
+  public void testDemo() {
     TestJSSPRepresentationMapping
-        .__testInstance(new JSSPInstance("demo")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("demo")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_abz7() {
+  public void testAbz7() {
     TestJSSPRepresentationMapping
-        .__testInstance(new JSSPInstance("abz7")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("abz7")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_la24() {
+  public void testLa24() {
     TestJSSPRepresentationMapping
-        .__testInstance(new JSSPInstance("la24")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("la24")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_yn4() {
+  public void testYn4() {
     TestJSSPRepresentationMapping
-        .__testInstance(new JSSPInstance("yn4")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("yn4")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_swv15() {
+  public void testSwv15() {
     TestJSSPRepresentationMapping
-        .__testInstance(new JSSPInstance("swv15")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("swv15")); //$NON-NLS-1$
   }
 }

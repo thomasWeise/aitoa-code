@@ -114,7 +114,7 @@ public final class EndResult extends Setup {
       throw new IllegalArgumentException(
           "Invalid time budget: " + this.budgetTime);//$NON-NLS-1$
     }
-    LogParser._checkTime(this.totalTime, this.budgetTime);
+    LogParser.checkTime(this.totalTime, this.budgetTime);
 
     this.budgetFEs = _budgetFEs;
     if ((this.budgetFEs < 1L)

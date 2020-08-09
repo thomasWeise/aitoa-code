@@ -19,7 +19,7 @@ class TreeOperator {
    */
   TreeOperator(final int maxDepth) {
     super();
-    this.m_maxDepth = TreeSpace._checkMaxDepth(maxDepth);
+    this.m_maxDepth = TreeSpace.checkMaxDepth(maxDepth);
   }
 
   /**

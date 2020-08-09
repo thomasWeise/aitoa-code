@@ -26,7 +26,7 @@ public final class BitStringSpace implements ISpace<boolean[]> {
    */
   public BitStringSpace(final int _length) {
     super();
-    this.length = BitStringSpace._checkLength(_length);
+    this.length = BitStringSpace.checkLength(_length);
   }
 
   /**
@@ -36,7 +36,7 @@ public final class BitStringSpace implements ISpace<boolean[]> {
    *          the length
    * @return the length
    */
-  static int _checkLength(final int length) {
+  static int checkLength(final int length) {
     if (length < 1) {
       throw new IllegalArgumentException(
           "bit string length must be at least 1, but is " //$NON-NLS-1$

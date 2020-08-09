@@ -69,7 +69,7 @@ public class TestNodeTypeSet<T extends Node>
 
     final Random r = ThreadLocalRandom.current();
 
-    this._test(null, () -> {
+    this.test(null, () -> {
       for (int i = size; i > 0;) {
         final int k = r.nextInt(i);
         final int idx = range[k];
@@ -89,7 +89,7 @@ public class TestNodeTypeSet<T extends Node>
           TestTools.assertGreater(t.getChildCount(), 0);
         }
 
-        TestNodeType._testNodeType(this, t);
+        TestNodeType.testNodeType(this, t);
       }
     });
   }
@@ -108,9 +108,9 @@ public class TestNodeTypeSet<T extends Node>
    * @param nodeTypeSet
    *          the node type set
    */
-  static void _testNodeTypeSet(final StructureTest<?> owner,
+  static void testNodeTypeSet(final StructureTest<?> owner,
       final NodeTypeSet<?> nodeTypeSet) {
-    owner._test(nodeTypeSet,
+    owner.test(nodeTypeSet,
         () -> new TestNodeTypeSet<>(owner, nodeTypeSet)
             .runAllTests());
   }

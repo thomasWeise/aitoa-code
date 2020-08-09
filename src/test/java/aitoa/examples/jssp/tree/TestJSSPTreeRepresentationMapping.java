@@ -53,8 +53,7 @@ public class TestJSSPTreeRepresentationMapping extends
    *          the depth of the trees
    * @return the nullary operator
    */
-  private static final TreeNullaryOperator
-      __op0(final int depth) {
+  private static final TreeNullaryOperator op0(final int depth) {
     final NodeTypeSetBuilder ntsb = new NodeTypeSetBuilder();
     final NodeTypeSetBuilder.Builder nodes =
         ntsb.rootNodeTypeSet();
@@ -74,7 +73,7 @@ public class TestJSSPTreeRepresentationMapping extends
   @Override
   protected Node[] createValidX() {
     final Node[] dest = new Node[1];
-    TestJSSPTreeRepresentationMapping.__op0(7).apply(dest,
+    TestJSSPTreeRepresentationMapping.op0(7).apply(dest,
         ThreadLocalRandom.current());
     return dest;
   }
@@ -101,7 +100,7 @@ public class TestJSSPTreeRepresentationMapping extends
    *          the instance
    */
   private static final void
-      __testInstance(final JSSPInstance instance) {
+      testInstance(final JSSPInstance instance) {
     final ISpace<JSSPCandidateSolution> solutionSpace =
         new JSSPSolutionSpace(instance);
     final ISpace<Node[]> searchSpace = new TreeSpace(7);
@@ -111,7 +110,7 @@ public class TestJSSPTreeRepresentationMapping extends
         new JSSPTreeRepresentationMapping(instance);
 
     final TreeNullaryOperator op =
-        TestJSSPTreeRepresentationMapping.__op0(7);
+        TestJSSPTreeRepresentationMapping.op0(7);
 
     final ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -126,48 +125,48 @@ public class TestJSSPTreeRepresentationMapping extends
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_JSSPRepresentationMappingExampleInstance() {
-    TestJSSPTreeRepresentationMapping.__testInstance(
-        JSSPRepresentationMappingExample.INSTANCE);
+  public void testJSSPRepresentationMappingExampleInstance() {
+    TestJSSPTreeRepresentationMapping
+        .testInstance(JSSPRepresentationMappingExample.INSTANCE);
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_demo() {
+  public void testDemo() {
     TestJSSPTreeRepresentationMapping
-        .__testInstance(new JSSPInstance("demo")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("demo")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_abz7() {
+  public void testAbz7() {
     TestJSSPTreeRepresentationMapping
-        .__testInstance(new JSSPInstance("abz7")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("abz7")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_la24() {
+  public void testLa24() {
     TestJSSPTreeRepresentationMapping
-        .__testInstance(new JSSPInstance("la24")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("la24")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_yn4() {
+  public void testYn4() {
     TestJSSPTreeRepresentationMapping
-        .__testInstance(new JSSPInstance("yn4")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("yn4")); //$NON-NLS-1$
   }
 
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_swv15() {
+  public void testSwv15() {
     TestJSSPTreeRepresentationMapping
-        .__testInstance(new JSSPInstance("swv15")); //$NON-NLS-1$
+        .testInstance(new JSSPInstance("swv15")); //$NON-NLS-1$
   }
 }

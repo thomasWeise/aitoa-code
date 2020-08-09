@@ -48,7 +48,7 @@ public abstract class BitStringObjectiveFunction
    *          the name
    * @return the instance scale
    */
-  static final int _parse_n(final String prefix,
+  static final int parseN(final String prefix,
       final String name) {
     if (!name.startsWith(prefix)) {
       throw new IllegalArgumentException("Invalid name '" //$NON-NLS-1$
@@ -83,7 +83,7 @@ public abstract class BitStringObjectiveFunction
    *          the name
    * @return the instance scale
    */
-  static final int[] _parse_nk(final String prefix,
+  static final int[] parseNK(final String prefix,
       final String name) {
 
     if (!name.startsWith(prefix)) {
@@ -130,7 +130,7 @@ public abstract class BitStringObjectiveFunction
    *          the n
    * @return the name
    */
-  static final String _make_name_n(final String prefix,
+  static final String makeNameN(final String prefix,
       final int n) {
     return (prefix + '_') + n;
   }
@@ -146,7 +146,7 @@ public abstract class BitStringObjectiveFunction
    *          the k
    * @return the name
    */
-  static final String _make_name_nk(final String prefix,
+  static final String makeNameNK(final String prefix,
       final int n, final int k) {
     return (((prefix + '_') + n) + '_') + k;
   }

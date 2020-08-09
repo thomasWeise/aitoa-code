@@ -736,7 +736,7 @@ public class IOHProfiler {
     public FunctionMetaData(final String _id,
         final double _dimension, final long _instance) {
       this(_id,
-          FunctionMetaData.__conv(_id, _dimension, _instance),
+          FunctionMetaData.conv(_id, _dimension, _instance),
           _instance);
     }
 
@@ -792,7 +792,7 @@ public class IOHProfiler {
      *          the instance
      * @return the dimension as {@code long}
      */
-    private static long __conv(final String _id,
+    private static long conv(final String _id,
         final double _dimension, final long _instance) {
       if (Double.isFinite(_dimension) && (_dimension > 0d)
           && (_dimension < Long.MAX_VALUE)) {

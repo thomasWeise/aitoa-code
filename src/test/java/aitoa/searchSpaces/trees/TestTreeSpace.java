@@ -38,7 +38,7 @@ public class TestTreeSpace extends ISpaceTest<Node[]> {
   protected void fillWithRandomData(final Node[] dest) {
     final Random r = ThreadLocalRandom.current();
     dest[0] = TestNodeType
-        ._instantiate(this.m_typeSet.getRandomType(r), r, 0);
+        .instantiate(this.m_typeSet.getRandomType(r), r, 0);
   }
 
   /** {@inheritDoc} */

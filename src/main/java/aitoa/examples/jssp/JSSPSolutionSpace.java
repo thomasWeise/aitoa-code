@@ -69,10 +69,10 @@ public final class JSSPSolutionSpace
   @Override
   public void print(final JSSPCandidateSolution z,
       final Appendable out) throws IOException {
-    JSSPSolutionSpace.__printJava(z, out);
+    JSSPSolutionSpace.printJava(z, out);
     out.append(System.lineSeparator());
     out.append(System.lineSeparator());
-    JSSPSolutionSpace.__printGanttData(z, out);
+    JSSPSolutionSpace.printGanttData(z, out);
   }
 
   /**
@@ -87,7 +87,7 @@ public final class JSSPSolutionSpace
    * @throws IOException
    *           if i/o fails
    */
-  private static void __printGanttData(
+  private static void printGanttData(
       final JSSPCandidateSolution z, final Appendable out)
       throws IOException {
     out.append("if(!(require(\"aitoaEvaluate\"))) {");//$NON-NLS-1$
@@ -146,7 +146,7 @@ public final class JSSPSolutionSpace
    * @throws IOException
    *           if i/o fails
    */
-  private static void __printJava(final JSSPCandidateSolution z,
+  private static void printJava(final JSSPCandidateSolution z,
       final Appendable out) throws IOException {
     out.append("new ");//$NON-NLS-1$
     out.append(JSSPCandidateSolution.class.getCanonicalName());

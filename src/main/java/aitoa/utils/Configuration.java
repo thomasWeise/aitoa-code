@@ -349,8 +349,8 @@ public final class Configuration {
    *          the enum class
    * @return the enum constant
    */
-  private static <E extends Enum<E>> E
-      __parseEnum(final String s, final Class<E> clazz) {
+  private static <E extends Enum<E>> E parseEnum(final String s,
+      final Class<E> clazz) {
     try {
       return Enum.valueOf(clazz, s);
     } catch (final IllegalArgumentException eee) {
@@ -401,7 +401,7 @@ public final class Configuration {
 
       if (res instanceof String) {
         final E x = Configuration
-            .__parseEnum(((String) res).trim(), clazz);
+            .parseEnum(((String) res).trim(), clazz);
         Configuration.CONFIGURATION.put(k, x);
         return x;
       }

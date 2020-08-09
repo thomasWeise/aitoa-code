@@ -21,7 +21,7 @@ public class TestOneMaxObjectiveFunctionGreedyGAmodLongRuns {
   /** test the run */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public final void testOneMax_19_seed_0x43a2d6a4159ead3d() {
+  public final void testOneMax19seed0x43a2d6a4159ead3d() {
     final OneMaxObjectiveFunction f =
         new OneMaxObjectiveFunction(19);
     final ISpace<boolean[]> X = f.createSpace();
@@ -51,7 +51,7 @@ public class TestOneMaxObjectiveFunctionGreedyGAmodLongRuns {
   /** test the run */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public final void testOneMax_21_seed_0x98fb1396311d442c() {
+  public final void testOneMax21seed0x98fb1396311d442c() {
     final OneMaxObjectiveFunction f =
         new OneMaxObjectiveFunction(21);
     final ISpace<boolean[]> X = f.createSpace();

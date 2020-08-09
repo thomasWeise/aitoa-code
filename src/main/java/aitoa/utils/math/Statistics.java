@@ -77,7 +77,7 @@ public final class Statistics {
    * @param length
    *          the length
    */
-  private static void __quantileCheck(final double p,
+  private static void quantileCheck(final double p,
       final int length) {
     if ((!Double.isFinite(p)) || (p < 0d) || (p > 1d)) {
       throw new IllegalArgumentException(
@@ -101,7 +101,7 @@ public final class Statistics {
    *          the length
    * @return the index
    */
-  private static double __quantileIndex(final double p,
+  private static double quantileIndex(final double p,
       final int length) {
 
     final double minLimit =
@@ -128,7 +128,7 @@ public final class Statistics {
    *          the double
    * @return the number
    */
-  private static Number __doubleToNumber(final double d) {
+  private static Number doubleToNumber(final double d) {
     if (!Double.isFinite(d)) {
       throw new ArithmeticException(String.valueOf(d));
     }
@@ -148,7 +148,7 @@ public final class Statistics {
    *          the big integer
    * @return the simplified version
    */
-  private static Number __simplifyInteger(final BigInteger bi) {
+  private static Number simplifyInteger(final BigInteger bi) {
     try {
       return Long.valueOf(bi.longValueExact());
     } catch (@SuppressWarnings("unused") //
@@ -173,13 +173,13 @@ public final class Statistics {
   public static Number quantile(final double p,
       final long[] data) {
     final int length = data.length;
-    Statistics.__quantileCheck(p, length);
+    Statistics.quantileCheck(p, length);
 
     if (length == 1) {
       return Long.valueOf(data[0]);
     }
 
-    final double pos = Statistics.__quantileIndex(p, length);
+    final double pos = Statistics.quantileIndex(p, length);
 
     if (pos < 1) {
       return Long.valueOf(data[0]);
@@ -243,12 +243,12 @@ public final class Statistics {
         }
       }
 
-      return Statistics.__doubleToNumber(
+      return Statistics.doubleToNumber(
           Math.max(min, Math.min(max, lower + ldifmul)));
     }
 
-    return Statistics.__doubleToNumber(Math.max(min, Math
-        .min(max, lower + (dif * (((double) upper) - lower)))));
+    return Statistics.doubleToNumber(Math.max(min, Math.min(max,
+        lower + (dif * (((double) upper) - lower)))));
   }
 
   /**
@@ -268,19 +268,19 @@ public final class Statistics {
   public static Number quantile(final double p,
       final double[] data) {
     final int length = data.length;
-    Statistics.__quantileCheck(p, length);
+    Statistics.quantileCheck(p, length);
 
     if (length == 1) {
-      return Statistics.__doubleToNumber(data[0]);
+      return Statistics.doubleToNumber(data[0]);
     }
 
-    final double pos = Statistics.__quantileIndex(p, length);
+    final double pos = Statistics.quantileIndex(p, length);
 
     if (pos < 1) {
-      return Statistics.__doubleToNumber(data[0]);
+      return Statistics.doubleToNumber(data[0]);
     }
     if (pos >= length) {
-      return Statistics.__doubleToNumber(data[length - 1]);
+      return Statistics.doubleToNumber(data[length - 1]);
     }
 
     double min = Double.POSITIVE_INFINITY;
@@ -291,7 +291,7 @@ public final class Statistics {
     }
     if (Double.isFinite(min) && Double.isFinite(max)) {
       if (min >= max) {
-        return Statistics.__doubleToNumber(min);
+        return Statistics.doubleToNumber(min);
       }
     } else {
       throw new IllegalArgumentException("Minimum " + min //$NON-NLS-1$
@@ -308,7 +308,7 @@ public final class Statistics {
     }
 
     if ((fpos == pos) || (dif <= 0d)) {
-      return Statistics.__doubleToNumber(
+      return Statistics.doubleToNumber(
           Math.max(min, Math.min(max, data[intPos - 1])));
     }
 
@@ -316,10 +316,10 @@ public final class Statistics {
     final double upper = data[intPos];
     if (lower == upper) {
       return Statistics
-          .__doubleToNumber(Math.max(min, Math.min(max, lower)));
+          .doubleToNumber(Math.max(min, Math.min(max, lower)));
     }
 
-    return Statistics.__doubleToNumber(//
+    return Statistics.doubleToNumber(//
         Math.max(min, Math.min(max, //
             lower + (dif * (upper - lower)))));
   }
@@ -335,8 +335,7 @@ public final class Statistics {
    *          the number below
    * @return the result
    */
-  private static Number __divideExact(final long a,
-      final int b) {
+  private static Number divideExact(final long a, final int b) {
     // first we compute the greatest common divisor of a and b
     long x = a;
     long y = b;
@@ -360,7 +359,7 @@ public final class Statistics {
 
     // no, we need double arithmetic
     return Statistics
-        .__doubleToNumber(result + (rest / ((double) bb)));
+        .doubleToNumber(result + (rest / ((double) bb)));
   }
 
   /**
@@ -376,19 +375,19 @@ public final class Statistics {
    */
   public static Number divideExact(final Number a, final int b) {
     if (a instanceof Long) {
-      return Statistics.__divideExact(a.longValue(), b);
+      return Statistics.divideExact(a.longValue(), b);
     }
     if (a instanceof BigInteger) {
-      return Statistics.__divideExact((BigInteger) a, b);
+      return Statistics.divideExact((BigInteger) a, b);
     }
     final double d = a.doubleValue();
     if ((d >= Long.MIN_VALUE) && (d <= Long.MAX_VALUE)) {
       final long ld = ((long) d);
       if (ld == d) {
-        return Statistics.__divideExact(ld, b);
+        return Statistics.divideExact(ld, b);
       }
     }
-    return Statistics.__doubleToNumber(d / b);
+    return Statistics.doubleToNumber(d / b);
   }
 
   /**
@@ -402,16 +401,16 @@ public final class Statistics {
    *          the number below
    * @return the result
    */
-  private static Number __divideExact(final BigInteger a,
+  private static Number divideExact(final BigInteger a,
       final int b) {
     final BigInteger bib = BigInteger.valueOf(b);
     final BigInteger gcd = a.gcd(bib);
     final BigInteger useA = a.divide(gcd);
     final BigInteger useB = bib.divide(gcd);
 
-    final Number z = Statistics.__simplifyInteger(useA);
+    final Number z = Statistics.simplifyInteger(useA);
     if (z instanceof Long) {
-      return Statistics.__divideExact(z.longValue(),
+      return Statistics.divideExact(z.longValue(),
           useB.intValue());
     }
 
@@ -420,11 +419,11 @@ public final class Statistics {
     final BigInteger rest = useA.mod(useB);
     if (useB.equals(BigInteger.ZERO)) {
       // cool, we could compute it exactly
-      return Statistics.__simplifyInteger(result);
+      return Statistics.simplifyInteger(result);
     }
 
     // no, we need double arithmetic
-    return Statistics.__doubleToNumber(result.doubleValue()
+    return Statistics.doubleToNumber(result.doubleValue()
         + (rest.doubleValue() / useB.intValue()));
   }
 
@@ -460,7 +459,7 @@ public final class Statistics {
       }
       bsum = bsum.add(last);
     }
-    return Statistics.__simplifyInteger(bsum);
+    return Statistics.simplifyInteger(bsum);
   }
 
   /**
@@ -503,7 +502,7 @@ public final class Statistics {
       }
       bsum = bsum.add(last);
     }
-    return Statistics.__simplifyInteger(bsum);
+    return Statistics.simplifyInteger(bsum);
   }
 
   /**
@@ -548,15 +547,14 @@ public final class Statistics {
         ((sum instanceof BigInteger) ? ((BigInteger) sum)
             : BigInteger.valueOf(sum.longValue()));
     final Number sumSquared =
-        Statistics.__simplifyInteger(sumBI.multiply(sumBI));
+        Statistics.simplifyInteger(sumBI.multiply(sumBI));
     final Number sumSquaredOverN =
         Statistics.divideExact(sumSquared, values.length);
 
     final double sd =
         Math.sqrt(Statistics.divideExact(
-            Statistics
-                .__doubleToNumber(sumOfSquares.doubleValue()
-                    - sumSquaredOverN.doubleValue()),
+            Statistics.doubleToNumber(sumOfSquares.doubleValue()
+                - sumSquaredOverN.doubleValue()),
             values.length - 1).doubleValue());
 
     if ((!Double.isFinite(sd)) || (sd < 0d)) {
@@ -565,8 +563,7 @@ public final class Statistics {
               + sd);
     }
 
-    return new Number[] { mean,
-        Statistics.__doubleToNumber(sd) };
+    return new Number[] { mean, Statistics.doubleToNumber(sd) };
   }
 
   /**
@@ -577,8 +574,8 @@ public final class Statistics {
    * @return the sum
    */
   public static Number sum(final double[] data) {
-    return Statistics.__doubleToNumber(
-        Statistics.__destructiveSum(data.clone()));
+    return Statistics
+        .doubleToNumber(Statistics.destructiveSum(data.clone()));
   }
 
   /**
@@ -598,7 +595,7 @@ public final class Statistics {
       tmp[i] = trans.applyAsDouble(tmp[i]);
     }
     return Statistics
-        .__doubleToNumber(Statistics.__destructiveSum(tmp));
+        .doubleToNumber(Statistics.destructiveSum(tmp));
   }
 
   /**
@@ -609,7 +606,7 @@ public final class Statistics {
    * <p>
    * Python provides a function called {@code msum} whose
    * {@code C} source code is the inspiration of the
-   * {@link #__destructiveSum(double[])} method used internally
+   * {@link #destructiveSum(double[])} method used internally
    * here. (Well, I basically translated it to {@code Java} and
    * modified it a bit.)
    * </p>
@@ -751,7 +748,7 @@ public final class Statistics {
    * few changes, namely:
    * </p>
    * <ol>
-   * <li>The method {@link #__destructiveSum(double[])} takes the
+   * <li>The method {@link #destructiveSum(double[])} takes the
    * summands to be added as input array and overrides this array
    * in the process of summation with the compensation values.
    * Since &ndash; differently from the original method &ndash;
@@ -782,8 +779,7 @@ public final class Statistics {
    *          destroyed
    * @return the accurate sum of the elements of {@code summands}
    */
-  private static double
-      __destructiveSum(final double[] summands) {
+  private static double destructiveSum(final double[] summands) {
     int i, j, n, index;
     double x, y, t, xsave, hi, yr, lo, summand;
     boolean ninf, pinf;
@@ -928,7 +924,7 @@ public final class Statistics {
         }
       }
 
-      return new Number[] { Statistics.__doubleToNumber(l1),
+      return new Number[] { Statistics.doubleToNumber(l1),
           Long.valueOf(0) };
     }
 
@@ -946,10 +942,10 @@ public final class Statistics {
       final BigInteger sumBI =
           BigInteger.valueOf(sum.longValue());
       sumSquared =
-          Statistics.__simplifyInteger(sumBI.multiply(sumBI));
+          Statistics.simplifyInteger(sumBI.multiply(sumBI));
     } else {
       final double d = sum.doubleValue();
-      sumSquared = Statistics.__doubleToNumber(d * d);
+      sumSquared = Statistics.doubleToNumber(d * d);
     }
 
     final Number sumSquaredOverN =
@@ -957,9 +953,8 @@ public final class Statistics {
 
     final double sd =
         Math.sqrt(Statistics.divideExact(
-            Statistics
-                .__doubleToNumber(sumOfSquares.doubleValue()
-                    - sumSquaredOverN.doubleValue()),
+            Statistics.doubleToNumber(sumOfSquares.doubleValue()
+                - sumSquaredOverN.doubleValue()),
             values.length - 1).doubleValue());
 
     if ((!Double.isFinite(sd)) || (sd < 0d)) {
@@ -968,7 +963,6 @@ public final class Statistics {
               + sd);
     }
 
-    return new Number[] { mean,
-        Statistics.__doubleToNumber(sd) };
+    return new Number[] { mean, Statistics.doubleToNumber(sd) };
   }
 }

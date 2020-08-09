@@ -127,8 +127,7 @@ public class JSSPInstance {
    *          the name of the instance
    */
   public JSSPInstance(final String instance) {
-    this(JSSPInstance.__loadDataFromResource(instance),
-        instance);
+    this(JSSPInstance.loadDataFromResource(instance), instance);
   }
 
   /**
@@ -140,7 +139,7 @@ public class JSSPInstance {
    */
   @SuppressWarnings("null")
   private static final int[][]
-      __loadDataFromResource(final String instance) {
+      loadDataFromResource(final String instance) {
     int njobs = -1;
     int nmachines = -1;
     int[][] data = null;

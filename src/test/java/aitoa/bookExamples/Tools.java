@@ -162,7 +162,7 @@ public class Tools {
   /** test the demo instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_formatLongNumber() {
+  public void testFormatLongNumber() {
     Assert.assertEquals(Tools.formatLongNumber("123"), //$NON-NLS-1$
         "123"); //$NON-NLS-1$
     Assert.assertEquals(Tools.formatLongNumber(123), "123"); //$NON-NLS-1$

@@ -22,7 +22,7 @@ public final class QuickOptimizers {
    *          the argument
    * @return the result
    */
-  private static double __call(final DoubleUnaryOperator f,
+  private static double call(final DoubleUnaryOperator f,
       final double x) {
     final double r = f.applyAsDouble(x);
     if (Double.isFinite(r)) {
@@ -79,7 +79,7 @@ public final class QuickOptimizers {
 
     // Check boundaries
     double a1 = a0;
-    double fa1 = QuickOptimizers.__call(f, a1);
+    double fa1 = QuickOptimizers.call(f, a1);
     double bestX = a1;
     double bestF = fa1;
 
@@ -90,7 +90,7 @@ public final class QuickOptimizers {
       double fa0 = fa1;
 
       double b1 = b0;
-      double fb1 = QuickOptimizers.__call(f, b1);
+      double fb1 = QuickOptimizers.call(f, b1);
       double fb0 = fb1;
 
       if (fb1 < fa1) {
@@ -119,7 +119,7 @@ public final class QuickOptimizers {
 // objective value.
           a1 = t;
           if (a1 > a0) {
-            fa1 = QuickOptimizers.__call(f, a1);
+            fa1 = QuickOptimizers.call(f, a1);
             if (fa1 < bestF) {
               bestF = fa1;
               bestX = a1;
@@ -145,7 +145,7 @@ public final class QuickOptimizers {
 // objective value.
           b1 = t;
           if (b1 < b0) {
-            fb1 = QuickOptimizers.__call(f, b1);
+            fb1 = QuickOptimizers.call(f, b1);
             if (fb1 < bestF) {
               bestF = fb1;
               bestX = b1;
@@ -183,7 +183,7 @@ public final class QuickOptimizers {
       for (;;) {
         a1 = Math.nextDown(a1);
         if (a1 > lower) {
-          fa1 = QuickOptimizers.__call(f, a1);
+          fa1 = QuickOptimizers.call(f, a1);
           if (fa1 < bestF) {
             bestF = fa1;
             bestX = a1;
@@ -203,7 +203,7 @@ public final class QuickOptimizers {
       for (;;) {
         b1 = Math.nextUp(b1);
         if (b1 < upper) {
-          fb1 = QuickOptimizers.__call(f, b1);
+          fb1 = QuickOptimizers.call(f, b1);
           if (fb1 < bestF) {
             bestF = fb1;
             bestX = b1;

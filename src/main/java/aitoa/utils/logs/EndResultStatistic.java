@@ -309,27 +309,27 @@ public final class EndResultStatistic
           Objects.equals(this.instance, e.instance) && //
           (this.runs == e.runs) && //
           DoubleStatisticsBig
-              ._equalsDoubleStatisticsBig(this.bestF, e.bestF)
+              .equalsDoubleStatisticsBig(this.bestF, e.bestF)
           && //
-          IntStatisticsBig._equalsIntStatisticsBig(
-              this.totalTime, e.totalTime)
+          IntStatisticsBig.equalsIntStatisticsBig(this.totalTime,
+              e.totalTime)
           && //
-          IntStatisticsBig._equalsIntStatisticsBig(this.totalFEs,
+          IntStatisticsBig.equalsIntStatisticsBig(this.totalFEs,
               e.totalFEs)
           && //
-          IntStatisticsBig._equalsIntStatisticsBig(
+          IntStatisticsBig.equalsIntStatisticsBig(
               this.lastImprovementTime, e.lastImprovementTime)
           && //
-          IntStatisticsBig._equalsIntStatisticsBig(
+          IntStatisticsBig.equalsIntStatisticsBig(
               this.lastImprovementFE, e.lastImprovementFE)
           && //
-          IntStatisticsBig._equalsIntStatisticsBig(
+          IntStatisticsBig.equalsIntStatisticsBig(
               this.numberOfImprovements, e.numberOfImprovements)
           && //
-          IntStatisticsSmall._equalsIntStatisticsSmall(
+          IntStatisticsSmall.equalsIntStatisticsSmall(
               this.budgetTime, e.budgetTime)
           && //
-          IntStatisticsSmall._equalsIntStatisticsSmall(
+          IntStatisticsSmall.equalsIntStatisticsSmall(
               this.budgetFEs, e.budgetFEs)
           && //
           (this.successes == e.successes) && //
@@ -411,7 +411,7 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsStatBase(final StatBase a,
+    static final boolean equalsStatBase(final StatBase a,
         final StatBase b) {
       return (Double.compare(a.mean, b.mean) == 0)
           && (Double.compare(a.sd, b.sd) == 0)
@@ -546,9 +546,9 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsStatQuantiles(
+    static final boolean equalsStatQuantiles(
         final StatQuantiles a, final StatQuantiles b) {
-      return StatBase._equalsStatBase(a, b)
+      return StatBase.equalsStatBase(a, b)
           && (Double.compare(a.q050, b.q050) == 0)
           && (Double.compare(a.q159, b.q159) == 0)
           && (Double.compare(a.q250, b.q250) == 0)
@@ -689,9 +689,9 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static boolean _equalsIntStatisticsBig(
+    static boolean equalsIntStatisticsBig(
         final IntStatisticsBig a, final IntStatisticsBig b) {
-      return StatQuantiles._equalsStatQuantiles(a, b)
+      return StatQuantiles.equalsStatQuantiles(a, b)
           && (a.min == b.min) && (a.max == b.max);
     }
 
@@ -702,7 +702,7 @@ public final class EndResultStatistic
         return true;
       }
       if (o instanceof IntStatisticsBig) {
-        return IntStatisticsBig._equalsIntStatisticsBig(this,
+        return IntStatisticsBig.equalsIntStatisticsBig(this,
             ((IntStatisticsBig) o));
       }
       return false;
@@ -873,10 +873,10 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static boolean _equalsDoubleStatisticsBig(
+    static boolean equalsDoubleStatisticsBig(
         final DoubleStatisticsBig a,
         final DoubleStatisticsBig b) {
-      return StatQuantiles._equalsStatQuantiles(a, b)//
+      return StatQuantiles.equalsStatQuantiles(a, b)//
           && (Double.compare(a.min, b.min) == 0)//
           && (Double.compare(a.max, b.max) == 0) //
           && a.minSetup.equals(b.minSetup)//
@@ -898,7 +898,7 @@ public final class EndResultStatistic
         return true;
       }
       if (o instanceof DoubleStatisticsBig) {
-        return DoubleStatisticsBig._equalsDoubleStatisticsBig(
+        return DoubleStatisticsBig.equalsDoubleStatisticsBig(
             this, ((DoubleStatisticsBig) o));
       }
       return false;
@@ -1088,9 +1088,9 @@ public final class EndResultStatistic
      * @return {@code true} if they are equal, {@code false} if
      *         not
      */
-    static final boolean _equalsIntStatisticsSmall(
+    static final boolean equalsIntStatisticsSmall(
         final IntStatisticsSmall a, final IntStatisticsSmall b) {
-      return StatBase._equalsStatBase(a, b) && (a.min == b.min)
+      return StatBase.equalsStatBase(a, b) && (a.min == b.min)
           && (a.max == b.max);
     }
 
@@ -1101,7 +1101,7 @@ public final class EndResultStatistic
         return true;
       }
       if (o instanceof IntStatisticsSmall) {
-        return IntStatisticsSmall._equalsIntStatisticsSmall(this,
+        return IntStatisticsSmall.equalsIntStatisticsSmall(this,
             ((IntStatisticsSmall) o));
       }
       return false;
@@ -1183,7 +1183,7 @@ public final class EndResultStatistic
       if (o instanceof IntStatisticsSmallWithSetups) {
         final IntStatisticsSmallWithSetups x =
             ((IntStatisticsSmallWithSetups) o);
-        return IntStatisticsSmall._equalsIntStatisticsSmall(this,
+        return IntStatisticsSmall.equalsIntStatisticsSmall(this,
             x)//
             && this.minSetup.equals(x.minSetup) //
             && this.maxSetup.equals(x.maxSetup);

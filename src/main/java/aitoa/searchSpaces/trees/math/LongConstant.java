@@ -210,7 +210,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
      *          the long value
      * @return the constant
      */
-    private LongConstant<C> __for(final long l) {
+    private LongConstant<C> forLong(final long l) {
       if ((l >= this.m_start) && (l <= this.m_end)) {
         return this.m_privileged[(int) (l - this.m_start)];
       }
@@ -225,7 +225,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
         return this.m_privileged[random
             .nextInt(this.m_privileged.length)];
       }
-      return this.__for(RandomUtils.uniformFromMtoN(random,
+      return this.forLong(RandomUtils.uniformFromMtoN(random,
           this.m_min, this.m_max));
     }
 
@@ -255,7 +255,7 @@ public final class LongConstant<C> extends NullaryFunction<C> {
           break;
         }
       }
-      return this.__for(v);
+      return this.forLong(v);
     }
 
     /** {@inheritDoc} */

@@ -30,7 +30,7 @@ public final class TwoMaxObjectiveFunction
    */
   public TwoMaxObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(TwoMaxObjectiveFunction.NAME_PREFIX, s));
+        .parseN(TwoMaxObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -63,7 +63,7 @@ public final class TwoMaxObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
-        TwoMaxObjectiveFunction.NAME_PREFIX, this.n);
+    return BitStringObjectiveFunction
+        .makeNameN(TwoMaxObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

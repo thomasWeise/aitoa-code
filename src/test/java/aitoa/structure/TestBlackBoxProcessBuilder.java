@@ -136,7 +136,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     }
 
     /** fail if we are terminated */
-    final void _checkTerminated() {
+    final void checkTerminated() {
       if (this.m_knowsThatTerminated) {
         Assert.fail(//
             "Algorithm performs actions after being informed that it should have terminated!"); //$NON-NLS-1$
@@ -146,7 +146,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public double evaluate(final X y) {
-      this._checkTerminated();
+      this.checkTerminated();
       return this.m_process.evaluate(y);
     }
 
@@ -184,7 +184,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     @Override
     public final INullarySearchOperator<X>
         getNullarySearchOperator() {
-      this._checkTerminated();
+      this.checkTerminated();
       Assert.assertNotNull(this.m_process.m_nullary);
       return this.m_process.m_nullary;
     }
@@ -193,7 +193,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     @Override
     public final IUnarySearchOperator<X>
         getUnarySearchOperator() {
-      this._checkTerminated();
+      this.checkTerminated();
       Assert.assertNotNull(this.m_process.m_unary);
       return this.m_process.m_unary;
     }
@@ -202,7 +202,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     @Override
     public final IBinarySearchOperator<X>
         getBinarySearchOperator() {
-      this._checkTerminated();
+      this.checkTerminated();
       Assert.assertNotNull(this.m_process.m_binary);
       return this.m_process.m_binary;
     }
@@ -211,7 +211,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     @Override
     public final ITernarySearchOperator<X>
         getTernarySearchOperator() {
-      this._checkTerminated();
+      this.checkTerminated();
       Assert.assertNotNull(this.m_process.m_ternary);
       return this.m_process.m_ternary;
     }
@@ -360,7 +360,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final double evaluate(final X y) {
-      this._checkTerminated();
+      this.checkTerminated();
       this.m_process.m_searchSpace.check(y);
 
       if (this.m_process.m_terminated) {
@@ -437,7 +437,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
     /** {@inheritDoc} */
     @Override
     public final double evaluate(final X y) {
-      this._checkTerminated();
+      this.checkTerminated();
 
       this.m_process.m_searchSpace.check(y);
 

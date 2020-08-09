@@ -36,7 +36,7 @@ public final class TrapObjectiveFunction
    */
   public TrapObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(TrapObjectiveFunction.NAME_PREFIX, s));
+        .parseN(TrapObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -68,6 +68,6 @@ public final class TrapObjectiveFunction
   @Override
   public String toString() {
     return BitStringObjectiveFunction
-        ._make_name_n(TrapObjectiveFunction.NAME_PREFIX, this.n);
+        .makeNameN(TrapObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

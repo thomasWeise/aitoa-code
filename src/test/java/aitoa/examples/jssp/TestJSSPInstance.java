@@ -11,7 +11,7 @@ public class TestJSSPInstance {
   /** test the demo instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_load_demo() {
+  public void testLoadDemo() {
     final JSSPInstance inst = new JSSPInstance("demo"); //$NON-NLS-1$
     Assert.assertEquals(4, inst.n);
     Assert.assertEquals(5, inst.m);
@@ -39,7 +39,7 @@ public class TestJSSPInstance {
   /** test the abz5 instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_load_abz5() {
+  public void testLoadAbz5() {
     final JSSPInstance inst = new JSSPInstance("abz5"); //$NON-NLS-1$
     Assert.assertEquals(10, inst.n);
     Assert.assertEquals(10, inst.m);
@@ -84,7 +84,7 @@ public class TestJSSPInstance {
   /** test the swv20 instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_load_swv20() {
+  public void testLoadSwv20() {
     final JSSPInstance inst = new JSSPInstance("swv20"); //$NON-NLS-1$
     Assert.assertEquals(inst.m, 10);
     Assert.assertEquals(inst.n, 50);
@@ -116,7 +116,7 @@ public class TestJSSPInstance {
   /** test the all the instances */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_load_all_instances() {
+  public void testLoadAllInstances() {
     for (final String s : new String[] { //
         "abz5", //$NON-NLS-1$
         "abz6", //$NON-NLS-1$

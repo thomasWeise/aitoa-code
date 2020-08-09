@@ -39,7 +39,7 @@ abstract class StructureTest<T> extends ObjectTest<T> {
    * @param r
    *          the runnable
    */
-  final void _test(final Object o, final Runnable r) {
+  final void test(final Object o, final Runnable r) {
     this.m_done.accept(o, r);
   }
 

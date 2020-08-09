@@ -24,7 +24,7 @@ public final class BitStringUnaryOperator3Flip
     super();
 
     this.m_indexes =
-        new int[BitStringSpace._checkLength(_length)];
+        new int[BitStringSpace.checkLength(_length)];
     for (int i = this.m_indexes.length; (--i) >= 0;) {
       this.m_indexes[i] = i;
     }

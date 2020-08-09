@@ -9,7 +9,7 @@ public class TestJSSPCandidateSolution {
   /** test the creation */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_create() {
+  public void testCreate() {
     JSSPCandidateSolution x;
 
     x = new JSSPCandidateSolution(0, 0);

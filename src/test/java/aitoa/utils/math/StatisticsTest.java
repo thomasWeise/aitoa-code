@@ -13,7 +13,7 @@ public class StatisticsTest {
    */
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
-  public void testQuantiles_Longs() {
+  public void testQuantilesLongs() {
     long[] data = { 1, 2, 3, 4, 4, 5, 5, 5, 5, 7, 8, 9 };
     Arrays.sort(data);
 
@@ -90,7 +90,7 @@ public class StatisticsTest {
    */
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
-  public void testQuantiles_Doubles() {
+  public void testQuantilesDoubles() {
     double[] data = { 1, 2, 3, 4, 4, 5, 5, 5, 5, 7, 8, 9 };
     Arrays.sort(data);
 
@@ -167,7 +167,7 @@ public class StatisticsTest {
    */
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
-  public void testMeanAndSD_Longs() {
+  public void testMeanAndSDLongs() {
 
     Number[] msd =
         Statistics.sampleMeanAndStandardDeviation(new long[] { //
@@ -220,7 +220,7 @@ public class StatisticsTest {
    */
   @SuppressWarnings("static-method")
   @Test(timeout = 100000)
-  public void testMeanAndSD_Doubles() {
+  public void testMeanAndSDDoubles() {
 
     Number[] msd =
         Statistics.sampleMeanAndStandardDeviation(new double[] { //

@@ -63,7 +63,7 @@ public class TestJSSPUnaryOperator1SwapU
    * @param test
    *          the test set
    */
-  private static final void __checkUnique(
+  private static final void checkUnique(
       final JSSPUnaryOperator1SwapU op,
       final HashSet<Long> test) {
     test.clear();
@@ -84,7 +84,7 @@ public class TestJSSPUnaryOperator1SwapU
     for (final JSSPInstance inst : JSSPTestUtils.INSTANCS) {
       final JSSPUnaryOperator1SwapU op =
           new JSSPUnaryOperator1SwapU(inst);
-      TestJSSPUnaryOperator1SwapU.__checkUnique(op,
+      TestJSSPUnaryOperator1SwapU.checkUnique(op,
           new HashSet<>());
       final int[] x = new int[inst.m * inst.n];
       final int[] c = new int[inst.m * inst.n];
@@ -109,7 +109,7 @@ public class TestJSSPUnaryOperator1SwapU
       final int[] c = new int[inst.m * inst.n];
       final JSSPUnaryOperator1SwapU op =
           new JSSPUnaryOperator1SwapU(inst);
-      TestJSSPUnaryOperator1SwapU.__checkUnique(op,
+      TestJSSPUnaryOperator1SwapU.checkUnique(op,
           new HashSet<>());
 
       for (int i = 1000; (--i) >= 0;) {
@@ -175,7 +175,7 @@ public class TestJSSPUnaryOperator1SwapU
       Assert.assertFalse(
           op.enumerate(random, src, dest, x -> false));
       final HashSet<Long> set = new HashSet<>();
-      TestJSSPUnaryOperator1SwapU.__checkUnique(op, set);
+      TestJSSPUnaryOperator1SwapU.checkUnique(op, set);
       Assert.assertTrue(this.equals(src, copy));
     }
   }

@@ -33,8 +33,8 @@ public final class LinearHarmonicObjectiveFunction
    *          the name
    */
   public LinearHarmonicObjectiveFunction(final String s) {
-    this(BitStringObjectiveFunction._parse_n(
-        LinearHarmonicObjectiveFunction.NAME_PREFIX, s));
+    this(BitStringObjectiveFunction
+        .parseN(LinearHarmonicObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -66,7 +66,7 @@ public final class LinearHarmonicObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
+    return BitStringObjectiveFunction.makeNameN(
         LinearHarmonicObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

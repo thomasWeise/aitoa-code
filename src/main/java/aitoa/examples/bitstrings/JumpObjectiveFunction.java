@@ -57,7 +57,7 @@ public final class JumpObjectiveFunction
    */
   public JumpObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_nk(JumpObjectiveFunction.NAME_PREFIX, s));
+        .parseNK(JumpObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -92,7 +92,7 @@ public final class JumpObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_nk(
+    return BitStringObjectiveFunction.makeNameNK(
         JumpObjectiveFunction.NAME_PREFIX, this.n, this.k);
   }
 }

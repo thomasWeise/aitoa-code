@@ -31,7 +31,7 @@ public final class LeadingOnesObjectiveFunction
    */
   public LeadingOnesObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(LeadingOnesObjectiveFunction.NAME_PREFIX, s));
+        .parseN(LeadingOnesObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -62,7 +62,7 @@ public final class LeadingOnesObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
+    return BitStringObjectiveFunction.makeNameN(
         LeadingOnesObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

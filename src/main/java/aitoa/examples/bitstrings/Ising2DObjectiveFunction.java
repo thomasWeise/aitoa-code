@@ -50,7 +50,7 @@ public final class Ising2DObjectiveFunction
    */
   public Ising2DObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(Ising2DObjectiveFunction.NAME_PREFIX, s));
+        .parseN(Ising2DObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -95,8 +95,8 @@ public final class Ising2DObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
-        Ising2DObjectiveFunction.NAME_PREFIX, this.n);
+    return BitStringObjectiveFunction
+        .makeNameN(Ising2DObjectiveFunction.NAME_PREFIX, this.n);
   }
 
 // Below, we provide code that shows how the pair-generation in

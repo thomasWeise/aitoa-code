@@ -53,7 +53,7 @@ public final class PlateauObjectiveFunction
    */
   public PlateauObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_nk(PlateauObjectiveFunction.NAME_PREFIX, s));
+        .parseNK(PlateauObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -88,7 +88,7 @@ public final class PlateauObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_nk(
+    return BitStringObjectiveFunction.makeNameNK(
         PlateauObjectiveFunction.NAME_PREFIX, this.n, this.k);
   }
 }

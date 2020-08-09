@@ -175,8 +175,8 @@ public final class BinomialDistribution
     this.m_nm = (this.n - this.m_m) + 1;
     this.m_ch = (this.m_xm
         * Math.log((this.m_m + 1.0d) / (this.m_pq * this.m_nm)))
-        + BinomialDistribution.__stirlingCorrection(this.m_m + 1)
-        + BinomialDistribution.__stirlingCorrection(this.m_nm);
+        + BinomialDistribution.stirlingCorrection(this.m_m + 1)
+        + BinomialDistribution.stirlingCorrection(this.m_nm);
   }
 
   /**
@@ -187,7 +187,7 @@ public final class BinomialDistribution
    *          the k
    * @return the stirling correction
    */
-  private static double __stirlingCorrection(final int k) {
+  private static double stirlingCorrection(final int k) {
 
     double r, rr;
 
@@ -210,7 +210,7 @@ public final class BinomialDistribution
    *          the random number generator
    * @return the random number
    */
-  private static double __raw(final Random random) {
+  private static double raw(final Random random) {
     int nextInt;
     do { // accept anything but zero
       nextInt = random.nextInt(); // in
@@ -252,11 +252,11 @@ public final class BinomialDistribution
 
       K = 0;
       pk = this.m_p0;
-      U = BinomialDistribution.__raw(random);
+      U = BinomialDistribution.raw(random);
       while (U > pk) {
         ++K;
         if (K > this.m_b) {
-          U = BinomialDistribution.__raw(random);
+          U = BinomialDistribution.raw(random);
           K = 0;
           pk = this.m_p0;
         } else {
@@ -269,8 +269,8 @@ public final class BinomialDistribution
     }
 
     for (;;) {
-      V = BinomialDistribution.__raw(random);
-      if ((U = BinomialDistribution.__raw(random)
+      V = BinomialDistribution.raw(random);
+      if ((U = BinomialDistribution.raw(random)
           * this.m_p4) <= this.m_p1) { // triangular
         // region
         K = (int) ((this.m_xm - U) + (this.m_p1 * V));
@@ -345,8 +345,8 @@ public final class BinomialDistribution
                   * Math.log((double) this.m_nm / (double) nK))
               + ((K + 0.5d)
                   * Math.log((nK * this.m_pq) / (K + 1.0d))))
-              - BinomialDistribution.__stirlingCorrection(K + 1)
-              - BinomialDistribution.__stirlingCorrection(nK))) {
+              - BinomialDistribution.stirlingCorrection(K + 1)
+              - BinomialDistribution.stirlingCorrection(nK))) {
             break;
           }
         }

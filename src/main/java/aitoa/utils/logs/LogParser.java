@@ -39,8 +39,7 @@ public final class LogParser {
    * @param budgetTime
    *          the time budget
    */
-  static void _checkTime(final long time,
-      final long budgetTime) {
+  static void checkTime(final long time, final long budgetTime) {
     if (time <= budgetTime) {
       return;
     }
@@ -612,7 +611,7 @@ public final class LogParser {
                         + time + " after " //$NON-NLS-1$
                         + time_max);
               }
-              LogParser._checkTime(time, budgetTime);
+              LogParser.checkTime(time, budgetTime);
 
               boolean invokeLog = (logConsumer != null);
               final boolean is_improvement =
@@ -742,7 +741,7 @@ public final class LogParser {
             + ") exceed budget of " + budgetFEs + //$NON-NLS-1$
             " FEs."); //$NON-NLS-1$
       }
-      LogParser._checkTime(time_max, budgetTime);
+      LogParser.checkTime(time_max, budgetTime);
 
       if (randSeedString == null) {
         throw new IllegalStateException(

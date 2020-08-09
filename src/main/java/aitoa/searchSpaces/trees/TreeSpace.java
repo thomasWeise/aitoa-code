@@ -19,7 +19,7 @@ public final class TreeSpace implements ISpace<Node[]> {
    */
   public TreeSpace(final int maxDepth) {
     super();
-    this.m_maxDepth = TreeSpace._checkMaxDepth(maxDepth);
+    this.m_maxDepth = TreeSpace.checkMaxDepth(maxDepth);
   }
 
   /**
@@ -29,7 +29,7 @@ public final class TreeSpace implements ISpace<Node[]> {
    *          the maximum depth
    * @return the maximum depth to use
    */
-  static int _checkMaxDepth(final int md) {
+  static int checkMaxDepth(final int md) {
     if (md < 2) {
       throw new IllegalArgumentException(
           "maximum depth must be at least 2, but is " //$NON-NLS-1$
@@ -76,7 +76,7 @@ public final class TreeSpace implements ISpace<Node[]> {
    * @param n
    *          the node to check
    */
-  static void _checkNode(final Node n) {
+  static void checkNode(final Node n) {
     if (n == null) {
       throw new IllegalArgumentException(
           "Node array must contain a node.");//$NON-NLS-1$
@@ -128,7 +128,7 @@ public final class TreeSpace implements ISpace<Node[]> {
 
       d = Math.max(d, c.depth());
       w += c.weight();
-      TreeSpace._checkNode(c);
+      TreeSpace.checkNode(c);
     }
 
     ++d;
@@ -169,7 +169,7 @@ public final class TreeSpace implements ISpace<Node[]> {
               + d + ", must be in 1.." + //$NON-NLS-1$
               this.m_maxDepth);
     }
-    TreeSpace._checkNode(n);
+    TreeSpace.checkNode(n);
   }
 
   /** {@inheritDoc} */

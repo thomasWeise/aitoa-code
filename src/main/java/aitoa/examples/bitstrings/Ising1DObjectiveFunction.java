@@ -27,7 +27,7 @@ public final class Ising1DObjectiveFunction
    */
   public Ising1DObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(Ising1DObjectiveFunction.NAME_PREFIX, s));
+        .parseN(Ising1DObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -59,7 +59,7 @@ public final class Ising1DObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
-        Ising1DObjectiveFunction.NAME_PREFIX, this.n);
+    return BitStringObjectiveFunction
+        .makeNameN(Ising1DObjectiveFunction.NAME_PREFIX, this.n);
   }
 }

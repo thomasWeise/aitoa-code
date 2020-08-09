@@ -54,7 +54,7 @@ public final class NQueensObjectiveFunction
    */
   public NQueensObjectiveFunction(final String s) {
     this(BitStringObjectiveFunction
-        ._parse_n(NQueensObjectiveFunction.NAME_PREFIX, s));
+        .parseN(NQueensObjectiveFunction.NAME_PREFIX, s));
   }
 
   /** {@inheritDoc} */
@@ -227,8 +227,8 @@ public final class NQueensObjectiveFunction
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return BitStringObjectiveFunction._make_name_n(
-        NQueensObjectiveFunction.NAME_PREFIX, this.n);
+    return BitStringObjectiveFunction
+        .makeNameN(NQueensObjectiveFunction.NAME_PREFIX, this.n);
   }
 
 // A program for showing and testing that we hit all the

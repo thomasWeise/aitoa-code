@@ -12,7 +12,7 @@ public class TestJSSPMakespanLowerBound {
   /** test the bks instance */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public void test_bks() {
+  public void testBKS() {
     final ToIntFunction<String> lb = new JSSPMakespanBKS();
     for (final String s : new String[] { //
         "abz5", //$NON-NLS-1$

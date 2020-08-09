@@ -69,7 +69,7 @@ public class TestNode extends StructureTest<Node> {
         final int choice = random.nextInt(i);
         final Node sel = ch[choice];
         ch[choice] = ch[--i];
-        TestNode._testNode(this, sel);
+        TestNode.testNode(this, sel);
       }
     }
   }
@@ -82,7 +82,7 @@ public class TestNode extends StructureTest<Node> {
 
     Assert.assertNotNull(t);
     if (!(TestNodeType.isDummyNodeType(t))) {
-      TestNodeType._testNodeType(this, t);
+      TestNodeType.testNodeType(this, t);
 
       final int size = t.getChildCount();
       Assert.assertEquals(size, n.getChildCount());
@@ -99,7 +99,7 @@ public class TestNode extends StructureTest<Node> {
     final Node n = this.getInstance();
     final NodeType<?> t = n.getType();
     if ((t != null) && (t != NodeType.dummy())) {
-      TreeSpace._checkNode(n);
+      TreeSpace.checkNode(n);
     }
   }
 
@@ -247,9 +247,9 @@ public class TestNode extends StructureTest<Node> {
    * @param node
    *          the node
    */
-  static void _testNode(final StructureTest<?> owner,
+  static void testNode(final StructureTest<?> owner,
       final Node node) {
-    owner._test(node,
+    owner.test(node,
         () -> new TestNode(owner, node).runAllTests());
   }
 
