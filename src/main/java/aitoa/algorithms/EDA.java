@@ -130,7 +130,7 @@ public final class EDA<X, Y> implements IMetaheuristic<X, Y> {
 // start relevant
       }
 
-      for (;;) {// each iteration: update model, sample model
+      for (;;) { // each iteration: update model, sample model
 // end relevant
         if (this.mu < Model.minimumSamplesNeededForUpdate()) {
           continue restart;

@@ -15,7 +15,7 @@ public final class PerformanceComparisonBitStringNullary {
    * @param random
    *          the random number generator
    */
-  private static final void applyOrig(final boolean[] dest,
+  private static void applyOrig(final boolean[] dest,
       final Random random) {
     for (int i = dest.length; (--i) >= 0;) {
       dest[i] = random.nextBoolean();
@@ -30,7 +30,7 @@ public final class PerformanceComparisonBitStringNullary {
    * @param random
    *          the random number generator
    */
-  private static final void applyNew(final boolean[] dest,
+  private static void applyNew(final boolean[] dest,
       final Random random) {
     int i = dest.length - 1;
     for (;;) {
@@ -301,7 +301,7 @@ public final class PerformanceComparisonBitStringNullary {
    * @param args
    *          ignored
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final boolean[] array = new boolean[2013];
     final Random random = new Random();
 

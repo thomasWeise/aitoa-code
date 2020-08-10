@@ -100,7 +100,7 @@ final class BlackBoxProcess1LogAll<X>
     this.mLogSize = newSize;
 
     // did we improve
-    if (result < this.mBestF) {// yes, we did
+    if (result < this.mBestF) { // yes, we did
       // so remember a copy of this best solution
       this.mBestF = result;
       this.mSearchSpace.copy(y, this.mBestX);

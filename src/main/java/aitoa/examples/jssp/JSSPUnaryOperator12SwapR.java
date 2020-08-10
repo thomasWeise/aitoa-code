@@ -137,7 +137,7 @@ public final class JSSPUnaryOperator12SwapR
     // randomize the order in which indices are processed
     RandomUtils.shuffle(random, indexes, 0, ii);
     System.arraycopy(x, 0, dest, 0, ii); // copy x to dest
-    for (; (--ii) > 0;) {// ii from 1...n-1
+    for (; (--ii) > 0;) { // ii from 1...n-1
       final int i = indexes[ii]; // get i: random order
       final int job_i = dest[i];
       for (int jj = ii; (--jj) >= 0;) { // jj from 0...ii-1

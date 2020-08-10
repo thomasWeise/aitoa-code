@@ -216,7 +216,7 @@ public final class IOUtils {
     }
     final String s = inside.getFileName().toString();
     if (".".equals(s) || //$NON-NLS-1$
-        "..".equals(s)) {//$NON-NLS-1$
+        "..".equals(s)) { //$NON-NLS-1$
       return false;
     }
     return inside.startsWith(dir);

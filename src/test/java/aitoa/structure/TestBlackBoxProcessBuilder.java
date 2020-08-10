@@ -383,7 +383,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       TestTools.assertLessOrEqual(result, this.mUb);
 
       // did we improve
-      if (result < this.mProcess.mBestF) {// yes, we did
+      if (result < this.mProcess.mBestF) { // yes, we did
         // so remember a copy of this best solution
         this.mProcess.mBestF = result;
         this.mProcess.mSearchSpace.copy(y, this.mProcess.mBestX);
@@ -450,7 +450,7 @@ public class TestBlackBoxProcessBuilder<X, Y>
       TestTools.assertGreaterOrEqual(result, this.mLb);
 
       // did we improve
-      if (result < this.mProcess.mBestF) {// yes, we did
+      if (result < this.mProcess.mBestF) { // yes, we did
         // so remember a copy of this best solution
         this.mProcess.mBestF = result;
         this.mProcess.mSearchSpace.copy(y, this.mProcess.mBestX);

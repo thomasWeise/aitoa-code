@@ -76,7 +76,8 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    *           if i/o fails
    */
   default void printSetup(final Writer output)
-      throws IOException {//
+      throws IOException {
+    // do nothing
   }
 
   /**

@@ -104,7 +104,7 @@ public final class SimulatedAnnealing<X, Y>
     double f_cur = process.evaluate(x_cur); // map & evaluate
     long tau = 1L; // initialize step counter to 1
 
-    do {// repeat until budget exhausted
+    do { // repeat until budget exhausted
 // create a slightly modified copy of x_cur and store in x_new
       unary.apply(x_cur, x_new, random);
       ++tau; // increase step counter

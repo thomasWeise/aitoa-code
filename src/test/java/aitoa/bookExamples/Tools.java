@@ -60,7 +60,7 @@ public final class Tools {
 
     boolean needsBD = (length > maxDigits);
     if (!needsBD) {
-      try {// check if it is integer
+      try { // check if it is integer
         new BigInteger(s);
       } catch (final Throwable error) {
         needsBD = true;
@@ -69,7 +69,7 @@ public final class Tools {
 
     if (needsBD) {
       final BigDecimal bd = new BigDecimal(s);
-      final String vv[] = new DecimalFormat("0.000E00")//$NON-NLS-1$
+      final String[] vv = new DecimalFormat("0.000E00")//$NON-NLS-1$
           .format(bd).split("E"); //$NON-NLS-1$
 
       return ("$\\approx$&nbsp;" + //$NON-NLS-1$

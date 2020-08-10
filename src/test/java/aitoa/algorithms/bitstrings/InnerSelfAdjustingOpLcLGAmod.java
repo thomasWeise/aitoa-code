@@ -91,7 +91,7 @@ public class InnerSelfAdjustingOpLcLGAmod<Y>
 
     boolean[] xprime = new boolean[n];
 
-    while (!process.shouldTerminate()) {// Line 3
+    while (!process.shouldTerminate()) { // Line 3
       Assert.assertNotSame(xprime, x);
       for (int i = xi.length; (--i) >= 0;) {
         for (int j = i; (--j) >= 0;) {

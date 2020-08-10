@@ -28,7 +28,7 @@ public final class JSSPTestUtils {
    * @param inst
    *          the problem instance
    */
-  public static final void assertX(final int[] x,
+  public static void assertX(final int[] x,
       final JSSPInstance inst) {
     Assert.assertNotNull(x);
     Assert.assertEquals(inst.m * inst.n, x.length);
@@ -49,7 +49,7 @@ public final class JSSPTestUtils {
    * @param inst
    *          the problem instance
    */
-  public static final void assertY(final JSSPCandidateSolution y,
+  public static void assertY(final JSSPCandidateSolution y,
       final JSSPInstance inst) {
     Assert.assertNotNull(y);
 
@@ -91,7 +91,7 @@ public final class JSSPTestUtils {
       TestTools.assertAllEquals(true, done);
     }
 
-    for (final int job[] : jobPerspective) {
+    for (final int[] job : jobPerspective) {
       int prev = 0;
       for (final int i : job) {
         TestTools.assertGreaterOrEqual(i, prev);
@@ -108,8 +108,7 @@ public final class JSSPTestUtils {
    *          the problem
    * @return the instance
    */
-  public static final int[]
-      createValidX(final JSSPInstance problem) {
+  public static int[] createValidX(final JSSPInstance problem) {
     final int[] a = new int[problem.m * problem.n];
     JSSPTestUtils.randomX(a, problem);
     return a;
@@ -123,7 +122,7 @@ public final class JSSPTestUtils {
    * @param inst
    *          the point in the solution space
    */
-  public static final void canonicalX(final int[] x,
+  public static void canonicalX(final int[] x,
       final JSSPInstance inst) {
     int i = 0;
     for (int m = 0; m < inst.m; m++) {
@@ -142,7 +141,7 @@ public final class JSSPTestUtils {
    * @param inst
    *          the point in the solution space
    */
-  public static final void randomX(final int[] x,
+  public static void randomX(final int[] x,
       final JSSPInstance inst) {
     JSSPTestUtils.canonicalX(x, inst);
     RandomUtils.shuffle(ThreadLocalRandom.current(), x, 0,

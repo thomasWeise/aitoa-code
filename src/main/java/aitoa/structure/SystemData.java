@@ -71,7 +71,7 @@ final class SystemData {
         final String value = rawvalue.trim();
         if (value.isEmpty()//
             || "null".equalsIgnoreCase(value) //$NON-NLS-1$
-            || "unknown".equalsIgnoreCase(value)) {//$NON-NLS-1$
+            || "unknown".equalsIgnoreCase(value)) { //$NON-NLS-1$
           return;
         }
         if (map.put(Objects.requireNonNull(key),
@@ -185,7 +185,7 @@ final class SystemData {
             LogFormat.SYSTEM_INFO_SESSION_START_DATE_TIME,
             BlackBoxProcessData.getSessionStart().toString());
 
-        final String osInfo[] = new String[2];
+        final String[] osInfo = new String[2];
 
         try {
           final SystemInfo sys = new SystemInfo();
@@ -412,11 +412,11 @@ final class SystemData {
           boolean detected = false;
           if (os.isEmpty() || //
               os.contains("linux") || //$NON-NLS-1$
-              os.contains("unbuntu")) {//$NON-NLS-1$
+              os.contains("unbuntu")) { //$NON-NLS-1$
             detected = Maker.tryDetectGPULinux(data);
           }
           if ((!detected) && (os.isEmpty() || //
-              os.contains("win"))) {//$NON-NLS-1$
+              os.contains("win"))) { //$NON-NLS-1$
             detected = Maker.tryDetectGPUWindows(data);
           }
 
@@ -823,12 +823,12 @@ final class SystemData {
                     continue readFile;
                   }
 
-                  if (key.contains("vendor id")) {//$NON-NLS-1$
+                  if (key.contains("vendor id")) { //$NON-NLS-1$
                     if (vendorId == null) {
                       vendorId = s.substring(dots + 1).trim()
                           .toLowerCase();
                       if ((vendorId.length() > 2)
-                          && vendorId.startsWith("0x")) {//$NON-NLS-1$
+                          && vendorId.startsWith("0x")) { //$NON-NLS-1$
                         vendorId = vendorId.substring(2);
                         try {
                           Integer.parseUnsignedInt(vendorId, 16);
@@ -846,12 +846,12 @@ final class SystemData {
                     continue readFile;
                   }
 
-                  if (key.contains("device id")) {//$NON-NLS-1$
+                  if (key.contains("device id")) { //$NON-NLS-1$
                     if (deviceId == null) {
                       deviceId = s.substring(dots + 1).trim()
                           .toLowerCase();
                       if ((deviceId.length() > 2)
-                          && deviceId.startsWith("0x")) {//$NON-NLS-1$
+                          && deviceId.startsWith("0x")) { //$NON-NLS-1$
                         deviceId = deviceId.substring(2);
                         try {
                           Integer.parseUnsignedInt(deviceId, 16);

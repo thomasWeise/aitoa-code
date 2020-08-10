@@ -136,9 +136,8 @@ public final class EndResultStatistics {
    *          the list of unique setups
    * @return the chosen, closest value
    */
-  private static Setup closestSetup(//
-      final double value, //
-      final Holder.InnerSetup[] unique) {//
+  private static Setup closestSetup(final double value,
+      final Holder.InnerSetup[] unique) {
 
     int lower = 0;
     int upper = unique.length - 1;

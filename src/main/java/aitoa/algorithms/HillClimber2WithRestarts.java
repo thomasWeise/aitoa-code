@@ -69,7 +69,7 @@ public final class HillClimber2WithRestarts<X, Y>
       nullary.apply(x_best, random);
       f_best[0] = process.evaluate(x_best); // evaluate
 
-      do {// repeat until budget exhausted or no improving move
+      do { // repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of x_best and receive them
 // one-by-one in parameter x (for which x_cur is used)
         improved = unary.enumerate(random, x_best, x_cur, //

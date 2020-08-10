@@ -158,7 +158,7 @@ public final class HybridEDAWithFitness<X, Y>
         }
       }
 
-      for (;;) {// each iteration: LS, update model, then sample
+      for (;;) { // each iteration: LS, update model, then sample
         for (final FitnessIndividual<X> ind : P) {
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2

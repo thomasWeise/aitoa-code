@@ -130,7 +130,7 @@ public final class EDAWithFitness<X, Y>
         }
       }
 
-      for (;;) {// each iteration: update model, sample model
+      for (;;) { // each iteration: update model, sample model
 // end relevant
         if (this.mu < Model.minimumSamplesNeededForUpdate()) {
           continue restart;

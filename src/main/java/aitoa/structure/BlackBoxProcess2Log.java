@@ -102,7 +102,7 @@ final class BlackBoxProcess2Log<X, Y>
     final double result = this.mF.evaluate(this.mCurrent);
 
     // did we improve
-    if (result < this.mBestF) {// yes, we did
+    if (result < this.mBestF) { // yes, we did
       // so remember a copy of this best solution
       this.mBestF = result;
       this.mSearchSpace.copy(y, this.mBestX);

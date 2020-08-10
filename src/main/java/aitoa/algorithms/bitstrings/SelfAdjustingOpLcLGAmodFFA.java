@@ -108,7 +108,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
 
     Holder xprime = new Holder(n);
 
-    while (!process.shouldTerminate()) {// Line 3
+    while (!process.shouldTerminate()) { // Line 3
 
 // Line 4: begin of mutation phase
 // Line 5: draw number of bits to flip

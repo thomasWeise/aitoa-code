@@ -61,7 +61,7 @@ public final class RandomUtils {
 
 // if we only want at most 1 random seed, that may already be
 // enough
-    if (pCount <= 1) {// yes
+    if (pCount <= 1) { // yes
       return new long[] { a };
     }
 
@@ -77,7 +77,7 @@ public final class RandomUtils {
         return seeds;
       }
       have = 2;
-    } else {// a > b
+    } else { // a > b
       if (a > b) {
         seeds[1] = a;
         seeds[0] = b;
@@ -85,7 +85,7 @@ public final class RandomUtils {
           return seeds;
         }
         have = 2;
-      } else {// a==b
+      } else { // a==b
         seeds[1] = a;
         have = 1;
       }
@@ -334,7 +334,7 @@ public final class RandomUtils {
         for (long u = (r >>> 1); // ensure nonnegative
             ((u + m) - (r = (u % n))) < 0L; // rejection check
             u = (pRandom.nextLong() >>> 1)) {
-          /* just iterate while updating r */}
+          /* just iterate while updating r */ }
         r += pM;
       } else { // range not representable as long
         while ((r < pM) || (r > pN)) {

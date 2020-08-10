@@ -131,7 +131,7 @@ public final class EDAWithClearing<X, Y>
 // start relevant
       }
 
-      for (;;) {// each iteration: update model, sample model
+      for (;;) { // each iteration: update model, sample model
         final int u = Utils.qualityBasedClearing(P, this.mu);
         if (u < this.model.minimumSamplesNeededForUpdate()) {
           continue restart;

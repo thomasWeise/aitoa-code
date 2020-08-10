@@ -37,7 +37,7 @@ public final class RandomSampling<X, Y>
         process.getNullarySearchOperator();
     final Random random = process.getRandom();// get random gen
 
-    do {// Repeat until budget is exhausted.
+    do { // Repeat until budget is exhausted.
       nullary.apply(x, random); // Create random point in X.
 // Evaluate the point: process.evaluate applies the
 // representation mapping and calls objective function. It

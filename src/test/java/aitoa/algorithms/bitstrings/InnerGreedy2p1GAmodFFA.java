@@ -301,7 +301,7 @@ public class InnerGreedy2p1GAmodFFA<Y>
       }
 
       if ((H[fy] > H[fx])// line 9: replace y with z
-          || random.nextBoolean()) {// line 10: randomly chose y
+          || random.nextBoolean()) { // line 10: randomly chose y
 // line 9: replace y with z since z cannot be x or y, we can swap
 // pointers instead of copying
         fy = fz;

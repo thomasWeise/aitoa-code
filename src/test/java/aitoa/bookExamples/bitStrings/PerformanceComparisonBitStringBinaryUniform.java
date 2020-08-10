@@ -19,7 +19,7 @@ public final class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void applyOrig(final boolean[] x0,
+  private static void applyOrig(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
     for (int i = dest.length; (--i) >= 0;) {
@@ -39,7 +39,7 @@ public final class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void applyNew1(final boolean[] x0,
+  private static void applyNew1(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
 
@@ -381,7 +381,7 @@ public final class PerformanceComparisonBitStringBinaryUniform {
    * @param random
    *          the random number generator
    */
-  private static final void applyNew2(final boolean[] x0,
+  private static void applyNew2(final boolean[] x0,
       final boolean[] x1, final boolean[] dest,
       final Random random) {
 
@@ -783,7 +783,7 @@ public final class PerformanceComparisonBitStringBinaryUniform {
    * @param args
    *          ignored
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final boolean[] array = new boolean[2013];
     final boolean[] x0 = new boolean[array.length];
     final boolean[] x1 = new boolean[array.length];

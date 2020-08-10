@@ -61,9 +61,10 @@ public final class HybridEDA<X, Y>
     this.lambda = pLambda;
 
     if ((pMu < 1) || (pMu > this.lambda)) {
-      throw new IllegalArgumentException("Invalid mu: " + pMu //$NON-NLS-1$
-          + " must be in 1..lambda and lambda=" //$NON-NLS-1$
-          + this.lambda);
+      throw new IllegalArgumentException(//
+          "Invalid mu: " + pMu //$NON-NLS-1$
+              + " must be in 1..lambda and lambda=" //$NON-NLS-1$
+              + this.lambda);
     }
     this.mu = pMu;
     if (pMaxLSSteps <= 0) {
@@ -136,8 +137,7 @@ public final class HybridEDA<X, Y>
 
     restart: while (!process.shouldTerminate()) {
 // the initialization of local variables is omitted for brevity
-      Model.initialize(); // initialize model=uniform
-                          // distribution
+      Model.initialize(); // initialize as uniform distribution
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -149,7 +149,7 @@ public final class HybridEDA<X, Y>
         }
       }
 
-      for (;;) {// each iteration: LS, update model, then sample
+      for (;;) { // each iteration: LS, update model, then sample
         for (final Individual<X> ind : P) {
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2

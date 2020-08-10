@@ -232,7 +232,7 @@ public final class Greedy2p1GAmod<Y>
 // if we get here, either x or y will definitely be replaced
 
       if ((fy > fx)// line 9: replace y with z
-          || random.nextBoolean()) {// line 10: randomly chose y
+          || random.nextBoolean()) { // line 10: randomly chose y
 // line 9: replace y with z since z cannot be x or y, we can swap
 // pointers instead of copying
         fy = fz;

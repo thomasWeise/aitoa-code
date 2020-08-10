@@ -83,5 +83,6 @@ public final class JSSPSearchSpaceSizeDiagram {
 
   /** forbidden */
   private JSSPSearchSpaceSizeDiagram() {
-    throw new UnsupportedOperationException();}
+    throw new UnsupportedOperationException();
+  }
 }

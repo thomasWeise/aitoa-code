@@ -19,8 +19,7 @@ public final class JSSPSolutionSpaceSizeEnumerate {
    *          n the first dimensions
    * @return the array
    */
-  private static final int[][] makeArray(final int m,
-      final int n) {
+  private static int[][] makeArray(final int m, final int n) {
     final int[][] a = new int[n][];
     a[0] = new int[m];
 
@@ -45,7 +44,7 @@ public final class JSSPSolutionSpaceSizeEnumerate {
    *          the number of jobs
    * @return the number
    */
-  static final long enumerate(final int m, final int n) {
+  static long enumerate(final int m, final int n) {
     // for each of the n jobs, the order machines
     final int[][] jobMachines =
         JSSPSolutionSpaceSizeEnumerate.makeArray(m, n);
@@ -70,7 +69,7 @@ public final class JSSPSolutionSpaceSizeEnumerate {
    * @param j
    *          the second index
    */
-  private static final void swap(final int[] a, final int i,
+  private static void swap(final int[] a, final int i,
       final int j) {
     final int t = a[i];
     a[i] = a[j];
@@ -258,7 +257,7 @@ public final class JSSPSolutionSpaceSizeEnumerate {
    *          the number of jobs
    * @return the number, or -1 on integer overflow
    */
-  static final long numberOf(final int m, final int n) {
+  static long numberOf(final int m, final int n) {
     long res = n;
     for (long i = n; (--i) > 1L;) {
       final long old = res;
@@ -329,7 +328,7 @@ public final class JSSPSolutionSpaceSizeEnumerate {
    * @param args
    *          ignore
    */
-  public static final void main(final String[] args) {
+  public static void main(final String[] args) {
     final ArrayList<long[]> list = new ArrayList<>();
 
     // try to sort the m*n combinations in order of the steps

@@ -115,7 +115,7 @@ public final class JSSPUnaryOperator12Swap
       final int[] dest, final Predicate<int[]> visitor) {
     int i = x.length; // get the length
     System.arraycopy(x, 0, dest, 0, i); // copy x to dest
-    for (; (--i) > 0;) {// i from 1...n-1
+    for (; (--i) > 0;) { // i from 1...n-1
       final int job_i = dest[i];
       for (int j = i; (--j) >= 0;) { // j from 0...i-1
         final int job_j = dest[j];

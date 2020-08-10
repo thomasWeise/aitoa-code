@@ -114,11 +114,11 @@
 		<module name="MethodParamPad" />
 		<!-- <module name="NoWhitespaceAfter" /> -->
 		<module name="NoWhitespaceBefore" />
-		<!--<module name="OperatorWrap"/> -->
+		<module name="OperatorWrap" />
 		<!--<module name="ParenPad"/> -->
 		<!--<module name="TypecastParenPad"/> -->
 		<!--<module name="WhitespaceAfter"/> -->
-		<!--<module name="WhitespaceAround"/> -->
+		<module name="WhitespaceAround" />
 
 		<!-- Modifier Checks -->
 		<!-- See https://checkstyle.org/config_modifiers.html -->
@@ -131,9 +131,9 @@
 			<property name="allowInSwitchCase" value="true" />
 		</module>
 		<module name="EmptyBlock" />
-		<!--<module name="LeftCurly"/> -->
-		<!--<module name="NeedBraces"/> -->
-		<!--<module name="RightCurly"/> -->
+		<module name="LeftCurly" />
+		<module name="NeedBraces" />
+		<module name="RightCurly" />
 
 		<!-- Checks for common coding problems -->
 		<!-- See https://checkstyle.org/config_coding.html -->
@@ -154,14 +154,14 @@
 		<module name="FinalClass" />
 		<module name="HideUtilityClassConstructor" />
 		<module name="InterfaceIsType" />
-		<!--<module name="VisibilityModifier"/> -->
+		<!-- <module name="VisibilityModifier" /> -->
 
 		<!-- Miscellaneous other checks. -->
 		<!-- See https://checkstyle.org/config_misc.html -->
-		<!--<module name="ArrayTypeStyle"/> -->
-		<!--<module name="FinalParameters"/> -->
-		<!--<module name="TodoComment"/> -->
-		<!--<module name="UpperEll"/> -->
+		<module name="ArrayTypeStyle" />
+		<module name="FinalParameters" />
+		<module name="TodoComment" />
+		<module name="UpperEll" />
 
 		<!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
 		<!--<module name="SuppressionXpathFilter"> <property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}" 

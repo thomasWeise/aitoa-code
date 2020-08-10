@@ -40,7 +40,7 @@ public final class JSSPUnaryOperatorNSwap
     boolean hasNext;
     do { // we repeat a geometrically distributed number of times
       hasNext = random.nextBoolean();
-      inner: for (;;) {// find a location with a different job
+      inner: for (;;) { // find a location with a different job
         final int j = random.nextInt(dest.length);
         final int job_j = dest[j];
         if ((last != job_j) && // don't swap job with itself

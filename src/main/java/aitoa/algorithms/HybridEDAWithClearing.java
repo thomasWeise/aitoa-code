@@ -149,7 +149,7 @@ public final class HybridEDAWithClearing<X, Y>
         }
       }
 
-      for (;;) {// each iteration: LS, update model, then sample
+      for (;;) { // each iteration: LS, update model, then sample
         for (final Individual<X> ind : P) {
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2

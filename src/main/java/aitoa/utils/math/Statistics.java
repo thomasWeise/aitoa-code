@@ -353,7 +353,7 @@ public final class Statistics {
     // compute the result with long arithmetic
     final long result = aa / bb;
     final long rest = aa % bb;
-    if (rest == 0L) {// cool, we could compute it exactly
+    if (rest == 0L) { // cool, we could compute it exactly
       return Long.valueOf(result);
     }
 
@@ -524,7 +524,7 @@ public final class Statistics {
           "need at least one value."); //$NON-NLS-1$
     }
 
-    allSame: {// are all values the same?
+    allSame: { // are all values the same?
       final long l1 = values[0];
       for (final long v : values) {
         if (v != l1) {
@@ -907,7 +907,7 @@ public final class Statistics {
           "need at least one value."); //$NON-NLS-1$
     }
 
-    allSame: {// are all values the same?
+    allSame: { // are all values the same?
       final double l1 = values[0];
       for (final double v : values) {
         if (!Double.isFinite(v)) {
