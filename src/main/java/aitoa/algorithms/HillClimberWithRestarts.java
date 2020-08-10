@@ -110,8 +110,8 @@ public final class HillClimberWithRestarts<X, Y>
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
 // end relevant
-    final X x_cur = process.getSearchSpace().create();
-    final X x_best = process.getSearchSpace().create();
+    final X xCur = process.getSearchSpace().create();
+    final X xBest = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
@@ -119,20 +119,20 @@ public final class HillClimberWithRestarts<X, Y>
     final Random random = process.getRandom();// get random gen
 
 // start relevant
-// omitted: initialize local variables x_cur, x_best, nullary,
+// omitted: initialize local variables xCur, xBest, nullary,
 // unary,random, failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
-      nullary.apply(x_best, random); // sample random solution
-      double f_best = process.evaluate(x_best); // evaluate it
+      nullary.apply(xBest, random); // sample random solution
+      double fBest = process.evaluate(xBest); // evaluate it
       long failCounter = 0L; // initialize counters
 
       while (!(process.shouldTerminate())) { // inner loop
-        unary.apply(x_best, x_cur, random); // try to improve
-        final double f_cur = process.evaluate(x_cur); // evaluate
+        unary.apply(xBest, xCur, random); // try to improve
+        final double fCur = process.evaluate(xCur); // evaluate
 
-        if (f_cur < f_best) { // we found a better solution
-          f_best = f_cur; // remember best quality
-          process.getSearchSpace().copy(x_cur, x_best); // copy
+        if (fCur < fBest) { // we found a better solution
+          fBest = fCur; // remember best quality
+          process.getSearchSpace().copy(xCur, xBest); // copy
           failCounter = 0L; // reset number of unsuccessful steps
         } else { // ok, we did not find an improvement
           if ((++failCounter) >= this.failsBeforeRestart) {

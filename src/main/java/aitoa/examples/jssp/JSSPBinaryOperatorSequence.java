@@ -54,17 +54,17 @@ public final class JSSPBinaryOperatorSequence
 // start relevant
   public void apply(final int[] x0, final int[] x1,
       final int[] dest, final Random random) {
-// omitted: initialization of arrays done_x0 and done_x1 (that
+// omitted: initialization of arrays doneX0 and doneX1 (that
 // remember the already-assigned sub-jobs from x0 and x1) of
 // length=m*n to all false; and indices desti, x0i, x10 to 0
 // end relevant
 
-    final boolean[] done_x0 = this.mDoneX0;
-    Arrays.fill(done_x0, false); // nothing used from x0 yet
-    final boolean[] done_x1 = this.mDoneX1;
-    Arrays.fill(done_x1, false); // nothing used from xy yet
+    final boolean[] doneX0 = this.mDoneX0;
+    Arrays.fill(doneX0, false); // nothing used from x0 yet
+    final boolean[] doneX1 = this.mDoneX1;
+    Arrays.fill(doneX1, false); // nothing used from xy yet
 
-    final int length = done_x0.length; // length = m*n
+    final int length = doneX0.length; // length = m*n
     int desti = 0; // all array indexes = 0
     int x0i = 0;
     int x1i = 0;
@@ -78,22 +78,22 @@ public final class JSSPBinaryOperatorSequence
       }
 
       for (int i = x0i;; i++) { // mark the sub-job as done in x0
-        if ((x0[i] == add) && (!done_x0[i])) { // find added job
-          done_x0[i] = true;// found it and marked it
+        if ((x0[i] == add) && (!doneX0[i])) { // find added job
+          doneX0[i] = true;// found it and marked it
           break; // quit sub-job finding loop
         }
       }
-      while (done_x0[x0i]) { // now we move the index x0i to the
+      while (doneX0[x0i]) { // now we move the index x0i to the
         x0i++; // next, not-yet completed sub-job in x0
       }
 
       for (int i = x1i;; i++) { // mark the sub-job as done in x1
-        if ((x1[i] == add) && (!done_x1[i])) { // find added job
-          done_x1[i] = true; // found it and marked it
+        if ((x1[i] == add) && (!doneX1[i])) { // find added job
+          doneX1[i] = true; // found it and marked it
           break; // quit sub-job finding loop
         }
       }
-      while (done_x1[x1i]) { // now we move the index x1i to the
+      while (doneX1[x1i]) { // now we move the index x1i to the
         x1i++; // next, not-yet completed sub-job in x0
       }
     } // loop back to main loop and to add next sub-job

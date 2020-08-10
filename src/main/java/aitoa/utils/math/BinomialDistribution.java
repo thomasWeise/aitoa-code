@@ -314,8 +314,8 @@ public final class BinomialDistribution
           break; // acceptance test
         }
       } else {
-        // lower and upper squeeze tests, based on lower bounds
-        // for log p(K)
+// lower and upper squeeze tests, based on lower bounds for
+// log p(K)
         V = Math.log(V);
         final double T = (-Km * Km) / (this.mSs + this.mSs);
         final double E = (Km / this.mSs)

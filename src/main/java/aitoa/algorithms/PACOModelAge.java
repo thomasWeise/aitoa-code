@@ -224,15 +224,13 @@ public class PACOModelAge<X> extends ACOModel<X> {
       final int size = this.mCurPopSize;
       final int index = this.mCurPopIndex;
       final int[] dest = this.mPopulation[index];
-      if (size >= this.popSize) { // population is full: remove
-                                  // oldest
+      if (size >= this.popSize) { // pop full: remove oldest
         this.mMatrix.removePermutation(dest);
       }
       System.arraycopy(pi, 0, dest, 0, this.length); // copy
       this.mMatrix.addPermutation(pi); // add edges to pheros
       this.mCurPopSize = Math.min(this.popSize, size + 1);
-      this.mCurPopIndex = (index + 1) % this.popSize; // move
-                                                      // index
+      this.mCurPopIndex = (index + 1) % this.popSize; // move idx
     }
   }
 

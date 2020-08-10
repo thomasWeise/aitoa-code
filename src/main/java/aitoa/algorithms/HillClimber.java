@@ -39,10 +39,10 @@ public final class HillClimber<X, Y>
   @Override
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables x_cur, x_best, nullary, unary, random
+// init local variables xCur, xBest, nullary, unary, random
 // end relevant
-    final X x_cur = process.getSearchSpace().create();
-    final X x_best = process.getSearchSpace().create();
+    final X xCur = process.getSearchSpace().create();
+    final X xBest = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
@@ -50,19 +50,19 @@ public final class HillClimber<X, Y>
     final Random random = process.getRandom();// get random gen
 // start relevant
 // Create starting point: a random point in the search space.
-    nullary.apply(x_best, random); // Put random point in x_best.
-    double f_best = process.evaluate(x_best); // map & evaluate
+    nullary.apply(xBest, random); // Put random point in xBest.
+    double fBest = process.evaluate(xBest); // map & evaluate
 
     while (!process.shouldTerminate()) {
-// Create a slightly modified copy of x_best and store in x_cur.
-      unary.apply(x_best, x_cur, random);
-// Map x_cur from X to Y and evaluate candidate solution.
-      final double f_cur = process.evaluate(x_cur);
-      if (f_cur < f_best) { // we found a better solution
-// Remember best objective value and copy x_cur to x_best.
-        f_best = f_cur;
-        process.getSearchSpace().copy(x_cur, x_best);
-      } // Otherwise, i.e., f_cur >= f_best: Just forget x_cur.
+// Create a slightly modified copy of xBest and store in xCur.
+      unary.apply(xBest, xCur, random);
+// Map xCur from X to Y and evaluate candidate solution.
+      final double fCur = process.evaluate(xCur);
+      if (fCur < fBest) { // we found a better solution
+// Remember best objective value and copy xCur to xBest.
+        fBest = fCur;
+        process.getSearchSpace().copy(xCur, xBest);
+      } // Otherwise, i.e., fCur >= fBest: Just forget xCur.
     } // Repeat until computational budget is exhausted.
   } // `process` has remembered the best candidate solution.
 // end relevant

@@ -103,19 +103,19 @@ public final class TreeSpace implements ISpace<Node[]> {
       throw new IllegalArgumentException(
           "Node type of a node in optimization code cannot be dummy type."); //$NON-NLS-1$
     }
-    final int type_childCount = t.getChildCount();
-    final int node_childCount = n.getChildCount();
-    if (type_childCount != node_childCount) {
+    final int typeChildCount = t.getChildCount();
+    final int nodeChildCount = n.getChildCount();
+    if (typeChildCount != nodeChildCount) {
       throw new IllegalArgumentException(
           "Child-count disagreement: node says " + //$NON-NLS-1$
-              node_childCount + ", while type says " + //$NON-NLS-1$
-              type_childCount);
+              nodeChildCount + ", while type says " + //$NON-NLS-1$
+              typeChildCount);
     }
 
     int d = 0;
     int w = 1;
 
-    for (int i = node_childCount; (--i) >= 0;) {
+    for (int i = nodeChildCount; (--i) >= 0;) {
       final Node c = n.getChild(i);
 
       final NodeTypeSet<?> cts = c.getType().getTypeSet();

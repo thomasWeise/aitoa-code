@@ -156,7 +156,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
 // the jobs we can choose from:
     final int[] jobChooseFrom = this.mJobChoseFrom;
     final long[] prob = this.mProb; // used for cumulative sum
-    final long[][] M = this.mModel; // the model
+    final long[][] model = this.mModel; // the model
 // we can choose from n jobs
     int jobChooseLength = jobChooseFrom.length; // = n
 
@@ -169,7 +169,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
 
 // build the cumulative frequency vector, N be the overall sum
       for (int j = 0; j < jobChooseLength; ++j) {
-        N += M[k][jobChooseFrom[j]];
+        N += model[k][jobChooseFrom[j]];
         prob[j] = N;
       }
 

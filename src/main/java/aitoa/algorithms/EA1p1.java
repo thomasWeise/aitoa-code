@@ -38,10 +38,9 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
   /** {@inheritDoc} */
   @Override
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables x_cur, x_best, nullary, unary, random
-
-    final X x_cur = process.getSearchSpace().create();
-    final X x_best = process.getSearchSpace().create();
+// init local variables xCur, xBest, nullary, unary, random
+    final X xCur = process.getSearchSpace().create();
+    final X xBest = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
@@ -49,19 +48,19 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     final Random random = process.getRandom();// get random gen
 
 // create starting point: a random point in the search space
-    nullary.apply(x_best, random); // put random point in x_best
-    double f_best = process.evaluate(x_best); // map & evaluate
+    nullary.apply(xBest, random); // put random point in xBest
+    double fBest = process.evaluate(xBest); // map & evaluate
 
     while (!process.shouldTerminate()) {
-// create a slightly modified copy of x_best and store in x_cur
-      unary.apply(x_best, x_cur, random);
-// map x_cur from X to Y and evaluate candidate solution
-      final double f_cur = process.evaluate(x_cur);
-      if (f_cur <= f_best) { // we found a better solution
-// remember best objective value and copy x_cur to x_best
-        f_best = f_cur;
-        process.getSearchSpace().copy(x_cur, x_best);
-      } // otherwise, i.e., f_cur > f_best: just forget x_cur
+// create a slightly modified copy of xBest and store in xCur
+      unary.apply(xBest, xCur, random);
+// map xCur from X to Y and evaluate candidate solution
+      final double fCur = process.evaluate(xCur);
+      if (fCur <= fBest) { // we found a better solution
+// remember best objective value and copy xCur to xBest
+        fBest = fCur;
+        process.getSearchSpace().copy(xCur, xBest);
+      } // otherwise, i.e., fCur > fBest: just forget xCur
     } // until time is up
   } // process will have remembered the best candidate solution
 

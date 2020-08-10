@@ -50,9 +50,9 @@ public final class EA1p1WithFitness<X, Y>
   @Override
   @SuppressWarnings("unchecked")
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables pop, nullary, unary, random
+// init local variables P, nullary, unary, random
 // end relevant
-    final FitnessIndividual<X>[] pop = new FitnessIndividual[] {
+    final FitnessIndividual<X>[] P = new FitnessIndividual[] {
         new FitnessIndividual<>(
             process.getSearchSpace().create(),
             Double.POSITIVE_INFINITY),
@@ -68,19 +68,19 @@ public final class EA1p1WithFitness<X, Y>
     final Random random = process.getRandom();// get random gen
     this.fitness.initialize();
 // start relevant
-    nullary.apply(pop[0].x, random); // create and evaluate first
-    pop[0].quality = process.evaluate(pop[0].x); // individual
+    nullary.apply(P[0].x, random); // create and evaluate first
+    P[0].quality = process.evaluate(P[0].x); // individual
 
     while (!process.shouldTerminate()) {
-// create a slightly modified copy of x_best and store in x_cur
-      unary.apply(pop[0].x, pop[1].x, random);
-// map x_cur from X to Y and evaluate candidate solution
-      pop[1].quality = process.evaluate(pop[1].x);
-      this.fitness.assignFitness(pop); // compute fitness
-      if (this.fitness.compare(pop[0], pop[1]) >= 0) {
-        final FitnessIndividual<X> temp = pop[0];
-        pop[0] = pop[1]; // if new individual has better or
-        pop[1] = temp; // equal fitness: accept it
+// create a slightly modified copy of xBest and store in xCur
+      unary.apply(P[0].x, P[1].x, random);
+// map xCur from X to Y and evaluate candidate solution
+      P[1].quality = process.evaluate(P[1].x);
+      this.fitness.assignFitness(P); // compute fitness
+      if (this.fitness.compare(P[0], P[1]) >= 0) {
+        final FitnessIndividual<X> temp = P[0];
+        P[0] = P[1]; // if new individual has better or
+        P[1] = temp; // equal fitness: accept it
       }
     } // until time is up
   } // process will have remembered the best candidate solution

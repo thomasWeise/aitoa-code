@@ -155,7 +155,7 @@ public final class MAWithFitness<X, Y>
           continue;
         }
         int steps = this.maxLSSteps;
-// refine P[i] with local search à la HillClimber2 (code omitted)
+// refine ind with local search a la HillClimber2 (code omitted)
         do { // local search in style of HillClimber2
           improved = unary.enumerate(random, ind.x, temp, //
               point -> {

@@ -73,24 +73,24 @@ public final class JSSPUnaryOperator12SwapR
 
 // choose the index of the first sub-job to swap
     final int i = random.nextInt(dest.length);
-    final int job_i = dest[i]; // remember job id
+    final int jobI = dest[i]; // remember job id
 
     for (;;) { // try to find a location j with a different job
       final int j = random.nextInt(dest.length);
-      final int job_j = dest[j];
-      if (job_i != job_j) { // we found two locations with two
+      final int jobJ = dest[j];
+      if (jobI != jobJ) { // we found two locations with two
         if (random.nextBoolean()) { // swap 2 with prob. 0.5
-          dest[i] = job_j; // different values
-          dest[j] = job_i; // then we swap the values
+          dest[i] = jobJ; // different values
+          dest[j] = jobI; // then we swap the values
           return; // and are done
         } // in 50% of the cases, this was is 1swap
         for (;;) { // find a location k with a different job
           final int k = random.nextInt(dest.length);
-          final int job_k = dest[k];
-          if ((job_i != job_k) && (job_j != job_k)) {
-            dest[i] = job_j; // we got three locations with
-            dest[j] = job_k; // different jobs
-            dest[k] = job_i; // then we swap the values
+          final int jobK = dest[k];
+          if ((jobI != jobK) && (jobJ != jobK)) {
+            dest[i] = jobJ; // we got three locations with
+            dest[j] = jobK; // different jobs
+            dest[k] = jobI; // then we swap the values
             return; // and are done
           }
         }
@@ -139,41 +139,41 @@ public final class JSSPUnaryOperator12SwapR
     System.arraycopy(x, 0, dest, 0, ii); // copy x to dest
     for (; (--ii) > 0;) { // ii from 1...n-1
       final int i = indexes[ii]; // get i: random order
-      final int job_i = dest[i];
+      final int jobI = dest[i];
       for (int jj = ii; (--jj) >= 0;) { // jj from 0...ii-1
         final int j = indexes[jj]; // get j: random order
-        final int job_j = dest[j];
-        if (job_i != job_j) {
+        final int jobJ = dest[j];
+        if (jobI != jobJ) {
           for (int kk = jj; (--kk) >= 0;) { // kk from 0...j-1
             final int k = indexes[kk];
-            final int job_k = dest[k];
-            if ((job_i != job_k) && (job_j != job_k)) {
-              dest[i] = job_j;// there are two possible moves
-              dest[j] = job_k;// first possible move:
-              dest[k] = job_i;// ijk -> jki
+            final int jobK = dest[k];
+            if ((jobI != jobK) && (jobJ != jobK)) {
+              dest[i] = jobJ;// there are two possible moves
+              dest[j] = jobK;// first possible move:
+              dest[k] = jobI;// ijk -> jki
               if (visitor.test(dest)) {
                 return true; // visitor says: stop -> return true
               } // visitor did not say stop, so we continue
-              dest[i] = job_k; // second possible move:
-              dest[j] = job_i; // ijk -> kij
-              dest[k] = job_j; // all others leave some unchanged
+              dest[i] = jobK; // second possible move:
+              dest[j] = jobI; // ijk -> kij
+              dest[k] = jobJ; // all others leave some unchanged
               if (visitor.test(dest)) {
                 return true; // visitor says: stop -> return true
               } // visitor did not say stop, so we continue
-              dest[i] = job_i; // so we revert the moves
-              dest[j] = job_j; // by writing back the original
-              dest[k] = job_k; // values
-            } // end of finding job_k != job_i and job_j
+              dest[i] = jobI; // so we revert the moves
+              dest[j] = jobJ; // by writing back the original
+              dest[k] = jobK; // values
+            } // end of finding jobK != jobI and jobJ
           } // end of iteration of k over 0...j-1
-// do the single swap of job_i and job_j
-          dest[i] = job_j; // then we swap the values
-          dest[j] = job_i; // and will then call the visitor
+// do the single swap of jobI and jobJ
+          dest[i] = jobJ; // then we swap the values
+          dest[j] = jobI; // and will then call the visitor
           if (visitor.test(dest)) {
             return true; // visitor says: stop -> return true
           } // visitor did not say stop, so we need to
-          dest[i] = job_i; // revert the change
-          dest[j] = job_j; // and continue
-        } // end of finding job_j != job_i
+          dest[i] = jobI; // revert the change
+          dest[j] = jobJ; // and continue
+        } // end of finding jobJ != jobI
       } // end of iteration via index j
     } // end of iteration via index i
     return false; // we have enumerated the complete neighborhood

@@ -50,36 +50,36 @@ public final class HillClimber2WithRestarts<X, Y>
   @Override
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// initialization of local variables x_cur, x_best, nullary,
+// initialization of local variables xCur, xBest, nullary,
 // unary, random omitted for brevety
 // end relevant
-    final X x_cur = process.getSearchSpace().create();
-    final X x_best = process.getSearchSpace().create();
+    final X xCur = process.getSearchSpace().create();
+    final X xBest = process.getSearchSpace().create();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator(); // get nullary op
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
     boolean improved = false;
-    final double[] f_best = new double[1]; // needs to be array
+    final double[] fBest = new double[1]; // needs to be array
 // start relevant
     while (!process.shouldTerminate()) { // main loop
 // create starting point: a random point in the search space
-// put random point in x_best
-      nullary.apply(x_best, random);
-      f_best[0] = process.evaluate(x_best); // evaluate
+// put random point in xBest
+      nullary.apply(xBest, random);
+      fBest[0] = process.evaluate(xBest); // evaluate
 
       do { // repeat until budget exhausted or no improving move
-// enumerate all neighboring solutions of x_best and receive them
-// one-by-one in parameter x (for which x_cur is used)
-        improved = unary.enumerate(random, x_best, x_cur, //
+// enumerate all neighboring solutions of xBest and receive them
+// one-by-one in parameter x (for which xCur is used)
+        improved = unary.enumerate(random, xBest, xCur, //
             x -> {
 // map x from X to Y and evaluate candidate solution
-              final double f_cur = process.evaluate(x);
-              if (f_cur < f_best[0]) { // found better solution
-// remember best objective value and copy x to x_best
-                f_best[0] = f_cur;
-                process.getSearchSpace().copy(x, x_best);
+              final double fCur = process.evaluate(x);
+              if (fCur < fBest[0]) { // found better solution
+// remember best objective value and copy x to xBest
+                fBest[0] = fCur;
+                process.getSearchSpace().copy(x, xBest);
                 return true; // quit enumerating neighborhood
               }
 // no improvement: continue enumeration unless time is up

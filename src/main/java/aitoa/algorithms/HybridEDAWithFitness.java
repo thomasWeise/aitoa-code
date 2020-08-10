@@ -136,7 +136,7 @@ public final class HybridEDAWithFitness<X, Y>
         process.getNullarySearchOperator();
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator();
-    final IModel<X> Model = ((IModel<X>) (this.model));
+    final IModel<X> M = ((IModel<X>) (this.model));
     boolean improved;
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.lambda];
@@ -145,8 +145,7 @@ public final class HybridEDAWithFitness<X, Y>
 
     restart: while (!process.shouldTerminate()) {
 // the initialization of local variables is omitted for brevity
-      Model.initialize(); // initialize model=uniform
-                          // distribution
+      M.initialize(); // initialize to uniform distribution
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -167,34 +166,32 @@ public final class HybridEDAWithFitness<X, Y>
                   final double newQuality =
                       process.evaluate(point);
                   if (newQuality < ind.quality) { // better?
+                    // point
                     ind.quality = newQuality; // store quality
                     searchSpace.copy(point, ind.x); // store
-                                                    // point
                     return (true); // exit to next loop
                   } // if we get here, point is not better
                   return process.shouldTerminate();
-                }); // repeat this until no improvement or time
-                    // is
-                    // up
+                }); // repeat until no improvement or time up
             if (process.shouldTerminate()) { // we return
               return; // best solution is stored in process
             }
           } while (improved && ((--steps) > 0));
         }
 
-        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+        if (this.mu < M.minimumSamplesNeededForUpdate()) {
           continue restart;
         }
         this.fitness.assignFitness(P);
         Arrays.sort(P, this.fitness);
-        Model.update(IModel.use(P, 0, this.mu)); // update model
+        M.update(IModel.use(P, 0, this.mu)); // update
 
 // sample new population
         for (final FitnessIndividual<X> dest : P) {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-          Model.apply(dest.x, random);
+          M.apply(dest.x, random);
           dest.quality = process.evaluate(dest.x);
         } // the end of the new points generation
         if (process.shouldTerminate()) { // we return

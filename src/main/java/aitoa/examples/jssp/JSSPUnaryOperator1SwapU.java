@@ -75,14 +75,14 @@ public final class JSSPUnaryOperator1SwapU
 
 // choose the index of the first sub-job to swap
     final int i = random.nextInt(dest.length);
-    final int job_i = dest[i]; // remember job id
+    final int jobI = dest[i]; // remember job id
 
     for (;;) { // try to find a location j with a different job
       final int j = random.nextInt(dest.length);
-      final int job_j = dest[j];
-      if (job_i != job_j) { // we found two locations with two
-        dest[i] = job_j; // different values
-        dest[j] = job_i; // then we swap the values
+      final int jobJ = dest[j];
+      if (jobI != jobJ) { // we found two locations with two
+        dest[i] = jobJ; // different values
+        dest[j] = jobI; // then we swap the values
         return; // and are done
       }
     }
@@ -137,17 +137,17 @@ public final class JSSPUnaryOperator1SwapU
       indexes[swapWith] = indexes[++start];
       indexes[start] = b;
 
-      final int job_i = dest[a];// the job at first index
-      final int job_j = dest[b];// the job at second index
+      final int jobI = dest[a];// the job at first index
+      final int jobJ = dest[b];// the job at second index
 
-      if (job_i != job_j) {
-        dest[a] = job_j; // then we swap the values
-        dest[b] = job_i; // and will then call the visitor
+      if (jobI != jobJ) {
+        dest[a] = jobJ; // then we swap the values
+        dest[b] = jobI; // and will then call the visitor
         if (visitor.test(dest)) {
           return true; // visitor says: stop -> return true
         } // visitor did not say stop, so we need to
-        dest[a] = job_i; // revert the change
-        dest[b] = job_j; // and continue
+        dest[a] = jobI; // revert the change
+        dest[b] = jobJ; // and continue
       }
     }
     return false; // we have enumerated the complete neighborhood

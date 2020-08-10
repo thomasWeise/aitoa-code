@@ -143,7 +143,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
     while (!process.shouldTerminate()) { // main loop
       for (final LSIndividual<X> ind : P) {
 // If ind is not known to be local optimum, refine it with local
-// search à la HillClimber2 for a given number of maximum steps
+// search a la HillClimber2 for a given number of maximum steps
 // (code omitted for brevity).
 // end relevant
         if (ind.isOptimum) {

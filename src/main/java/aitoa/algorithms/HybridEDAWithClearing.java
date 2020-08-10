@@ -129,15 +129,14 @@ public final class HybridEDAWithClearing<X, Y>
         process.getNullarySearchOperator();
     final IUnarySearchOperator<X> unary =
         process.getUnarySearchOperator();
-    final IModel<X> Model = ((IModel<X>) (this.model));
+    final IModel<X> M = ((IModel<X>) (this.model));
     boolean improved;
     final Individual<X>[] P = new Individual[this.lambda];
     final X temp = searchSpace.create();
 
     restart: while (!process.shouldTerminate()) {
 // the initialization of local variables is omitted for brevity
-      Model.initialize(); // initialize model=uniform
-                          // distribution
+      M.initialize(); // initialize to uniform distribution
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -160,13 +159,10 @@ public final class HybridEDAWithClearing<X, Y>
                   if (newQuality < ind.quality) { // better?
                     ind.quality = newQuality; // store quality
                     searchSpace.copy(point, ind.x); // store
-                                                    // point
                     return (true); // exit to next loop
                   } // if we get here, point is not better
                   return process.shouldTerminate();
-                }); // repeat this until no improvement or time
-                    // is
-                    // up
+                }); // repeat until no improvement or time up
             if (process.shouldTerminate()) { // we return
               return; // best solution is stored in process
             }
@@ -175,17 +171,17 @@ public final class HybridEDAWithClearing<X, Y>
 
         Arrays.sort(P, Individual.BY_QUALITY);
         final int u = Utils.qualityBasedClearing(P, this.mu);
-        if (u < Model.minimumSamplesNeededForUpdate()) {
+        if (u < M.minimumSamplesNeededForUpdate()) {
           continue restart;
         }
-        Model.update(IModel.use(P, 0, u)); // update model
+        M.update(IModel.use(P, 0, u)); // update
 
 // sample new population
         for (final Individual<X> dest : P) {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-          Model.apply(dest.x, random);
+          M.apply(dest.x, random);
           dest.quality = process.evaluate(dest.x);
         } // the end of the new points generation
       } // the end of the main loop

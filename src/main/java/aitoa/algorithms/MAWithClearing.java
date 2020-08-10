@@ -177,7 +177,7 @@ public final class MAWithClearing<X, Y>
           ind.isOptimum = !improved; // is it an optimum?
         } // end of 1 ls iteration: we have refined 1 solution
 
-        RandomUtils.shuffle(random, P, 0, P.length); // make fair
+        RandomUtils.shuffle(random, P, 0, P.length); // fair
         final int u = Utils.qualityBasedClearing(P, this.mu);
         if (u <= 1) { // 1 <= u <= mu unique solutions
           continue restart; // if u==1, restart, because

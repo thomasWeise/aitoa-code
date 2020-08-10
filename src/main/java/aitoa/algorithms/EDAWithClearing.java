@@ -111,13 +111,13 @@ public final class EDAWithClearing<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator();
-    final IModel<X> Model = this.model;
+    final IModel<X> M = this.model;
 
     final Individual<X>[] P = new Individual[this.lambda];
 // start relevant
 // local variable initialization omitted for brevity
     restart: while (!process.shouldTerminate()) {
-      Model.initialize(); // initialize model=uniform
+      M.initialize(); // initialize to uniform distribution
 
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
@@ -137,11 +137,11 @@ public final class EDAWithClearing<X, Y>
           continue restart;
         }
 // update model with 1<u<=mu<lambda best unique solutions
-        Model.update(IModel.use(P, 0, u));
+        M.update(IModel.use(P, 0, u));
 
 // sample new population
         for (final Individual<X> dest : P) {
-          Model.apply(dest.x, random); // create new solution
+          M.apply(dest.x, random); // create new solution
           dest.quality = process.evaluate(dest.x);
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process

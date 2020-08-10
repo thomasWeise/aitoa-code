@@ -107,7 +107,7 @@ public final class EDAWithFitness<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final INullarySearchOperator<X> nullary =
         process.getNullarySearchOperator();
-    final IModel<X> Model = this.model;
+    final IModel<X> M = this.model;
 
     final FitnessIndividual<X>[] P =
         new FitnessIndividual[this.lambda];
@@ -117,9 +117,7 @@ public final class EDAWithFitness<X, Y>
     restart: while (!process.shouldTerminate()) {
 // start relevant
 // local variable initialization omitted for brevity
-      Model.initialize(); // initialize model=uniform
-                          // distribution
-
+      M.initialize(); // initialize to uniform distribution
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
@@ -132,18 +130,18 @@ public final class EDAWithFitness<X, Y>
 
       for (;;) { // each iteration: update model, sample model
 // end relevant
-        if (this.mu < Model.minimumSamplesNeededForUpdate()) {
+        if (this.mu < M.minimumSamplesNeededForUpdate()) {
           continue restart;
         }
 // start relevant
         this.fitness.assignFitness(P);
         Arrays.sort(P, this.fitness);
 // update model with mu<lambda best solutions
-        Model.update(IModel.use(P, 0, this.mu));
+        M.update(IModel.use(P, 0, this.mu));
 
 // sample new population
         for (final FitnessIndividual<X> dest : P) {
-          Model.apply(dest.x, random); // create new solution
+          M.apply(dest.x, random); // create new solution
           dest.quality = process.evaluate(dest.x);
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process

@@ -49,14 +49,14 @@ public final class JSSPUnaryOperator1Swap
 
 // choose the index of the first sub-job to swap
     final int i = random.nextInt(dest.length);
-    final int job_i = dest[i]; // remember job id
+    final int jobI = dest[i]; // remember job id
 
     for (;;) { // try to find a location j with a different job
       final int j = random.nextInt(dest.length);
-      final int job_j = dest[j];
-      if (job_i != job_j) { // we found two locations with two
-        dest[i] = job_j; // different values
-        dest[j] = job_i; // then we swap the values
+      final int jobJ = dest[j];
+      if (jobI != jobJ) { // we found two locations with two
+        dest[i] = jobJ; // different values
+        dest[j] = jobI; // then we swap the values
         return; // and are done
       }
     }
@@ -101,17 +101,17 @@ public final class JSSPUnaryOperator1Swap
     int i = x.length; // get the length
     System.arraycopy(x, 0, dest, 0, i); // copy x to dest
     for (; (--i) > 0;) { // iterate over all indices 1..(n-1)
-      final int job_i = dest[i]; // remember job id at index i
+      final int jobI = dest[i]; // remember job id at index i
       for (int j = i; (--j) >= 0;) { // iterate over 0..(i-1)
-        final int job_j = dest[j]; // remember job at index j
-        if (job_i != job_j) { // both jobs are different
-          dest[i] = job_j; // then we swap the values
-          dest[j] = job_i; // and will then call the visitor
+        final int jobJ = dest[j]; // remember job at index j
+        if (jobI != jobJ) { // both jobs are different
+          dest[i] = jobJ; // then we swap the values
+          dest[j] = jobI; // and will then call the visitor
           if (visitor.test(dest)) {
             return true; // visitor says: stop -> return true
           } // visitor did not say stop, so we need to
-          dest[i] = job_i; // revert the change
-          dest[j] = job_j; // and continue
+          dest[i] = jobI; // revert the change
+          dest[j] = jobJ; // and continue
         } // end of creation of different neighbor
       } // end of iteration via index j
     } // end of iteration via index i

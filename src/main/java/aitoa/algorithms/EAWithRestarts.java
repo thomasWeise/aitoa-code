@@ -130,7 +130,7 @@ public final class EAWithRestarts<X, Y>
         process.getBinarySearchOperator();
     int p2;
 
-    final Individual<X>[] population =
+    final Individual<X>[] P =
         new Individual[this.mu + this.lambda];
 
     while (!process.shouldTerminate()) { // restart
@@ -138,10 +138,10 @@ public final class EAWithRestarts<X, Y>
       int nonImprovedGen = 0;
 
 // first generation: fill population with random individuals
-      for (int i = population.length; (--i) >= 0;) {
+      for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         nullary.apply(x, random);
-        population[i] = new Individual<>(x, process.evaluate(x));
+        P[i] = new Individual<>(x, process.evaluate(x));
         if (process.shouldTerminate()) {
           return;
         }
@@ -151,32 +151,29 @@ public final class EAWithRestarts<X, Y>
 // main loop: one iteration = one generation
         ++nonImprovedGen; // assume no improvement
 
-// sort the population: mu best individuals at front are selected
-        Arrays.sort(population, Individual.BY_QUALITY);
+// sort the P: mu best individuals at front are selected
+        Arrays.sort(P, Individual.BY_QUALITY);
 // shuffle mating pool to ensure fairness if lambda<mu
-        RandomUtils.shuffle(random, population, 0, this.mu);
+        RandomUtils.shuffle(random, P, 0, this.mu);
         int p1 = -1; // index to iterate over first parent
 
 // override the worse lambda solutions with new offsprings
-        for (int index = population.length;
-            (--index) >= this.mu;) {
+        for (int index = P.length; (--index) >= this.mu;) {
           if (process.shouldTerminate()) {
             return; // return best solution
           }
 
-          final Individual<X> dest = population[index];
+          final Individual<X> dest = P[index];
           p1 = (p1 + 1) % this.mu;
-          final Individual<X> parent1 = population[p1];
+          final Individual<X> parent1 = P[p1];
 
           if (random.nextDouble() <= this.cr) { // crossover!
             do { // find a second parent who is different from
               p2 = random.nextInt(this.mu);
             } while (p2 == p1);
 
-            binary.apply(parent1.x, population[p2].x, dest.x,
-                random); // perform recombination
-          } else { // otherwise create modified copy of first
-                   // parent
+            binary.apply(parent1.x, P[p2].x, dest.x, random); // recombination
+          } else { // otherwise create modified copy of p1
             unary.apply(parent1.x, dest.x, random);
           }
 

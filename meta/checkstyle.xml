@@ -84,7 +84,7 @@
 		<!-- Checks for Naming Conventions. -->
 		<!-- See https://checkstyle.org/config_naming.html -->
 		<module name="ConstantName" />
-		<!--<module name="LocalFinalVariableName"/> -->
+		<!-- <module name="LocalFinalVariableName" /> -->
 		<!--<module name="LocalVariableName"/> -->
 		<module name="MemberName" />
 		<module name="MethodName" />
@@ -115,8 +115,8 @@
 		<!-- <module name="NoWhitespaceAfter" /> -->
 		<module name="NoWhitespaceBefore" />
 		<module name="OperatorWrap" />
-		<!--<module name="ParenPad"/> -->
-		<!--<module name="TypecastParenPad"/> -->
+		<module name="ParenPad" />
+		<module name="TypecastParenPad" />
 		<!--<module name="WhitespaceAfter"/> -->
 		<module name="WhitespaceAround" />
 
