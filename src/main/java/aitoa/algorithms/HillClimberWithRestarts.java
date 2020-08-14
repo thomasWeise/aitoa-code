@@ -141,7 +141,7 @@ public final class HillClimberWithRestarts<X, Y>
         } // failure
       } // inner loop
     } // outer loop
-  }
+  } // process has stored best-so-far result
 // end relevant
 
   /** {@inheritDoc} */
