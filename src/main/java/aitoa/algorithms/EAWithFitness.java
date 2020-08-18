@@ -151,7 +151,7 @@ public final class EAWithFitness<X, Y>
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
 
-// override the worse lambda solutions with new offsprings
+// overwrite the worse lambda solutions with new offsprings
       for (int index = P.length; (--index) >= this.mu;) {
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process

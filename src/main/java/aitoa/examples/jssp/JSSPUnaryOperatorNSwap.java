@@ -35,19 +35,19 @@ public final class JSSPUnaryOperatorNSwap
 // choose the index of the first sub-job to swap
     int i = random.nextInt(dest.length);
     final int first = dest[i];
-    int last = first; // last stores the last job id to swap with
+    int last = first; // last stores the job id to "swap in"
 
     boolean hasNext;
     do { // we repeat a geometrically distributed number of times
       hasNext = random.nextBoolean();
       inner: for (;;) { // find a location with a different job
         final int j = random.nextInt(dest.length);
-        final int job_j = dest[j];
-        if ((last != job_j) && // don't swap job with itself
-            (hasNext || (first != job_j))) { // also not at end
-          dest[i] = job_j; // overwrite job at index i with job_j
+        final int jobJ = dest[j];
+        if ((last != jobJ) && // don't swap job with itself
+            (hasNext || (first != jobJ))) { // also not at end
+          dest[i] = jobJ; // overwrite job at index i with jobJ
           i = j; // remember index j: we will overwrite it next
-          last = job_j; // but not with the same value job_j...
+          last = jobJ; // but not with the same value jobJ...
           break inner;
         }
       }

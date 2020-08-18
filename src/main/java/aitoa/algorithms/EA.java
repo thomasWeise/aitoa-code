@@ -147,9 +147,9 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
 // start relevant
 // first generation: fill population with random individuals
     for (int i = P.length; (--i) >= 0;) {
-      final X x = searchSpace.create();
-      nullary.apply(x, random);
-      P[i] = new Individual<>(x, process.evaluate(x));
+      final X x = searchSpace.create(); // allocate point
+      nullary.apply(x, random); // fill with random data
+      P[i] = new Individual<>(x, process.evaluate(x)); // evaluate
 // end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
@@ -164,21 +164,21 @@ public final class EA<X, Y> implements IMetaheuristic<X, Y> {
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
 
-// override the worse lambda solutions with new offsprings
+// overwrite the worse lambda solutions with new offsprings
       for (int index = P.length; (--index) >= this.mu;) {
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
 
         final Individual<X> dest = P[index];
-        p1 = (p1 + 1) % this.mu;
+        p1 = (p1 + 1) % this.mu; // step the parent 1 index
         final Individual<X> sel = P[p1];
 // end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
           do { // find a second, different record
             p2 = random.nextInt(this.mu);
-          } while (p2 == p1);
+          } while (p2 == p1); // repeat until p1 != p2
 // perform recombination of the two selected individuals
           binary.apply(sel.x, P[p2].x, dest.x, random);
         } else {

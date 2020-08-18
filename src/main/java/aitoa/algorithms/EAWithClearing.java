@@ -148,7 +148,7 @@ public final class EAWithClearing<X, Y>
     while (!process.shouldTerminate()) { // main loop
       RandomUtils.shuffle(random, P, 0, P.length); // make fair
       final int u = Utils.qualityBasedClearing(P, this.mu);
-      // Now we have 1 <= u <= mu unique solutions.
+// Now we have 1 <= u <= mu unique solutions.
       RandomUtils.shuffle(random, P, 0, u); // for fairness
       int p1 = -1; // index to iterate over first parent
 // Overwrite the worse (mu + lambda - u) solutions.
