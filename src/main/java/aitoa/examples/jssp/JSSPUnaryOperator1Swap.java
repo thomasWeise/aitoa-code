@@ -47,7 +47,7 @@ public final class JSSPUnaryOperator1Swap
 // copy the source point in search space to the dest
     System.arraycopy(x, 0, dest, 0, x.length);
 
-// choose the index of the first sub-job to swap
+// choose the index of the first operation to swap
     final int i = random.nextInt(dest.length);
     final int jobI = dest[i]; // remember job id
 
