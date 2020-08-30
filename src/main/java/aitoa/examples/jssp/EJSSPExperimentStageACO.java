@@ -79,6 +79,22 @@ public enum EJSSPExperimentStageACO implements
         }
       }
 
+      for (final int mu : new int[] { 1 }) {
+        for (final int lambda : new int[] { 16384, 32768 }) {
+          for (final int k : new int[] { 4 }) {
+            for (final double beta : new double[] { 2.5d }) {
+              for (final double q0 : new double[] { 0.5d }) {
+                for (final double tauMax : new double[] { 1d }) {
+                  list.add(() -> new EDA<>(mu, lambda,
+                      new JSSPPACOModelAge(problem.getInstance(), //
+                          k, q0, beta, tauMax)));
+                }
+              }
+            }
+          }
+        }
+      }
+
       return list.stream();
     }
   };
