@@ -39,6 +39,7 @@ import aitoa.utils.Experiment;
 // start relevant
 public final class HillClimber2WithRestarts<X, Y>
     extends Metaheuristic1<X, Y> {
+// end relevant
 
   /**
    * Create the hill climber
