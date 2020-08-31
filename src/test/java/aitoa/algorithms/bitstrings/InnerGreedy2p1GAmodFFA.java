@@ -8,10 +8,10 @@ import java.util.Random;
 import org.junit.Assert;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic0;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 
@@ -29,7 +29,7 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  *          the solution space
  */
 public class InnerGreedy2p1GAmodFFA<Y>
-    implements IMetaheuristic<boolean[], Y> {
+    extends Metaheuristic0<boolean[], Y> {
 
   /** the constant above n */
   public final int m;
@@ -40,14 +40,18 @@ public class InnerGreedy2p1GAmodFFA<Y>
   /**
    * create
    *
+   * @param pNullary
+   *          the nullary search operator.
    * @param pM
    *          the constant above n to define the mutation
    *          probability
    * @param pUB
    *          the upper bound of the objective value
    */
-  public InnerGreedy2p1GAmodFFA(final int pM, final int pUB) {
-    super();
+  public InnerGreedy2p1GAmodFFA(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final int pM, final int pUB) {
+    super(pNullary);
     if (pM <= 0) {
       throw new IllegalArgumentException(
           "m must be at least 1, but you specified " //$NON-NLS-1$
@@ -67,21 +71,19 @@ public class InnerGreedy2p1GAmodFFA<Y>
   public final void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
-    final INullarySearchOperator<boolean[]> nullary =
-        process.getNullarySearchOperator();
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
 // Line 1: sample x and y from the search space
     boolean[] x = searchSpace.create();
-    nullary.apply(x, random);
+    this.nullary.apply(x, random);
     int fx = ((int) (process.evaluate(x)));
     if (process.shouldTerminate()) {
       return;
     }
 
     boolean[] y = searchSpace.create();
-    nullary.apply(y, random);
+    this.nullary.apply(y, random);
     int fy = ((int) (process.evaluate(y)));
     Assert.assertNotSame(x, y);
 
@@ -338,7 +340,7 @@ public class InnerGreedy2p1GAmodFFA<Y>
   @Override
   public final void printSetup(final Writer output)
       throws IOException {
-    IMetaheuristic.super.printSetup(output);
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$

@@ -24,7 +24,18 @@ public final class Greedy2p1GAmod<Y>
 
   /** create */
   public Greedy2p1GAmod() {
-    this(Greedy2p1GAmodBase.DEFAULT_C);
+    this(null);
+  }
+
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   */
+  public Greedy2p1GAmod(
+      final INullarySearchOperator<boolean[]> pNullary) {
+    this(pNullary, Greedy2p1GAmodBase.DEFAULT_C);
   }
 
   /**
@@ -35,7 +46,22 @@ public final class Greedy2p1GAmod<Y>
    *          probability
    */
   public Greedy2p1GAmod(final double pC) {
-    super(pC);
+    this(null, pC);
+  }
+
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pC
+   *          the constant above n to define the mutation
+   *          probability
+   */
+  public Greedy2p1GAmod(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final double pC) {
+    super(pNullary, pC);
   }
 
   /** {@inheritDoc} */
@@ -43,21 +69,19 @@ public final class Greedy2p1GAmod<Y>
   public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
-    final INullarySearchOperator<boolean[]> nullary =
-        process.getNullarySearchOperator();
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
 // Line 1: sample x and y from the search space
     boolean[] x = searchSpace.create();
-    nullary.apply(x, random);
+    this.nullary.apply(x, random);
     double fx = process.evaluate(x);
     if (process.shouldTerminate()) {
       return;
     }
 
     boolean[] y = searchSpace.create();
-    nullary.apply(y, random);
+    this.nullary.apply(y, random);
     double fy = process.evaluate(y);
 
 // other initialization stuff

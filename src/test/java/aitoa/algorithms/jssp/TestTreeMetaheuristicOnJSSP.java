@@ -45,7 +45,24 @@ public abstract class TestTreeMetaheuristicOnJSSP
   @Override
   protected IMetaheuristic<Node[], JSSPCandidateSolution>
       getInstance() {
-    return this.getAlgorithm(new JSSPInstance("demo")); //$NON-NLS-1$
+
+    final NodeTypeSetBuilder ntsb = new NodeTypeSetBuilder();
+    final NodeTypeSetBuilder.Builder nodes =
+        ntsb.rootNodeTypeSet();
+    nodes.add(Add.class, nodes, nodes);
+    nodes.add(ATan2.class, nodes, nodes);
+    nodes.add(Divide.class, nodes, nodes);
+    nodes.add(DoubleConstant.type());
+    nodes.add(Max.class, nodes, nodes);
+    nodes.add(Min.class, nodes, nodes);
+    nodes.add(Multiply.class, nodes, nodes);
+    nodes.add(Subtract.class, nodes, nodes);
+    nodes.add(JobStatistic.type());
+    final NodeTypeSet<MathFunction<double[][]>> root =
+        ntsb.build();
+    return this.getAlgorithm(new JSSPInstance("demo"), //$NON-NLS-1$
+        new TreeNullaryOperator(root, 7),
+        new TreeUnaryOperator(7), new TreeBinaryOperator(7));
   }
 
   /**
@@ -53,11 +70,20 @@ public abstract class TestTreeMetaheuristicOnJSSP
    *
    * @param instance
    *          the jssp instance
+   * @param op0
+   *          the nullary operator
+   * @param op1
+   *          the unary operator
+   * @param op2
+   *          the binary operator
    * @return the algorithm
    */
   protected abstract
       IMetaheuristic<Node[], JSSPCandidateSolution>
-      getAlgorithm(final JSSPInstance instance);
+      getAlgorithm(final JSSPInstance instance,
+          final TreeNullaryOperator op0,
+          final TreeUnaryOperator op1,
+          final TreeBinaryOperator op2);
 
   /**
    * Run a test
@@ -101,19 +127,16 @@ public abstract class TestTreeMetaheuristicOnJSSP
                     .setObjectiveFunction(
                         new JSSPMakespanObjectiveFunction(
                             instance))//
-                    .setNullarySearchOperator(
-                        new TreeNullaryOperator(root, 7))//
-                    .setUnarySearchOperator(
-                        new TreeUnaryOperator(7))//
-                    .setBinarySearchOperator(
-                        new TreeBinaryOperator(7))//
                     .setRepresentationMapping(
                         new JSSPTreeRepresentationMapping(
                             instance))
                     .setMaxFEs(maxFEs)//
                     .setMaxTime(maxTime)//
                     .get()) {
-      this.getAlgorithm(instance).solve(p);
+      this.getAlgorithm(instance,
+          new TreeNullaryOperator(root, 7),
+          new TreeUnaryOperator(7), new TreeBinaryOperator(7))
+          .solve(p);
     } catch (final IOException ioe) {
       throw new AssertionError(ioe);
     }

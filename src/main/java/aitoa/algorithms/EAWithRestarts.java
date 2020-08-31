@@ -5,14 +5,14 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic2;
+import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -25,7 +25,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 public final class EAWithRestarts<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic2<X, Y> {
 
   /** the crossover rate */
   public final double cr;
@@ -41,6 +41,12 @@ public final class EAWithRestarts<X, Y>
   /**
    * Create a new instance of the evolutionary algorithm
    *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUnary
+   *          the unary search operator
+   * @param pBinary
+   *          the binary search operator
    * @param pCr
    *          the crossover rate
    * @param pMu
@@ -51,9 +57,12 @@ public final class EAWithRestarts<X, Y>
    *          the number of generations without improvement until
    *          restart
    */
-  public EAWithRestarts(final double pCr, final int pMu,
-      final int pLambda, final int pGenerationsUntilRestart) {
-    super();
+  public EAWithRestarts(final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary,
+      final IBinarySearchOperator<X> pBinary, final double pCr,
+      final int pMu, final int pLambda,
+      final int pGenerationsUntilRestart) {
+    super(pNullary, pUnary, pBinary);
     if ((pCr < 0d) || (pCr > 1d) || (!(Double.isFinite(pCr)))) {
       throw new IllegalArgumentException(
           "Invalid crossover rate: " + pCr); //$NON-NLS-1$
@@ -85,49 +94,12 @@ public final class EAWithRestarts<X, Y>
   }
 
   /** {@inheritDoc} */
-  @Override
-  public void printSetup(final Writer output)
-      throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "ea")); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("restarts", true)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("generationsUntilRestart", //$NON-NLS-1$
-        this.generationsUntilRestart));
-    output.write(System.lineSeparator());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    return ((((((("ea_rs_" + //$NON-NLS-1$
-        this.mu) + '+') + this.lambda) + '@') + this.cr) + '_')
-        + this.generationsUntilRestart);
-  }
-
-  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
   public void solve(final IBlackBoxProcess<X, Y> process) {
     // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator();
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator();
-    final IBinarySearchOperator<X> binary =
-        process.getBinarySearchOperator();
     int p2;
 
     final Individual<X>[] P =
@@ -140,7 +112,7 @@ public final class EAWithRestarts<X, Y>
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
-        nullary.apply(x, random);
+        this.nullary.apply(x, random);
         P[i] = new Individual<>(x, process.evaluate(x));
         if (process.shouldTerminate()) {
           return;
@@ -172,9 +144,10 @@ public final class EAWithRestarts<X, Y>
               p2 = random.nextInt(this.mu);
             } while (p2 == p1);
 
-            binary.apply(parent1.x, P[p2].x, dest.x, random); // recombination
+            this.binary.apply(parent1.x, P[p2].x, dest.x,
+                random);
           } else { // otherwise create modified copy of p1
-            unary.apply(parent1.x, dest.x, random);
+            this.unary.apply(parent1.x, dest.x, random);
           }
 
           // map to solution/schedule and evaluate
@@ -190,9 +163,33 @@ public final class EAWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
-        this, builder);
+  public void printSetup(final Writer output)
+      throws IOException {
+    output.write(LogFormat.mapEntry(//
+        LogFormat.SETUP_BASE_ALGORITHM, "ea")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("restarts", true)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("generationsUntilRestart", //$NON-NLS-1$
+        this.generationsUntilRestart));
+    output.write(System.lineSeparator());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return Experiment.nameFromObjectsMerge(((((((("ea_rs_" + //$NON-NLS-1$
+        this.mu) + '+') + this.lambda) + '@') + this.cr) + '_')
+        + this.generationsUntilRestart), this.unary,
+        this.binary);
   }
 }

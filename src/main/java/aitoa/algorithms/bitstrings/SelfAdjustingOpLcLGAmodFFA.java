@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
+import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic0;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteConstant;
 import aitoa.utils.math.DiscreteGreaterThanZero;
@@ -28,7 +29,7 @@ import aitoa.utils.math.DiscreteRandomDistribution;
  *          the solution space
  */
 public final class SelfAdjustingOpLcLGAmodFFA<Y>
-    implements IMetaheuristic<boolean[], Y> {
+    extends Metaheuristic0<boolean[], Y> {
 
   /** the internal adaptation factor */
   private static final double F = 1.5d;
@@ -46,7 +47,22 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
    *          the upper bound of the objective function
    */
   public SelfAdjustingOpLcLGAmodFFA(final int pUB) {
-    super();
+    this(null, pUB);
+  }
+
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUB
+   *          the upper bound of the objective function
+   */
+  public SelfAdjustingOpLcLGAmodFFA(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final int pUB) {
+    super((pNullary != null) ? pNullary
+        : new BitStringNullaryOperator());
     if (pUB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
@@ -60,14 +76,12 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
   public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
-    final INullarySearchOperator<boolean[]> nullary =
-        process.getNullarySearchOperator();
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
     // Line 1: sample x from the search space
     Holder x = new Holder(searchSpace.create());
-    nullary.apply(x.x, random);
+    this.nullary.apply(x.x, random);
     x.f = ((int) (process.evaluate(x.x)));
     final int n = x.x.length;
 
@@ -309,7 +323,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
   @Override
   public void printSetup(final Writer output)
       throws IOException {
-    IMetaheuristic.super.printSetup(output);
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("F", 1.5));///$NON-NLS-1$

@@ -1,7 +1,5 @@
 package aitoa.structure;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -67,18 +65,6 @@ public interface IModel<X> extends INullarySearchOperator<X> {
   }
 
 // end relevant
-  /**
-   * Print the setup of this model to the provided writer
-   *
-   * @param output
-   *          the writer to write to
-   * @throws IOException
-   *           if i/o fails
-   */
-  default void printSetup(final Writer output)
-      throws IOException {
-    // do nothing
-  }
 
   /**
    * Create an iterable over a given range of the specified

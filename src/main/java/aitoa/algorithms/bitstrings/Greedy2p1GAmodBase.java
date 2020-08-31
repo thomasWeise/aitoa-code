@@ -3,8 +3,10 @@ package aitoa.algorithms.bitstrings;
 import java.io.IOException;
 import java.io.Writer;
 
-import aitoa.structure.IMetaheuristic;
+import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
+import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic0;
 
 /**
  * The Greedy (2+1) GA mod, as defined in Algorithm 6 of E.
@@ -17,7 +19,7 @@ import aitoa.structure.LogFormat;
  *          the solution space
  */
 abstract class Greedy2p1GAmodBase<Y>
-    implements IMetaheuristic<boolean[], Y> {
+    extends Metaheuristic0<boolean[], Y> {
 
   /** The default value {@code 1.618033989} for {@link #c} */
   public static final double DEFAULT_C =
@@ -29,12 +31,17 @@ abstract class Greedy2p1GAmodBase<Y>
   /**
    * create
    *
+   * @param pNullary
+   *          the nullary search operator.
    * @param pC
    *          the constant above n to define the mutation
    *          probability
    */
-  Greedy2p1GAmodBase(final double pC) {
-    super();
+  Greedy2p1GAmodBase(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final double pC) {
+    super((pNullary != null) ? pNullary
+        : new BitStringNullaryOperator());
     if ((!(Double.isFinite(pC))) || (pC <= 0d) || (pC > 1e5d)) {
       throw new IllegalArgumentException(
           "m must be in (0, 1e5], but you specified " //$NON-NLS-1$
@@ -47,14 +54,14 @@ abstract class Greedy2p1GAmodBase<Y>
   @Override
   public void printSetup(final Writer output)
       throws IOException {
-    IMetaheuristic.super.printSetup(output);
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 2));///$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("cr", 1));//$NON-NLS-1$
     output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("pruning", true)); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry("clearing", true)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());

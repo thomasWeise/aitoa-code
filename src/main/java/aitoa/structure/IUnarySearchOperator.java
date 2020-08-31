@@ -13,7 +13,8 @@ import java.util.function.Predicate;
  */
 @FunctionalInterface
 // start relevant
-public interface IUnarySearchOperator<X> {
+public interface IUnarySearchOperator<X>
+    extends ISetupPrintable {
 
   /**
    * Apply the search operator to sample a new point in the

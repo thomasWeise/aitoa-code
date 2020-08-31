@@ -7,6 +7,8 @@ import aitoa.algorithms.SimulatedAnnealing;
 import aitoa.algorithms.TemperatureSchedule;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator12Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -29,6 +31,8 @@ public class TestSimulatedAnnealingLogJSSP
     } while (st <= 0d);
 
     return new SimulatedAnnealing<>(
+        new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator12Swap(), //
         new TemperatureSchedule.Logarithmic(st, 0.3));
   }
 }

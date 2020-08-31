@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic1;
+import aitoa.utils.Experiment;
 
 /**
  * The hill climbing algorithm remembers the current best
@@ -39,7 +39,7 @@ import aitoa.structure.LogFormat;
  */
 // start relevant
 public final class HillClimberWithRestarts<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic1<X, Y> {
 // end relevant
   /** the number of non-improving steps before restarts */
   public final long failsBeforeRestart;
@@ -51,29 +51,24 @@ public final class HillClimberWithRestarts<X, Y>
   public final String failsBeforeRestartStrategy;
 
   /**
-   * create
+   * Create the hill climber
    *
-   * @param pFailsBeforeRestart
-   *          the number of non-improving steps before restarts
-   */
-  public HillClimberWithRestarts(
-      final long pFailsBeforeRestart) {
-    this(pFailsBeforeRestart,
-        Long.toString(pFailsBeforeRestart));
-  }
-
-  /**
-   * create
-   *
+   * @param pNullary
+   *          the nullary search operator
+   * @param pUnary
+   *          the unary search operator
    * @param pFailsBeforeRestart
    *          the number of non-improving steps before restarts
    * @param pFailsBeforeRestartStrategy
    *          the the strategy that determined the value of
-   *          {@code _failsBeforeRestart}output.write(System.lineSeparator());
+   *          {@code _failsBeforeRestart}
    */
-  public HillClimberWithRestarts(final long pFailsBeforeRestart,
+  public HillClimberWithRestarts(
+      final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary,
+      final long pFailsBeforeRestart,
       final String pFailsBeforeRestartStrategy) {
-    super();
+    super(pNullary, pUnary);
 
     if ((pFailsBeforeRestart < 1L)
         || (pFailsBeforeRestart > 1_000_000_000L)) {
@@ -92,17 +87,22 @@ public final class HillClimberWithRestarts<X, Y>
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void printSetup(final Writer output)
-      throws IOException {
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("failsBeforeRestart", ///$NON-NLS-1$
-        this.failsBeforeRestart));
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("failsBeforeRestartStrategy", ///$NON-NLS-1$
-        this.failsBeforeRestartStrategy));
-    output.write(System.lineSeparator());
+  /**
+   * Create the hill climber
+   *
+   * @param pNullary
+   *          the nullary search operator
+   * @param pUnary
+   *          the unary search operator
+   * @param pFailsBeforeRestart
+   *          the number of non-improving steps before restarts
+   */
+  public HillClimberWithRestarts(
+      final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary,
+      final long pFailsBeforeRestart) {
+    this(pNullary, pUnary, pFailsBeforeRestart,
+        Long.toString(pFailsBeforeRestart));
   }
 
   /** {@inheritDoc} */
@@ -112,22 +112,18 @@ public final class HillClimberWithRestarts<X, Y>
 // end relevant
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator(); // get nullary op
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
 
 // start relevant
-// omitted: initialize local variables xCur, xBest, nullary,
-// unary,random, failsBeforeRestart, and failCounter=0
+// omitted: initialize local variables xCur, xBest, random,
+// failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
-      nullary.apply(xBest, random); // sample random solution
+      this.nullary.apply(xBest, random); // start=random solution
       double fBest = process.evaluate(xBest); // evaluate it
       long failCounter = 0L; // initialize counters
 
       while (!(process.shouldTerminate())) { // inner loop
-        unary.apply(xBest, xCur, random); // try to improve
+        this.unary.apply(xBest, xCur, random); // try to improve
         final double fCur = process.evaluate(xCur); // evaluate
 
         if (fCur < fBest) { // we found a better solution
@@ -146,17 +142,23 @@ public final class HillClimberWithRestarts<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public String toString() {
-    return "hc_rs_" + //$NON-NLS-1$
-        this.failsBeforeRestartStrategy;
+  public void printSetup(final Writer output)
+      throws IOException {
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("failsBeforeRestart", ///$NON-NLS-1$
+        this.failsBeforeRestart));
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("failsBeforeRestartStrategy", ///$NON-NLS-1$
+        this.failsBeforeRestartStrategy));
+    output.write(System.lineSeparator());
   }
 
   /** {@inheritDoc} */
   @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
-        builder);
+  public String toString() {
+    return Experiment.nameFromObjectsMerge(//
+        "hc_rs_" + this.failsBeforeRestartStrategy, //$NON-NLS-1$
+        this.unary);
   }
 // start relevant
 }

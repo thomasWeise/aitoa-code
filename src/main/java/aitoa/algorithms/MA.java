@@ -5,14 +5,14 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic2;
+import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -30,7 +30,7 @@ import aitoa.utils.RandomUtils;
  *          the solution space
  */
 // start relevant
-public final class MA<X, Y> implements IMetaheuristic<X, Y> {
+public final class MA<X, Y> extends Metaheuristic2<X, Y> {
 // end relevant
 
   /** the number of selected parents */
@@ -41,8 +41,14 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
   public final int maxLSSteps;
 
   /**
-   * Create a new instance of the evolutionary algorithm
+   * Create a new instance of the memetic algorithm
    *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUnary
+   *          the unary search operator
+   * @param pBinary
+   *          the binary search operator
    * @param pMu
    *          the number of parents to be selected
    * @param pLambda
@@ -50,9 +56,11 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
    * @param pMaxLSSteps
    *          the maximum number of local search steps
    */
-  public MA(final int pMu, final int pLambda,
-      final int pMaxLSSteps) {
-    super();
+  public MA(final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary,
+      final IBinarySearchOperator<X> pBinary, final int pMu,
+      final int pLambda, final int pMaxLSSteps) {
+    super(pNullary, pUnary, pBinary);
     if ((pMu <= 1) || (pMu > 1_000_000)) {
       throw new IllegalArgumentException("Invalid mu: " + pMu); //$NON-NLS-1$
     }
@@ -68,40 +76,10 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
               + pMaxLSSteps);
     }
     this.maxLSSteps = pMaxLSSteps;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void printSetup(final Writer output)
-      throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "ma")); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("cr", 1d));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("maxLSSteps", //$NON-NLS-1$
-        this.maxLSSteps));
-    output.write(System.lineSeparator());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    final String s = ((("ma_" + //$NON-NLS-1$
-        this.mu) + '+') + this.lambda);
-    if (this.maxLSSteps >= Integer.MAX_VALUE) {
-      return s;
+    if (!pUnary.canEnumerate()) {
+      throw new IllegalArgumentException(//
+          "Unary operator cannot enumerate neighborhood."); //$NON-NLS-1$
     }
-    return (s + '_') + this.maxLSSteps;
   }
 
   /** {@inheritDoc} */
@@ -114,12 +92,6 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator();
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator();
-    final IBinarySearchOperator<X> binary =
-        process.getBinarySearchOperator();
     boolean improved = false;
     final X temp = searchSpace.create();
     int p2;
@@ -132,7 +104,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 // set P[i] = random individual (code omitted)
 // end relevant
       final X x = searchSpace.create();
-      nullary.apply(x, random);
+      this.nullary.apply(x, random);
       P[i] = new LSIndividual<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
@@ -151,7 +123,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
         }
         int steps = this.maxLSSteps;
         do { // local search in style of HillClimber2
-          improved = unary.enumerate(random, ind.x, temp, //
+          improved = this.unary.enumerate(random, ind.x, temp, //
               point -> {
                 final double newQuality =
                     process.evaluate(point);
@@ -189,7 +161,7 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
           p2 = random.nextInt(this.mu);
         } while (p2 == p1);
 // perform recombination of the two selected individuals
-        binary.apply(sel.x, P[p2].x, dest.x, random);
+        this.binary.apply(sel.x, P[p2].x, dest.x, random);
         dest.quality = process.evaluate(dest.x);
 // end relevant
         dest.isOptimum = false;
@@ -201,11 +173,37 @@ public final class MA<X, Y> implements IMetaheuristic<X, Y> {
 
   /** {@inheritDoc} */
   @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
-        this, builder);
+  public void printSetup(final Writer output)
+      throws IOException {
+    output.write(LogFormat.mapEntry(//
+        LogFormat.SETUP_BASE_ALGORITHM, "ma")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("cr", 1d));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", false)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("maxLSSteps", //$NON-NLS-1$
+        this.maxLSSteps));
+    output.write(System.lineSeparator());
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return Experiment.nameFromObjectsMerge((("ma_" + //$NON-NLS-1$
+        this.mu) + '+') + this.lambda,
+        (this.maxLSSteps >= Integer.MAX_VALUE) ? null
+            : Integer.toString(this.maxLSSteps),
+        this.unary, this.binary);
+  }
+
 // start relevant
 }
 // end relevant

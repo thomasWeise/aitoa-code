@@ -3,6 +3,7 @@ package aitoa.algorithms;
 import java.io.IOException;
 import java.io.Writer;
 
+import aitoa.structure.ISetupPrintable;
 import aitoa.structure.LogFormat;
 import aitoa.utils.Experiment;
 
@@ -13,7 +14,8 @@ import aitoa.utils.Experiment;
  * each iteration.
  */
 // start main
-public abstract class TemperatureSchedule {
+public abstract class TemperatureSchedule
+    implements ISetupPrintable {
   /** the start temperature */
   public final double startTemperature;
 
@@ -46,14 +48,8 @@ public abstract class TemperatureSchedule {
   public abstract double temperature(final long tau);
 // end main
 
-  /**
-   * print the setup of this class to the given output writer
-   *
-   * @param output
-   *          the output writer
-   * @throws IOException
-   *           if i/o fails
-   */
+  /** {@inheritDoc} */
+  @Override
   public void printSetup(final Writer output)
       throws IOException {
     output.write(LogFormat.mapEntry("temperatureSchedule", //$NON-NLS-1$

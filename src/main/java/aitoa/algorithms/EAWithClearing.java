@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBinarySearchOperator;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic2;
+import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -40,7 +40,7 @@ import aitoa.utils.RandomUtils;
  */
 // start relevant
 public final class EAWithClearing<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic2<X, Y> {
 // end relevant
 
   /** the crossover rate */
@@ -51,8 +51,15 @@ public final class EAWithClearing<X, Y>
   public final int lambda;
 
   /**
-   * Create a new instance of the evolutionary algorithm
+   * Create a new instance of the evolutionary algorithm with
+   * clearing
    *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUnary
+   *          the unary search operator
+   * @param pBinary
+   *          the binary search operator
    * @param pCr
    *          the crossover rate
    * @param pMu
@@ -60,9 +67,11 @@ public final class EAWithClearing<X, Y>
    * @param pLambda
    *          the number of offspring to be created
    */
-  public EAWithClearing(final double pCr, final int pMu,
-      final int pLambda) {
-    super();
+  public EAWithClearing(final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary,
+      final IBinarySearchOperator<X> pBinary, final double pCr,
+      final int pMu, final int pLambda) {
+    super(pNullary, pUnary, pBinary);
     if ((pCr < 0d) || (pCr > 1d) || (!(Double.isFinite(pCr)))) {
       throw new IllegalArgumentException(
           "Invalid crossover rate: " + pCr); //$NON-NLS-1$
@@ -85,50 +94,17 @@ public final class EAWithClearing<X, Y>
   }
 
   /** {@inheritDoc} */
-  @Override
-  public void printSetup(final Writer output)
-      throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "ea")); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", true)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    return ((((("eac_" + //$NON-NLS-1$
-        this.mu) + '+') + this.lambda) + '@') + this.cr);
-  }
-
-  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// Omitted: Initialize local variables random, unary, nullary,
-// searchSpace, binary, set arrays P and P2 of length mu+lambda,
+// Omitted: Initialize local variables random, searchSpace, set
+// arrays P and P2 of length mu+lambda,
 // and array T to null. Fill P with random solutions + evaluate.
 // end relevant
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator();
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator();
-    final IBinarySearchOperator<X> binary =
-        process.getBinarySearchOperator();
     int p2;
 
     final Individual<X>[] P =
@@ -138,7 +114,7 @@ public final class EAWithClearing<X, Y>
 // start relevant
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
-      nullary.apply(x, random);
+      this.nullary.apply(x, random);
       P[i] = new Individual<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
@@ -166,9 +142,9 @@ public final class EAWithClearing<X, Y>
           do { // find a second, different record
             p2 = random.nextInt(u);
           } while (p2 == p1); // Of course, can't be p1.
-          binary.apply(sel.x, P[p2].x, dest.x, random);
+          this.binary.apply(sel.x, P[p2].x, dest.x, random);
         } else { // Otherwise: Mutation.
-          unary.apply(sel.x, dest.x, random);
+          this.unary.apply(sel.x, dest.x, random);
         }
         dest.quality = process.evaluate(dest.x);
       } // the end of the offspring generation
@@ -178,10 +154,30 @@ public final class EAWithClearing<X, Y>
 
   /** {@inheritDoc} */
   @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryAndBinaryOperator(//
-        this, builder);
+  public void printSetup(final Writer output)
+      throws IOException {
+    output.write(LogFormat.mapEntry(//
+        LogFormat.SETUP_BASE_ALGORITHM, "ea")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("cr", this.cr));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", true)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return Experiment.nameFromObjectsMerge(((((("eac_" + //$NON-NLS-1$
+        this.mu) + '+') + this.lambda) + '@') + this.cr),
+        this.unary, this.binary);
   }
 // start relevant
 }

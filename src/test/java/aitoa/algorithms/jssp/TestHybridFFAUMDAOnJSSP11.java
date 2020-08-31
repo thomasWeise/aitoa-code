@@ -8,7 +8,9 @@ import aitoa.algorithms.IntFFA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPUMDAModel;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -26,7 +28,10 @@ public class TestHybridFFAUMDAOnJSSP11
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new HybridEDAWithFitness<>(mu, lambda, 11,
+    return new HybridEDAWithFitness<>(
+        new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator1Swap(), //
+        mu, lambda, 11,
         new JSSPUMDAModel(instance, 1 + rand.nextInt(2)),
         new IntFFA((int) (0.5d
             + new JSSPMakespanObjectiveFunction(instance)

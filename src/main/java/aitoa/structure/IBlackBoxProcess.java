@@ -42,36 +42,6 @@ public interface IBlackBoxProcess<X, Y> extends
   ISpace<X> getSearchSpace();
 
   /**
-   * Get the nullary search operator
-   *
-   * @return the nullary search operator
-   */
-  INullarySearchOperator<X> getNullarySearchOperator();
-
-  /**
-   * Get the unary search operator
-   *
-   * @return the unary search operator
-   */
-  IUnarySearchOperator<X> getUnarySearchOperator();
-
-  /**
-   * Get the binary search operator
-   *
-   * @return the binary search operator
-   */
-  IBinarySearchOperator<X> getBinarySearchOperator();
-
-  // end relevant
-  /**
-   * Get the ternary search operator
-   *
-   * @return the ternary search operator
-   */
-  ITernarySearchOperator<X> getTernarySearchOperator();
-
-  // start relevant
-  /**
    * Get the best objective value encountered so far
    *
    * @return the best objective value encountered so far, or

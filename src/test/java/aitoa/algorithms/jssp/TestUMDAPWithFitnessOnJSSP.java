@@ -8,6 +8,7 @@ import aitoa.algorithms.IntFFA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPUMDAModel;
 import aitoa.structure.IMetaheuristic;
 
@@ -26,7 +27,8 @@ public class TestUMDAPWithFitnessOnJSSP
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new EDAWithFitness<>(mu, lambda,
+    return new EDAWithFitness<>(
+        new JSSPNullaryOperator(instance), mu, lambda,
         new JSSPUMDAModel(instance, 1 + rand.nextInt(2)),
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)

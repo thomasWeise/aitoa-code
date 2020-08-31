@@ -6,15 +6,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import aitoa.algorithms.TestMetaheuristic;
-import aitoa.examples.jssp.JSSPBinaryOperatorSequence;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
-import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPRepresentationMapping;
 import aitoa.examples.jssp.JSSPSearchSpace;
 import aitoa.examples.jssp.JSSPSolutionSpace;
-import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
 import aitoa.structure.ISpace;
@@ -66,12 +63,6 @@ public abstract class TestMetaheuristicOnJSSP
                 .setSolutionSpace(solutionSpace)//
                 .setObjectiveFunction(
                     new JSSPMakespanObjectiveFunction(instance))//
-                .setNullarySearchOperator(
-                    new JSSPNullaryOperator(instance))//
-                .setUnarySearchOperator(
-                    new JSSPUnaryOperator1Swap())//
-                .setBinarySearchOperator(
-                    new JSSPBinaryOperatorSequence(instance))//
                 .setRepresentationMapping(
                     new JSSPRepresentationMapping(instance))
                 .setMaxFEs(maxFEs)//

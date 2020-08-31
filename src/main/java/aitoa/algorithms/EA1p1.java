@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic1;
+import aitoa.utils.Experiment;
 
 /**
  * The (1+1)-EA is a hill climbing algorithm remembers the
@@ -28,11 +28,19 @@ import aitoa.structure.LogFormat;
  * @param <Y>
  *          the solution space
  */
-public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
+public final class EA1p1<X, Y> extends Metaheuristic1<X, Y> {
 
-  /** create */
-  public EA1p1() {
-    super();
+  /**
+   * Create the (1+1) EA
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUnary
+   *          the unary search operator
+   */
+  public EA1p1(final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary) {
+    super(pNullary, pUnary);
   }
 
   /** {@inheritDoc} */
@@ -41,19 +49,15 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
 // init local variables xCur, xBest, nullary, unary, random
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator(); // get nullary op
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
 
 // create starting point: a random point in the search space
-    nullary.apply(xBest, random); // put random point in xBest
+    this.nullary.apply(xBest, random); // xBest=random point
     double fBest = process.evaluate(xBest); // map & evaluate
 
     while (!process.shouldTerminate()) {
 // create a slightly modified copy of xBest and store in xCur
-      unary.apply(xBest, xCur, random);
+      this.unary.apply(xBest, xCur, random);
 // map xCur from X to Y and evaluate candidate solution
       final double fCur = process.evaluate(xCur);
       if (fCur <= fBest) { // we found a better solution
@@ -67,17 +71,19 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "(1+1)-EA"; //$NON-NLS-1$
+    return Experiment.nameFromObjectsMerge(//
+        "(1+1)-EA", //$NON-NLS-1$
+        this.unary);
   }
 
   /** {@inheritDoc} */
   @Override
   public void printSetup(final Writer output)
       throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "1+1_ea")); //$NON-NLS-1$
+    output.write(LogFormat.mapEntry(//
+        LogFormat.SETUP_BASE_ALGORITHM, "1+1_ea")); //$NON-NLS-1$
     output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("lambda", 1));//$NON-NLS-1$
@@ -88,13 +94,5 @@ public final class EA1p1<X, Y> implements IMetaheuristic<X, Y> {
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
-        builder);
   }
 }

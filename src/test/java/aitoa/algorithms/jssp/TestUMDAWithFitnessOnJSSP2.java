@@ -5,6 +5,7 @@ import aitoa.algorithms.IntFFA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPUMDAModel;
 import aitoa.structure.IMetaheuristic;
 
@@ -19,7 +20,8 @@ public class TestUMDAWithFitnessOnJSSP2
   @Override
   protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
-    return new EDAWithFitness<>(1024, 8192,
+    return new EDAWithFitness<>(
+        new JSSPNullaryOperator(instance), 1024, 8192,
         new JSSPUMDAModel(instance, 3),
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)

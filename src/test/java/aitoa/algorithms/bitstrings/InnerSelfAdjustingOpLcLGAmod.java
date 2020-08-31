@@ -9,10 +9,10 @@ import org.junit.Assert;
 
 import aitoa.TestTools;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic0;
 import aitoa.utils.math.BinomialDistribution;
 import aitoa.utils.math.DiscreteConstant;
 import aitoa.utils.math.DiscreteGreaterThanZero;
@@ -29,7 +29,7 @@ import aitoa.utils.math.DiscreteRandomDistribution;
  *          the solution space
  */
 public class InnerSelfAdjustingOpLcLGAmod<Y>
-    implements IMetaheuristic<boolean[], Y> {
+    extends Metaheuristic0<boolean[], Y> {
 
   /** the internal adaptation factor */
   private static final double F = 1.5d;
@@ -37,9 +37,15 @@ public class InnerSelfAdjustingOpLcLGAmod<Y>
   private static final double F_BY_1_OVER_4 =
       Math.pow(InnerSelfAdjustingOpLcLGAmod.F, 0.25d);
 
-  /** create */
-  public InnerSelfAdjustingOpLcLGAmod() {
-    super();
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   */
+  public InnerSelfAdjustingOpLcLGAmod(
+      final INullarySearchOperator<boolean[]> pNullary) {
+    super(pNullary);
   }
 
   /** {@inheritDoc} */
@@ -47,14 +53,12 @@ public class InnerSelfAdjustingOpLcLGAmod<Y>
   public final void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
-    final INullarySearchOperator<boolean[]> nullary =
-        process.getNullarySearchOperator();
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
     // Line 1: sample x from the search space
     boolean[] x = searchSpace.create();
-    nullary.apply(x, random);
+    this.nullary.apply(x, random);
     double fx = process.evaluate(x);
     final int n = x.length;
 
@@ -315,7 +319,7 @@ public class InnerSelfAdjustingOpLcLGAmod<Y>
   @Override
   public final void printSetup(final Writer output)
       throws IOException {
-    IMetaheuristic.super.printSetup(output);
+    super.printSetup(output);
     output.write(LogFormat.mapEntry("mu", 1));///$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("F", 1.5));///$NON-NLS-1$

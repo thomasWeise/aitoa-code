@@ -2,11 +2,11 @@ package aitoa.algorithms;
 
 import java.util.Random;
 
-import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.Metaheuristic1;
+import aitoa.utils.Experiment;
 
 /**
  * The second version of the
@@ -30,36 +30,44 @@ import aitoa.structure.IUnarySearchOperator;
  *          the solution space
  */
 public final class HillClimber2<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic1<X, Y> {
 
-  /** create */
-  public HillClimber2() {
-    super();
+  /**
+   * Create the hill climber
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUnary
+   *          the unary search operator
+   */
+  public HillClimber2(final INullarySearchOperator<X> pNullary,
+      final IUnarySearchOperator<X> pUnary) {
+    super(pNullary, pUnary);
+    if (!pUnary.canEnumerate()) {
+      throw new IllegalArgumentException(//
+          "Unary operator cannot enumerate neighborhood."); //$NON-NLS-1$
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables xCur, xBest, nullary, unary, random,
-// fBest, improved: omitted here for brevity
+// init local variables xCur, xBest, n random, fBest, improved:
+// omitted here for brevity
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator(); // get nullary op
-    final IUnarySearchOperator<X> unary =
-        process.getUnarySearchOperator(); // get unary op
     final Random random = process.getRandom();// get random gen
     boolean improved = true;
 
 // create starting point: a random point in the search space
-    nullary.apply(xBest, random); // put random point in xBest
+    this.nullary.apply(xBest, random); // xBest= random point
     final double[] fBest = { process.evaluate(xBest) }; // evaluate
 
     while (improved && !process.shouldTerminate()) {
 // repeat until budget exhausted or no improving move
 // enumerate all neighboring solutions of xBest and receive them
 // one-by-one in parameter x (for which xCur is used)
-      improved = unary.enumerate(random, xBest, xCur, x -> {
+      improved = this.unary.enumerate(random, xBest, xCur, x -> {
 // map x from X to Y and evaluate candidate solution
         final double fCur = process.evaluate(x);
         if (fCur < fBest[0]) { // we found a better solution
@@ -79,14 +87,7 @@ public final class HillClimber2<X, Y>
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "hc2f"; //$NON-NLS-1$
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return IMetaheuristic.getSetupNameWithUnaryOperator(this,
-        builder);
+    return Experiment.nameFromObjectsMerge("hc2f", //$NON-NLS-1$
+        this.unary);
   }
 }

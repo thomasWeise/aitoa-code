@@ -5,6 +5,8 @@ import aitoa.algorithms.IntFFA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -18,8 +20,11 @@ public class TestEA1p1WithFitnessOnJSSP
   @Override
   protected IMetaheuristic<int[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance) {
-    return new EA1p1WithFitness<>(new IntFFA(
-        (int) (new JSSPMakespanObjectiveFunction(instance)
-            .upperBound())));
+    return new EA1p1WithFitness<>(
+        new JSSPNullaryOperator(instance),
+        new JSSPUnaryOperator1Swap(),
+        new IntFFA(
+            (int) (new JSSPMakespanObjectiveFunction(instance)
+                .upperBound())));
   }
 }

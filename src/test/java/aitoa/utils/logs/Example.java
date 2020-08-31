@@ -25,15 +25,9 @@ final class Example {
         new OneMaxObjectiveFunction(11);
 
     final BitStringSpace searchSpace = problem.createSpace();
-    final BitStringUnaryOperatorMOverNFlip unary =
-        new BitStringUnaryOperatorMOverNFlip(1);
-    final BitStringNullaryOperator nullary =
-        new BitStringNullaryOperator();
 
     builder.setSearchSpace(searchSpace);
     builder.setObjectiveFunction(problem);
-    builder.setNullarySearchOperator(nullary);
-    builder.setUnarySearchOperator(unary);
     builder.setGoalF(0d);
     return builder;
   }
@@ -44,7 +38,8 @@ final class Example {
    * @return the example algorithm
    */
   static IMetaheuristic<boolean[], boolean[]> algorithm() {
-    return new EA1p1<>();
+    return new EA1p1<>(new BitStringNullaryOperator(),
+        new BitStringUnaryOperatorMOverNFlip(1));
   }
 
   /** forbidden */

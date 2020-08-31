@@ -3,8 +3,8 @@ package aitoa.algorithms;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.INullarySearchOperator;
+import aitoa.structure.Metaheuristic0;
 
 /**
  * The random sampling algorithm keeps sampling points from the
@@ -18,12 +18,17 @@ import aitoa.structure.INullarySearchOperator;
  */
 // start relevant
 public final class RandomSampling<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic0<X, Y> {
 // end relevant
-
-  /** create */
-  public RandomSampling() {
-    super();
+  /**
+   * Create the single random sampling algorithm
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   */
+  public RandomSampling(
+      final INullarySearchOperator<X> pNullary) {
+    super(pNullary);
   }
 
   /** {@inheritDoc} */
@@ -32,13 +37,10 @@ public final class RandomSampling<X, Y>
   public void solve(final IBlackBoxProcess<X, Y> process) {
 // Allocate data structure for holding 1 point from search space.
     final X x = process.getSearchSpace().create();
-// Get nullary search operation for creating random point of X.
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator();
     final Random random = process.getRandom();// get random gen
 
     do { // Repeat until budget is exhausted.
-      nullary.apply(x, random); // Create random point in X.
+      this.nullary.apply(x, random); // Create random point in X.
 // Evaluate the point: process.evaluate applies the
 // representation mapping and calls objective function. It
 // remembers the best solution, so the caller can obtain it.

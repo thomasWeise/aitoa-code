@@ -7,6 +7,9 @@ import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.searchSpaces.trees.Node;
+import aitoa.searchSpaces.trees.TreeBinaryOperator;
+import aitoa.searchSpaces.trees.TreeNullaryOperator;
+import aitoa.searchSpaces.trees.TreeUnaryOperator;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -19,9 +22,12 @@ public class TestHillClimberWithTreesAndRestartsOnJSSP
   /** {@inheritDoc} */
   @Override
   protected IMetaheuristic<Node[], JSSPCandidateSolution>
-      getAlgorithm(final JSSPInstance instance) {
+      getAlgorithm(final JSSPInstance instance,
+          final TreeNullaryOperator op0,
+          final TreeUnaryOperator op1,
+          final TreeBinaryOperator op2) {
     final Random rand = ThreadLocalRandom.current();
     final int rs = 1 + rand.nextInt(512);
-    return new HillClimberWithRestarts<>(rs);
+    return new HillClimberWithRestarts<>(op0, op1, rs);
   }
 }

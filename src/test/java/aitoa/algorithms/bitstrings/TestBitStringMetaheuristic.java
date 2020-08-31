@@ -13,9 +13,6 @@ import aitoa.examples.bitstrings.LeadingOnesObjectiveFunction;
 import aitoa.examples.bitstrings.OneMaxObjectiveFunction;
 import aitoa.examples.bitstrings.TrapObjectiveFunction;
 import aitoa.examples.bitstrings.TwoMaxObjectiveFunction;
-import aitoa.searchSpaces.bitstrings.BitStringBinaryOperatorUniform;
-import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
-import aitoa.searchSpaces.bitstrings.BitStringUnaryOperator1Flip;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -68,12 +65,6 @@ public abstract class TestBitStringMetaheuristic
     final int UBi = ((int) UB);
     builder.setMaxFEs(f.n * f.n * 4);
     builder.setSearchSpace(f.createSpace());
-    builder.setNullarySearchOperator(
-        new BitStringNullaryOperator());
-    builder.setUnarySearchOperator(
-        new BitStringUnaryOperator1Flip(f.n));
-    builder.setBinarySearchOperator(
-        new BitStringBinaryOperatorUniform());
     builder.setObjectiveFunction(f);
     try (final IBlackBoxProcess<boolean[], boolean[]> process =
         builder.get()) {

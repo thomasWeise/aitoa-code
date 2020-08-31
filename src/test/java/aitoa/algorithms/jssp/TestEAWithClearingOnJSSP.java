@@ -4,8 +4,11 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.EAWithClearing;
+import aitoa.examples.jssp.JSSPBinaryOperatorSequence;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -23,6 +26,10 @@ public class TestEAWithClearingOnJSSP
     final int mu = 1 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
     final double cr = (mu > 1) ? rand.nextDouble() : 0;
-    return new EAWithClearing<>(cr, mu, lambda);
+    return new EAWithClearing<>(
+        new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator1Swap(), //
+        new JSSPBinaryOperatorSequence(instance), //
+        cr, mu, lambda);
   }
 }

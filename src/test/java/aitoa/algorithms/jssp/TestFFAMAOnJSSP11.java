@@ -5,9 +5,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.IntFFA;
 import aitoa.algorithms.MAWithFitness;
+import aitoa.examples.jssp.JSSPBinaryOperatorSequence;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -23,8 +26,12 @@ public class TestFFAMAOnJSSP11 extends TestMetaheuristicOnJSSP {
     final Random rand = ThreadLocalRandom.current();
     final int mu = 2 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
-    return new MAWithFitness<>(mu, lambda, 11, new IntFFA(
-        (int) (0.5d + new JSSPMakespanObjectiveFunction(instance)
-            .upperBound())));
+    return new MAWithFitness<>(new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator1Swap(), //
+        new JSSPBinaryOperatorSequence(instance), //
+        mu, lambda, 11,
+        new IntFFA((int) (0.5d
+            + new JSSPMakespanObjectiveFunction(instance)
+                .upperBound())));
   }
 }

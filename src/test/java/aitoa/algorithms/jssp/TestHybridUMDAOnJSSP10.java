@@ -6,7 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import aitoa.algorithms.HybridEDA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPUMDAModel;
+import aitoa.examples.jssp.JSSPUnaryOperator12Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -24,7 +26,9 @@ public class TestHybridUMDAOnJSSP10
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new HybridEDA<>(mu, lambda, 10,
+    return new HybridEDA<>(new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator12Swap(), //
+        mu, lambda, 10,
         new JSSPUMDAModel(instance, 1 + rand.nextInt(2)));
   }
 }

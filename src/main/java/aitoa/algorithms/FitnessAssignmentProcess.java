@@ -2,14 +2,16 @@ package aitoa.algorithms;
 
 import java.util.Comparator;
 
+import aitoa.structure.ISetupPrintable;
+
 /**
  * The abstract base class for fitness assignment processes
  *
  * @param <X>
  *          the search space
  */
-public abstract class FitnessAssignmentProcess<X>
-    implements Comparator<FitnessIndividual<? extends X>> {
+public abstract class FitnessAssignmentProcess<X> implements
+    Comparator<FitnessIndividual<? extends X>>, ISetupPrintable {
 
   /**
    * Assign the fitness a set of individuals. This process will

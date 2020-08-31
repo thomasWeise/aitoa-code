@@ -40,14 +40,6 @@ abstract class BlackBoxProcessData<X, Y> {
   long mMaxTime;
   /** the goal objective value */
   double mGoalF;
-  /** the nullary search operator */
-  INullarySearchOperator<X> mNullary;
-  /** the unary search operator */
-  IUnarySearchOperator<X> mUnary;
-  /** the binary search operator */
-  IBinarySearchOperator<X> mBinary;
-  /** the ternary search operator */
-  ITernarySearchOperator<X> mTernary;
 
   /** Create the base class of the black box problem */
   BlackBoxProcessData() {
@@ -84,10 +76,6 @@ abstract class BlackBoxProcessData<X, Y> {
     this.mMaxTime =
         BlackBoxProcessData.checkMaxTime(pCopy.mMaxTime);
     this.mGoalF = BlackBoxProcessData.checkGoalF(pCopy.mGoalF);
-    this.mNullary = pCopy.mNullary;
-    this.mUnary = pCopy.mUnary;
-    this.mBinary = pCopy.mBinary;
-    this.mTernary = pCopy.mTernary;
     this.mRandSeed = pCopy.mRandSeed;
   }
 
@@ -154,18 +142,6 @@ abstract class BlackBoxProcessData<X, Y> {
     out.write(LogFormat.mapEntry(LogFormat.SEARCH_SPACE,
         this.mSearchSpace));
     out.write(System.lineSeparator());
-    out.write(
-        LogFormat.mapEntry(LogFormat.NULLARY_OP, this.mNullary));
-    out.write(System.lineSeparator());
-    out.write(
-        LogFormat.mapEntry(LogFormat.UNARY_OP, this.mUnary));
-    out.write(System.lineSeparator());
-    out.write(
-        LogFormat.mapEntry(LogFormat.BINARY_OP, this.mBinary));
-    out.write(System.lineSeparator());
-    out.write(
-        LogFormat.mapEntry(LogFormat.TERNARY_OP, this.mTernary));
-    out.write(System.lineSeparator());
     out.write(LogFormat.mapEntry(LogFormat.SOLUTION_SPACE,
         this.mSolutionSpace));
     out.write(System.lineSeparator());
@@ -212,46 +188,6 @@ abstract class BlackBoxProcessData<X, Y> {
    */
   public final ISpace<X> getSearchSpace() {
     return this.mSearchSpace;
-  }
-
-  /**
-   * Get the nullary search operator
-   *
-   * @return the nullary search operator
-   */
-  public final INullarySearchOperator<X>
-      getNullarySearchOperator() {
-    return this.mNullary;
-  }
-
-  /**
-   * Get the unary search operator
-   *
-   * @return the unary search operator
-   */
-  public final IUnarySearchOperator<X> getUnarySearchOperator() {
-    return this.mUnary;
-  }
-
-  /**
-   * Get the binary search operator
-   *
-   * @return the binary search operator
-   */
-  public final IBinarySearchOperator<X>
-      getBinarySearchOperator() {
-    return this.mBinary;
-  }
-
-  // end relevant
-  /**
-   * Get the ternary search operator
-   *
-   * @return the ternary search operator
-   */
-  public final ITernarySearchOperator<X>
-      getTernarySearchOperator() {
-    return this.mTernary;
   }
 
   /**

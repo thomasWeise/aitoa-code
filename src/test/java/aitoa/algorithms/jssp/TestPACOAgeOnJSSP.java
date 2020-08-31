@@ -43,7 +43,7 @@ public class TestPACOAgeOnJSSP extends
         rand.nextInt(3, 7), rand.nextDouble(0.1d, 0.9d),
         rand.nextDouble(1d, 7d), rand.nextDouble(0.8d, 2d));
 
-    return new EDA<>(mu, lambda, model);
+    return new EDA<>(model, mu, lambda, model);
   }
 
   /** {@inheritDoc} */
@@ -79,7 +79,6 @@ public class TestPACOAgeOnJSSP extends
                 .setObjectiveFunction(
                     new JSSPACOMakespanObjectiveFunction(
                         instance))//
-                .setNullarySearchOperator(algo.model)//
                 .setMaxFEs(maxFEs)//
                 .setMaxTime(maxTime)//
                 .get()) {

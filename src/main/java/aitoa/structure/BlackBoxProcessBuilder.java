@@ -122,61 +122,6 @@ public class BlackBoxProcessBuilder<X, Y>
   }
 
   /**
-   * Set the nullary search operator
-   *
-   * @param op
-   *          the nullary search operator
-   * @return this
-   */
-  public final BlackBoxProcessBuilder<X, Y>
-      setNullarySearchOperator(
-          final INullarySearchOperator<X> op) {
-    this.mNullary = Objects.requireNonNull(op);
-    return this;
-  }
-
-  /**
-   * Set the unary search operator
-   *
-   * @param op
-   *          the unary search operator
-   * @return this
-   */
-  public final BlackBoxProcessBuilder<X, Y>
-      setUnarySearchOperator(final IUnarySearchOperator<X> op) {
-    this.mUnary = Objects.requireNonNull(op);
-    return this;
-  }
-
-  /**
-   * Set the binary search operator
-   *
-   * @param op
-   *          the binary search operator
-   * @return this
-   */
-  public final BlackBoxProcessBuilder<X, Y>
-      setBinarySearchOperator(
-          final IBinarySearchOperator<X> op) {
-    this.mBinary = Objects.requireNonNull(op);
-    return this;
-  }
-
-  /**
-   * Set the ternary search operator
-   *
-   * @param op
-   *          the ternary search operator
-   * @return this
-   */
-  public final BlackBoxProcessBuilder<X, Y>
-      setTernarySearchOperator(
-          final ITernarySearchOperator<X> op) {
-    this.mTernary = Objects.requireNonNull(op);
-    return (this);
-  }
-
-  /**
    * Set the goal objective value,
    * {@link Double#NEGATIVE_INFINITY} if no goal is specified
    *

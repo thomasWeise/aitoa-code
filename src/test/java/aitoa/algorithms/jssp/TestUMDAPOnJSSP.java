@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import aitoa.algorithms.EDA;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPUMDAModel;
 import aitoa.structure.IMetaheuristic;
 
@@ -23,7 +24,8 @@ public class TestUMDAPOnJSSP extends TestMetaheuristicOnJSSP {
     final int lambda = 1 + rand.nextInt(64);
     final int mu = 1 + rand.nextInt(lambda);
 
-    return new EDA<>(mu, lambda,
+    return new EDA<>(new JSSPNullaryOperator(instance), mu,
+        lambda,
         new JSSPUMDAModel(instance, 1 + rand.nextInt(2)));
   }
 }

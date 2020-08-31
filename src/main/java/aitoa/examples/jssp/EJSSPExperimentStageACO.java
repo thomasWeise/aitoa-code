@@ -8,11 +8,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import aitoa.algorithms.EDA;
-import aitoa.algorithms.EDAWithClearing;
-import aitoa.algorithms.EDAWithFitness;
-import aitoa.algorithms.HybridEDA;
-import aitoa.algorithms.HybridEDAWithClearing;
-import aitoa.algorithms.HybridEDAWithFitness;
 import aitoa.examples.jssp.aco.JSSPACOIndividual;
 import aitoa.examples.jssp.aco.JSSPACOMakespanObjectiveFunction;
 import aitoa.examples.jssp.aco.JSSPACOSpace;
@@ -53,9 +48,11 @@ public enum EJSSPExperimentStageACO implements
               for (final double q0 : new double[] { 0.1d, 0.3d,
                   0.5d, 0.9d }) {
                 for (final double tauMax : new double[] { 1d }) {
-                  list.add(() -> new EDA<>(mu, lambda,
+                  final JSSPPACOModelAge model =
                       new JSSPPACOModelAge(problem.getInstance(), //
-                          k, q0, beta, tauMax)));
+                          k, q0, beta, tauMax);
+                  list.add(
+                      () -> new EDA<>(model, mu, lambda, model));
                 }
               }
             }
@@ -69,9 +66,11 @@ public enum EJSSPExperimentStageACO implements
             for (final double beta : new double[] { 2.5d }) {
               for (final double q0 : new double[] { 0.5d }) {
                 for (final double tauMax : new double[] { 1d }) {
-                  list.add(() -> new EDA<>(mu, lambda,
+                  final JSSPPACOModelAge model =
                       new JSSPPACOModelAge(problem.getInstance(), //
-                          k, q0, beta, tauMax)));
+                          k, q0, beta, tauMax);
+                  list.add(
+                      () -> new EDA<>(model, mu, lambda, model));
                 }
               }
             }
@@ -85,9 +84,11 @@ public enum EJSSPExperimentStageACO implements
             for (final double beta : new double[] { 2.5d }) {
               for (final double q0 : new double[] { 0.5d }) {
                 for (final double tauMax : new double[] { 1d }) {
-                  list.add(() -> new EDA<>(mu, lambda,
+                  final JSSPPACOModelAge model =
                       new JSSPPACOModelAge(problem.getInstance(), //
-                          k, q0, beta, tauMax)));
+                          k, q0, beta, tauMax);
+                  list.add(
+                      () -> new EDA<>(model, mu, lambda, model));
                 }
               }
             }
@@ -154,45 +155,6 @@ public enum EJSSPExperimentStageACO implements
         Objects.requireNonNull(problem.getInstance());
     builder.setSearchSpace(new JSSPACOSpace(inst));
     builder.setObjectiveFunction(problem);
-  }
-
-  /** {@inheritDoc} */
-  @SuppressWarnings("rawtypes")
-  @Override
-  public void configureBuilderForProblemAndAlgorithm(
-      final BlackBoxProcessBuilder<JSSPACOIndividual,
-          JSSPACOIndividual> builder,
-      final JSSPACOMakespanObjectiveFunction problem,
-      final IMetaheuristic<JSSPACOIndividual,
-          JSSPACOIndividual> algorithm) {
-    if (algorithm instanceof EDA) {
-      builder.setNullarySearchOperator(((EDA) algorithm).model);
-    } else {
-      if (algorithm instanceof EDAWithFitness) {
-        builder.setNullarySearchOperator(
-            ((EDAWithFitness) algorithm).model);
-      } else {
-        if (algorithm instanceof EDAWithClearing) {
-          builder.setNullarySearchOperator(
-              ((EDAWithClearing) algorithm).model);
-        } else {
-          if (algorithm instanceof HybridEDA) {
-            builder.setNullarySearchOperator(
-                ((HybridEDA) algorithm).model);
-          } else {
-            if (algorithm instanceof HybridEDAWithFitness) {
-              builder.setNullarySearchOperator(
-                  ((HybridEDAWithFitness) algorithm).model);
-            } else {
-              if (algorithm instanceof HybridEDAWithClearing) {
-                builder.setNullarySearchOperator(
-                    ((HybridEDAWithClearing) algorithm).model);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   /**

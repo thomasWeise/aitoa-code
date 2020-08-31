@@ -12,7 +12,8 @@ import java.util.Random;
  */
 @FunctionalInterface
 // start relevant
-public interface INullarySearchOperator<X> {
+public interface INullarySearchOperator<X>
+    extends ISetupPrintable {
 
   /**
    * Apply the search operator to sample a new point in the

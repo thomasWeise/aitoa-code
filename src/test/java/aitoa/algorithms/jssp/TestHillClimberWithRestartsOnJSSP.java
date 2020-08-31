@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import aitoa.algorithms.HillClimberWithRestarts;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -21,6 +23,8 @@ public class TestHillClimberWithRestartsOnJSSP
       getAlgorithm(final JSSPInstance instance) {
     final Random rand = ThreadLocalRandom.current();
     final int rs = 1 + rand.nextInt(512);
-    return new HillClimberWithRestarts<>(rs);
+    return new HillClimberWithRestarts<>(
+        new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator1Swap(), rs);
   }
 }

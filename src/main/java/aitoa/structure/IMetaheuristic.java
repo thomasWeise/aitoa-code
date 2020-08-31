@@ -4,9 +4,6 @@ package aitoa.structure;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Objects;
-
-import aitoa.utils.Experiment;
 
 /**
  * A metaheuristic optimization algorithm
@@ -17,7 +14,7 @@ import aitoa.utils.Experiment;
  *          the solution space
  */
 // start relevant
-public interface IMetaheuristic<X, Y> {
+public interface IMetaheuristic<X, Y> extends ISetupPrintable {
   /**
    * Solve the given problem instance
    *
@@ -35,70 +32,12 @@ public interface IMetaheuristic<X, Y> {
    * @throws IOException
    *           if i/o fails
    */
+  @Override
   default void printSetup(final Writer output)
       throws IOException {
-    output.write(LogFormat.mapEntry("algorithm", this)); //$NON-NLS-1$
+    output.write(
+        LogFormat.mapEntry(LogFormat.SETUP_ALGORITHM, this));
     output.write(System.lineSeparator());
-  }
-
-  /**
-   * Get a proper name for the given setup of the algorithm
-   *
-   * @param builder
-   *          the process builder with the setup information
-   * @return the setup name
-   */
-  default String
-      getSetupName(final BlackBoxProcessBuilder<X, Y> builder) {
-    return Experiment.nameFromObjectPrepare(this);
-  }
-
-  /**
-   * Create a setup name by concatenating the base name of an
-   * algorithm with a unary operator name.
-   *
-   * @param <X>
-   *          the search space
-   * @param <Y>
-   *          the solution space
-   * @param algorithm
-   *          the algorithm
-   * @param builder
-   *          the process builder
-   * @return the setup name
-   * @see #getSetupName(BlackBoxProcessBuilder)
-   */
-  static <X, Y> String getSetupNameWithUnaryOperator(
-      final IMetaheuristic<X, Y> algorithm,
-      final BlackBoxProcessBuilder<X, Y> builder) {
-    return Experiment.nameFromObjectsMerge(algorithm, //
-        Objects.requireNonNull(//
-            builder.getUnarySearchOperator()));
-  }
-
-  /**
-   * Create a setup name by concatenating the base name of an
-   * algorithm with a unary operator name.
-   *
-   * @param <X>
-   *          the search space
-   * @param <Y>
-   *          the solution space
-   * @param algorithm
-   *          the algorithm
-   * @param builder
-   *          the process builder
-   * @return the setup name
-   * @see #getSetupName(BlackBoxProcessBuilder)
-   */
-  static <X, Y> String getSetupNameWithUnaryAndBinaryOperator(
-      final IMetaheuristic<X, Y> algorithm,
-      final BlackBoxProcessBuilder<X, Y> builder) {
-    return Experiment.nameFromObjectsMerge(algorithm, //
-        Objects.requireNonNull(//
-            builder.getUnarySearchOperator()), //
-        Objects.requireNonNull(//
-            builder.getBinarySearchOperator()));
   }
 // start relevant
 }

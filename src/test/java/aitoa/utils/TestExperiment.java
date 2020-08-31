@@ -19,6 +19,7 @@ import aitoa.examples.bitstrings.BitStringObjectiveFunction;
 import aitoa.examples.bitstrings.LeadingOnesObjectiveFunction;
 import aitoa.examples.bitstrings.OneMaxObjectiveFunction;
 import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
+import aitoa.searchSpaces.bitstrings.BitStringUnaryOperator1Flip;
 import aitoa.searchSpaces.bitstrings.BitStringUnaryOperatorMOverNFlip;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IMetaheuristic;
@@ -228,8 +229,13 @@ public class TestExperiment {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(EA1p1::new,
-                      RandomSampling::new);
+                  return Stream.of(
+                      () -> new EA1p1<>(
+                          new BitStringNullaryOperator(),
+                          new BitStringUnaryOperator1Flip(
+                              problem.n)),
+                      () -> new RandomSampling<>(
+                          new BitStringNullaryOperator()));
                 }
 
                 @Override
@@ -238,10 +244,6 @@ public class TestExperiment {
                         boolean[]> builder) {
                   builder.setGoalF(0);
                   builder.setMaxFEs(100);
-                  builder.setNullarySearchOperator(
-                      new BitStringNullaryOperator());
-                  builder.setUnarySearchOperator(
-                      new BitStringUnaryOperatorMOverNFlip(1));
                 }
 
                 @Override
@@ -280,8 +282,13 @@ public class TestExperiment {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(EA1p1::new,
-                      RandomSampling::new);
+                  return Stream.of(
+                      () -> new EA1p1<>(
+                          new BitStringNullaryOperator(),
+                          new BitStringUnaryOperator1Flip(
+                              problem.n)),
+                      () -> new RandomSampling<>(
+                          new BitStringNullaryOperator()));
                 }
 
                 @Override
@@ -290,10 +297,6 @@ public class TestExperiment {
                         boolean[]> builder) {
                   builder.setGoalF(0);
                   builder.setMaxFEs(100);
-                  builder.setNullarySearchOperator(
-                      new BitStringNullaryOperator());
-                  builder.setUnarySearchOperator(
-                      new BitStringUnaryOperatorMOverNFlip(1));
                 }
 
                 @Override
@@ -356,8 +359,13 @@ public class TestExperiment {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(EA1p1::new,
-                      RandomSampling::new,
+                  return Stream.of(
+                      () -> new EA1p1<>(
+                          new BitStringNullaryOperator(),
+                          new BitStringUnaryOperator1Flip(
+                              problem.n)),
+                      () -> new RandomSampling<>(
+                          new BitStringNullaryOperator()),
                       () -> new Greedy2p1GAmodFFA<>(
                           ((int) (problem.upperBound()))),
                       Greedy2p1GAmod::new);
@@ -369,10 +377,6 @@ public class TestExperiment {
                         boolean[]> builder) {
                   builder.setGoalF(0);
                   builder.setMaxFEs(100);
-                  builder.setNullarySearchOperator(
-                      new BitStringNullaryOperator());
-                  builder.setUnarySearchOperator(
-                      new BitStringUnaryOperatorMOverNFlip(1));
                 }
 
                 @Override
@@ -411,8 +415,13 @@ public class TestExperiment {
                         IMetaheuristic<boolean[], boolean[]>>>
                     getAlgorithms(
                         final BitStringObjectiveFunction problem) {
-                  return Stream.of(EA1p1::new,
-                      RandomSampling::new);
+                  return Stream.of(
+                      () -> new EA1p1<>(
+                          new BitStringNullaryOperator(),
+                          new BitStringUnaryOperatorMOverNFlip(
+                              1)),
+                      () -> new RandomSampling<>(
+                          new BitStringNullaryOperator()));
                 }
 
                 @Override
@@ -421,10 +430,6 @@ public class TestExperiment {
                         boolean[]> builder) {
                   builder.setGoalF(0);
                   builder.setMaxFEs(100);
-                  builder.setNullarySearchOperator(
-                      new BitStringNullaryOperator());
-                  builder.setUnarySearchOperator(
-                      new BitStringUnaryOperatorMOverNFlip(1));
                 }
 
                 @Override

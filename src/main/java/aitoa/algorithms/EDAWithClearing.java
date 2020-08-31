@@ -6,11 +6,12 @@ import java.util.Objects;
 import java.util.Random;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
 import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Metaheuristic0;
+import aitoa.utils.Experiment;
 
 /**
  * An estimation of distribution algorithm does not apply search
@@ -34,7 +35,7 @@ import aitoa.structure.LogFormat;
  */
 // start relevant
 public final class EDAWithClearing<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic0<X, Y> {
 // end relevant
 
   /** the number of solution to be selected */
@@ -47,6 +48,8 @@ public final class EDAWithClearing<X, Y>
   /**
    * Create a new instance of the estimation of distribution
    *
+   * @param pNullary
+   *          the nullary search operator.
    * @param pMu
    *          the number of solution to be selected
    * @param pLambda
@@ -54,9 +57,10 @@ public final class EDAWithClearing<X, Y>
    * @param pModel
    *          the model
    */
-  public EDAWithClearing(final int pMu, final int pLambda,
-      final IModel<X> pModel) {
-    super();
+  public EDAWithClearing(
+      final INullarySearchOperator<X> pNullary, final int pMu,
+      final int pLambda, final IModel<X> pModel) {
+    super(pNullary);
     if ((pLambda < 1) || (pLambda > 100_000_000)) {
       throw new IllegalArgumentException(
           "Invalid lambda: " + pLambda); //$NON-NLS-1$
@@ -74,33 +78,6 @@ public final class EDAWithClearing<X, Y>
   }
 
   /** {@inheritDoc} */
-  @Override
-  public void printSetup(final Writer output)
-      throws IOException {
-    output.write(LogFormat.mapEntry("base_algorithm", //$NON-NLS-1$
-        "eda")); //$NON-NLS-1$
-    output.write(System.lineSeparator());
-    IMetaheuristic.super.printSetup(output);
-    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    output.write(LogFormat.mapEntry("clearing", true));//$NON-NLS-1$
-    output.write(System.lineSeparator());
-    this.model.printSetup(output);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String toString() {
-    return ((((("edac_" + //$NON-NLS-1$
-        this.model.toString()) + '_') + this.mu) + '+')
-        + this.lambda);
-  }
-
-  /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override
 // start relevant
@@ -109,8 +86,6 @@ public final class EDAWithClearing<X, Y>
 // create local variables
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
-    final INullarySearchOperator<X> nullary =
-        process.getNullarySearchOperator();
     final IModel<X> M = this.model;
 
     final Individual<X>[] P = new Individual[this.lambda];
@@ -122,7 +97,7 @@ public final class EDAWithClearing<X, Y>
 // first generation: fill population with random individuals
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
-        nullary.apply(x, random);
+        this.nullary.apply(x, random);
         P[i] = new Individual<>(x, process.evaluate(x));
 // end relevant
         if (process.shouldTerminate()) { // we return
@@ -150,5 +125,36 @@ public final class EDAWithClearing<X, Y>
       } // the end of the main loop
     }
   }
+// end relevant
+
+  /** {@inheritDoc} */
+  @Override
+  public void printSetup(final Writer output)
+      throws IOException {
+    output.write(LogFormat.mapEntry(//
+        LogFormat.SETUP_BASE_ALGORITHM, "eda")); //$NON-NLS-1$
+    output.write(System.lineSeparator());
+    super.printSetup(output);
+    output.write(LogFormat.mapEntry("mu", this.mu));///$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("lambda", this.lambda));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("model", this.model));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    output.write(LogFormat.mapEntry("clearing", true));//$NON-NLS-1$
+    output.write(System.lineSeparator());
+    if ((this.model != this.nullary)) {
+      this.model.printSetup(output);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return Experiment.nameFromObjectsMerge("edac", //$NON-NLS-1$
+        this.model, String.valueOf(this.mu) + '+' + this.lambda);
+  }
+
+// start relevant
 }
 // end relevant

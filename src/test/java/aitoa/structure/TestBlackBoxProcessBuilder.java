@@ -182,42 +182,6 @@ public class TestBlackBoxProcessBuilder<X, Y>
 
     /** {@inheritDoc} */
     @Override
-    public final INullarySearchOperator<X>
-        getNullarySearchOperator() {
-      this.checkTerminated();
-      Assert.assertNotNull(this.mProcess.mNullary);
-      return this.mProcess.mNullary;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final IUnarySearchOperator<X>
-        getUnarySearchOperator() {
-      this.checkTerminated();
-      Assert.assertNotNull(this.mProcess.mUnary);
-      return this.mProcess.mUnary;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final IBinarySearchOperator<X>
-        getBinarySearchOperator() {
-      this.checkTerminated();
-      Assert.assertNotNull(this.mProcess.mBinary);
-      return this.mProcess.mBinary;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final ITernarySearchOperator<X>
-        getTernarySearchOperator() {
-      this.checkTerminated();
-      Assert.assertNotNull(this.mProcess.mTernary);
-      return this.mProcess.mTernary;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public final double getBestF() {
       final double f = this.mProcess.mBestF;
       if (this.mProcess.mConsumedFEs > 0L) {

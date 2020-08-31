@@ -6,10 +6,8 @@ import org.junit.Test;
 
 import aitoa.TestTools;
 import aitoa.algorithms.bitstrings.Greedy2p1GAmod;
-import aitoa.searchSpaces.bitstrings.BitStringNullaryOperator;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 
 /**
@@ -25,15 +23,12 @@ public class TestOneMaxObjectiveFunctionGreedyGAmodLongRuns {
     final OneMaxObjectiveFunction f =
         new OneMaxObjectiveFunction(19);
     final ISpace<boolean[]> X = f.createSpace();
-    final INullarySearchOperator<boolean[]> op0 =
-        new BitStringNullaryOperator();
     final Greedy2p1GAmod<boolean[]> algo =
         new Greedy2p1GAmod<>();
 
     final BlackBoxProcessBuilder<boolean[], boolean[]> builder =
         new BlackBoxProcessBuilder<>();
     builder.setSearchSpace(X);
-    builder.setNullarySearchOperator(op0);
     builder.setGoalF(0d);
     builder.setObjectiveFunction(f);
     builder.setRandSeed(0x43a2d6a4159ead3dL);
@@ -55,15 +50,12 @@ public class TestOneMaxObjectiveFunctionGreedyGAmodLongRuns {
     final OneMaxObjectiveFunction f =
         new OneMaxObjectiveFunction(21);
     final ISpace<boolean[]> X = f.createSpace();
-    final INullarySearchOperator<boolean[]> op0 =
-        new BitStringNullaryOperator();
     final Greedy2p1GAmod<boolean[]> algo =
         new Greedy2p1GAmod<>();
 
     final BlackBoxProcessBuilder<boolean[], boolean[]> builder =
         new BlackBoxProcessBuilder<>();
     builder.setSearchSpace(X);
-    builder.setNullarySearchOperator(op0);
     builder.setGoalF(0d);
     builder.setObjectiveFunction(f);
     builder.setRandSeed(0x98fb1396311d442cL);

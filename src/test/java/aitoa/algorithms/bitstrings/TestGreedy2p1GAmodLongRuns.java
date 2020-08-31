@@ -31,7 +31,6 @@ public class TestGreedy2p1GAmodLongRuns {
     final int scale = 128;
 
     bb.setGoalF(0);
-    bb.setNullarySearchOperator(new BitStringNullaryOperator());
     bb.setObjectiveFunction(new OneMaxObjectiveFunction(scale));
 
     final BitStringSpace space = new BitStringSpace(scale);
@@ -40,7 +39,7 @@ public class TestGreedy2p1GAmodLongRuns {
 
     bb.setRandSeed(0x17aaebd80b6d6997L);
     final Greedy2p1GAmod<boolean[]> algo =
-        new Greedy2p1GAmod<>();
+        new Greedy2p1GAmod<>(new BitStringNullaryOperator());
 
     try (final IBlackBoxProcess<boolean[], boolean[]> process =
         bb.get()) {

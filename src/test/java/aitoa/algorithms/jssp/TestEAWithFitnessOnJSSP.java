@@ -5,9 +5,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import aitoa.algorithms.EAWithFitness;
 import aitoa.algorithms.IntFFA;
+import aitoa.examples.jssp.JSSPBinaryOperatorSequence;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
+import aitoa.examples.jssp.JSSPNullaryOperator;
+import aitoa.examples.jssp.JSSPUnaryOperator1Swap;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -25,7 +28,10 @@ public class TestEAWithFitnessOnJSSP
     final int mu = 1 + rand.nextInt(64);
     final int lambda = 1 + rand.nextInt(64);
     final double cr = (mu > 1) ? rand.nextDouble() : 0;
-    return new EAWithFitness<>(cr, mu, lambda,
+    return new EAWithFitness<>(new JSSPNullaryOperator(instance), //
+        new JSSPUnaryOperator1Swap(), //
+        new JSSPBinaryOperatorSequence(instance), //
+        cr, mu, lambda,
         new IntFFA(
             (int) (new JSSPMakespanObjectiveFunction(instance)
                 .upperBound())));

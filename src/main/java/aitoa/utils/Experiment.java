@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import aitoa.algorithms.RandomSampling;
 import aitoa.structure.BlackBoxProcessBuilder;
 import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IMetaheuristic;
@@ -566,9 +565,8 @@ public final class Experiment {
      *          the problem
      * @return the stream of suppliers
      */
-    @SuppressWarnings("unchecked")
     default Stream<Supplier<M>> getAlgorithms(final P problem) {
-      return Stream.of(() -> ((M) (new RandomSampling<>())));
+      return Stream.empty();
     }
 
     /**
@@ -1000,8 +998,7 @@ public final class Experiment {
                     seeds.length);
 
 // Get the algorithm name.
-                final String algoName =
-                    algorithm.getSetupName(builder);
+                final String algoName = algorithm.toString();
                 if (algoName.isEmpty()) {
                   throw new IllegalArgumentException(
                       "Name of algorithm cannot be null or empty, but is " //$NON-NLS-1$

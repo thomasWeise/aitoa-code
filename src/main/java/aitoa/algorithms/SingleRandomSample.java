@@ -1,7 +1,8 @@
 package aitoa.algorithms;
 
 import aitoa.structure.IBlackBoxProcess;
-import aitoa.structure.IMetaheuristic;
+import aitoa.structure.INullarySearchOperator;
+import aitoa.structure.Metaheuristic0;
 
 /**
  * The single random sample algorithm samples one point from the
@@ -14,11 +15,17 @@ import aitoa.structure.IMetaheuristic;
  */
 // start relevant
 public final class SingleRandomSample<X, Y>
-    implements IMetaheuristic<X, Y> {
+    extends Metaheuristic0<X, Y> {
 // end relevant
-  /** create */
-  public SingleRandomSample() {
-    super();
+  /**
+   * Create the single random sample algorithm
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   */
+  public SingleRandomSample(
+      final INullarySearchOperator<X> pNullary) {
+    super(pNullary);
   }
 
   /** {@inheritDoc} */
@@ -36,8 +43,7 @@ public final class SingleRandomSample<X, Y>
 
 // Apply the nullary operator: Fill data structure with a random
 // but valid point from the search space.
-    process.getNullarySearchOperator().apply(x,
-        process.getRandom());
+    this.nullary.apply(x, process.getRandom());
 
 // Evaluate the point: process.evaluate automatically applies the
 // representation mapping and calls objective function. The

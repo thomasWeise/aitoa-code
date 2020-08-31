@@ -38,7 +38,21 @@ public final class Greedy2p1GAmodFFA<Y>
    *          the upper bound of the objective value
    */
   public Greedy2p1GAmodFFA(final int pUB) {
-    this(Greedy2p1GAmodBase.DEFAULT_C, pUB);
+    this(null, pUB);
+  }
+
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pUB
+   *          the upper bound of the objective value
+   */
+  public Greedy2p1GAmodFFA(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final int pUB) {
+    this(pNullary, Greedy2p1GAmodBase.DEFAULT_C, pUB);
   }
 
   /**
@@ -51,7 +65,24 @@ public final class Greedy2p1GAmodFFA<Y>
    *          the upper bound of the objective value
    */
   public Greedy2p1GAmodFFA(final double pC, final int pUB) {
-    super(pC);
+    this(null, pC, pUB);
+  }
+
+  /**
+   * create
+   *
+   * @param pNullary
+   *          the nullary search operator.
+   * @param pC
+   *          the constant above n to define the mutation
+   *          probability
+   * @param pUB
+   *          the upper bound of the objective value
+   */
+  public Greedy2p1GAmodFFA(
+      final INullarySearchOperator<boolean[]> pNullary,
+      final double pC, final int pUB) {
+    super(pNullary, pC);
     if (pUB <= 0) {
       throw new IllegalArgumentException(
           "UB must be at least 1, but you specified " //$NON-NLS-1$
@@ -65,21 +96,19 @@ public final class Greedy2p1GAmodFFA<Y>
   public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
     final Random random = process.getRandom();// get random gen
-    final INullarySearchOperator<boolean[]> nullary =
-        process.getNullarySearchOperator();
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
 // Line 1: sample x and y from the search space
     boolean[] x = searchSpace.create();
-    nullary.apply(x, random);
+    this.nullary.apply(x, random);
     int fx = ((int) (process.evaluate(x)));
     if (process.shouldTerminate()) {
       return;
     }
 
     boolean[] y = searchSpace.create();
-    nullary.apply(y, random);
+    this.nullary.apply(y, random);
     int fy = ((int) (process.evaluate(y)));
 
 // other initialization stuff

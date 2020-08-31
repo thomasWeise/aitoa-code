@@ -67,14 +67,6 @@ public final class LogFormat {
   public static final String BEGIN_SETUP = "BEGIN_SETUP"; //$NON-NLS-1$
   /** the key SEARCH_SPACE */
   public static final String SEARCH_SPACE = "SEARCH_SPACE"; //$NON-NLS-1$
-  /** the key NULLARY_OP */
-  public static final String NULLARY_OP = "NULLARY_OP"; //$NON-NLS-1$
-  /** the key UNARY_OP */
-  public static final String UNARY_OP = "UNARY_OP"; //$NON-NLS-1$
-  /** the key BINARY_OP */
-  public static final String BINARY_OP = "BINARY_OP"; //$NON-NLS-1$
-  /** the key TERNARY_OP */
-  public static final String TERNARY_OP = "TERNARY_OP"; //$NON-NLS-1$
   /** the key SOLUTION_SPACE */
   public static final String SOLUTION_SPACE = "SOLUTION_SPACE"; //$NON-NLS-1$
   /** the key REPRESENTATION_MAPPING */
@@ -224,6 +216,22 @@ public final class LogFormat {
    */
   public static final String ALGORITHM_SETUP_LOG_SECTION =
       "ALGORITHM_SETUP";//$NON-NLS-1$
+  /** the key algorithm ID key */
+  public static final String SETUP_ALGORITHM = "algorithm"; //$NON-NLS-1$
+  /** the key algorithm ID key */
+  public static final String SETUP_BASE_ALGORITHM =
+      "baseAlgorithm"; //$NON-NLS-1$
+  /** the key NULLARY_OP */
+  public static final String SETUP_NULLARY_OP =
+      "nullaryOperator"; //$NON-NLS-1$
+  /** the key UNARY_OP */
+  public static final String SETUP_UNARY_OP = "unaryOperator"; //$NON-NLS-1$
+  /** the key BINARY_OP */
+  public static final String SETUP_BINARY_OP = "binaryOperator"; //$NON-NLS-1$
+  /** the key TERNARY_OP */
+  public static final String SETUP_TERNARY_OP =
+      "ternaryOperator"; //$NON-NLS-1$
+
   /** the null value */
   public static final String NULL = "null"; //$NON-NLS-1$
 
