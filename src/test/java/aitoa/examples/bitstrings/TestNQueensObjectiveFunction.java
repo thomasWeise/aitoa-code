@@ -164,4 +164,40 @@ public class TestNQueensObjectiveFunction
       opt[i] = b1;
     }
   }
+
+  /** test the correctness */
+  @SuppressWarnings("static-method")
+  @Test(timeout = 3600000)
+  public final void testCorrectnessF4_2() {
+    final boolean[] x = { //
+        false, false, false, false, //
+        false, false, false, false, //
+        false, false, false, false, //
+        false, false, false, false };
+    final BitStringObjectiveFunction f =
+        new NQueensObjectiveFunction(x.length);
+
+    Assert.assertEquals(4, f.evaluate(x), 0d);
+    x[0] = true;
+    Assert.assertEquals(3, f.evaluate(x), 0d);
+
+// two queens, but in the same row
+    x[1] = true;
+    Assert.assertEquals(2 + 4, f.evaluate(x), 0d);
+
+// three queens, but 2 in the same row, 2 in the same column, and
+// 2 in one diagonal
+    x[4] = true;
+    Assert.assertEquals(1 + 4 + 4 + 4, f.evaluate(x), 0d);
+
+// four queens, but 3 in the same row, 2 in the same column, and
+// 2 in one diagonal
+    x[2] = true;
+    Assert.assertEquals(0 + 8 + 4 + 4, f.evaluate(x), 0d);
+
+// five queens, but 4 in the same row, 2 in the same column, and
+// 2 in one diagonal
+    x[3] = true;
+    Assert.assertEquals(-1 + 12 + 4 + 4, f.evaluate(x), 0d);
+  }
 }

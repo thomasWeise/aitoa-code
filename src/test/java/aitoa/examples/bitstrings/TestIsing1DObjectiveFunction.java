@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
-import aitoa.TestTools;
 import aitoa.structure.IObjectiveFunction;
 import aitoa.structure.IObjectiveFunctionTest;
 
@@ -51,7 +50,29 @@ public class TestIsing1DObjectiveFunction
         TestIsing1DObjectiveFunction.F.evaluate(x), 0, 0);
 
     x[5] ^= true;
-    TestTools.assertGreater(
+    Assert.assertEquals(2d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[6] ^= true;
+    Assert.assertEquals(2d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[7] ^= true;
+    Assert.assertEquals(2d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[6] ^= true;
+    Assert.assertEquals(4d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+
+    x[0] ^= true;
+    Assert.assertEquals(6d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[24] ^= true;
+    Assert.assertEquals(6d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[23] ^= true;
+    Assert.assertEquals(6d,
+        TestIsing1DObjectiveFunction.F.evaluate(x), 0);
+    x[24] ^= true;
+    Assert.assertEquals(8d,
         TestIsing1DObjectiveFunction.F.evaluate(x), 0);
   }
 }
