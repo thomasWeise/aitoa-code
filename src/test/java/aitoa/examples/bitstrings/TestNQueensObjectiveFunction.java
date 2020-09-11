@@ -168,7 +168,7 @@ public class TestNQueensObjectiveFunction
   /** test the correctness */
   @SuppressWarnings("static-method")
   @Test(timeout = 3600000)
-  public final void testCorrectnessF4_2() {
+  public final void testCorrectnessF4B() {
     final boolean[] x = { //
         false, false, false, false, //
         false, false, false, false, //
