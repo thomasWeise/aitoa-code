@@ -165,8 +165,7 @@ public final class BinomialDistribution
     // height
     this.mP1 = i + 0.5d;
     this.mP2 = this.mP1 * (1.0d + this.mC + this.mC); // probabilities
-    this.mP3 = this.mP2 + (this.mC / this.mLl); // of regions
-                                                // 1-4
+    this.mP3 = this.mP2 + (this.mC / this.mLl); // of regions 1-4
     this.mP4 = this.mP3 + (this.mC / this.mLr);
 
     this.mNm = (this.n - this.mM) + 1;

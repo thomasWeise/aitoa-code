@@ -16,26 +16,49 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
 import aitoa.utils.math.DiscreteRandomDistribution;
 
 /**
- * The Self-Adjusting (1+(lambda,lambda)) GA mod extended with
- * FFA. The {@linkplain SelfAdjustingOpLcLGAmod basic algorithm}
- * is defined in Algorithm 5 of E. Carvalho Pinto and C. Doerr,
- * "Towards a more practice-aware runtime analysis of
- * evolutionary algorithms," July 2017, arXiv:1812.00493v1
+ * The Self-Adjusting (1+(lambda,lambda)) GA mod extended so that
+ * it decides automatically whether and when to use FFA. The
+ * {@linkplain SelfAdjustingOpLcLGAmod basic algorithm} which not
+ * uses any FFA, is defined in Algorithm 5 of E. Carvalho Pinto
+ * and C. Doerr, "Towards a more practice-aware runtime analysis
+ * of evolutionary algorithms," July 2017, arXiv:1812.00493v1
  * [cs.NE] 3 Dec 2018. [Online]. Available:
- * http://arxiv.org/pdf/1812.00493.pdf. We here present its
- * version applying Frequency Fitness Assignment (FFA).
+ * http://arxiv.org/pdf/1812.00493.pdf. We then developed a
+ * {@linkplain SelfAdjustingOpLcLGAmodFFA variant} using
+ * Frequency Fitness Assignment (FFA). Here this variant is
+ * further extended to use direct optimization as long as it
+ * seems to work, to switch to FFA when it seemingly doesn't, and
+ * to switch back to direct optimization if there seems to be a
+ * chance that it could work again.
+ * <p>
+ * The original Self-Adjusting (1+(lambda,lambda)) GA mod adapts
+ * its parameter lambda based on whether search steps are
+ * successful or not. If not, lambda will increase and otherwise
+ * decrease. However, lambda is bound to never exceed the problem
+ * scale {@code n}. Our algorithm starts with normal, direct
+ * optimization. If that works, it will never apply FFA. But if
+ * lambda is increased, reaches {@code n}, and the search still
+ * makes no progress (i.e., would try to increase lambda further
+ * but cannot), then our algorithm switches over to use FFA
+ * instead. It will continue to use FFA until it makes an actual
+ * improvement, i.e., discovers a new, best-so-far solution based
+ * on the objective value. Then it switches back to direct
+ * optimization. It is possible that this switching may occur
+ * several times back-and-forth. Regardless of whether the
+ * algorithm is doing direct or FFA-based optimization, it will
+ * always keep updating the FFA-table.
  *
  * @param <Y>
  *          the solution space
  */
-public final class SelfAdjustingOpLcLGAmodFFA<Y>
+public final class SelfAdjustingOpLcLGAmodFFAPlus<Y>
     extends Metaheuristic0<boolean[], Y> {
 
   /** the internal adaptation factor */
   private static final double F = 1.5d;
   /** the inverse adaptation factor */
   private static final double F_BY_1_OVER_4 =
-      Math.pow(SelfAdjustingOpLcLGAmodFFA.F, 0.25d);
+      Math.pow(SelfAdjustingOpLcLGAmodFFAPlus.F, 0.25d);
 
   /** the upper bound of the objective function */
   private final int mUB;
@@ -46,7 +69,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
    * @param pUB
    *          the upper bound of the objective function
    */
-  public SelfAdjustingOpLcLGAmodFFA(final int pUB) {
+  public SelfAdjustingOpLcLGAmodFFAPlus(final int pUB) {
     this(null, pUB);
   }
 
@@ -58,7 +81,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
    * @param pUB
    *          the upper bound of the objective function
    */
-  public SelfAdjustingOpLcLGAmodFFA(
+  public SelfAdjustingOpLcLGAmodFFAPlus(
       final INullarySearchOperator<boolean[]> pNullary,
       final int pUB) {
     super((pNullary != null) ? pNullary
@@ -71,7 +94,21 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
     this.mUB = pUB;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Perform the self-adaptive optimization.
+   * <p>
+   * The algorithm is annotated with line numbers which point to
+   * the paper with the basic algorithm which is extended here,
+   * i.e., lgorithm 5 of E. Carvalho Pinto and C. Doerr, "Towards
+   * a more practice-aware runtime analysis of evolutionary
+   * algorithms," July 2017, arXiv:1812.00493v1 [cs.NE] 3 Dec
+   * 2018. [Online]. Available:
+   * http://arxiv.org/pdf/1812.00493.pdf.
+   *
+   * @param process
+   *          the black box process providing the objective
+   *          function and random number generator
+   */
   @Override
   public void
       solve(final IBlackBoxProcess<boolean[], Y> process) {
@@ -79,31 +116,37 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
     final ISpace<boolean[]> searchSpace =
         process.getSearchSpace();
 
-    // Line 1: sample x from the search space
+// Do we use FF? Initially not.
+    boolean useFFA = false;
+    int fBest = Integer.MAX_VALUE;
+
+// Line 1: sample x from the search space
     Holder x = new Holder(searchSpace.create());
     this.nullary.apply(x.x, random);
     x.f = ((int) (process.evaluate(x.x)));
     final int n = x.x.length;
 
-    // FFA: this history table
+// FFA: this history table
     final long[] H = new long[this.mUB + 1];
     H[x.f] = 1L; // update for solution sampled first
 
-    // allocate integer array used in mutation
+// allocate integer array used in mutation
     final int[] indices = new int[n];
     for (int i = n; (--i) >= 0;) {
       indices[i] = i;
     }
 
-    // Line 2: initialize lambda to 1
+// Line 2: initialize lambda to 1
     int lambda = 1;
     final DiscreteRandomDistribution[] binDistrs =
         new DiscreteRandomDistribution[n + 1];
     final Holder[] xi = new Holder[n + 1];
 
 // pre-allocation: allocate and cache data structures.
-// We cache the binomial distribution, we also cache the bit
-// string arrays.
+// We cache the binomial distribution objects, which will later
+// allow to generate random numbers in O(1) but need to
+// pre-compute some values first in their constructor. We also
+// pre-allocate the bit string arrays.
     for (int i = xi.length; (--i) >= 0;) {
       if (i > 0) {
         binDistrs[i] = (i < n)
@@ -163,7 +206,8 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
       int nbest = 0;
       for (int i = 0; i < lambda; i++) {
         final Holder xcur = xi[i];
-        final long Hcur = H[xcur.f];
+// Use either H (if useFFA) or objective value (otherwise)
+        final long Hcur = useFFA ? H[xcur.f] : xcur.f;
         if (Hcur <= Hxprime) {
           if (Hcur < Hxprime) {
             Hxprime = Hcur;
@@ -237,7 +281,8 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
         nbest = 0;
         for (int i = 0; i < lambda; i++) {
           final Holder xcur = xi[i];
-          final long Hcur = H[xcur.f];
+// Use either H (if useFFA) or objective value (otherwise)
+          final long Hcur = useFFA ? H[xcur.f] : xcur.f;
           if (Hcur <= Hybest) {
             if (Hcur < Hybest) {
               Hybest = Hcur;
@@ -249,8 +294,11 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
           }
         } // end get Hybest
 
+// Use either H (if useFFA) or objective value (otherwise)
+        if (useFFA) {
 // FFA: Hxprime may have changed, so we need to take it again
-        Hxprime = H[xprime.f];
+          Hxprime = H[xprime.f];
+        } // if we do not use FFA, Hxprime cannot have changed
 
 // OK, the array x(i), here also used for y(i) now contains
 // lambda offspring at indices 0..lambda-1.
@@ -288,23 +336,46 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
 // Should we update H[x.f]?
 // I think yes, since we also update it in the other algorithms
 // at this point.
-      final long Hx = ++H[x.f]; // FFA: need to update fitness
-      Hxprime = H[xprime.f]; // FFA: Hxprime may have changed
-
+      ++H[x.f]; // FFA: need to update fitness
+      final long Hx = useFFA ? H[x.f] : x.f;
+// Use either H (if useFFA) or objective value (otherwise)
+      if (useFFA) {
+// FFA: Hxprime may have changed
+        Hxprime = H[xprime.f];
+      }
 // Update lambda
       if (Hxprime < Hx) {
 // Line 12: If we are successful, decrease lambda.
         lambda = Math.max(1, Math.min(lambda - 1, (int) (Math
-            .round(lambda / SelfAdjustingOpLcLGAmodFFA.F))));
+            .round(lambda / SelfAdjustingOpLcLGAmodFFAPlus.F))));
       } else {
 // Line 13/14: No improvement: increase lambda
+
+// If lambda already >= n, we switch to FFA
+        useFFA |= (lambda >= n);
+// Increase lambda.
         lambda = Math.min(n,
             Math.max(lambda + 1, (int) (Math.round(lambda
-                * SelfAdjustingOpLcLGAmodFFA.F_BY_1_OVER_4))));
+                * SelfAdjustingOpLcLGAmodFFAPlus.F_BY_1_OVER_4))));
       }
 
 // Select the better element (Lines 12 and 13)
       if (Hxprime <= Hx) {
+        if (xprime.f < fBest) {
+// If we found and accept a real improvement, we will always
+// continue with direct optimization.
+// Notice: If we do direct optimization and found a new best
+// solution, we will definitely get here. If we do FFA and found
+// a new best objective value, the Hxprime will very likely be
+// less than Hx (unless we somehow found the new optimum several
+// times at once and more often than the previous solution.)
+// Thus, regardless whether we use FFA or not, we will very
+// likely get here with a new optimum. We will switch to direct
+// optimization if the new optimum is accepted.
+          fBest = xprime.f;
+          useFFA = false;
+        }
+// Accept the better element: swap xprime into x
         final Holder tt = x;
         x = xprime;
         xprime = tt;
@@ -316,7 +387,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "SelfAdjusting(1+(LcL))GAmodFFA"; //$NON-NLS-1$
+    return "SelfAdjusting(1+(LcL))GAmodFFA+"; //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
@@ -340,7 +411,7 @@ public final class SelfAdjustingOpLcLGAmodFFA<Y>
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
     output.write(LogFormat.mapEntry("fitness", //$NON-NLS-1$
-        "FFA"));//$NON-NLS-1$
+        "direct+FFA"));//$NON-NLS-1$
     output.write(System.lineSeparator());
   }
 
