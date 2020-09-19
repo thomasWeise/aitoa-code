@@ -103,7 +103,7 @@ public final class SelfAdjustingOpLcLGAmodFFAPlus<Y>
    * evolutionary algorithms," July 2017, arXiv:1812.00493v1
    * [cs.NE] 3 Dec 2018. [Online]. Available:
    * http://arxiv.org/pdf/1812.00493.pdf.
-   * 
+   *
    * @param process
    *          the black box process providing the objective
    *          function and random number generator
