@@ -11,7 +11,6 @@ import aitoa.structure.ISpace;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic0;
 import aitoa.utils.math.BinomialDistribution;
-import aitoa.utils.math.DiscreteConstant;
 import aitoa.utils.math.DiscreteGreaterThanZero;
 import aitoa.utils.math.DiscreteRandomDistribution;
 
@@ -99,12 +98,12 @@ public final class SelfAdjustingOpLcLGAmodFFAPlus<Y>
    * <p>
    * The algorithm is annotated with line numbers which point to
    * the paper with the basic algorithm which is extended here,
-   * i.e., lgorithm 5 of E. Carvalho Pinto and C. Doerr, "Towards
-   * a more practice-aware runtime analysis of evolutionary
-   * algorithms," July 2017, arXiv:1812.00493v1 [cs.NE] 3 Dec
-   * 2018. [Online]. Available:
+   * i.e., algorithm 5 of E. Carvalho Pinto and C. Doerr,
+   * "Towards a more practice-aware runtime analysis of
+   * evolutionary algorithms," July 2017, arXiv:1812.00493v1
+   * [cs.NE] 3 Dec 2018. [Online]. Available:
    * http://arxiv.org/pdf/1812.00493.pdf.
-   *
+   * 
    * @param process
    *          the black box process providing the objective
    *          function and random number generator
@@ -138,96 +137,117 @@ public final class SelfAdjustingOpLcLGAmodFFAPlus<Y>
 
 // Line 2: initialize lambda to 1
     int lambda = 1;
-    final DiscreteRandomDistribution[] binDistrs =
-        new DiscreteRandomDistribution[n + 1];
-    final Holder[] xi = new Holder[n + 1];
 
 // pre-allocation: allocate and cache data structures.
 // We cache the binomial distribution objects, which will later
 // allow to generate random numbers in O(1) but need to
-// pre-compute some values first in their constructor. We also
-// pre-allocate the bit string arrays.
-    for (int i = xi.length; (--i) >= 0;) {
-      if (i > 0) {
-        binDistrs[i] = (i < n)
-            ? new DiscreteGreaterThanZero(
-                new BinomialDistribution(n, ((double) i) / n))
-            : new DiscreteConstant(n);
-      }
+// pre-compute some values first in their constructor.
+    final DiscreteRandomDistribution[] binDistrs =
+        new DiscreteRandomDistribution[n];
+
+// We also pre-allocate the bit string arrays.
 // We ensure that there are actually lambda + 1 boolean arrays
 // ready.
 // This way, we can later swap in xprime even if all y(i) have
 // the same best fitness which is also identical with f(xprime)
 // ... unlikely, but possible.
+    final Holder[] xi = new Holder[n + 1];
+
+// Do the actual pre-allocation work.
+    xi[n] = new Holder(n);
+    for (int i = n; (--i) > 0;) {
+      binDistrs[i] = new DiscreteGreaterThanZero(
+          new BinomialDistribution(n, ((double) i) / n));
       xi[i] = new Holder(n);
     }
-// done with pre-allocation
+    xi[0] = new Holder(n);
+// Done with pre-allocation.
 
+// This is the holder for the best mutation offspring.
     Holder xprime = new Holder(n);
 
     while (!process.shouldTerminate()) { // Line 3
 
+      int nbest = 0;
+      long Hxprime = Long.MAX_VALUE;
+
 // Line 4: begin of mutation phase
+      if (lambda >= n) {
+// If lambda = n, then Bin(n, lambda/n) = Bin(n, 1) = n.
+// In this case, all bits will be flipped in mutation.
+// Then all the lambda mutated offspring will be the same.
+// Then we would evaluate n times the same individual, which is a
+// waste.
+// Thus, we can directly compute the offspring: xprime = !x and
+// only need to evaluate it once.
+        final boolean[] dst = xprime.x;
+        final boolean[] src = x.x;
+        for (int i = n; (--i) >= 0;) {
+          dst[i] = !src[i];
+        }
+        xprime.f = (int) (process.evaluate(xprime.x));
+        ++H[xprime.f]; // get frequency fitness
+        Hxprime = useFFA ? H[xprime.f] : xprime.f;
+      } else { // 0 < lambda < n --> create lambda offsprings
 // Line 5: draw number of bits to flip
-      final int l = binDistrs[lambda].nextInt(random);
+        final int l = binDistrs[lambda].nextInt(random);
 
 // Line 6: Create lambda mutated offspring
-      for (int i = 0; i < lambda; i++) {
-        final boolean[] xcur = xi[i].x;
+        for (int i = 0; i < lambda; i++) {
+          final boolean[] xcur = xi[i].x;
 // First copy x to xcur.
-        System.arraycopy(x.x, 0, xcur, 0, n);
+          System.arraycopy(x.x, 0, xcur, 0, n);
 
 // Shuffle the first l elements in the index list in a
 // Fisher-Yates style.
 // This will produce l random, unique, different indices.
-        for (int j = 0; j < l; j++) {
-          final int k = j + random.nextInt(n - j);
-          final int t = indices[k];
-          indices[k] = indices[j];
-          indices[j] = t;
+          for (int j = 0; j < l; j++) {
+            final int k = j + random.nextInt(n - j);
+            final int t = indices[k];
+            indices[k] = indices[j];
+            indices[j] = t;
 
 // In this loop, we also directly toggle the bit.
-          xcur[t] ^= true;
-        }
+            xcur[t] ^= true;
+          }
 // We now have one mutated offspring different from x and it
 // differs in exactly l bits, chosen uniformly at random.
 
-        xi[i].f = ((int) (process.evaluate(xcur)));
-        if (process.shouldTerminate()) {
-          return;
-        }
-        ++H[xi[i].f]; // FFA update
-      } // done loop generating lambda offspring
+          xi[i].f = ((int) (process.evaluate(xcur)));
+          if (process.shouldTerminate()) {
+            return;
+          }
+          ++H[xi[i].f]; // FFA update
+        } // done loop generating lambda offspring
 
 // We are done with creating lambda offsprings and updating the
 // FFA table.
 // We now need to find those with the best history value.
-      long Hxprime = Long.MAX_VALUE;
-      int nbest = 0;
-      for (int i = 0; i < lambda; i++) {
-        final Holder xcur = xi[i];
+        for (int i = 0; i < lambda; i++) {
+          final Holder xcur = xi[i];
 // Use either H (if useFFA) or objective value (otherwise)
-        final long Hcur = useFFA ? H[xcur.f] : xcur.f;
-        if (Hcur <= Hxprime) {
-          if (Hcur < Hxprime) {
-            Hxprime = Hcur;
-            nbest = 0;
+          final long Hcur = useFFA ? H[xcur.f] : xcur.f;
+          if (Hcur <= Hxprime) {
+            if (Hcur < Hxprime) {
+              Hxprime = Hcur;
+              nbest = 0;
+            }
+            xi[i] = xi[nbest];
+            xi[nbest] = xcur;
+            ++nbest;
           }
-          xi[i] = xi[nbest];
-          xi[nbest] = xcur;
-          ++nbest;
-        }
-      } // end get Hxprime
+        } // end get Hxprime
 
 // We now have nbest entries of fitness Hxprime at the beginning
 // of xi.
 // This makes it easy to pick one uniformly at random.
 // Line 7: Selection from the mutated offspring.
-      final int xprimeIndex = random.nextInt(nbest);
-      final Holder t = xi[xprimeIndex];
-      xi[xprimeIndex] = xprime;
-      xprime = t;
+        final int xprimeIndex = random.nextInt(nbest);
+        final Holder t = xi[xprimeIndex];
+        xi[xprimeIndex] = xprime;
+        xprime = t;
 // xprime has been selected, Hxprime is its fitness
+      }
 
 // Crossover makes only sense if lambda > 1
       if (lambda > 1) {
