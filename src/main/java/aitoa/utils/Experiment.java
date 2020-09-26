@@ -594,23 +594,6 @@ public final class Experiment {
         final P problem) {
       //
     }
-
-    /**
-     * Configure the black box process builder for the given
-     * problem and algorithm
-     *
-     * @param builder
-     *          the builder to configure
-     * @param problem
-     *          the problem
-     * @param algorithm
-     *          the algorithm
-     */
-    default void configureBuilderForProblemAndAlgorithm(
-        final BlackBoxProcessBuilder<X, Y> builder,
-        final P problem, final M algorithm) {
-      //
-    }
   }
 
   /**
@@ -985,27 +968,62 @@ public final class Experiment {
 // Now we iterate over the algorithms, in their random order.
               for (final Supplier<
                   IMetaheuristic> algorithmSupplier : algorithms) {
-                final IMetaheuristic algorithm = Objects
-                    .requireNonNull(algorithmSupplier.get());
-
-// configure the builder for using the algorithm
-                stage.configureBuilderForProblemAndAlgorithm(
-                    builder, f, algorithm);
 
 // For each algorithm, we will process the random seeds again in
 // a random order.
                 RandomUtils.shuffle(random, seeds, 0,
                     seeds.length);
 
-// Get the algorithm name.
-                final String algoName = algorithm.toString();
-                if (algoName.isEmpty()) {
-                  throw new IllegalArgumentException(
-                      "Name of algorithm cannot be null or empty, but is " //$NON-NLS-1$
-                          + algoName);
-                }
+                String algoNameOld = null;
+                Class<?> algoClassOld = null;
+                IMetaheuristic algoOld = null;
 
                 for (final long seed : seeds) {
+// Get the algorithm: We obtain a new instance of the algorithm
+// for each run. We are doing this because this class here is for
+// the execution of experiments. We want to make absolutely sure
+// that all runs are independent. Of course, we may waste some
+// resources. Yes, we could probably re-use pre-allocated
+// objects. But we want to be on the safe side an ensure that our
+// experiments can be replicated.
+                  final IMetaheuristic algorithm = Objects
+                      .requireNonNull(algorithmSupplier.get());
+
+// Get the algorithm name and perform sanity checks.
+                  final String algoName = algorithm.toString();
+                  if (algoName.isEmpty()) {
+                    throw new IllegalArgumentException(
+                        "Name of algorithm cannot be null or empty, but is " //$NON-NLS-1$
+                            + algoName);
+                  }
+                  if (algoNameOld == null) {
+                    algoNameOld = algoName;
+                  } else {
+                    if (!Objects.equals(algoName, algoNameOld)) {
+                      throw new IllegalArgumentException(
+                          "Algorithm name has changed from '"//$NON-NLS-1$
+                              + algoNameOld + "' to '"//$NON-NLS-1$
+                              + algoName + "'.");//$NON-NLS-1$
+                    }
+                  }
+                  final Class<?> algoClass =
+                      algorithm.getClass();
+                  if (algoClassOld == null) {
+                    algoClassOld = algoClass;
+                  } else {
+                    if (algoClassOld != algoClass) {
+                      throw new IllegalArgumentException(
+                          "Algorithm class has changed from '"//$NON-NLS-1$
+                              + algoClassOld + "' to '"//$NON-NLS-1$
+                              + algoClass + "'.");//$NON-NLS-1$
+                    }
+                  }
+                  if (algorithm == algoOld) {
+                    throw new IllegalArgumentException(
+                        "You are not allowed to re-use algorithm instances (we want to ensure that all runs are independent), but you tried to re-use an instance of '"//$NON-NLS-1$
+                            + algoName + "'.");//$NON-NLS-1$
+                  }
+                  algoOld = algorithm;
 
 // We create the log file for this run of the current algorithm
 // on the current problem with the current seed. We remember a
@@ -1121,6 +1139,9 @@ public final class Experiment {
 
                   Thread.yield();
                 } // run
+                algoOld = null;
+                algoNameOld = null;
+                algoClassOld = null;
 
                 if (waitAfterWorkWasDone) {
                   Experiment.sleep(tryIndex - 1L, random);
