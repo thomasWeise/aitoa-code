@@ -50,11 +50,12 @@ public enum EJSSPExperimentStage implements
             IMetaheuristic<int[], JSSPCandidateSolution>>>
         getAlgorithms(//
             final JSSPMakespanObjectiveFunction problem) {
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
+
       return Stream.of(//
-          () -> new SingleRandomSample<>(nullary), //
-          () -> new RandomSampling<>(nullary));
+          () -> new SingleRandomSample<>(
+              new JSSPNullaryOperator(problem.instance)), //
+          () -> new RandomSampling<>(
+              new JSSPNullaryOperator(problem.instance)));
     }
   },
 
@@ -81,18 +82,18 @@ public enum EJSSPExperimentStage implements
       final ArrayList<Supplier<
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
 
       for (final IUnarySearchOperator<
           int[]> unary : new IUnarySearchOperator[] {
               new JSSPUnaryOperator1Swap(),
               new JSSPUnaryOperatorNSwap() }) {
-        list.add(() -> new HillClimber<>(nullary, unary));
+        list.add(() -> new HillClimber<>(
+            new JSSPNullaryOperator(problem.instance), unary));
         for (int i = 7; i <= 18; i++) {
           final int pow = 1 << i;
-          list.add(() -> new HillClimberWithRestarts<>(nullary,
-              unary, pow));
+          list.add(() -> new HillClimberWithRestarts<>(
+              new JSSPNullaryOperator(problem.instance), unary,
+              pow));
         }
       }
 
@@ -122,24 +123,24 @@ public enum EJSSPExperimentStage implements
       final ArrayList<Supplier<
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-      final JSSPBinaryOperatorSequence binary =
-          new JSSPBinaryOperatorSequence(problem.instance);
-      final JSSPUnaryOperator1Swap unary =
-          new JSSPUnaryOperator1Swap();
 
       for (final double cr : new double[] { 0, 0.05, 0.3 }) {
 
         for (final int mu : new int[] { 128, 256, 512, 1024,
             2048, 4096, 8192, 16384, 32768, 65536 }) {
-          list.add(() -> new EA<>(nullary, unary, binary, cr, mu,
-              mu));
+          list.add(() -> new EA<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperator1Swap(),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              cr, mu, mu));
         }
 
         for (final int mu : new int[] { 128, 256, 512, 1024, }) {
-          list.add(() -> new EAWithClearing<>(nullary, unary,
-              binary, cr, mu, mu));
+          list.add(() -> new EAWithClearing<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperator1Swap(),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              cr, mu, mu));
         }
       }
 
@@ -171,20 +172,16 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-      final JSSPUnaryOperatorNSwap unary =
-          new JSSPUnaryOperatorNSwap();
-      final JSSPBinaryOperatorSequence binary =
-          new JSSPBinaryOperatorSequence(problem.instance);
-
       for (final double cr : new double[] { 0d, 0.05d, 0.3d,
           0.98d }) {
 
         for (final int mu : new int[] { 128, 256, 512, 1024,
             2048, 4096, 8192, 16384, 16384, 32768, 65536 }) {
-          list.add(() -> new EA<>(nullary, unary, binary, cr, mu,
-              mu));
+          list.add(() -> new EA<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperatorNSwap(),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              cr, mu, mu));
         }
       }
 
@@ -192,8 +189,11 @@ public enum EJSSPExperimentStage implements
         for (final int mu : new int[] { 4, 8, 16, 32, 64, 128,
             256, 512, 1024, 2048, 4096, 8192, 16384, 16384,
             32768, 65536 }) {
-          list.add(() -> new EAWithClearing<>(nullary, unary,
-              binary, cr, mu, mu));
+          list.add(() -> new EAWithClearing<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperatorNSwap(),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              cr, mu, mu));
         }
       }
 
@@ -225,14 +225,11 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-      final JSSPUnaryOperator1Swap unary =
-          new JSSPUnaryOperator1Swap();
-
       for (final double Ts : new double[] { 20d, 0.5d * 20d,
           0.25d * 20d }) {
-        list.add(() -> new SimulatedAnnealing<>(nullary, unary,
+        list.add(() -> new SimulatedAnnealing<>(
+            new JSSPNullaryOperator(problem.instance),
+            new JSSPUnaryOperator1Swap(),
             new TemperatureSchedule.Logarithmic(Ts, 1)));
       }
 
@@ -244,9 +241,12 @@ public enum EJSSPExperimentStage implements
           2e-7d, //
           4e-7d, //
           8e-7d }) {
-        list.add(() -> new SimulatedAnnealing<>(nullary, unary,
+        list.add(() -> new SimulatedAnnealing<>(
+            new JSSPNullaryOperator(problem.instance),
+            new JSSPUnaryOperator1Swap(),
             new TemperatureSchedule.Exponential(20d, ep)));
-      } // end epsilon
+      } // end
+        // epsilon
 
       return list.stream();
     }
@@ -265,7 +265,6 @@ public enum EJSSPExperimentStage implements
      *          the problem
      * @return the stream of suppliers
      */
-    @SuppressWarnings("unchecked")
     @Override
     public
         Stream<Supplier<
@@ -276,18 +275,27 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
+      list.add(() -> new HillClimber2<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator1Swap()));
+      list.add(() -> new HillClimber2WithRestarts<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator1Swap()));
 
-      for (final IUnarySearchOperator<
-          int[]> unary : new IUnarySearchOperator[] {
-              new JSSPUnaryOperator1Swap(),
-              new JSSPUnaryOperator1SwapU(problem.instance),
-              new JSSPUnaryOperator12Swap() }) {
-        list.add(() -> new HillClimber2<>(nullary, unary));
-        list.add(() -> new HillClimber2WithRestarts<>(nullary,
-            unary));
-      }
+      list.add(() -> new HillClimber2<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator1SwapU(problem.instance)));
+      list.add(() -> new HillClimber2WithRestarts<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator1SwapU(problem.instance)));
+
+      list.add(() -> new HillClimber2<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator12Swap()));
+      list.add(() -> new HillClimber2WithRestarts<>(
+          new JSSPNullaryOperator(problem.instance),
+          new JSSPUnaryOperator12Swap()));
+
       return list.stream();
     }
   },
@@ -316,20 +324,19 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-      final JSSPUnaryOperator1SwapU unary =
-          new JSSPUnaryOperator1SwapU(problem.instance);
-      final JSSPBinaryOperatorSequence binary =
-          new JSSPBinaryOperatorSequence(problem.instance);
-
       for (final int mu : new int[] { 8, 16 }) {
         for (final int ls : new int[] { Integer.MAX_VALUE,
             32 }) {
-          list.add(() -> new MA<>(nullary, unary, binary, mu, mu,
-              ls));
-          list.add(() -> new MAWithClearing<>(nullary, unary,
-              binary, mu, mu, ls));
+          list.add(() -> new MA<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperator1SwapU(problem.instance),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              mu, mu, ls));
+          list.add(() -> new MAWithClearing<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperator1SwapU(problem.instance),
+              new JSSPBinaryOperatorSequence(problem.instance),
+              mu, mu, ls));
         }
       }
       return list.stream();
@@ -359,13 +366,12 @@ public enum EJSSPExperimentStage implements
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
 
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-
       for (final int mu : new int[] { 2, 3, 4, 10, 1000 }) {
-        list.add(() -> new EDAWithClearing<>(nullary, mu, 32768, //
+        list.add(() -> new EDAWithClearing<>(
+            new JSSPNullaryOperator(problem.instance), mu, 32768, //
             new JSSPUMDAModel(problem.instance)));
-        list.add(() -> new EDAWithClearing<>(nullary, mu, 4096, //
+        list.add(() -> new EDAWithClearing<>(
+            new JSSPNullaryOperator(problem.instance), mu, 4096, //
             new JSSPUMDAModel(problem.instance)));
 
         for (int lambdaShift = 4; lambdaShift <= 18;
@@ -373,11 +379,14 @@ public enum EJSSPExperimentStage implements
           final int lambda = 1 << lambdaShift;
           if (mu < lambda) {
             if (lambda <= 256) {
-              list.add(() -> new EDAWithClearing<>(nullary, mu,
+              list.add(() -> new EDAWithClearing<>(
+                  new JSSPNullaryOperator(problem.instance), mu,
                   lambda, //
                   new JSSPUMDAModel(problem.instance)));
             }
-            list.add(() -> new EDA<>(nullary, mu, lambda, //
+            list.add(() -> new EDA<>(
+                new JSSPNullaryOperator(problem.instance), mu,
+                lambda, //
                 new JSSPUMDAModel(problem.instance)));
           }
         }
@@ -409,21 +418,21 @@ public enum EJSSPExperimentStage implements
       final ArrayList<Supplier<
           IMetaheuristic<int[], JSSPCandidateSolution>>> list =
               new ArrayList<>();
-      final JSSPNullaryOperator nullary =
-          new JSSPNullaryOperator(problem.instance);
-      final JSSPUnaryOperator1SwapU unary =
-          new JSSPUnaryOperator1SwapU(problem.instance);
 
       for (int lambdaShift = 2; lambdaShift <= 6;
           lambdaShift++) {
         final int lambda = 1 << lambdaShift;
         for (final int mu : new int[] { 2, 4, 8, 16 }) {
           if (mu < lambda) {
-            list.add(() -> new HybridEDAWithClearing<>(nullary,
-                unary, mu, lambda, Integer.MAX_VALUE, //
+            list.add(() -> new HybridEDAWithClearing<>(
+                new JSSPNullaryOperator(problem.instance),
+                new JSSPUnaryOperator1SwapU(problem.instance),
+                mu, lambda, Integer.MAX_VALUE, //
                 new JSSPUMDAModel(problem.instance)));
-            list.add(() -> new HybridEDA<>(nullary, unary, mu,
-                lambda, Integer.MAX_VALUE, //
+            list.add(() -> new HybridEDA<>(
+                new JSSPNullaryOperator(problem.instance),
+                new JSSPUnaryOperator1SwapU(problem.instance),
+                mu, lambda, Integer.MAX_VALUE, //
                 new JSSPUMDAModel(problem.instance)));
           }
         }

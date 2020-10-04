@@ -41,36 +41,18 @@ public enum EJSSPExperimentStageACO implements
           JSSPACOIndividual>>> list = new ArrayList<>();
 
       for (final int mu : new int[] { 1 }) {
-        for (final int lambda : new int[] { 512, 1024, 2048 }) {
-          for (final int k : new int[] { 4, 5, 8, 16 }) {
-            for (final double beta : new double[] { 1.5d, 2d,
-                2.5d, 3d }) {
-              for (final double q0 : new double[] { 0.1d, 0.3d,
-                  0.5d, 0.9d }) {
-                for (final double tauMax : new double[] { 1d }) {
-                  final JSSPPACOModelAge model =
-                      new JSSPPACOModelAge(problem.getInstance(), //
-                          k, q0, beta, tauMax);
-                  list.add(
-                      () -> new EDA<>(model, mu, lambda, model));
-                }
-              }
-            }
-          }
-        }
-      }
-
-      for (final int mu : new int[] { 1 }) {
-        for (final int lambda : new int[] { 4096, 8192 }) {
+        for (final int lambda : new int[] { 1024, 2048 }) {
           for (final int k : new int[] { 4, 5 }) {
             for (final double beta : new double[] { 2.5d }) {
               for (final double q0 : new double[] { 0.5d }) {
                 for (final double tauMax : new double[] { 1d }) {
-                  final JSSPPACOModelAge model =
-                      new JSSPPACOModelAge(problem.getInstance(), //
-                          k, q0, beta, tauMax);
-                  list.add(
-                      () -> new EDA<>(model, mu, lambda, model));
+                  list.add(() -> {
+                    final JSSPPACOModelAge model =
+                        new JSSPPACOModelAge(
+                            problem.getInstance(), //
+                            k, q0, beta, tauMax);
+                    return new EDA<>(model, mu, lambda, model);
+                  });
                 }
               }
             }
