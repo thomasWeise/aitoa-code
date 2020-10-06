@@ -34,10 +34,16 @@ public final class IntFFA
   public void assignFitness(
       final FitnessIndividual<? extends Object>[] pop) {
     for (final FitnessIndividual<? extends Object> ind : pop) {
-      ++this.mFrequencies[((int) (ind.quality))];
+      final double d = ind.quality;
+      if (Double.isFinite(d)) {
+        ++this.mFrequencies[((int) (d))];
+      }
     }
     for (final FitnessIndividual<? extends Object> ind : pop) {
-      ind.fitness = this.mFrequencies[((int) (ind.quality))];
+      final double d = ind.quality;
+      ind.fitness =
+          Double.isFinite(d) ? this.mFrequencies[((int) (d))]
+              : Double.POSITIVE_INFINITY;
     }
   }
 
