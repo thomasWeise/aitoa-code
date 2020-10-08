@@ -115,8 +115,8 @@ public final class HillClimberWithRestarts<X, Y>
     final Random random = process.getRandom();// get random gen
 
 // start relevant
-// omitted: initialize local variables xCur, xBest, random,
-// failsBeforeRestart, and failCounter=0
+// omitted for brevity initialize local variables xCur, xBest,
+// random, failsBeforeRestart, and failCounter=0
     while (!(process.shouldTerminate())) { // outer loop: restart
       this.nullary.apply(xBest, random); // start=random solution
       double fBest = process.evaluate(xBest); // evaluate it

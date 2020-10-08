@@ -64,7 +64,7 @@ public final class HillClimber2WithRestarts<X, Y>
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
 // initialization of local variables xCur, xBest, random omitted
-// for brevety
+// for brevity
 // end relevant
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();

@@ -29,9 +29,10 @@ import aitoa.utils.Experiment;
  * @param <Y>
  *          the solution space
  */
+// start relevant
 public final class HillClimber2<X, Y>
     extends Metaheuristic1<X, Y> {
-
+// end relevant
   /**
    * Create the hill climber
    *
@@ -51,9 +52,9 @@ public final class HillClimber2<X, Y>
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables xCur, xBest, n random, fBest, improved:
-// omitted here for brevity
+// init local variables xCur, xBest, n random, fBest, improved
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();
     final Random random = process.getRandom();// get random gen
@@ -81,8 +82,8 @@ public final class HillClimber2<X, Y>
       });
 // repeat until time is up or no further improvement possible
     }
-
   } // process will have remembered the best candidate solution
+// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -90,4 +91,6 @@ public final class HillClimber2<X, Y>
     return Experiment.nameFromObjectsMerge("hc2f", //$NON-NLS-1$
         this.unary);
   }
+// start relevant
 }
+// end relevant

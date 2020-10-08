@@ -28,8 +28,9 @@ import aitoa.utils.Experiment;
  * @param <Y>
  *          the solution space
  */
+// start relevant
 public final class EA1p1<X, Y> extends Metaheuristic1<X, Y> {
-
+// end relevant
   /**
    * Create the (1+1) EA
    *
@@ -45,8 +46,9 @@ public final class EA1p1<X, Y> extends Metaheuristic1<X, Y> {
 
   /** {@inheritDoc} */
   @Override
+// start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables xCur, xBest, nullary, unary, random
+// initialize local variables xCur, xBest, random
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();
     final Random random = process.getRandom();// get random gen
@@ -60,13 +62,14 @@ public final class EA1p1<X, Y> extends Metaheuristic1<X, Y> {
       this.unary.apply(xBest, xCur, random);
 // map xCur from X to Y and evaluate candidate solution
       final double fCur = process.evaluate(xCur);
-      if (fCur <= fBest) { // we found a better solution
+      if (fCur <= fBest) { // we found a not-worse solution
 // remember best objective value and copy xCur to xBest
         fBest = fCur;
         process.getSearchSpace().copy(xCur, xBest);
       } // otherwise, i.e., fCur > fBest: just forget xCur
     } // until time is up
   } // process will have remembered the best candidate solution
+// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -95,4 +98,6 @@ public final class EA1p1<X, Y> extends Metaheuristic1<X, Y> {
     output.write(LogFormat.mapEntry("restarts", false)); //$NON-NLS-1$
     output.write(System.lineSeparator());
   }
+// start relevant
 }
+// end relevant

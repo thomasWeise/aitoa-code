@@ -47,7 +47,7 @@ public final class HillClimber<X, Y>
   @Override
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
-// init local variables xCur, xBest, random
+// initialize local variables xCur, xBest, random
 // end relevant
     final X xCur = process.getSearchSpace().create();
     final X xBest = process.getSearchSpace().create();

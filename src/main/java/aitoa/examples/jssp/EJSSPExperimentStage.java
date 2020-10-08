@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import aitoa.algorithms.EA;
+import aitoa.algorithms.EA1p1;
 import aitoa.algorithms.EAWithClearing;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.EDAWithClearing;
@@ -438,6 +439,36 @@ public enum EJSSPExperimentStage implements
         }
       }
       return list.stream();
+    }
+  },
+
+  /**
+   * The tenth stage: 1+1-EA with FFA
+   */
+  STAGE_10 {
+
+    /**
+     * Get a stream of algorithm suppliers for a given problem
+     *
+     * @param problem
+     *          the problem
+     * @return the stream of suppliers
+     */
+    @Override
+    public
+        Stream<Supplier<
+            IMetaheuristic<int[], JSSPCandidateSolution>>>
+        getAlgorithms(//
+            final JSSPMakespanObjectiveFunction problem) {
+
+      return Stream.of(
+          () -> new EA1p1<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperator1Swap()),
+          () -> new EA1p1<>(
+              new JSSPNullaryOperator(problem.instance),
+              new JSSPUnaryOperatorNSwap()));
+
     }
   };
 
