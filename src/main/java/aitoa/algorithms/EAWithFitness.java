@@ -117,7 +117,7 @@ public final class EAWithFitness<X, Y>
     for (;;) { // main loop: one iteration = one generation
 // sort the population: mu best individuals at front are selected
       this.fitness.assignFitness(P);
-      Arrays.sort(P, this.fitness);
+      Arrays.sort(P, FitnessIndividual.BY_FITNESS);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent

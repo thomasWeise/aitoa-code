@@ -78,7 +78,8 @@ public final class EA1p1WithFitness<X, Y>
 // map xCur from X to Y and evaluate candidate solution
       P[1].quality = process.evaluate(P[1].x);
       this.fitness.assignFitness(P); // compute fitness
-      if (this.fitness.compare(P[0], P[1]) >= 0) {
+      if (FitnessIndividual.BY_FITNESS.compare(P[0],
+          P[1]) >= 0) {
         final FitnessIndividual<X> temp = P[0];
         P[0] = P[1]; // if new individual has better or
         P[1] = temp; // equal fitness: accept it

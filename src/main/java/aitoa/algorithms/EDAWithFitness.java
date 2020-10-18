@@ -141,7 +141,7 @@ public final class EDAWithFitness<X, Y>
         }
 // start relevant
         this.fitness.assignFitness(P);
-        Arrays.sort(P, this.fitness);
+        Arrays.sort(P, FitnessIndividual.BY_FITNESS);
 // update model with mu<lambda best solutions
         M.update(IModel.use(P, 0, this.mu));
 

@@ -144,7 +144,7 @@ public final class HybridEDAWithFitness<X, Y>
           continue restart;
         }
         this.fitness.assignFitness(P);
-        Arrays.sort(P, this.fitness);
+        Arrays.sort(P, FitnessIndividual.BY_FITNESS);
         M.update(IModel.use(P, 0, this.mu)); // update
 
 // sample new population

@@ -1,7 +1,5 @@
 package aitoa.algorithms;
 
-import java.util.Comparator;
-
 import aitoa.structure.ISetupPrintable;
 
 /**
@@ -10,8 +8,8 @@ import aitoa.structure.ISetupPrintable;
  * @param <X>
  *          the search space
  */
-public abstract class FitnessAssignmentProcess<X> implements
-    Comparator<FitnessIndividual<? extends X>>, ISetupPrintable {
+public abstract class FitnessAssignmentProcess<X>
+    implements ISetupPrintable {
 
   /**
    * Assign the fitness a set of individuals. This process will
@@ -24,24 +22,6 @@ public abstract class FitnessAssignmentProcess<X> implements
    */
   public abstract void
       assignFitness(FitnessIndividual<? extends X>[] pop);
-
-  /**
-   * The comparator routine used by the fitness assignment
-   * process.
-   *
-   * @param a
-   *          the first individual
-   * @param b
-   *          the second individual
-   * @return {@code -1} if {@code a} is better than {@code b},
-   *         {@code 1} if {@code b} is better than {@code a},
-   *         {@code 0} if neither is better
-   */
-  @Override
-  public int compare(final FitnessIndividual<? extends X> a,
-      final FitnessIndividual<? extends X> b) {
-    return Double.compare(a.fitness, b.fitness);
-  }
 
   /** initialize the fitness assignment process */
   public void initialize() {
