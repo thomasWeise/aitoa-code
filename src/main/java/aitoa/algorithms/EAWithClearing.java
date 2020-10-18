@@ -99,8 +99,8 @@ public final class EAWithClearing<X, Y>
 // start relevant
   public void solve(final IBlackBoxProcess<X, Y> process) {
 // Omitted: Initialize local variables random, searchSpace, set
-// arrays P and P2 of length mu+lambda,
-// and array T to null. Fill P with random solutions + evaluate.
+// arrays P of length mu+lambda, and array T to null. Fill P with
+// random solutions + evaluate.
 // end relevant
 // create local variables
     final Random random = process.getRandom();
