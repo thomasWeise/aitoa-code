@@ -10,9 +10,9 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic2;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
@@ -103,18 +103,17 @@ public final class EAWithRestarts<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     int p2;
 
-    final Individual<X>[] P =
-        new Individual[this.mu + this.lambda];
+    final Record<X>[] P = new Record[this.mu + this.lambda];
 
     while (!process.shouldTerminate()) { // restart
       double bestF = Double.POSITIVE_INFINITY;
       int nonImprovedGen = 0;
 
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new Individual<>(x, process.evaluate(x));
+        P[i] = new Record<>(x, process.evaluate(x));
         if (process.shouldTerminate()) {
           return;
         }
@@ -124,8 +123,8 @@ public final class EAWithRestarts<X, Y>
 // main loop: one iteration = one generation
         ++nonImprovedGen; // assume no improvement
 
-// sort the P: mu best individuals at front are selected
-        Arrays.sort(P, Individual.BY_QUALITY);
+// sort the P: mu best records at front are selected
+        Arrays.sort(P, Record.BY_QUALITY);
 // shuffle mating pool to ensure fairness if lambda<mu
         RandomUtils.shuffle(random, P, 0, this.mu);
         int p1 = -1; // index to iterate over first parent
@@ -136,9 +135,9 @@ public final class EAWithRestarts<X, Y>
             return; // return best solution
           }
 
-          final Individual<X> dest = P[index];
+          final Record<X> dest = P[index];
           p1 = (p1 + 1) % this.mu;
-          final Individual<X> parent1 = P[p1];
+          final Record<X> parent1 = P[p1];
 
           if (random.nextDouble() <= this.cr) { // crossover!
             do { // find a second parent who is different from

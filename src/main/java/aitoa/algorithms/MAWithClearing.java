@@ -108,24 +108,23 @@ public final class MAWithClearing<X, Y>
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
     final X temp = searchSpace.create();
-    final LSIndividual<X>[] P =
-        new LSIndividual[this.mu + this.lambda];
+    final LSRecord<X>[] P = new LSRecord[this.mu + this.lambda];
     boolean improved = false;
     int p2 = -1;
 
     restart: while (!process.shouldTerminate()) {
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new LSIndividual<>(x, process.evaluate(x));
+        P[i] = new LSRecord<>(x, process.evaluate(x));
         if (process.shouldTerminate()) {
           return;
         }
       }
 
       while (!process.shouldTerminate()) { // main loop
-        for (final LSIndividual<X> ind : P) {
+        for (final LSRecord<X> ind : P) {
           if (ind.isOptimum) {
             continue;
           }
@@ -164,9 +163,9 @@ public final class MAWithClearing<X, Y>
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }
-          final LSIndividual<X> dest = P[index];
+          final LSRecord<X> dest = P[index];
           p1 = (p1 + 1) % u;
-          final LSIndividual<X> sel = P[p1];
+          final LSRecord<X> sel = P[p1];
 // to hold index of second selected record
           do {
             p2 = random.nextInt(u);

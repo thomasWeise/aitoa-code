@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 import aitoa.structure.IModel;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Record;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -128,8 +128,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
   /** {@inheritDoc} */
   @Override
 // start update
-  public void
-      update(final Iterable<Individual<int[]>> selected) {
+  public void update(final Iterable<Record<int[]>> selected) {
     final int l = this.mModel.length; // == m*n
 
 // Make sure that all values are >= 1
@@ -138,7 +137,7 @@ public class JSSPUMDAModel implements IModel<int[]> {
     }
 
 // For each encountered job, add the large value this.base
-    for (final Individual<int[]> ind : selected) { // selected
+    for (final Record<int[]> ind : selected) { // selected
       final int[] sel = ind.x;
       for (int k = l; (--k) >= 0;) { // valid indices
         this.mModel[k][sel[k]] += this.base;

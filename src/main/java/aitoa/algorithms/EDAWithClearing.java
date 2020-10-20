@@ -9,9 +9,9 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic0;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 
 /**
@@ -89,17 +89,17 @@ public final class EDAWithClearing<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final IModel<X> M = this.model;
 
-    final Individual<X>[] P = new Individual[this.lambda];
+    final Record<X>[] P = new Record[this.lambda];
 // start relevant
 // local variable initialization omitted for brevity
     restart: while (!process.shouldTerminate()) {
       M.initialize(); // initialize to uniform distribution
 
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new Individual<>(x, process.evaluate(x));
+        P[i] = new Record<>(x, process.evaluate(x));
 // end relevant
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
@@ -116,7 +116,7 @@ public final class EDAWithClearing<X, Y>
         M.update(IModel.use(P, 0, u));
 
 // sample new population
-        for (final Individual<X> dest : P) {
+        for (final Record<X> dest : P) {
           M.apply(dest.x, random); // create new solution
           dest.quality = process.evaluate(dest.x);
           if (process.shouldTerminate()) { // we return

@@ -13,8 +13,7 @@ import aitoa.structure.ISpace;
 import aitoa.structure.ISpaceTest;
 
 /** Test the search space we defined for the JSSP problem */
-public class TestJSSPACOSpace
-    extends ISpaceTest<JSSPACOIndividual> {
+public class TestJSSPACOSpace extends ISpaceTest<JSSPACORecord> {
 
   /** the space we use */
   private static final JSSPInstance PROBLEM =
@@ -40,13 +39,13 @@ public class TestJSSPACOSpace
 
   /** {@inheritDoc} */
   @Override
-  protected ISpace<JSSPACOIndividual> getInstance() {
+  protected ISpace<JSSPACORecord> getInstance() {
     return TestJSSPACOSpace.INSTANCE;
   }
 
   /** {@inheritDoc} */
   @Override
-  protected void assertValid(final JSSPACOIndividual a) {
+  protected void assertValid(final JSSPACORecord a) {
     JSSPTestUtils.assertY(a.solution, TestJSSPACOSpace.PROBLEM);
     Assert.assertEquals(TestJSSPACOSpace.F.evaluate(a.solution),
         a.makespan, 0d);
@@ -65,8 +64,7 @@ public class TestJSSPACOSpace
 
   /** {@inheritDoc} */
   @Override
-  protected void
-      fillWithRandomData(final JSSPACOIndividual dest) {
+  protected void fillWithRandomData(final JSSPACORecord dest) {
 
     JSSPTestUtils.randomX(dest.permutation,
         TestJSSPACOSpace.PROBLEM);
@@ -86,8 +84,8 @@ public class TestJSSPACOSpace
 
   /** {@inheritDoc} */
   @Override
-  protected JSSPACOIndividual createValid() {
-    final JSSPACOIndividual dest = new JSSPACOIndividual(
+  protected JSSPACORecord createValid() {
+    final JSSPACORecord dest = new JSSPACORecord(
         TestJSSPACOSpace.PROBLEM.m, TestJSSPACOSpace.PROBLEM.n);
     this.fillWithRandomData(dest);
     return dest;
@@ -95,8 +93,8 @@ public class TestJSSPACOSpace
 
   /** {@inheritDoc} */
   @Override
-  protected void assertEquals(final JSSPACOIndividual a,
-      final JSSPACOIndividual b) {
+  protected void assertEquals(final JSSPACORecord a,
+      final JSSPACORecord b) {
     if (a != b) {
       final int[][] sa = a.solution.schedule;
       final int[][] sb = b.solution.schedule;
@@ -111,9 +109,9 @@ public class TestJSSPACOSpace
 
   /** {@inheritDoc} */
   @Override
-  protected JSSPACOIndividual createInvalid() {
+  protected JSSPACORecord createInvalid() {
     final ThreadLocalRandom random = ThreadLocalRandom.current();
-    final JSSPACOIndividual a = this.createValid();
+    final JSSPACORecord a = this.createValid();
 
     switch (random.nextInt(3)) {
       case 0: {

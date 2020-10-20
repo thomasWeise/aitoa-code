@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
+import aitoa.structure.Record;
 import aitoa.utils.ReflectionUtils;
 import aitoa.utils.graph.DirectedEdgeMultiSet;
 import aitoa.utils.graph.IntSet;
@@ -221,10 +221,9 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
   /** {@inheritDoc} */
   @Override
-  public final void
-      update(final Iterable<Individual<X>> selected) {
-    for (final Individual<X> ind : selected) { // for each ant to
-                                               // be added
+  public final void update(final Iterable<Record<X>> selected) {
+    for (final Record<X> ind : selected) { // for each ant to
+                                           // be added
       final int[] pi = this.permutationFromX(ind.x);
       final int size = this.mCurPopSize;
       final int index = this.mCurPopIndex;

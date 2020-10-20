@@ -98,15 +98,15 @@ public final class EAWithFitness<X, Y>
     final Random random = process.getRandom();
     final ISpace<X> searchSpace = process.getSearchSpace();
     int p2; // to hold index of second selected record
-    final FitnessIndividual<X>[] P =
-        new FitnessIndividual[this.mu + this.lambda];
+    final FitnessRecord<X>[] P =
+        new FitnessRecord[this.mu + this.lambda];
     this.fitness.initialize();
 // start relevant
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       this.nullary.apply(x, random);
-      P[i] = new FitnessIndividual<>(x, process.evaluate(x));
+      P[i] = new FitnessRecord<>(x, process.evaluate(x));
 // end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
@@ -115,9 +115,9 @@ public final class EAWithFitness<X, Y>
     }
 
     for (;;) { // main loop: one iteration = one generation
-// sort the population: mu best individuals at front are selected
+// sort the population: mu best records at front are selected
       this.fitness.assignFitness(P);
-      Arrays.sort(P, FitnessIndividual.BY_FITNESS);
+      Arrays.sort(P, FitnessRecord.BY_FITNESS);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -128,14 +128,14 @@ public final class EAWithFitness<X, Y>
           return; // best solution is stored in process
         }
 
-        final FitnessIndividual<X> dest = P[index];
+        final FitnessRecord<X> dest = P[index];
         p1 = (p1 + 1) % this.mu;
-        final FitnessIndividual<X> sel = P[p1];
+        final FitnessRecord<X> sel = P[p1];
         if (random.nextDouble() <= this.cr) { // crossover!
           do { // find a second, different record
             p2 = random.nextInt(this.mu);
           } while (p2 == p1);
-// perform recombination of the two selected individuals
+// perform recombination of the two selected records
           this.binary.apply(sel.x, P[p2].x, dest.x, random);
         } else {
 // create modified copy of parent using unary operator

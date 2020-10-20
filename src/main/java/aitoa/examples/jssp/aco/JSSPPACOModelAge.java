@@ -42,7 +42,7 @@ import aitoa.examples.jssp.JSSPInstance;
  * network, as the jobs are completed.
  */
 public final class JSSPPACOModelAge
-    extends PACOModelAge<JSSPACOIndividual> {
+    extends PACOModelAge<JSSPACORecord> {
 
   /** the current time at a given machine */
   private final int[] mMachineTime;
@@ -101,7 +101,7 @@ public final class JSSPPACOModelAge
 
   /** {@inheritDoc} */
   @Override
-  protected int[] permutationFromX(final JSSPACOIndividual x) {
+  protected int[] permutationFromX(final JSSPACORecord x) {
     return x.permutation;
   }
 
@@ -117,7 +117,7 @@ public final class JSSPPACOModelAge
    *          the point in the search space
    */
   @Override
-  public void apply(final JSSPACOIndividual dest,
+  public void apply(final JSSPACORecord dest,
       final Random random) {
     Arrays.fill(this.mMachineState, 0);
     Arrays.fill(this.mMachineTime, 0);
@@ -154,7 +154,7 @@ public final class JSSPPACOModelAge
    */
   @Override
   protected double getCostOfAppending(final int value,
-      final JSSPACOIndividual x) {
+      final JSSPACORecord x) {
 // extract job id
     final int nextJob = value / this.mM;
 // get the definition of the steps that we need to take for
@@ -181,7 +181,7 @@ public final class JSSPPACOModelAge
   /** {@inheritDoc} */
   @Override
   protected void append(final int value,
-      final JSSPACOIndividual dest) {
+      final JSSPACORecord dest) {
     final int[] machineState = this.mMachineState;
     final int[] machineTime = this.mMachineTime;
     final int[] jobTime = this.mJobTime;

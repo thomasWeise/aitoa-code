@@ -10,9 +10,9 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic2;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
@@ -97,16 +97,15 @@ public final class MA<X, Y> extends Metaheuristic2<X, Y> {
     final X temp = searchSpace.create();
     int p2;
 
-    final LSIndividual<X>[] P =
-        new LSIndividual[this.mu + this.lambda];
+    final LSRecord<X>[] P = new LSRecord[this.mu + this.lambda];
 // start relevant
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
     for (int i = P.length; (--i) >= 0;) {
-// set P[i] = random individual (code omitted)
+// set P[i] = random solution (code omitted)
 // end relevant
       final X x = searchSpace.create();
       this.nullary.apply(x, random);
-      P[i] = new LSIndividual<>(x, process.evaluate(x));
+      P[i] = new LSRecord<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
@@ -114,7 +113,7 @@ public final class MA<X, Y> extends Metaheuristic2<X, Y> {
     }
 
     while (!process.shouldTerminate()) { // main loop
-      for (final LSIndividual<X> ind : P) {
+      for (final LSRecord<X> ind : P) {
 // If ind is not known to be local optimum, refine it with local
 // search a la HillClimber2 for a given number of maximum steps
 // (code omitted for brevity).
@@ -142,8 +141,8 @@ public final class MA<X, Y> extends Metaheuristic2<X, Y> {
         ind.isOptimum = !improved; // is it a local optimum?
 // start relevant
       } // end of 1 ls iteration: we have refined 1 solution
-// sort the population: mu best individuals at front are selected
-      Arrays.sort(P, Individual.BY_QUALITY);
+// sort the population: mu best records at front are selected
+      Arrays.sort(P, Record.BY_QUALITY);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -155,13 +154,13 @@ public final class MA<X, Y> extends Metaheuristic2<X, Y> {
           return; // best solution is stored in process
         }
 // start relevant
-        final LSIndividual<X> dest = P[index];
-        final LSIndividual<X> sel = P[(++p1) % this.mu];
+        final LSRecord<X> dest = P[index];
+        final LSRecord<X> sel = P[(++p1) % this.mu];
 
         do { // find a second, different record
           p2 = random.nextInt(this.mu);
         } while (p2 == p1);
-// perform recombination of the two selected individuals
+// perform recombination of the two selected solutions
         this.binary.apply(sel.x, P[p2].x, dest.x, random);
         dest.quality = process.evaluate(dest.x);
 // end relevant

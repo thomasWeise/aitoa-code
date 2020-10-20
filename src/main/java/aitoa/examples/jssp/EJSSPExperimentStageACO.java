@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import aitoa.algorithms.EDA;
-import aitoa.examples.jssp.aco.JSSPACOIndividual;
 import aitoa.examples.jssp.aco.JSSPACOMakespanObjectiveFunction;
+import aitoa.examples.jssp.aco.JSSPACORecord;
 import aitoa.examples.jssp.aco.JSSPACOSpace;
 import aitoa.examples.jssp.aco.JSSPPACOModelAge;
 import aitoa.structure.BlackBoxProcessBuilder;
@@ -18,9 +18,9 @@ import aitoa.utils.Experiment.IExperimentStage;
 
 /** the stages of the JSSP experiment */
 public enum EJSSPExperimentStageACO implements
-    IExperimentStage<JSSPACOIndividual, JSSPACOIndividual,
+    IExperimentStage<JSSPACORecord, JSSPACORecord,
         JSSPACOMakespanObjectiveFunction,
-        IMetaheuristic<JSSPACOIndividual, JSSPACOIndividual>> {
+        IMetaheuristic<JSSPACORecord, JSSPACORecord>> {
 
   /** the first stage: random sampling */
   STAGE_ACO_1 {
@@ -33,12 +33,14 @@ public enum EJSSPExperimentStageACO implements
      * @return the stream of suppliers
      */
     @Override
-    public Stream<Supplier<
-        IMetaheuristic<JSSPACOIndividual, JSSPACOIndividual>>>
+    public
+        Stream<Supplier<
+            IMetaheuristic<JSSPACORecord, JSSPACORecord>>>
         getAlgorithms(//
             final JSSPACOMakespanObjectiveFunction problem) {
-      final ArrayList<Supplier<IMetaheuristic<JSSPACOIndividual,
-          JSSPACOIndividual>>> list = new ArrayList<>();
+      final ArrayList<Supplier<
+          IMetaheuristic<JSSPACORecord, JSSPACORecord>>> list =
+              new ArrayList<>();
 
       for (final int mu : new int[] { 1 }) {
         for (final int lambda : new int[] { 1024, 2048 }) {
@@ -115,7 +117,7 @@ public enum EJSSPExperimentStageACO implements
    */
   @Override
   public void configureBuilder(final BlackBoxProcessBuilder<
-      JSSPACOIndividual, JSSPACOIndividual> builder) {
+      JSSPACORecord, JSSPACORecord> builder) {
     builder.setMaxTime(TimeUnit.MINUTES.toMillis(3L));
   }
 
@@ -130,8 +132,8 @@ public enum EJSSPExperimentStageACO implements
    */
   @Override
   public void configureBuilderForProblem(
-      final BlackBoxProcessBuilder<JSSPACOIndividual,
-          JSSPACOIndividual> builder,
+      final BlackBoxProcessBuilder<JSSPACORecord,
+          JSSPACORecord> builder,
       final JSSPACOMakespanObjectiveFunction problem) {
     final JSSPInstance inst =
         Objects.requireNonNull(problem.getInstance());

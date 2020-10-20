@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import aitoa.TestTools;
-import aitoa.structure.Individual;
+import aitoa.structure.Record;
 
 /** Test the algorithm utils. */
 public class TestUtils {
@@ -19,13 +19,12 @@ public class TestUtils {
     final ThreadLocalRandom random = ThreadLocalRandom.current();
     for (int test = 10000; (--test) >= 0;) {
 
-      final Individual[] source =
-          new Individual[random.nextInt(1, 1000)];
+      final Record[] source =
+          new Record[random.nextInt(1, 1000)];
       for (int i = source.length; (--i) >= 0;) {
-        source[i] =
-            new Individual(random, random.nextInt(0, 20));
+        source[i] = new Record(random, random.nextInt(0, 20));
       }
-      final Individual[] compare = source.clone();
+      final Record[] compare = source.clone();
       final int mu = (source.length > 1)
           ? random.nextInt(1, source.length) : 1;
       final int u = Utils.qualityBasedClearing(source, mu);
@@ -51,7 +50,7 @@ public class TestUtils {
 
       for (int i = compare.length; (--i) >= 0;) {
         int count = 0;
-        final Individual c = compare[i];
+        final Record c = compare[i];
         for (int j = source.length; (--j) >= 0;) {
           if (c == source[j]) {
             ++count;

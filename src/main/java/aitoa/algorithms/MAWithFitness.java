@@ -94,22 +94,22 @@ public final class MAWithFitness<X, Y>
     final X temp = searchSpace.create();
     int p2;
 
-    final LSFitnessIndividual<X>[] P =
-        new LSFitnessIndividual[this.mu + this.lambda];
+    final LSFitnessRecord<X>[] P =
+        new LSFitnessRecord[this.mu + this.lambda];
     this.fitness.initialize();
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
     for (int i = P.length; (--i) >= 0;) {
-// set P[i] = random individual (code omitted)
+// set P[i] = random solution (code omitted)
       final X x = searchSpace.create();
       this.nullary.apply(x, random);
-      P[i] = new LSFitnessIndividual<>(x, process.evaluate(x));
+      P[i] = new LSFitnessRecord<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
     }
 
     while (!process.shouldTerminate()) { // main loop
-      for (final LSFitnessIndividual<X> ind : P) {
+      for (final LSFitnessRecord<X> ind : P) {
         if (ind.isOptimum) {
           continue;
         }
@@ -134,9 +134,9 @@ public final class MAWithFitness<X, Y>
         ind.isOptimum = !improved; // is it a local optimum?
       } // end of 1 ls iteration: we have refined 1 solution
 
-// sort the population: mu best individuals at front are selected
+// sort the population: mu best records at front are selected
       this.fitness.assignFitness(P);
-      Arrays.sort(P, FitnessIndividual.BY_FITNESS);
+      Arrays.sort(P, FitnessRecord.BY_FITNESS);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -147,13 +147,13 @@ public final class MAWithFitness<X, Y>
           return; // best solution is stored in process
         }
 
-        final LSFitnessIndividual<X> dest = P[index];
-        final LSFitnessIndividual<X> sel = P[(++p1) % this.mu];
+        final LSFitnessRecord<X> dest = P[index];
+        final LSFitnessRecord<X> sel = P[(++p1) % this.mu];
 
         do { // find a second, different record
           p2 = random.nextInt(this.mu);
         } while (p2 == p1);
-// perform recombination of the two selected individuals
+// perform recombination of the two selected solutions
         this.binary.apply(sel.x, P[p2].x, dest.x, random);
 // map to solution/schedule and evaluate quality
         dest.quality = process.evaluate(dest.x);

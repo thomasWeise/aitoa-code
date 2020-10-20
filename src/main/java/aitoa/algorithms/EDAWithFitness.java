@@ -115,8 +115,7 @@ public final class EDAWithFitness<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final IModel<X> M = this.model;
 
-    final FitnessIndividual<X>[] P =
-        new FitnessIndividual[this.lambda];
+    final FitnessRecord<X>[] P = new FitnessRecord[this.lambda];
     this.fitness.initialize();
 
 // end relevant
@@ -124,11 +123,11 @@ public final class EDAWithFitness<X, Y>
 // start relevant
 // local variable initialization omitted for brevity
       M.initialize(); // initialize to uniform distribution
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new FitnessIndividual<>(x, process.evaluate(x));
+        P[i] = new FitnessRecord<>(x, process.evaluate(x));
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
@@ -141,12 +140,12 @@ public final class EDAWithFitness<X, Y>
         }
 // start relevant
         this.fitness.assignFitness(P);
-        Arrays.sort(P, FitnessIndividual.BY_FITNESS);
+        Arrays.sort(P, FitnessRecord.BY_FITNESS);
 // update model with mu<lambda best solutions
         M.update(IModel.use(P, 0, this.mu));
 
 // sample new population
-        for (final FitnessIndividual<X> dest : P) {
+        for (final FitnessRecord<X> dest : P) {
           M.apply(dest.x, random); // create new solution
           dest.quality = process.evaluate(dest.x);
           if (process.shouldTerminate()) { // we return

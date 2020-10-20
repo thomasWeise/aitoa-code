@@ -12,8 +12,8 @@ public abstract class FitnessAssignmentProcess<X>
     implements ISetupPrintable {
 
   /**
-   * Assign the fitness a set of individuals. This process will
-   * fill the {@link FitnessIndividual#fitness} variable with a
+   * Assign the fitness a set of solution records. This process
+   * will fill the {@link FitnessRecord#fitness} variable with a
    * value based on the set of provided records.
    *
    * @param pop
@@ -21,7 +21,7 @@ public abstract class FitnessAssignmentProcess<X>
    *          search space and a quality value.
    */
   public abstract void
-      assignFitness(FitnessIndividual<? extends X>[] pop);
+      assignFitness(FitnessRecord<? extends X>[] pop);
 
   /** initialize the fitness assignment process */
   public void initialize() {

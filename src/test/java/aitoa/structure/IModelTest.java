@@ -105,7 +105,7 @@ public abstract class IModelTest<X>
     model.initialize();
 
     @SuppressWarnings("unchecked")
-    final Individual<X>[] array = new Individual[48];
+    final Record<X>[] array = new Record[48];
     @SuppressWarnings("unchecked")
     final X[] dest =
         ((X[]) (new Object[3 * (array.length + 1)]));
@@ -114,7 +114,7 @@ public abstract class IModelTest<X>
     int diff = 0;
     outer: for (int j = 0; j < dest.length; j++) {
       for (int i = array.length; (--i) >= 0;) {
-        array[i] = new Individual<>(this.createValid(),
+        array[i] = new Record<>(this.createValid(),
             random.nextDouble(1d, 100d));
       }
 

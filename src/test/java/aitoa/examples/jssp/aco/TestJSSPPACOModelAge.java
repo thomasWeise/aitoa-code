@@ -13,7 +13,7 @@ import aitoa.structure.ISpace;
 
 /** test the univariate model for the JSSP */
 public class TestJSSPPACOModelAge
-    extends IModelTest<JSSPACOIndividual> {
+    extends IModelTest<JSSPACORecord> {
 
   /** the space we use */
   private static final JSSPInstance PROBLEM =
@@ -24,7 +24,7 @@ public class TestJSSPPACOModelAge
       new JSSPACOSpace(TestJSSPPACOModelAge.PROBLEM);
 
   /** the operator we use */
-  private static final IModel<JSSPACOIndividual> OP =
+  private static final IModel<JSSPACORecord> OP =
       new JSSPPACOModelAge(TestJSSPPACOModelAge.PROBLEM, 3, 0.9,
           5d, 1d);
   /** the internal representation mapping */
@@ -39,14 +39,14 @@ public class TestJSSPPACOModelAge
 
   /** {@inheritDoc} */
   @Override
-  protected ISpace<JSSPACOIndividual> getSpace() {
+  protected ISpace<JSSPACORecord> getSpace() {
     return TestJSSPPACOModelAge.SPACE;
   }
 
   /** {@inheritDoc} */
   @Override
-  protected IModel<JSSPACOIndividual>
-      getModel(final ISpace<JSSPACOIndividual> space) {
+  protected IModel<JSSPACORecord>
+      getModel(final ISpace<JSSPACORecord> space) {
     return TestJSSPPACOModelAge.OP;
   }
 
@@ -57,7 +57,7 @@ public class TestJSSPPACOModelAge
    *          the destination
    */
   private static final void
-      fillWithRandomData(final JSSPACOIndividual dest) {
+      fillWithRandomData(final JSSPACORecord dest) {
 
     JSSPTestUtils.randomX(dest.permutation,
         TestJSSPPACOModelAge.PROBLEM);
@@ -77,9 +77,9 @@ public class TestJSSPPACOModelAge
 
   /** {@inheritDoc} */
   @Override
-  protected JSSPACOIndividual createValid() {
-    final JSSPACOIndividual dest =
-        new JSSPACOIndividual(TestJSSPPACOModelAge.PROBLEM.m,
+  protected JSSPACORecord createValid() {
+    final JSSPACORecord dest =
+        new JSSPACORecord(TestJSSPPACOModelAge.PROBLEM.m,
             TestJSSPPACOModelAge.PROBLEM.n);
     TestJSSPPACOModelAge.fillWithRandomData(dest);
     return dest;
@@ -87,8 +87,8 @@ public class TestJSSPPACOModelAge
 
   /** {@inheritDoc} */
   @Override
-  protected boolean equals(final JSSPACOIndividual a,
-      final JSSPACOIndividual b) {
+  protected boolean equals(final JSSPACORecord a,
+      final JSSPACORecord b) {
     return (a.makespan == b.makespan)
         && Arrays.equals(a.permutation, b.permutation)
         && Arrays.deepEquals(a.solution.schedule,

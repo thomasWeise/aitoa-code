@@ -3,10 +3,11 @@ package aitoa.examples.jssp.aco;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 
 /**
- * An individual holding a permutation and a JSSP candidate
- * solution
+ * A record holding both a permutation and a JSSP candidate
+ * solution, since we can construct them together at once in our
+ * model sampling procedure.
  */
-public final class JSSPACOIndividual {
+public final class JSSPACORecord {
 
   /** the permutation */
   public final int[] permutation;
@@ -25,7 +26,7 @@ public final class JSSPACOIndividual {
    * @param pN
    *          the number of jobs
    */
-  public JSSPACOIndividual(final int pM, final int pN) {
+  public JSSPACORecord(final int pM, final int pN) {
     super();
     this.permutation = new int[pM * pN];
     this.solution = new JSSPCandidateSolution(pM, pN);

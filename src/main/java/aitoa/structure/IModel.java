@@ -24,7 +24,7 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    *          the array with the points in the search space that
    *          have been selected
    */
-  void update(Iterable<Individual<X>> selected);
+  void update(Iterable<Record<X>> selected);
 
   /**
    * Sample the model and fill the destination point in the

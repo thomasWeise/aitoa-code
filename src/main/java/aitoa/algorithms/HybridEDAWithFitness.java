@@ -99,8 +99,7 @@ public final class HybridEDAWithFitness<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final IModel<X> M = ((IModel<X>) (this.model));
     boolean improved;
-    final FitnessIndividual<X>[] P =
-        new FitnessIndividual[this.lambda];
+    final FitnessRecord<X>[] P = new FitnessRecord[this.lambda];
     final X temp = searchSpace.create();
     this.fitness.initialize();
 
@@ -108,18 +107,18 @@ public final class HybridEDAWithFitness<X, Y>
 // the initialization of local variables is omitted for brevity
       M.initialize(); // initialize to uniform distribution
 
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new FitnessIndividual<>(x, process.evaluate(x));
+        P[i] = new FitnessRecord<>(x, process.evaluate(x));
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
       }
 
       for (;;) { // each iteration: LS, update model, then sample
-        for (final FitnessIndividual<X> ind : P) {
+        for (final FitnessRecord<X> ind : P) {
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2
             improved = this.unary.enumerate(random, ind.x, temp, //
@@ -144,11 +143,11 @@ public final class HybridEDAWithFitness<X, Y>
           continue restart;
         }
         this.fitness.assignFitness(P);
-        Arrays.sort(P, FitnessIndividual.BY_FITNESS);
+        Arrays.sort(P, FitnessRecord.BY_FITNESS);
         M.update(IModel.use(P, 0, this.mu)); // update
 
 // sample new population
-        for (final FitnessIndividual<X> dest : P) {
+        for (final FitnessRecord<X> dest : P) {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }

@@ -10,9 +10,9 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic2;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
@@ -119,14 +119,13 @@ public final class EA<X, Y> extends Metaheuristic2<X, Y> {
     final ISpace<X> searchSpace = process.getSearchSpace();
     int p2; // to hold index of second selected record
 
-    final Individual<X>[] P =
-        new Individual[this.mu + this.lambda];
+    final Record<X>[] P = new Record[this.mu + this.lambda];
 // start relevant
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create(); // allocate point
       this.nullary.apply(x, random); // fill with random data
-      P[i] = new Individual<>(x, process.evaluate(x)); // evaluate
+      P[i] = new Record<>(x, process.evaluate(x)); // evaluate
 // end relevant
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
@@ -135,8 +134,8 @@ public final class EA<X, Y> extends Metaheuristic2<X, Y> {
     }
 
     for (;;) { // main loop: one iteration = one generation
-// sort the population: mu best individuals at front are selected
-      Arrays.sort(P, Individual.BY_QUALITY);
+// sort the population: mu best records at front are selected
+      Arrays.sort(P, Record.BY_QUALITY);
 // shuffle the first mu solutions to ensure fairness
       RandomUtils.shuffle(random, P, 0, this.mu);
       int p1 = -1; // index to iterate over first parent
@@ -147,16 +146,16 @@ public final class EA<X, Y> extends Metaheuristic2<X, Y> {
           return; // best solution is stored in process
         }
 
-        final Individual<X> dest = P[index];
+        final Record<X> dest = P[index];
         p1 = (p1 + 1) % this.mu; // step the parent 1 index
-        final Individual<X> sel = P[p1];
+        final Record<X> sel = P[p1];
 // end relevant
 // start withcrossover
         if (random.nextDouble() <= this.cr) { // crossover!
           do { // find a second, different record
             p2 = random.nextInt(this.mu);
           } while (p2 == p1); // repeat until p1 != p2
-// perform recombination of the two selected individuals
+// perform recombination of the two selected records
           this.binary.apply(sel.x, P[p2].x, dest.x, random);
         } else {
 // end withcrossover

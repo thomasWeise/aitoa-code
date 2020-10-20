@@ -9,7 +9,7 @@ import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPRepresentationMapping;
 import aitoa.examples.jssp.JSSPSearchSpace;
-import aitoa.structure.Individual;
+import aitoa.structure.Record;
 import aitoa.utils.RandomUtils;
 
 /**
@@ -43,10 +43,10 @@ public final class JSSPDemoEDA {
 
     final int[] x = X.create();
 
-    final Individual<int[]>[] keep = new Individual[10];
+    final Record<int[]>[] keep = new Record[10];
     for (int i = keep.length; (--i) >= 0;) {
       keep[i] =
-          new Individual<>(X.create(), Double.POSITIVE_INFINITY);
+          new Record<>(X.create(), Double.POSITIVE_INFINITY);
     }
 
     final int[][] M = new int[x.length][instance.n];
@@ -56,7 +56,7 @@ public final class JSSPDemoEDA {
     findExample: for (;;) {
       random.setSeed(seed);
 
-      for (final Individual<int[]> k : keep) {
+      for (final Record<int[]> k : keep) {
         k.quality = Double.POSITIVE_INFINITY;
       }
 
@@ -87,7 +87,7 @@ public final class JSSPDemoEDA {
 
         int count = 0;
         for (int kk = got; (--kk) >= 0;) {
-          final Individual<int[]> k = keep[kk];
+          final Record<int[]> k = keep[kk];
           int nonequal = x.length;
           for (int uu = x.length; (--uu) >= 0;) {
             if (k.x[uu] == x[uu]) {
@@ -112,7 +112,7 @@ public final class JSSPDemoEDA {
       for (final int[] k : M) {
         Arrays.fill(k, 0);
       }
-      for (final Individual<int[]> k : keep) {
+      for (final Record<int[]> k : keep) {
         for (int j = k.x.length; (--j) >= 0;) {
           ++M[j][k.x[j]];
         }
@@ -170,7 +170,7 @@ public final class JSSPDemoEDA {
     // print the solutions
     RandomUtils.shuffle(random, keep, 0, keep.length);
     for (int i = 0; i < keep.length; i++) {
-      final Individual<int[]> k = keep[i];
+      final Record<int[]> k = keep[i];
       if (i < 9) {
         System.out.print(' ');
       }
@@ -255,7 +255,7 @@ public final class JSSPDemoEDA {
         continue sample;
       }
 
-      for (final Individual<int[]> sel : keep) {
+      for (final Record<int[]> sel : keep) {
         if (Arrays.equals(sel.x, x)) {
           continue sample;
         }

@@ -9,9 +9,9 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic2;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 import aitoa.utils.RandomUtils;
 
@@ -108,15 +108,14 @@ public final class EAWithClearing<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     int p2;
 
-    final Individual<X>[] P =
-        new Individual[this.mu + this.lambda];
+    final Record<X>[] P = new Record[this.mu + this.lambda];
 
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
 // start relevant
     for (int i = P.length; (--i) >= 0;) {
       final X x = searchSpace.create();
       this.nullary.apply(x, random);
-      P[i] = new Individual<>(x, process.evaluate(x));
+      P[i] = new Record<>(x, process.evaluate(x));
       if (process.shouldTerminate()) { // we return
         return; // best solution is stored in process
       }
@@ -136,9 +135,9 @@ public final class EAWithClearing<X, Y>
           return; // The best solution is stored in process.
         }
 // start relevant
-        final Individual<X> dest = P[index]; // offspring
+        final Record<X> dest = P[index]; // offspring
         p1 = (p1 + 1) % u; // parent 1 index
-        final Individual<X> sel = P[p1]; // parent 1
+        final Record<X> sel = P[p1]; // parent 1
         if ((u >= 2) && (random.nextDouble() <= this.cr)) {
           do { // find a second, different record
             p2 = random.nextInt(u);

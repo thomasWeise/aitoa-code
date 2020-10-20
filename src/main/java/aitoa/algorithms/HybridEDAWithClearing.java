@@ -11,9 +11,9 @@ import aitoa.structure.IModel;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
-import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic1;
+import aitoa.structure.Record;
 import aitoa.utils.Experiment;
 
 /**
@@ -97,25 +97,25 @@ public final class HybridEDAWithClearing<X, Y>
     final ISpace<X> searchSpace = process.getSearchSpace();
     final IModel<X> M = ((IModel<X>) (this.model));
     boolean improved;
-    final Individual<X>[] P = new Individual[this.lambda];
+    final Record<X>[] P = new Record[this.lambda];
     final X temp = searchSpace.create();
 
     restart: while (!process.shouldTerminate()) {
 // the initialization of local variables is omitted for brevity
       M.initialize(); // initialize to uniform distribution
 
-// first generation: fill population with random individuals
+// first generation: fill population with random solutions
       for (int i = P.length; (--i) >= 0;) {
         final X x = searchSpace.create();
         this.nullary.apply(x, random);
-        P[i] = new Individual<>(x, process.evaluate(x));
+        P[i] = new Record<>(x, process.evaluate(x));
         if (process.shouldTerminate()) { // we return
           return; // best solution is stored in process
         }
       }
 
       for (;;) { // each iteration: LS, update model, then sample
-        for (final Individual<X> ind : P) {
+        for (final Record<X> ind : P) {
           int steps = this.maxLSSteps;
           do { // local search in style of HillClimber2
             improved = this.unary.enumerate(random, ind.x, temp, //
@@ -135,7 +135,7 @@ public final class HybridEDAWithClearing<X, Y>
           } while (improved && ((--steps) > 0));
         }
 
-        Arrays.sort(P, Individual.BY_QUALITY);
+        Arrays.sort(P, Record.BY_QUALITY);
         final int u = Utils.qualityBasedClearing(P, this.mu);
         if (u < M.minimumSamplesNeededForUpdate()) {
           continue restart;
@@ -143,7 +143,7 @@ public final class HybridEDAWithClearing<X, Y>
         M.update(IModel.use(P, 0, u)); // update
 
 // sample new population
-        for (final Individual<X> dest : P) {
+        for (final Record<X> dest : P) {
           if (process.shouldTerminate()) { // we return
             return; // best solution is stored in process
           }

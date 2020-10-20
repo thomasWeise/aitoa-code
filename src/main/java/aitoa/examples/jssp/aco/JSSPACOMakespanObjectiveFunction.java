@@ -9,7 +9,7 @@ import aitoa.structure.IObjectiveFunction;
  * the Job Shop Scheduling Problem, subject to minimization
  */
 public final class JSSPACOMakespanObjectiveFunction
-    implements IObjectiveFunction<JSSPACOIndividual> {
+    implements IObjectiveFunction<JSSPACORecord> {
 
   /**
    * the inner makespan objective function, used only for
@@ -57,7 +57,7 @@ public final class JSSPACOMakespanObjectiveFunction
 
   /** {@inheritDoc} */
   @Override
-  public double evaluate(final JSSPACOIndividual y) {
+  public double evaluate(final JSSPACORecord y) {
     return y.makespan;
   }
 

@@ -8,8 +8,8 @@ import org.junit.Test;
 import aitoa.algorithms.EDA;
 import aitoa.algorithms.TestMetaheuristic;
 import aitoa.examples.jssp.JSSPInstance;
-import aitoa.examples.jssp.aco.JSSPACOIndividual;
 import aitoa.examples.jssp.aco.JSSPACOMakespanObjectiveFunction;
+import aitoa.examples.jssp.aco.JSSPACORecord;
 import aitoa.examples.jssp.aco.JSSPACOSpace;
 import aitoa.examples.jssp.aco.JSSPPACOModelAge;
 import aitoa.structure.IBlackBoxProcess;
@@ -23,8 +23,8 @@ import aitoa.structure.TestBlackBoxProcessBuilder;
  * {@linkplain aitoa.algorithms.PACOModelAge age-base PACO model}
  * on the JSSP
  */
-public class TestPACOAgeOnJSSP extends
-    TestMetaheuristic<JSSPACOIndividual, JSSPACOIndividual> {
+public class TestPACOAgeOnJSSP
+    extends TestMetaheuristic<JSSPACORecord, JSSPACORecord> {
 
   /**
    * Get the EDA algorithm
@@ -34,7 +34,7 @@ public class TestPACOAgeOnJSSP extends
    * @return the algorithm
    */
   @SuppressWarnings("static-method")
-  protected EDA<JSSPACOIndividual, JSSPACOIndividual>
+  protected EDA<JSSPACORecord, JSSPACORecord>
       getAlgorithm(final JSSPInstance instance) {
     final ThreadLocalRandom rand = ThreadLocalRandom.current();
     final int lambda = 1 + rand.nextInt(64);
@@ -48,7 +48,7 @@ public class TestPACOAgeOnJSSP extends
 
   /** {@inheritDoc} */
   @Override
-  protected IMetaheuristic<JSSPACOIndividual, JSSPACOIndividual>
+  protected IMetaheuristic<JSSPACORecord, JSSPACORecord>
       getInstance() {
     return this.getAlgorithm(new JSSPInstance("demo")); //$NON-NLS-1$
   }
@@ -65,15 +65,15 @@ public class TestPACOAgeOnJSSP extends
    */
   protected void runTest(final JSSPInstance instance,
       final long maxFEs, final long maxTime) {
-    final ISpace<JSSPACOIndividual> space =
+    final ISpace<JSSPACORecord> space =
         new JSSPACOSpace(instance);
 
-    final EDA<JSSPACOIndividual, JSSPACOIndividual> algo =
+    final EDA<JSSPACORecord, JSSPACORecord> algo =
         this.getAlgorithm(instance);
 
-    try (final IBlackBoxProcess<JSSPACOIndividual,
-        JSSPACOIndividual> p = new TestBlackBoxProcessBuilder<
-            JSSPACOIndividual, JSSPACOIndividual>()//
+    try (final IBlackBoxProcess<JSSPACORecord,
+        JSSPACORecord> p = new TestBlackBoxProcessBuilder<
+            JSSPACORecord, JSSPACORecord>()//
                 .setSearchSpace(space)//
                 .setSolutionSpace(space)//
                 .setObjectiveFunction(

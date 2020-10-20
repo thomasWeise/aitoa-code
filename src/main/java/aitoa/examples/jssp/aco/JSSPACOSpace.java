@@ -9,8 +9,8 @@ import aitoa.examples.jssp.JSSPSolutionSpace;
 import aitoa.structure.ISpace;
 import aitoa.utils.math.BigMath;
 
-/** The space for the PACO individuals */
-public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
+/** The space for the PACO records */
+public class JSSPACOSpace implements ISpace<JSSPACORecord> {
   /** the internal {@link JSSPSolutionSpace} */
   private final JSSPSolutionSpace mY;
 
@@ -27,15 +27,15 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
 
   /** {@inheritDoc} */
   @Override
-  public JSSPACOIndividual create() {
-    return new JSSPACOIndividual(this.mY.instance.m,
+  public JSSPACORecord create() {
+    return new JSSPACORecord(this.mY.instance.m,
         this.mY.instance.n);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void copy(final JSSPACOIndividual from,
-      final JSSPACOIndividual to) {
+  public void copy(final JSSPACORecord from,
+      final JSSPACORecord to) {
     System.arraycopy(from.permutation, 0, to.permutation, 0,
         to.permutation.length);
     this.mY.copy(from.solution, to.solution);
@@ -44,8 +44,8 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
 
   /** {@inheritDoc} */
   @Override
-  public void print(final JSSPACOIndividual z,
-      final Appendable out) throws IOException {
+  public void print(final JSSPACORecord z, final Appendable out)
+      throws IOException {
     out.append("new int[] "); //$NON-NLS-1$
     char ch = '{';
     for (final int i : z.permutation) {
@@ -65,7 +65,7 @@ public class JSSPACOSpace implements ISpace<JSSPACOIndividual> {
 
   /** {@inheritDoc} */
   @Override
-  public void check(final JSSPACOIndividual z) {
+  public void check(final JSSPACORecord z) {
     Objects.requireNonNull(z);
 
     this.mY.check(z.solution);

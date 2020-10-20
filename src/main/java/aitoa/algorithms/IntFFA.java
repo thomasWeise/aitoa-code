@@ -32,14 +32,14 @@ public final class IntFFA
   /** {@inheritDoc} */
   @Override
   public void assignFitness(
-      final FitnessIndividual<? extends Object>[] pop) {
-    for (final FitnessIndividual<? extends Object> ind : pop) {
+      final FitnessRecord<? extends Object>[] pop) {
+    for (final FitnessRecord<? extends Object> ind : pop) {
       final double d = ind.quality;
       if (Double.isFinite(d)) {
         ++this.mFrequencies[((int) (d))];
       }
     }
-    for (final FitnessIndividual<? extends Object> ind : pop) {
+    for (final FitnessRecord<? extends Object> ind : pop) {
       final double d = ind.quality;
       ind.fitness =
           Double.isFinite(d) ? this.mFrequencies[((int) (d))]

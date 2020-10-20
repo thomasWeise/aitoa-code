@@ -58,19 +58,17 @@ public final class EA1p1WithFitness<X, Y>
   public void solve(final IBlackBoxProcess<X, Y> process) {
 // init local variables P, nullary, unary, random
 // end relevant
-    final FitnessIndividual<X>[] P = new FitnessIndividual[] {
-        new FitnessIndividual<>(
-            process.getSearchSpace().create(),
+    final FitnessRecord<X>[] P = new FitnessRecord[] {
+        new FitnessRecord<>(process.getSearchSpace().create(),
             Double.POSITIVE_INFINITY),
-        new FitnessIndividual<>(
-            process.getSearchSpace().create(),
+        new FitnessRecord<>(process.getSearchSpace().create(),
             Double.POSITIVE_INFINITY) };
 
     final Random random = process.getRandom();// get random gen
     this.fitness.initialize();
 // start relevant
     this.nullary.apply(P[0].x, random); // create and evaluate
-    P[0].quality = process.evaluate(P[0].x); // individual
+    P[0].quality = process.evaluate(P[0].x);
 
     while (!process.shouldTerminate()) {
 // create a slightly modified copy of xBest and store in xCur
@@ -78,10 +76,9 @@ public final class EA1p1WithFitness<X, Y>
 // map xCur from X to Y and evaluate candidate solution
       P[1].quality = process.evaluate(P[1].x);
       this.fitness.assignFitness(P); // compute fitness
-      if (FitnessIndividual.BY_FITNESS.compare(P[0],
-          P[1]) >= 0) {
-        final FitnessIndividual<X> temp = P[0];
-        P[0] = P[1]; // if new individual has better or
+      if (FitnessRecord.BY_FITNESS.compare(P[0], P[1]) >= 0) {
+        final FitnessRecord<X> temp = P[0];
+        P[0] = P[1]; // if new solution has better or
         P[1] = temp; // equal fitness: accept it
       }
     } // until time is up
