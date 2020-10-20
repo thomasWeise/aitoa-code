@@ -3,13 +3,13 @@ package aitoa.bookExamples.jssp;
 import java.util.Arrays;
 import java.util.Random;
 
-import aitoa.algorithms.Individual;
 import aitoa.examples.jssp.JSSPCandidateSolution;
 import aitoa.examples.jssp.JSSPInstance;
 import aitoa.examples.jssp.JSSPMakespanObjectiveFunction;
 import aitoa.examples.jssp.JSSPNullaryOperator;
 import aitoa.examples.jssp.JSSPRepresentationMapping;
 import aitoa.examples.jssp.JSSPSearchSpace;
+import aitoa.structure.Individual;
 import aitoa.utils.RandomUtils;
 
 /**

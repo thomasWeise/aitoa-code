@@ -17,8 +17,9 @@ import aitoa.structure.LogFormat;
  * @param <X>
  *          the search space
  */
+// start relevant
 public abstract class ACOModel<X> implements IModel<X> {
-
+// end relevant
   /** the length of the permutation */
   public final int length;
 
@@ -55,10 +56,12 @@ public abstract class ACOModel<X> implements IModel<X> {
    *         zero
    * @see #append(int, Object)
    */
+// start relevant
   protected double getCostOfAppending(final int value,
       final X x) {
-    return 0d;
+    return 1d;
   }
+// end relevant
 
   /**
    * Extract a permutation from a point in the search space.
@@ -67,9 +70,11 @@ public abstract class ACOModel<X> implements IModel<X> {
    *          the point
    * @return the permutation
    */
+// start relevant
   protected int[] permutationFromX(final X x) {
     return (int[]) x;
   }
+// end relevant
 
   /**
    * Perform any auxiliary action needed for appending the given
@@ -93,9 +98,11 @@ public abstract class ACOModel<X> implements IModel<X> {
    *          the destination object
    * @see #getCostOfAppending(int, Object)
    */
+// start relevant
   protected void append(final int value, final X dest) {
     // nothing
   }
+// end relevant
 
   /** {@inheritDoc} */
   @Override
@@ -105,4 +112,6 @@ public abstract class ACOModel<X> implements IModel<X> {
     output.write(LogFormat.mapEntry("L", this.length)); //$NON-NLS-1$
     output.write(System.lineSeparator());
   }
+// start relevant
 }
+// end relevant

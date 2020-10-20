@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import aitoa.TestTools;
+import aitoa.structure.Individual;
 
 /** Test the algorithm utils. */
 public class TestUtils {

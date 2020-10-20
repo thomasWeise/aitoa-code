@@ -1,6 +1,7 @@
 package aitoa.structure;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -104,16 +105,17 @@ public abstract class IModelTest<X>
     model.initialize();
 
     @SuppressWarnings("unchecked")
-    final X[] array = ((X[]) (new Object[48]));
+    final Individual<X>[] array = new Individual[48];
     @SuppressWarnings("unchecked")
     final X[] dest =
         ((X[]) (new Object[3 * (array.length + 1)]));
-    final Random random = new Random();
+    final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     int diff = 0;
     outer: for (int j = 0; j < dest.length; j++) {
       for (int i = array.length; (--i) >= 0;) {
-        array[i] = this.createValid();
+        array[i] = new Individual<>(this.createValid(),
+            random.nextDouble(1d, 100d));
       }
 
       final int selectedEnd = 1 + (j % array.length);

@@ -10,6 +10,7 @@ import org.junit.Test;
 import aitoa.structure.IModel;
 import aitoa.structure.IModelTest;
 import aitoa.structure.ISpace;
+import aitoa.structure.Individual;
 
 /** test the univariate model for the JSSP */
 public class TestJSSPUMDAModel extends IModelTest<int[]> {
@@ -62,8 +63,9 @@ public class TestJSSPUMDAModel extends IModelTest<int[]> {
     for (int z = 100; (--z) >= 0;) {
       model.initialize();
       final int[] template = JSSPTestUtils.createValidX(demo);
-      final ArrayList<int[]> list = new ArrayList<>();
-      list.add(template);
+      final ArrayList<Individual<int[]>> list =
+          new ArrayList<>();
+      list.add(new Individual<>(template, 1));
       model.update(list);
 
       final int[] dest = new int[demo.m * demo.n];

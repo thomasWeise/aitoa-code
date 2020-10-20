@@ -1,5 +1,7 @@
 package aitoa.algorithms;
 
+import aitoa.structure.Individual;
+
 /**
  * An individual as used by memetic algorithms that perform
  * partial local search

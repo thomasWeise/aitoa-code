@@ -2,6 +2,8 @@ package aitoa.algorithms;
 
 import java.util.Comparator;
 
+import aitoa.structure.Individual;
+
 /**
  * A shared class for individual records. Such a record record
  * holds one point in search space along with its quality.

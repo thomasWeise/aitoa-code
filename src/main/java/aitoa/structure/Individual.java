@@ -1,17 +1,18 @@
-package aitoa.algorithms;
+package aitoa.structure;
 
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
- * the individual record: hold one point in search space and its
- * quality
+ * The individual record: hold one point in search space and its
+ * quality. Neither {@link #equals(Object)} nor
+ * {@link #hashCode()} are overridden, since this contain is
+ * explicitly designed to be mutable.
  *
  * @param <X>
  *          the data structure of the search space
  */
-public class Individual<X> implements Supplier<X> {
+public class Individual<X> {
 
   /** The comparator to be used for sorting according quality */
   public static final Comparator<Individual<?>> BY_QUALITY =
@@ -34,11 +35,5 @@ public class Individual<X> implements Supplier<X> {
     super();
     this.x = Objects.requireNonNull(pX);
     this.quality = pQ;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final X get() {
-    return this.x;
   }
 }

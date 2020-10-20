@@ -10,6 +10,7 @@ import aitoa.structure.IBlackBoxProcess;
 import aitoa.structure.INullarySearchOperator;
 import aitoa.structure.ISpace;
 import aitoa.structure.IUnarySearchOperator;
+import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.structure.Metaheuristic2;
 import aitoa.utils.Experiment;

@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 
+import aitoa.structure.Individual;
 import aitoa.structure.LogFormat;
 import aitoa.utils.ReflectionUtils;
 import aitoa.utils.graph.DirectedEdgeMultiSet;
@@ -52,7 +53,9 @@ import aitoa.utils.graph.IntSet;
  * @param <X>
  *          the search space
  */
+// start relevant
 public class PACOModelAge<X> extends ACOModel<X> {
+// end relevant
   /**
    * the fraction of edges to be chosen greedily, i.e., directly
    * based on the best pheromone-cost combination (instead of
@@ -218,9 +221,11 @@ public class PACOModelAge<X> extends ACOModel<X> {
 
   /** {@inheritDoc} */
   @Override
-  public final void update(final Iterable<X> selected) {
-    for (final X x : selected) { // for each ant to be added
-      final int[] pi = this.permutationFromX(x);
+  public final void
+      update(final Iterable<Individual<X>> selected) {
+    for (final Individual<X> ind : selected) { // for each ant to
+                                               // be added
+      final int[] pi = this.permutationFromX(ind.x);
       final int size = this.mCurPopSize;
       final int index = this.mCurPopIndex;
       final int[] dest = this.mPopulation[index];
@@ -228,7 +233,7 @@ public class PACOModelAge<X> extends ACOModel<X> {
         this.mMatrix.removePermutation(dest);
       }
       System.arraycopy(pi, 0, dest, 0, this.length); // copy
-      this.mMatrix.addPermutation(pi); // add edges to pheros
+      this.mMatrix.addPermutation(pi); // add edges to pheromones
       this.mCurPopSize = Math.min(this.popSize, size + 1);
       this.mCurPopIndex = (index + 1) % this.popSize; // move idx
     }
@@ -363,4 +368,6 @@ public class PACOModelAge<X> extends ACOModel<X> {
         ReflectionUtils.className(this.mMatrix)));
     output.write(System.lineSeparator());
   }
+// start relevant
 }
+// end relevant

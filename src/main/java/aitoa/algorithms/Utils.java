@@ -2,6 +2,8 @@ package aitoa.algorithms;
 
 import java.util.Arrays;
 
+import aitoa.structure.Individual;
+
 /**
  * A utility class with frequently needed routines.
  */

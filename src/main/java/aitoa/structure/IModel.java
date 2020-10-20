@@ -1,7 +1,6 @@
 package aitoa.structure;
 
 import java.util.Random;
-import java.util.function.Supplier;
 
 /**
  * Create a statistical model for use inside of an Estimation of
@@ -25,7 +24,7 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    *          the array with the points in the search space that
    *          have been selected
    */
-  void update(Iterable<X> selected);
+  void update(Iterable<Individual<X>> selected);
 
   /**
    * Sample the model and fill the destination point in the
@@ -77,40 +76,15 @@ public interface IModel<X> extends INullarySearchOperator<X> {
    * @param end
    *          the exclusive end index
    * @return the iterable
-   * @param <X>
+   * @param <A>
    *          the element type
    * @throws IllegalArgumentException
    *           if the range is empty or exceeds the array length
    */
-  static <X> Iterable<X> use(final X[] array, final int start,
+  static <A> Iterable<A> use(final A[] array, final int start,
       final int end) {
     IteratorBase.checkRange(array, start, end);
     return () -> new ArrayIterator<>(array, start, end);
-  }
-
-  /**
-   * Create an iterable over a given range of the specified
-   * array, where each element is actually a supplier for the
-   * wanted type. From each supplier, the {@link Supplier#get()}
-   * method will then be invoked at most once during the
-   * iteration. The range must be non-empty.
-   *
-   * @param array
-   *          the array
-   * @param start
-   *          the inclusive start index
-   * @param end
-   *          the exclusive end index
-   * @return the iterable
-   * @param <X>
-   *          the element type
-   * @throws IllegalArgumentException
-   *           if the range is empty or exceeds the array length
-   */
-  static <X> Iterable<X> use(final Supplier<X>[] array,
-      final int start, final int end) {
-    IteratorBase.checkRange(array, start, end);
-    return () -> new SupplierArrayIterator<>(array, start, end);
   }
 // start relevant
 }
