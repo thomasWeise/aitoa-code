@@ -75,12 +75,11 @@ public final class JSSPMakespanObjectiveFunction
    * Journal of Operational Research, 64.2: 278-285, 1993. doi:
    * 10.1016/0377-2217(93)90182-M
    *
+   * @param inst
+   *          the instance
    * @return the lower bound
    */
-  @Override
-  public double lowerBound() {
-    final JSSPInstance inst = this.instance;
-
+  static int lowerBound(final JSSPInstance inst) {
     final int[] a = new int[inst.m]; // lb inactive time at start
     final int[] b = new int[inst.m]; // lb inactive time at end
     final int[] T = new int[inst.m]; // time of machine
@@ -134,15 +133,29 @@ public final class JSSPMakespanObjectiveFunction
   }
 
   /**
-   * Compute the upper bound of the instance in a very sloppy
-   * way. This is just a placeholder for now. The idea is that I
-   * can use this in unit tests to check whether results are
-   * sane.
+   * Compute the lower bound of the objective value. See E. D.
+   * Taillard. Benchmarks for basic scheduling problems. European
+   * Journal of Operational Research, 64.2: 278-285, 1993. doi:
+   * 10.1016/0377-2217(93)90182-M
+   *
+   * @return the lower bound
    */
   @Override
-  public double upperBound() {
+  public double lowerBound() {
+    return JSSPMakespanObjectiveFunction.lowerBound(//
+        this.instance);
+  }
+
+  /**
+   * Compute the upper bound for the instance
+   *
+   * @param inst
+   *          the instance
+   * @return the upper bound
+   */
+  static int upperBound(final JSSPInstance inst) {
     int sum = 0;
-    for (final int[] job : this.instance.jobs) {
+    for (final int[] job : inst.jobs) {
       for (int i = job.length - 1; i > 0; i -= 2) {
         sum = Math.addExact(sum, job[i]);
       }
@@ -153,6 +166,18 @@ public final class JSSPMakespanObjectiveFunction
               + sum);
     }
     return sum;
+  }
+
+  /**
+   * Compute the upper bound of the instance in a very sloppy
+   * way. This is just a placeholder for now. The idea is that I
+   * can use this in unit tests to check whether results are
+   * sane.
+   */
+  @Override
+  public double upperBound() {
+    return JSSPMakespanObjectiveFunction.upperBound(//
+        this.instance);
   }
 
 // start relevant

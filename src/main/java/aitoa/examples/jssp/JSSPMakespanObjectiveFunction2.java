@@ -102,4 +102,31 @@ public final class JSSPMakespanObjectiveFunction2
     }
     return end;
   }
+
+  /**
+   * Compute the lower bound of the objective value. See E. D.
+   * Taillard. Benchmarks for basic scheduling problems. European
+   * Journal of Operational Research, 64.2: 278-285, 1993. doi:
+   * 10.1016/0377-2217(93)90182-M
+   *
+   * @return the lower bound
+   */
+  @Override
+  public double lowerBound() {
+    return JSSPMakespanObjectiveFunction.lowerBound(//
+        this.instance);
+  }
+
+  /**
+   * Compute the upper bound of the instance in a very sloppy
+   * way. This is just a placeholder for now. The idea is that I
+   * can use this in unit tests to check whether results are
+   * sane.
+   */
+  @Override
+  public double upperBound() {
+    return JSSPMakespanObjectiveFunction.upperBound(//
+        this.instance);
+  }
+
 }
