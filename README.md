@@ -1,7 +1,6 @@
 # Example Codes from the Book &ldquo;An Introduction to Optimization Algorithms&rdquo;
 
 [<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
-[<img alt="AppVeyor Build Status" src="https://img.shields.io/appveyor/ci/thomasWeise/aitoa-code.svg" height="20"/>](https://ci.appveyor.com/project/thomasWeise/aitoa-code)
 [<img alt="drone.io Build Status" src="https://cloud.drone.io/api/badges/thomasWeise/aitoa-code/status.svg" height="20">](https://cloud.drone.io/thomasWeise/aitoa-code)
 [![Release](https://jitpack.io/v/thomasWeise/aitoa-code.svg)](https://jitpack.io/#thomasWeise/aitoa-code)
 [![Maintainability](https://api.codeclimate.com/v1/badges/23609bc004b2864cf14d/maintainability)](https://codeclimate.com/github/thomasWeise/aitoa-code/maintainability)
