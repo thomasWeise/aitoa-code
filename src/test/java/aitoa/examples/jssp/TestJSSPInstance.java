@@ -1,5 +1,7 @@
 package aitoa.examples.jssp;
 
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -369,5 +371,21 @@ public class TestJSSPInstance {
           new JSSPMakespanObjectiveFunction(inst);
       TestTools.assertGreater(f.lowerBound(), 0d);
     }
+  }
+
+  /** test all instances */
+  @SuppressWarnings({ "static-method", "unused" })
+  @Test(timeout = 3600000)
+  public void testAllInstances() {
+    final Collection<String> all =
+        JSSPInstance.getAllInstances();
+    Assert.assertNotNull(all);
+    int size = all.size();
+    TestTools.assertGreater(size, 0);
+    for (final String n : all) {
+      new JSSPInstance(n);
+      --size;
+    }
+    Assert.assertEquals(0, size);
   }
 }

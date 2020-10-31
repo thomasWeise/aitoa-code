@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 import aitoa.utils.math.BigMath;
 
@@ -264,6 +268,64 @@ public class JSSPInstance {
             .pow(this.m)));
   }
 
+  /**
+   * Get an unmodifiable list of the names of all JSSP instances.
+   * This list does not contain the {@code demo} instance.
+   *
+   * @return an unmodifiable list of the names of all JSSP
+   *         instances
+   */
+  public static final List<String> getAllInstances() {
+    return Holder.NAMES;
+  }
+
+  /** the internal holder class */
+  private static final class Holder {
+    /** the names of all instances */
+    static final List<String> NAMES = Holder.loadNames();
+
+    /**
+     * the internal names loader
+     *
+     * @return the array of strings
+     */
+    private static final List<String> loadNames() {
+      final HashSet<String> names = new HashSet<>();
+      try (
+          final InputStream is = JSSPInstance.class
+              .getResourceAsStream("instance_data.txt"); //$NON-NLS-1$
+          final InputStreamReader isr =
+              new InputStreamReader(is);
+          final BufferedReader br = new BufferedReader(isr)) {
+        String line = null;
+
+        loop: while ((line = br.readLine()) != null) {
+          line = line.trim();
+          if (line.isEmpty()) {
+            continue loop;
+          }
+          if (line.startsWith("instance ")) { //$NON-NLS-1$
+            line = line.substring(9).trim();
+            if (line.isEmpty()) {
+              continue loop;
+            }
+            if (line.indexOf(' ') >= 0) {
+              continue loop;
+            }
+            names.add(line);
+          }
+        }
+      } catch (final Throwable error) {
+        throw new IllegalStateException(
+            "Could not load instances text.", //$NON-NLS-1$
+            error);
+      }
+      final String[] all =
+          names.toArray(new String[names.size()]);
+      Arrays.sort(all);
+      return Collections.unmodifiableList(Arrays.asList(all));
+    }
+  }
 // start relevant
 }
 // end relevant
