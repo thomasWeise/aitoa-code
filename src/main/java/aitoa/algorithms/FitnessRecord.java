@@ -27,7 +27,7 @@ public class FitnessRecord<X> extends Record<X> {
       (a, b) -> Double.compare(a.fitness, b.fitness);
 
   /** the fitness */
-  double fitness;
+  public double fitness;
 
   /**
    * create the record
