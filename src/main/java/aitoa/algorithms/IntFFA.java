@@ -20,6 +20,11 @@ public final class IntFFA
    */
   public IntFFA(final int pMax) {
     super();
+    if (pMax < 0) {
+      throw new IllegalArgumentException(
+          "The maximum possible quality value cannot be negative, but is " //$NON-NLS-1$
+              + pMax);
+    }
     this.mFrequencies = new long[pMax + 1];
   }
 
