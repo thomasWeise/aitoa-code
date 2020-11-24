@@ -1,3 +1,62 @@
+# Folder Structure
+
+The folder structure looks as follows is composed of three folder levels under the root folder (usually named `results`).
+There will be one folder for each algorithm setup (here referred to as `algorithm`).
+Inside, there will be one folder for each problem instance.
+In these folders, there are log files for the runs of the algorithm on the instance.
+Each run goes into one log file whose name is composed of the algorithm name, instance name, and the random seed used for the run.
+In other words: Each run of each algorithm/instance combination is uniquely identified by a log file.
+
+```
+results
+  |- algorithm1
+  |      |- instance1
+  |      |      |- algorithm1_instance1_randomseedA.txt
+  |      |      |- algorithm1_instance1_randomseedB.txt
+  |      |      |- ....
+  |      |- instance2
+  |      |      |- algorithm1_instance2_randomseedC.txt
+  |      |      |- algorithm1_instance2_randomseedD.txt
+  |      |      |- ....
+  |      |- instance3
+  |      |      |- algorithm1_instance3_randomseedE.txt
+  |      |      |- algorithm1_instance3_randomseedF.txt
+  |      |      |- ....
+  |      |- ...
+  |
+  |- algorithm2
+  |      |- instance1
+  |      |      |- algorithm2_instance1_randomseedA.txt
+  |      |      |- algorithm2_instance1_randomseedB.txt
+  |      |      |- ....
+  |      |- instance2
+  |      |      |- algorithm2_instance2_randomseedC.txt
+  |      |      |- algorithm2_instance2_randomseedD.txt
+  |      |      |- ....
+  |      |- instance3
+  |      |      |- algorithm2_instance3_randomseedE.txt
+  |      |      |- algorithm2_instance3_randomseedF.txt
+  |      |      |- ....
+  |      |- ...
+  |
+  |- algorithm3
+  |      |- instance1
+  |      |      |- algorithm3_instance1_randomseedA.txt
+  |      |      |- algorithm3_instance1_randomseedB.txt
+  |      |      |- ....
+  |      |- instance2
+  |      |      |- algorithm3_instance2_randomseedC.txt
+  |      |      |- algorithm3_instance2_randomseedD.txt
+  |      |      |- ....
+  |      |- instance3
+  |      |      |- algorithm3_instance3_randomseedE.txt
+  |      |      |- algorithm3_instance3_randomseedF.txt
+  |      |      |- ....
+  |      |- ...
+  |
+  ...
+```
+
 # Log File Structure
 
 Below, you can find an example for a log generated for one run of the aitoa experimenter.
@@ -47,10 +106,31 @@ The log file consists of sections, which each are started with the a string of t
 # RANDOM_SEED: 0x1a369a5e836c08bf
 # END_SETUP
 # BEGIN_SYSTEM
+# COMPUTER_MANUFACTURER: Dell Inc.
+# COMPUTER_MODEL: Vostro 3480
 # CPU_FREQUENCY_HZ: 1800000000
 # CPU_IDENTIFIER: Intel64 Family 6 Model 142 Stepping 11
+# CPU_IS_64_BIT: true
+# CPU_LOGICAL_CORES: 8
 # CPU_NAME: Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz
 # CPU_PHYSICAL_CORES: 4
+# GPU_NAME: Advanced Micro Devices, Inc. [AMD/ATI] Jet PRO [Radeon R5 M230 / R7 M260DX / Radeon 520 Mobile]
+# JAVA_VERSION: 13
+# JAVA_VM_NAME: OpenJDK 64-Bit Server VM
+# JAVA_VM_VERSION: 13+33-Ubuntu-1
+# MAINBOARD_MANUFACTURER: Dell Inc.
+# MAINBOARD_MODEL: 0KTK89
+# MAINBOARD_VERSION: A00
+# MEMORY_PAGE_SIZE: 4096
+# MEMORY_TOTAL_BYTES: 16662446080
+# OS_BITS: 64
+# OS_BUILD: 5.3.0-29-generic
+# OS_CODENAME: Eoan Ermine
+# OS_FAMILY: Ubuntu
+# OS_VERSION: 19.10
+# SESSION_START_DATE_TIME: 2020-02-16T13:06:23.806423Z
+# version.aitoa: 0.8.29
+# version.aitoa.oshi: 4.3.0
 ...
 # END_SYSTEM
 # BEGIN_STATE
