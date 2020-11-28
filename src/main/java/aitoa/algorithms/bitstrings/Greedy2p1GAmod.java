@@ -15,6 +15,10 @@ import aitoa.utils.math.DiscreteGreaterThanZero;
  * runtime analysis of evolutionary algorithms," July 2017,
  * arXiv:1812.00493v1 [cs.NE] 3 Dec 2018. [Online]. Available:
  * http://arxiv.org/pdf/1812.00493.pdf
+ * <p>
+ * This algorithm must only be used with objective value-based or
+ * FE-based termination criteria and never be terminated based on
+ * runtime.
  *
  * @param <Y>
  *          the solution space

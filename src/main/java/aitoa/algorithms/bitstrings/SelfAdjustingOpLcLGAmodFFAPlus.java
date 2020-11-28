@@ -46,6 +46,10 @@ import aitoa.utils.math.DiscreteRandomDistribution;
  * several times back-and-forth. Regardless of whether the
  * algorithm is doing direct or FFA-based optimization, it will
  * always keep updating the FFA-table.
+ * <p>
+ * This algorithm must only be used with objective value-based or
+ * FE-based termination criteria and never be terminated based on
+ * runtime.
  *
  * @param <Y>
  *          the solution space
