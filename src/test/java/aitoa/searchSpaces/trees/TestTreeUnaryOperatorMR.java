@@ -14,7 +14,7 @@ import aitoa.structure.IUnarySearchOperatorTest;
 
 /** A test for the tree-based unary operator */
 @Ignore
-public class TestTreeUnaryOperator
+public class TestTreeUnaryOperatorMR
     extends IUnarySearchOperatorTest<Node[]> {
 
   /** the type set */
@@ -26,7 +26,7 @@ public class TestTreeUnaryOperator
   /** the nullary operator */
   private final TreeNullaryOperator mNullary;
   /** the unary operator */
-  private final TreeUnaryOperator mUnary;
+  private final TreeUnaryOperatorMR mUnary;
 
   /**
    * create the unary operator
@@ -34,7 +34,7 @@ public class TestTreeUnaryOperator
    * @param pMaxDepth
    *          the maximum depth
    */
-  public TestTreeUnaryOperator(final int pMaxDepth) {
+  public TestTreeUnaryOperatorMR(final int pMaxDepth) {
 
     super();
 
@@ -43,7 +43,7 @@ public class TestTreeUnaryOperator
     this.mSpace = new TreeSpace(pMaxDepth);
     this.mNullary =
         new TreeNullaryOperator(this.mTypeSet, pMaxDepth);
-    this.mUnary = new TreeUnaryOperator(pMaxDepth);
+    this.mUnary = new TreeUnaryOperatorMR(pMaxDepth);
   }
 
   /** {@inheritDoc} */
@@ -54,7 +54,7 @@ public class TestTreeUnaryOperator
 
   /** {@inheritDoc} */
   @Override
-  protected TreeUnaryOperator
+  protected TreeUnaryOperatorMR
       getOperator(final ISpace<Node[]> space) {
     return this.mUnary;
   }
@@ -74,7 +74,7 @@ public class TestTreeUnaryOperator
   @Test(timeout = 3600000)
   public void testApplyValidAndDifferentAndDepthTest() {
     final TreeSpace space = this.getSpace();
-    final TreeUnaryOperator op = this.getOperator(space);
+    final TreeUnaryOperatorMR op = this.getOperator(space);
     final Random random = ThreadLocalRandom.current();
 
     final Node[] copy = space.create();

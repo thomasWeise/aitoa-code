@@ -8,12 +8,12 @@ import aitoa.structure.IUnarySearchOperator;
 /**
  * A simple mutation operation for a given tree which implants a
  * randomly created subtree into parent, thereby replacing a
- * randomly picked node in the parent. This operation basically
- * proceeds according to the ideas discussed in Section 31.3.4.1
- * with the extension that it also respects the type system of
- * the strongly-typed GP system.
+ * randomly picked node in the parent. It either tries to apply
+ * the {@linkplain NodeType#createModifiedCopy(Node, Random)
+ * modification operator} or to replace the node with an entirely
+ * new sub-tree.
  */
-public final class TreeUnaryOperator extends TreePathOperator
+public final class TreeUnaryOperatorMR extends TreePathOperator
     implements IUnarySearchOperator<Node[]> {
   /**
    * Create a new tree mutation operation
@@ -21,7 +21,7 @@ public final class TreeUnaryOperator extends TreePathOperator
    * @param md
    *          the maximum tree depth
    */
-  public TreeUnaryOperator(final int md) {
+  public TreeUnaryOperatorMR(final int md) {
     super(md);
   }
 
@@ -54,6 +54,6 @@ public final class TreeUnaryOperator extends TreePathOperator
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return "rep" + this.mMaxDepth;//$NON-NLS-1$
+    return "mr" + this.mMaxDepth;//$NON-NLS-1$
   }
 }

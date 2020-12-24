@@ -9,7 +9,7 @@ import aitoa.examples.jssp.JSSPInstance;
 import aitoa.searchSpaces.trees.Node;
 import aitoa.searchSpaces.trees.TreeBinaryOperator;
 import aitoa.searchSpaces.trees.TreeNullaryOperator;
-import aitoa.searchSpaces.trees.TreeUnaryOperator;
+import aitoa.searchSpaces.trees.TreeUnaryOperatorMR;
 import aitoa.structure.IMetaheuristic;
 
 /**
@@ -24,7 +24,7 @@ public class TestHillClimberWithTreesAndRestartsOnJSSP
   protected IMetaheuristic<Node[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance,
           final TreeNullaryOperator op0,
-          final TreeUnaryOperator op1,
+          final TreeUnaryOperatorMR op1,
           final TreeBinaryOperator op2) {
     final Random rand = ThreadLocalRandom.current();
     final int rs = 1 + rand.nextInt(512);

@@ -18,7 +18,7 @@ import aitoa.searchSpaces.trees.NodeTypeSetBuilder;
 import aitoa.searchSpaces.trees.TreeBinaryOperator;
 import aitoa.searchSpaces.trees.TreeNullaryOperator;
 import aitoa.searchSpaces.trees.TreeSpace;
-import aitoa.searchSpaces.trees.TreeUnaryOperator;
+import aitoa.searchSpaces.trees.TreeUnaryOperatorMR;
 import aitoa.searchSpaces.trees.math.ATan2;
 import aitoa.searchSpaces.trees.math.Add;
 import aitoa.searchSpaces.trees.math.Divide;
@@ -62,7 +62,7 @@ public abstract class TestTreeMetaheuristicOnJSSP
         ntsb.build();
     return this.getAlgorithm(new JSSPInstance("demo"), //$NON-NLS-1$
         new TreeNullaryOperator(root, 7),
-        new TreeUnaryOperator(7), new TreeBinaryOperator(7));
+        new TreeUnaryOperatorMR(7), new TreeBinaryOperator(7));
   }
 
   /**
@@ -82,7 +82,7 @@ public abstract class TestTreeMetaheuristicOnJSSP
       IMetaheuristic<Node[], JSSPCandidateSolution>
       getAlgorithm(final JSSPInstance instance,
           final TreeNullaryOperator op0,
-          final TreeUnaryOperator op1,
+          final TreeUnaryOperatorMR op1,
           final TreeBinaryOperator op2);
 
   /**
@@ -135,7 +135,7 @@ public abstract class TestTreeMetaheuristicOnJSSP
                     .get()) {
       this.getAlgorithm(instance,
           new TreeNullaryOperator(root, 7),
-          new TreeUnaryOperator(7), new TreeBinaryOperator(7))
+          new TreeUnaryOperatorMR(7), new TreeBinaryOperator(7))
           .solve(p);
     } catch (final IOException ioe) {
       throw new AssertionError(ioe);
