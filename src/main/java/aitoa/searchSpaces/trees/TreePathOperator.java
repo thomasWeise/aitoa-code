@@ -1,5 +1,6 @@
 package aitoa.searchSpaces.trees;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -18,6 +19,9 @@ class TreePathOperator extends TreeOperator {
   /** the length */
   private int mLength;
 
+  /** the weight-proportional set */
+  private int[] mWeightSum;
+
   /**
    * Create a new tree operation
    *
@@ -28,6 +32,7 @@ class TreePathOperator extends TreeOperator {
     super(pMd);
     this.mPath = new Node[pMd];
     this.mIndexInParent = new int[pMd];
+    this.mWeightSum = new int[16];
   }
 
   /**
@@ -72,7 +77,8 @@ class TreePathOperator extends TreeOperator {
 
   /**
    * Create a random path through the tree. Each node in the tree
-   * is selected with exactly the same probability.
+   * is selected with exactly the same probability as end of the
+   * path.
    *
    * @param start
    *          the start node
@@ -88,15 +94,44 @@ class TreePathOperator extends TreeOperator {
     Node cur = start;
 
     for (;;) {
+// add the step to the path
       path[length] = cur;
       parentIndexes[length] = parentIndex;
       ++length;
 
+// arrived in a terminal node?
       final int size = cur.getChildCount();
-      parentIndex = random.nextInt(size + 1);
-      if (parentIndex >= size) {
+      if (size <= 0) {
         break;
       }
+
+// get the weight sum array
+      int[] weightSum = this.mWeightSum;
+      if (weightSum.length < size) {
+        this.mWeightSum = weightSum = new int[size << 1];
+      }
+
+// fill the weight sum array with the cumulative weight sum
+      int weightTotal = 0;
+      for (int i = 0; i < size; i++) {
+        weightTotal += cur.getChild(i).weight();
+        weightSum[i] = weightTotal;
+      }
+
+      final int choice = random.nextInt(weightTotal + 1);
+      if (choice >= weightTotal) {
+        break; // current node selected as end
+      }
+
+// pick next branch based on its weight
+      parentIndex =
+          Arrays.binarySearch(weightSum, 0, size, choice);
+      if (parentIndex < 0) {
+        parentIndex = (-(parentIndex + 1));
+      } else {
+        ++parentIndex;
+      }
+// pick the selected child
       cur = cur.getChild(parentIndex);
     }
 

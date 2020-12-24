@@ -21,14 +21,32 @@ public class TestFunctionNodeTypeSet
    */
   public static final NodeTypeSet<MathFunction<?>>
       makeMathNodeTypeSet() {
+    return TestFunctionNodeTypeSet.makeMathNodeTypeSet(false);
+  }
+
+  /**
+   * make the node type set
+   *
+   * @param constantsMustBeUnique
+   *          must constants be unique nodes?
+   * @return the node type set
+   */
+  public static final NodeTypeSet<MathFunction<?>>
+      makeMathNodeTypeSet(final boolean constantsMustBeUnique) {
     final NodeTypeSetBuilder builder = new NodeTypeSetBuilder();
 
     final Builder root = builder.rootNodeTypeSet();
-    root.add(LongConstant.type());
+    if (!constantsMustBeUnique) {
+      root.add(LongConstant.type());
+    }
     root.add(Add.class, root, root);
     root.add(Subtract.class, root, root);
     root.add(Divide.class, root, root);
-    root.add(DoubleConstant.type());
+    if (constantsMustBeUnique) {
+      root.add(DoubleConstant.type(-1d, 1d, new double[0]));
+    } else {
+      root.add(DoubleConstant.type());
+    }
     root.add(ATan2.class, root, root);
     root.add(Multiply.class, root, root);
     root.add(Min.class, root, root);

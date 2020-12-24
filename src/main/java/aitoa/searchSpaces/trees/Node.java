@@ -35,6 +35,9 @@ public class Node {
   /** the depth of the node */
   private transient int mDepth;
 
+  /** the weight of the node */
+  private transient int mWeight;
+
   /**
    * Create a node
    *
@@ -246,9 +249,13 @@ public class Node {
    * @return the weight of this tree
    */
   public final int weight() {
-    int w = 1;
-    for (int i = this.getChildCount(); (--i) >= 0;) {
-      w += this.getChild(i).weight();
+    int w = this.mWeight;
+    if (w <= 0) {
+      w = 1;
+      for (int i = this.getChildCount(); (--i) >= 0;) {
+        w += this.getChild(i).weight();
+      }
+      this.mWeight = w;
     }
     return w;
   }

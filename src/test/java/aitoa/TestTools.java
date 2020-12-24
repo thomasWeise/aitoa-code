@@ -210,6 +210,38 @@ public final class TestTools {
   }
 
   /**
+   * Assert whether one double value is in a range
+   *
+   * @param a
+   *          the a value
+   * @param min
+   *          the minimum of the range
+   * @param max
+   *          the maximum of the range
+   */
+  public static void assertInRange(final double a,
+      final double min, final double max) {
+    if (!Double.isFinite(a)) {
+      Assert.fail("value '" + a + //$NON-NLS-1$
+          "' is not finite.");//$NON-NLS-1$
+    }
+    if (!Double.isFinite(min)) {
+      Assert.fail("minimum '" + min + //$NON-NLS-1$
+          "' of range is not finite.");//$NON-NLS-1$
+    }
+    if (!Double.isFinite(max)) {
+      Assert.fail("maximum of range '" //$NON-NLS-1$
+          + max + "' is not finite.");//$NON-NLS-1$
+    }
+    if ((a < min) || (a > max)) {
+      Assert.fail("Value " + //$NON-NLS-1$
+          a + " must be in range " //$NON-NLS-1$
+          + min + "..." + max//$NON-NLS-1$
+          + ", but is not.");//$NON-NLS-1$
+    }
+  }
+
+  /**
    * Assert whether one integer value is in a range
    *
    * @param a
