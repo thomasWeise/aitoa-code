@@ -199,6 +199,13 @@ public abstract class NodeType<T extends Node>
     return super.hashCode();
   }
 
+  /**
+   * The node class managed by this node type
+   *
+   * @return the node class managed by this type
+   */
+  public abstract Class<T> getNodeClass();
+
   /** get the instance */
   @SuppressWarnings("rawtypes")
   private static final NodeType DUMMY_TYPE = new DummyType();
@@ -235,6 +242,12 @@ public abstract class NodeType<T extends Node>
         final Random random) {
       throw new UnsupportedOperationException(//
           "this is a dummy node type. it cannot be used for instantiating nodes!"); //$NON-NLS-1$
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Class<Node> getNodeClass() {
+      return Node.class;
     }
   }
 }

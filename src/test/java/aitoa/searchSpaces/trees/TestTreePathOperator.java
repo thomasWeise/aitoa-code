@@ -130,11 +130,11 @@ public class TestTreePathOperator
       final double sd = meanSd[1].doubleValue();
       TestTools.assertGreaterOrEqual(sd, 0d);
       final double sdLimit = Math.floor(Math.max(2d,
-          Math.min(2.5 * Math.sqrt(mean), mean / 3d)));
+          Math.min(2.75 * Math.sqrt(mean), mean / 3d)));
       TestTools.assertLessOrEqual(sd, sdLimit);
 
       final double difLimit = Math.floor(Math.max(2d, Math
-          .min(0.4 * mean, 3d * Math.min(sdLimit, sd * 3d))));
+          .min(0.5 * mean, 3d * Math.min(sdLimit, sd * 3d))));
       for (final long c : counts) {
         TestTools.assertGreater(c, 0);
         TestTools.assertLess(c, samples);

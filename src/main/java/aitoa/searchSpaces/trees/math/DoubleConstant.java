@@ -254,6 +254,13 @@ public final class DoubleConstant<C> extends NullaryFunction<C> {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public Class<DoubleConstant<C>> getNodeClass() {
+      return (Class) (DoubleConstant.class);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public DoubleConstant<C> instantiate(final Node[] children,
         final Random random) {

@@ -181,6 +181,12 @@ public final class JobStatistic
 
     /** {@inheritDoc} */
     @Override
+    public Class<JobStatistic> getNodeClass() {
+      return JobStatistic.class;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public JobStatistic createModifiedCopy(
         final JobStatistic node, final Random random) {
       return this.instantiate(null, random);

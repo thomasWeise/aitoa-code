@@ -64,9 +64,9 @@ final class ReflectiveNodeTypes<T extends Node>
           if (!(Node[].class.isAssignableFrom(p[1]))) {
             continue outer;
           }
-          return new ReflectiveNodeType1<>(t, cx);
+          return new ReflectiveNodeType1<>(t, this.mClazz, cx);
         }
-        return new ReflectiveNodeType0<>(t, cx);
+        return new ReflectiveNodeType0<>(t, this.mClazz, cx);
       }
 
       throw new IllegalArgumentException("class " + //$NON-NLS-1$
@@ -89,21 +89,33 @@ final class ReflectiveNodeTypes<T extends Node>
   private abstract static class ReflectiveNodeType<
       T extends Node> extends NodeType<T> {
 
+    /** the class */
+    private final Class<T> mClazz;
+
     /** the constructor */
     final Constructor<T> mConstructor;
 
     /**
      * create the node factory
      *
+     * @param clazz
+     *          the class
      * @param pConstr
      *          the constructor
      * @param pChildTypes
      *          the child types
      */
     ReflectiveNodeType(final NodeTypeSet<?>[] pChildTypes,
-        final Constructor<T> pConstr) {
+        final Class<T> clazz, final Constructor<T> pConstr) {
       super(pChildTypes);
+      this.mClazz = Objects.requireNonNull(clazz);
       this.mConstructor = Objects.requireNonNull(pConstr);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final Class<T> getNodeClass() {
+      return this.mClazz;
     }
 
     /**
@@ -136,14 +148,16 @@ final class ReflectiveNodeTypes<T extends Node>
     /**
      * create the node factory
      *
+     * @param clazz
+     *          the class
      * @param pConstr
      *          the constructor
      * @param pChildTypes
      *          the child types
      */
     ReflectiveNodeType0(final NodeTypeSet<?>[] pChildTypes,
-        final Constructor<T> pConstr) {
-      super(pChildTypes, pConstr);
+        final Class<T> clazz, final Constructor<T> pConstr) {
+      super(pChildTypes, clazz, pConstr);
       this.mParams = new Object[] { this };
     }
 
@@ -171,14 +185,16 @@ final class ReflectiveNodeTypes<T extends Node>
     /**
      * create the node factory
      *
+     * @param clazz
+     *          the class
      * @param pConstr
      *          the constructor
      * @param pChildTypes
      *          the child types
      */
     ReflectiveNodeType1(final NodeTypeSet<?>[] pChildTypes,
-        final Constructor<T> pConstr) {
-      super(pChildTypes, pConstr);
+        final Class<T> clazz, final Constructor<T> pConstr) {
+      super(pChildTypes, clazz, pConstr);
     }
 
     /** {@inheritDoc} */

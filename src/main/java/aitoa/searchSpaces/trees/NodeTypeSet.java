@@ -3,6 +3,8 @@ package aitoa.searchSpaces.trees;
 import java.util.Arrays;
 import java.util.Random;
 
+import aitoa.utils.ReflectionUtils;
+
 /**
  * A set of node type records. For each child position of a
  * genotype, we need to specify such a set of possible child
@@ -86,6 +88,75 @@ public final class NodeTypeSet<T extends Node> {
         + " is invalid, there are only "//$NON-NLS-1$
         + this.mTerminalCount + //
         " terminal node types in total."); //$NON-NLS-1$
+  }
+
+  /**
+   * Get a node type which, itself, is an instance of the given
+   * class
+   *
+   * @param <X>
+   *          the class of the node type
+   * @param clazz
+   *          the class of the node type
+   * @param searchTerminalTypes
+   *          should we search the terminal types?
+   * @param searchNonTerminalTypes
+   *          should we search the non-terminal types?
+   * @return the terminal type
+   */
+  public <X extends NodeType<? extends T>> X getTypeOfClass(
+      final Class<X> clazz, final boolean searchTerminalTypes,
+      final boolean searchNonTerminalTypes) {
+
+    int i = (searchNonTerminalTypes ? this.mTypes.length
+        : this.mTerminalCount);
+    final int end =
+        (searchTerminalTypes ? 0 : this.mTerminalCount);
+
+    for (; (--i) >= end;) {
+      final NodeType<? extends T> n = this.mTypes[i];
+      if (clazz == n.getClass()) {
+        return clazz.cast(n);
+      }
+    }
+    throw new IllegalArgumentException(//
+        "Node type of class '" + //$NON-NLS-1$
+            ReflectionUtils.className(clazz) + //
+            "' not found.");//$NON-NLS-1$
+  }
+
+  /**
+   * Get a type which can produce instances of the given class
+   *
+   * @param <X>
+   *          the type of the instances
+   * @param clazz
+   *          the class of the instances
+   * @param searchTerminalTypes
+   *          should we search the terminal types?
+   * @param searchNonTerminalTypes
+   *          should we search the non-terminal types?
+   * @return the terminal type
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public <X extends T> NodeType<X> getTypeForClass(
+      final Class<X> clazz, final boolean searchTerminalTypes,
+      final boolean searchNonTerminalTypes) {
+    int i = (searchNonTerminalTypes ? this.mTypes.length
+        : this.mTerminalCount);
+    final int end =
+        (searchTerminalTypes ? 0 : this.mTerminalCount);
+
+    for (; (--i) >= end;) {
+      final NodeType<? extends T> n = this.mTypes[i];
+      if (n.getNodeClass() == clazz) {
+        return ((NodeType) n);
+      }
+    }
+    throw new IllegalArgumentException(//
+        "Node type producing instances of class '" + //$NON-NLS-1$
+            ReflectionUtils.className(clazz) + //
+            "' not found.");//$NON-NLS-1$
   }
 
   /**

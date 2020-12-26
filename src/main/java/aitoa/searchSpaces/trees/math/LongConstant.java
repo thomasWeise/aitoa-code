@@ -202,6 +202,13 @@ public final class LongConstant<C> extends NullaryFunction<C> {
       }
     }
 
+    /** {@inheritDoc} */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public Class<LongConstant<C>> getNodeClass() {
+      return (Class) (LongConstant.class);
+    }
+
     /**
      * create
      *
