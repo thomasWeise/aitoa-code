@@ -1,12 +1,12 @@
+[![https://thomasweise.github.io](https://shields.io/badge/home-thomasweise.github.io-009000)](https://thomasweise.github.io)
+
 # Example Codes from the Book &ldquo;An Introduction to Optimization Algorithms&rdquo;
 
-[<img alt="Travis CI Build Status" src="https://img.shields.io/travis/thomasWeise/aitoa-code/master.svg" height="20"/>](https://travis-ci.org/thomasWeise/aitoa-code/)
-[<img alt="drone.io Build Status" src="https://cloud.drone.io/api/badges/thomasWeise/aitoa-code/status.svg" height="20">](https://cloud.drone.io/thomasWeise/aitoa-code)
-[![Release](https://jitpack.io/v/thomasWeise/aitoa-code.svg)](https://jitpack.io/#thomasWeise/aitoa-code)
-[![Maintainability](https://api.codeclimate.com/v1/badges/23609bc004b2864cf14d/maintainability)](https://codeclimate.com/github/thomasWeise/aitoa-code/maintainability)
+**No longer actively developed or maintained.
+This code works, but I will not update or improve it.
+Check [moptipy](https://thomasweise.github.io/moptipy) for a similar package for Python.**
 
 ## 1. Introduction
-
 In this repository, we provide example source codes for the book "[An Introduction to Optimization Algorithms](http://github.com/thomasWeise/aitoa)".
 With the book, we try to develop a readable and accessible introduction in optimization, optimization algorithms, and, in particular, metaheuristics.
 The code is designed as a versatile and general implementation of these algorithms in Java and provides one example application: the Job Shop Scheduling Problem ([JSSP](http://en.wikipedia.org/wiki/Job_shop_scheduling)).
@@ -128,10 +128,9 @@ The copyright holder of this package is Prof. Dr. Thomas Weise (see Contact).
 The package is licensed under the MIT License.
 
 ## 4. Contact
-
 If you have any questions or suggestions, please contact
-[Prof. Dr. Thomas Weise](http://iao.hfuu.edu.cn/team/director) of the
-[Institute of Applied Optimization](http://iao.hfuu.edu.cn/) at
-[Hefei University](http://www.hfuu.edu.cn) in
-Hefei, Anhui, China via
+Prof. Dr. [Thomas Weise](http://iao.hfuu.edu.cn/5) (汤卫思教授) of the 
+School of Artificial Intelligence and Big Data ([人工智能与大数据学院](http://www.hfuu.edu.cn/aibd/)) at
+[Hefei University](http://www.hfuu.edu.cn/english/) ([合肥大学](http://www.hfuu.edu.cn/)) in
+Hefei, Anhui, China (中国安徽省合肥市) via
 email to [tweise@hfuu.edu.cn](mailto:tweise@hfuu.edu.cn) with CC to [tweise@ustc.edu.cn](mailto:tweise@ustc.edu.cn).
